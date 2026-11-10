@@ -7,6 +7,7 @@ SlidePilot Universal is one SwiftUI app for macOS 26 and iPadOS 26. The decision
 ```
 SlidePilot-Universal/
 ├── SlidePilot.xcodeproj           # one project, one multiplatform app target
+├── SlidePilot.xctestplan          # test plan: all package test targets
 ├── SlidePilot/                    # app target (folder-synchronized group)
 │   ├── App/                       # @main App, scenes, commands (menus)
 │   ├── Presenter/                 # presenter UI

@@ -1,0 +1,5 @@
+// Copy to Config/Local.xcconfig (git-ignored) and fill in your values.
+// Never commit Local.xcconfig: it contains personal data.
+
+BUNDLE_ID_PREFIX = com.yourcompany
+DEVELOPMENT_TEAM = YOURTEAMID

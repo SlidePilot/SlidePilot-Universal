@@ -61,7 +61,7 @@ Details: [`docs/architecture.md`](docs/architecture.md). Decisions: [`docs/decis
 - Keep comments short and useful; explain *why*, not *what*.
 
 ## Build and test
-Finalized in PR 2 (Xcode skeleton) and PR 3 (CI). Run all of these before pushing in a local session:
+Run all of these before pushing in a local session (CI runs the same; see ADR 0008):
 
 ```sh
 # Packages
@@ -73,10 +73,15 @@ swift test --package-path Packages/SlidePilotRemoteProtocol
 xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
   -destination 'platform=macOS' build test
 
-# iPad simulator (pick an installed iPad: xcrun simctl list devices available)
+# iPad simulator (any installed iPad: xcrun simctl list devices available | grep iPad)
 xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
-  -destination 'platform=iOS Simulator,name=<iPad name>' build test
+  -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M5)' build test
 ```
+
+- The scheme `SlidePilot` runs `SlidePilot.xctestplan`, which contains the test targets of all three packages. Add new test targets (packages or app) to that test plan.
+- New packages: add them to the project's `Packages` group (folder reference) **and** as a local package dependency, otherwise Xcode does not see their tests.
+- Signing: `Config/Shared.xcconfig` holds placeholders (`org.example`, no team). For signed local builds, copy `Config/Local.xcconfig.example` to `Config/Local.xcconfig` (git-ignored). CI builds with `CODE_SIGNING_ALLOWED=NO`.
+- The app target uses `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (Xcode 26 default for apps). Packages use the default (nonisolated); mark UI-facing package types `@MainActor` explicitly.
 
 - Cloud sessions have **no Swift toolchain**. There, GitHub Actions is the only build/test feedback (ADR 0008): push the branch, open a draft PR, and read the results with `gh pr checks` / `gh run view --log-failed`.
 - In local sessions the Xcode MCP tools may be used instead of `xcodebuild` if available.
@@ -109,7 +114,7 @@ A change is done when:
 
 ## Repository map
 ```
-SlidePilot.xcodeproj    app project (from PR 2)
+SlidePilot.xcodeproj    app project; SlidePilot.xctestplan = test plan
 SlidePilot/             app target sources
 Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
