@@ -1,5 +1,7 @@
 # SlidePilot Universal
 
+[![CI](https://github.com/SlidePilot/SlidePilot-Universal/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/SlidePilot/SlidePilot-Universal/actions/workflows/ci.yml)
+
 PDF presenter for macOS and iPadOS, made for LaTeX Beamer slides: presenter and presentation views, notes, timer, pointer, drawing and curtain.
 
 This repository is a from-scratch rewrite of [SlidePilot for macOS](https://github.com/SlidePilot/SlidePilot-macOS) as one SwiftUI app for **macOS 26** and **iPadOS 26**, with the original feature set preserved.

@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Pin Xcode explicitly; update together with the runner image (see CLAUDE.md).
+  DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+  IPAD_DESTINATION: platform=iOS Simulator,name=iPad Pro 13-inch (M5),OS=26.5
+
+jobs:
+  packages:
+    name: Packages (swift test)
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Show toolchain
+        run: xcodebuild -version && swift --version
+      - name: Test packages
+        run: |
+          set -euo pipefail
+          for package in Packages/*/; do
+            echo "::group::swift test ${package}"
+            swift test --package-path "${package}"
+            echo "::endgroup::"
+          done
+
+  macos:
+    name: macOS (build + test)
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build and test
+        run: |
+          set -euo pipefail
+          xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            build test
+
+  ipados:
+    name: iPadOS simulator (build + test)
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build and test
+        run: |
+          set -euo pipefail
+          xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
+            -destination "${IPAD_DESTINATION}" \
+            CODE_SIGNING_ALLOWED=NO \
+            build test
+
+  # Single stable status check for the main branch ruleset.
+  ci-success:
+    name: ci-success
+    if: always()
+    needs: [packages, macos, ipados]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check results
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Job results: ${RESULTS}"
+          for result in ${RESULTS}; do
+            if [ "${result}" != "success" ]; then
+              echo "::error::At least one CI job did not succeed."
+              exit 1
+            fi
+          done
