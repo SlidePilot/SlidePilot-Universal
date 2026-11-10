@@ -226,7 +226,7 @@ Source: `Base.lproj/Main.storyboard` and the key handlers listed. "Plain" means 
 8. **Donation alert:** the code comment says "third start", the code shows it from the 5th start.
 9. **Docs list English and German** ("French will follow"); the app ships French as well.
 10. **Docs say macOS 10.13+**; the project sets 10.11 (target) / 10.15 (project).
-11. **Old Apple team mismatch:** app target `FFSR8KUJW2`, test target `NL97TS4Q9A`.
+11. **Old Apple team mismatch:** the app target and the test target use different development teams.
 12. **Stale files:** `de.lproj/Main.storyboard` and `fr.lproj/Main.storyboard` are old copies not referenced by the project. `de.lproj/Main.strings` lacks the "File" menu title.
 13. **Swapped assets:** `BlackCurtain.imageset` contains the white curtain images and vice versa (Touch Bar only).
 14. **Plain-letter shortcuts** have no `validateMenuItem`, so they may fire while typing in the notes editor or navigator field.
