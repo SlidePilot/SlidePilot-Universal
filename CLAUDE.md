@@ -87,6 +87,13 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
 - Cloud sessions have **no Swift toolchain**. There, GitHub Actions is the only build/test feedback (ADR 0008): push the branch, open a draft PR, and read the results with `gh pr checks` / `gh run view --log-failed`.
 - In local sessions the Xcode MCP tools may be used instead of `xcodebuild` if available.
 
+## Sandbox and permissions
+`.claude/settings.json` turns on the Claude Code sandbox and keeps the command allow list narrow.
+- Bash runs sandboxed: no network, writes only inside the project and temp, no reads of personal folders (Desktop, Documents, Downloads, Mail, Messages, Keychains, `~/.ssh`, …).
+- Only the allow-listed `xcodebuild`, `xcrun simctl`, `git fetch/pull/push` and read/PR `gh` commands run outside the sandbox, because they need Xcode services, the keychain or the network.
+- Never work around the sandbox or a denied command (no `git -c`, no `gh api` without asking, no other tools to reach the network or personal files). If a needed command fails because of the sandbox, tell Pascal which command and why, and propose a settings change.
+- Changes to `.claude/settings.json` need Pascal's approval.
+
 ## Definition of Done
 A change is done when:
 1. It implements the issue's acceptance criteria and matches the parity item(s), or the deviation is approved and documented.
@@ -122,6 +129,6 @@ Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
 docs/                   feature-parity.md, architecture.md, decisions/
 .github/                CI workflow, issue templates, PR template
-.claude/                settings.json (permissions), agents/ (parity-, design-, concurrency-reviewer),
+.claude/                settings.json (permissions, sandbox), agents/ (parity-, design-, concurrency-reviewer),
                         skills/implement-issue (the standard workflow for every issue)
 ```
