@@ -10,7 +10,7 @@ Sample LaTeX Beamer documents for prototypes, tests and manual checks. The `.tex
 | `plain-slides-notes.rtf` | – | Legacy notes file for `plain-slides.pdf`, see below | NOTES-08, NOTES-09 |
 | `links_Notizen.rtf` | – | Legacy notes file for `links.pdf` with edge cases, see below | NOTES-08, NOTES-09 |
 | `notes-right.pdf`, `notes-left.pdf`, `notes-top.pdf`, `notes-bottom.pdf` | 4 | `show notes on second screen=<position>`, **no** keyword. Slide 2 has an internal link (see [Links in split-notes decks](#links-in-split-notes-decks)); slide 3 has no notes | NOTES-01, NOTES-02 |
-| `notes-right-rotated.pdf` | 6 | Notes on the right, pages 2–5 with `/Rotate` 0, 90, 180, 270. The arrow points to the top edge of the unrotated slide | NOTES-02 |
+| `rotated-notes-right.pdf` | 6 | Split notes on the right on rotated pages: pages 2–5 have `/Rotate` 0, 90, 180, 270, and the content is stored turned back by the same angle. Displayed, every page shows the slide on the left and the notes on the right. With Split ▸ Right, the audience must see the slide ("Audience half shows this slide.") on every page. Built from `notes-right.pdf`; it has no links | NOTES-02 |
 | `keyword-sp-right.pdf`, `keyword-sp-left.pdf`, `keyword-sp-top.pdf`, `keyword-sp-bottom.pdf` | 4 | Same decks with the PDF keyword `SP-Right` / `SP-Left` / `SP-Top` / `SP-Bottom`. Should open in Split mode with that position | NOTES-03 |
 | `keyword-lowercase.pdf` | 4 | Notes on the right, keyword `sp-right`. Keywords are case-sensitive, so this must **not** be detected | NOTES-03 |
 | `keyword-mixed.pdf` | 4 | Notes on the left, Keywords entry `Beamer, SP-Left` (one string in the PDF). Whether the old app detects `SP-Left` depends on how PDFKit splits the string into an array (comma, with or without trimming spaces). **Not yet checked on a Mac**; record the result here and in NOTES-03 | NOTES-03 |
@@ -60,7 +60,7 @@ On macOS, MacTeX (or BasicTeX plus the `beamer`, `pgf` and `latexmk` packages) a
 ./Fixtures/build.sh --video   # also regenerate media/test-pattern.mp4
 ```
 
-The script builds every `.tex` file in this folder (files in `common/` are only included) and removes the auxiliary files afterwards. Commit the `.tex` source and the PDF together.
+The script builds every `.tex` file in this folder (files in `common/` are only included; `rotated-notes-right.tex` is built last because it embeds pages of `notes-right.pdf`) and removes the auxiliary files afterwards. Commit the `.tex` source and the PDF together.
 
 ### Reproducibility and metadata
 

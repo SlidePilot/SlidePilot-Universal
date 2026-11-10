@@ -1,0 +1,42 @@
+% Split notes on the right on rotated pages (NOTES-02).
+% Built from notes-right.pdf, so build.sh compiles this file last.
+% Each page stores the combined page turned counter-clockwise by the same
+% angle as its /Rotate entry. Displayed, every page therefore still shows
+% the slide on the left and the notes on the right, which is the case the
+% old app's rotation handling (PDFPageView.swift getBounds) is written for.
+%   Page 1: notes-right page 1, no rotation
+%   Page 2-5: notes-right page 2 with /Rotate 0, 90, 180, 270
+%   Page 6: notes-right page 4, no rotation
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\pdfsuppressptexinfo=-1
+\pdfcompresslevel=9
+\pdfobjcompresslevel=2
+\hypersetup{
+  pdftitle={Notes Right, Rotated Pages},
+  pdfauthor={},
+  pdfcreator={},
+  pdfproducer={},
+  pdfsubject={SlidePilot test fixture},
+}
+\pdfhorigin=0pt
+\pdfvorigin=0pt
+
+% #1 = page of notes-right.pdf, #2 = /Rotate angle.
+\newcommand{\rotatedpage}[2]{%
+  \setbox0=\hbox{\raisebox{\depth}{\includegraphics[page=#1,angle=#2]{notes-right.pdf}}}%
+  \global\pdfpagewidth=\wd0
+  \global\pdfpageheight=\ht0
+  \global\pdfpageattr{/Rotate #2}%
+  \shipout\box0
+}
+
+\begin{document}
+\rotatedpage{1}{0}
+\rotatedpage{2}{0}
+\rotatedpage{2}{90}
+\rotatedpage{2}{180}
+\rotatedpage{2}{270}
+\rotatedpage{4}{0}
+\end{document}

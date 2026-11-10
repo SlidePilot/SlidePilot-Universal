@@ -25,8 +25,11 @@ if [[ "${1:-}" == "--video" ]]; then
     media/test-pattern.mp4
 fi
 
+build() { latexmk -g -pdf -interaction=nonstopmode -halt-on-error -quiet "$1"; }
+# rotated-notes-right.tex embeds pages of notes-right.pdf, so it comes last.
 for tex in *.tex; do
-  latexmk -g -pdf -interaction=nonstopmode -halt-on-error -quiet "$tex"
+  [[ "$tex" == rotated-notes-right.tex ]] || build "$tex"
 done
+build rotated-notes-right.tex
 latexmk -c -quiet
 rm -f ./*.nav ./*.snm ./*.vrb
