@@ -10,6 +10,13 @@ The app must look and feel as native as possible on macOS 26 and iPadOS 26.
 - No hard-coded colors or font sizes in UI code: system colors, semantic fonts (`.body`, `.title`, …), asset-catalog colors with light/dark variants only where no system color fits.
 - Light and dark mode, Dynamic Type (iPad), VoiceOver labels and keyboard navigation are required for every feature.
 
+## Privacy (public repository)
+Never commit personal data of Pascal or anyone else: e-mail addresses, Apple development team IDs, real bundle IDs/App IDs, device names, local paths containing user names, phone numbers, addresses, signing material. The name "Pascal Braband" in LICENSE/CONTRIBUTING is accepted.
+- Team and bundle ID prefix go only into the git-ignored `Config/Local.xcconfig`.
+- Commits use the GitHub noreply address (`git config user.email` is set per repo; check it before committing in a new clone or cloud session).
+- Screenshots in PRs must not show personal data (file paths, user names, device names).
+- When in doubt, leave it out and ask.
+
 ## Language
 - **Chat with Pascal: German.**
 - **Everything in the repo is English:** code, comments, commit messages, branch names, issues, PRs, docs.
