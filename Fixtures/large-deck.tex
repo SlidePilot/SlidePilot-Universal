@@ -1,0 +1,19 @@
+% A large deck with 320 simple pages for render cache measurements.
+% Each page shows its number large, so a wrong page is easy to spot.
+\documentclass{beamer}
+\input{common/preamble}
+\usepackage{pgffor}
+\setbeamertemplate{navigation symbols}{}
+\title{Large Deck}
+\hypersetup{pdftitle={Large Deck (320 pages)}}
+
+\begin{document}
+
+\foreach \n in {1,...,320} {%
+  \begin{frame}{Slide \n\ of 320}
+    \centering
+    \fontsize{72}{80}\selectfont \n
+  \end{frame}
+}
+
+\end{document}

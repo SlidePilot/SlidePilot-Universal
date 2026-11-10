@@ -129,6 +129,7 @@ SlidePilot.xcodeproj    app project; SlidePilot.xctestplan = test plan
 SlidePilot/             app target sources
 Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
+Fixtures/               sample Beamer PDFs + .tex sources, legacy notes file, test video (see its README)
 docs/                   feature-parity.md, architecture.md, decisions/
 .github/                CI workflow, issue templates, PR template
 .claude/                settings.json (permissions, sandbox), agents/ (parity-, design-, concurrency-reviewer),
