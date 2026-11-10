@@ -6,9 +6,7 @@
       "Bash(xcrun:*)",
       "Bash(swift:*)",
       "Bash(git:*)",
-      "Bash(gh:*)",
-      "Bash(scripts/screenshot-app-window.sh:*)",
-      "Bash(./scripts/screenshot-app-window.sh:*)"
+      "Bash(gh:*)"
     ],
     "deny": [
       "Bash(screencapture:*)",

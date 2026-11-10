@@ -49,7 +49,7 @@ Then update `docs/feature-parity.md` (status `done` for fully matched items, not
 
 ## 8. Screenshots
 - iPad simulator: `xcrun simctl io <device> screenshot <file>.png`. Take light and dark (`xcrun simctl ui <device> appearance dark`).
-- macOS: **only** with `scripts/screenshot-app-window.sh <file>.png`. It captures one window of the locally built SlidePilot app and refuses everything else. Direct `screencapture` calls are denied; never capture the screen or other apps in any other way. If the script fails, say so in the PR instead of working around it.
+- macOS: **no screenshots** (decision 2026-11-10; Screen Recording is not granted, `screencapture` is denied). Never capture the Mac screen in any other way. Instead, add a "Visual check (Mac)" section to the PR: what Pascal should look at on the Mac (menus, toolbar, windows, light/dark), with the expected result. Use iPad simulator screenshots for the shared SwiftUI UI.
 - Save screenshots in the scratchpad (never in the repo) and check that no personal data is visible (file paths, user or device names).
 - Upload with `gh pr create --attach <file>.png` / `gh pr edit <PR> --attach <file>.png` (or `gh pr comment <PR> --attach …`). Reference them in the body as `![iPad dark](./ipad-dark.png)`; gh rewrites the path to the uploaded URL. Use `--attach 'path.png#Alt text'` for alt text. Uploaded files of a public repo are publicly reachable.
 - Cloud sessions cannot take screenshots: say so in the PR and make "How to verify" more detailed.
@@ -60,7 +60,7 @@ Then update `docs/feature-parity.md` (status `done` for fully matched items, not
   - Summary and parity IDs
   - What Pascal should check (decisions, deviations, justified custom UI)
   - **How to verify**: numbered click-by-click steps on Mac and iPad that need no code reading, with expected results
-  - Screenshots (light/dark, Mac/iPad)
+  - iPad screenshots (light/dark) and the "Visual check (Mac)" section
   - Review results (one line per agent)
   - Known limitations and follow-ups
 - Wait for `ci-success` to be green, then tell Pascal in German (short): what was done, the PR link, and what he needs to decide or check.

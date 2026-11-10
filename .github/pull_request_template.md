@@ -11,7 +11,10 @@
 1. 
 
 ## Screenshots
-<!-- Light and dark, Mac and iPad, for UI changes. No personal data visible. -->
+<!-- iPad simulator, light and dark, for UI changes (attach with gh --attach). No personal data visible. -->
+
+### Visual check (Mac)
+<!-- No Mac screenshots: what Pascal should look at on the Mac (menus, toolbar, windows, light/dark) and the expected result. -->
 
 ## Reviews
 - parity-reviewer: 
