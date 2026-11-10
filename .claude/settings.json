@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(xcodebuild:*)",
+      "Bash(xcrun:*)",
+      "Bash(swift:*)",
+      "Bash(git:*)",
+      "Bash(gh:*)"
+    ],
+    "deny": [
+      "Bash(screencapture:*)",
+      "Bash(/usr/sbin/screencapture:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(git push origin main:*)",
+      "Bash(git push origin HEAD:main:*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Read(**/*.p12)",
+      "Read(**/*.p8)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.cer)",
+      "Read(**/*.certSigningRequest)",
+      "Read(**/*.mobileprovision)",
+      "Read(**/*.provisionprofile)",
+      "Read(Config/Local.xcconfig)",
+      "Edit(Config/Local.xcconfig)"
+    ]
+  }
+}
