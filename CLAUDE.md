@@ -61,22 +61,20 @@ Details: [`docs/architecture.md`](docs/architecture.md). Decisions: [`docs/decis
 - Keep comments short and useful; explain *why*, not *what*.
 
 ## Build and test
-Run all of these before pushing in a local session (CI runs the same; see ADR 0008):
+Run both of these before pushing in a local session (see ADR 0008). The test plan includes the tests of all three packages:
 
 ```sh
-# Packages
-swift test --package-path Packages/SlidePilotCore
-swift test --package-path Packages/SlidePilotRendering
-swift test --package-path Packages/SlidePilotRemoteProtocol
+# macOS app + all package tests
+xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platform=macOS' -quiet build test
 
-# macOS app
-xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
-  -destination 'platform=macOS' build test
+# iPad simulator (find an installed iPad with: xcrun simctl list devices available)
+xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M5)' -quiet build test
 
-# iPad simulator (any installed iPad: xcrun simctl list devices available | grep iPad)
-xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
-  -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M5)' build test
+# Only one package's tests, for quick feedback
+xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platform=macOS' -only-testing:SlidePilotCoreTests -quiet test
 ```
+
+- CI additionally runs `swift test --package-path Packages/<name>` for each package. Locally, `swift test` does not work inside the Claude Code sandbox (see "Sandbox and permissions"); use the `-only-testing:` command above.
 
 - The scheme `SlidePilot` runs `SlidePilot.xctestplan`, which contains the test targets of all three packages. Add new test targets (packages or app) to that test plan.
 - New packages: add them to the project's `Packages` group (folder reference) **and** as a local package dependency, otherwise Xcode does not see their tests.
@@ -91,6 +89,10 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
 `.claude/settings.json` turns on the Claude Code sandbox and keeps the command allow list narrow.
 - Bash runs sandboxed: no network, writes only inside the project and temp, no reads of personal folders (Desktop, Documents, Downloads, Mail, Messages, Keychains, `~/.ssh`, …).
 - Only the allow-listed `xcodebuild`, `xcrun simctl`, `git fetch/pull/push` and read/PR `gh` commands run outside the sandbox, because they need Xcode services, the keychain or the network.
+- These commands leave the sandbox **only when run on their own**. A pipe, `&&`, `;` or `$(…)` puts the whole line back into the sandbox, where it fails (no network, no simulator service). Run them as single commands; `2>&1` and `-quiet` are fine.
+- `swift test` / `swift build` do not work locally: SwiftPM's own sandbox cannot start inside the Claude Code sandbox, and with `--disable-sandbox` its build service still writes to the system temp folder, which stays blocked. Use `xcodebuild … -only-testing:` instead.
+- PR bodies go inline with `--body`. `--body-file`, `-F`, `--template`, `--recover` and `-R/--repo` are denied for `gh`, because those commands run outside the sandbox and could read or send any file. Screenshots for `--attach` go in the git-ignored `.pr-screenshots/` folder and are passed as relative paths (`./.pr-screenshots/ipad-dark.png`).
+- Never run `git pull` / `git fetch` without `origin`, and never add `--upload-pack`, `--receive-pack`, `--exec`, `--multiple` or `--repo` (denied).
 - Never work around the sandbox or a denied command (no `git -c`, no `gh api` without asking, no other tools to reach the network or personal files). If a needed command fails because of the sandbox, tell Pascal which command and why, and propose a settings change.
 - Changes to `.claude/settings.json` need Pascal's approval.
 
