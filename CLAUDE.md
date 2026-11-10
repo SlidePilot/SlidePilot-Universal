@@ -83,7 +83,7 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
 - Signing: `Config/Shared.xcconfig` holds placeholders (`org.example`, no team). For signed local builds, copy `Config/Local.xcconfig.example` to `Config/Local.xcconfig` (git-ignored). CI builds with `CODE_SIGNING_ALLOWED=NO`.
 - The app target uses `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (Xcode 26 default for apps). Packages use the default (nonisolated); mark UI-facing package types `@MainActor` explicitly.
 
-- CI: `.github/workflows/ci.yml` on `macos-26` with Xcode pinned via `DEVELOPER_DIR` (currently Xcode 26.6, iPad simulator iOS 26.5). The required status check is **`ci-success`**; it only passes if all jobs pass. When the runner image changes, update the pinned Xcode and simulator OS in one PR.
+- CI: `.github/workflows/ci.yml` on `macos-26` with Xcode pinned via `DEVELOPER_DIR` (currently Xcode 26.6; preferred iPad simulator: iPad Pro 13-inch (M5), iOS 26.5, with automatic fallback to another available iPad via `.github/scripts/pick_ipad_simulator.py`). The required status check is **`ci-success`**; it only passes if all jobs pass. When the runner image changes, update the pinned Xcode and simulator OS in one PR.
 - Cloud sessions have **no Swift toolchain**. There, GitHub Actions is the only build/test feedback (ADR 0008): push the branch, open a draft PR, and read the results with `gh pr checks` / `gh run view --log-failed`.
 - In local sessions the Xcode MCP tools may be used instead of `xcodebuild` if available.
 

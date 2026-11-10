@@ -16,7 +16,9 @@ concurrency:
 env:
   # Pin Xcode explicitly; update together with the runner image (see CLAUDE.md).
   DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
-  IPAD_DESTINATION: platform=iOS Simulator,name=iPad Pro 13-inch (M5),OS=26.5
+  # Preferred iPad simulator; CI falls back to another available iPad.
+  IPAD_NAME: iPad Pro 13-inch (M5)
+  IPAD_OS: "26.5"
 
 jobs:
   packages:
@@ -62,11 +64,33 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      # Runners sometimes lack the pinned simulator, or list it only after
+      # CoreSimulator has finished loading. Pick an available iPad by UDID
+      # (preferring the pinned one) and boot it before building.
+      - name: Pick and boot iPad simulator
+        run: |
+          set -euo pipefail
+          udid=""
+          for attempt in 1 2 3 4 5 6; do
+            udid="$(xcrun simctl list devices available --json \
+              | python3 .github/scripts/pick_ipad_simulator.py "${IPAD_NAME}" "${IPAD_OS}")"
+            if [ -n "${udid}" ]; then break; fi
+            echo "No iPad simulator listed yet (attempt ${attempt}), waiting..."
+            sleep 10
+          done
+          if [ -z "${udid}" ]; then
+            echo "::error::No iPad simulator available on this runner."
+            xcrun simctl list runtimes
+            xcrun simctl list devices available
+            exit 1
+          fi
+          xcrun simctl bootstatus "${udid}" -b
+          echo "IPAD_UDID=${udid}" >> "${GITHUB_ENV}"
       - name: Build and test
         run: |
           set -euo pipefail
           xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
-            -destination "${IPAD_DESTINATION}" \
+            -destination "platform=iOS Simulator,id=${IPAD_UDID}" \
             CODE_SIGNING_ALLOWED=NO \
             build test
 
