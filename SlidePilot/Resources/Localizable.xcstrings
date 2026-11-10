@@ -1,0 +1,18 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "No Presentation Open" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Präsentation geöffnet" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune présentation ouverte" } }
+      }
+    },
+    "Open a PDF to start presenting." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffne ein PDF, um mit der Präsentation zu beginnen." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrez un PDF pour commencer la présentation." } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

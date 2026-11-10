@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "8C5E2B1A-3F4D-4E6A-9B7C-1D2E3F4A5B6C",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Packages\/SlidePilotCore",
+        "identifier" : "SlidePilotCoreTests",
+        "name" : "SlidePilotCoreTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Packages\/SlidePilotRendering",
+        "identifier" : "SlidePilotRenderingTests",
+        "name" : "SlidePilotRenderingTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Packages\/SlidePilotRemoteProtocol",
+        "identifier" : "SlidePilotRemoteProtocolTests",
+        "name" : "SlidePilotRemoteProtocolTests"
+      }
+    }
+  ],
+  "version" : 1
+}
