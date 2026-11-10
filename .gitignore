@@ -30,3 +30,6 @@ Config/Local.xcconfig
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# PR screenshots (attached with gh, never committed)
+.pr-screenshots/
