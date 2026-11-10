@@ -1,0 +1,53 @@
+name: Bug
+description: Something does not work as expected.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Describe the problem. Do not include personal data (names, paths, e-mail addresses).
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen instead? If it worked in the old app, name the parity ID.
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      multiple: true
+      options:
+        - macOS
+        - iPadOS
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: App version / build and OS version
+      placeholder: 0.1.0 (1), macOS 26.1
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: When is this bug fixed?
+      value: |
+        - [ ] The steps above produce the expected behavior
+        - [ ] A regression test covers the bug (where testable)
+    validations:
+      required: true

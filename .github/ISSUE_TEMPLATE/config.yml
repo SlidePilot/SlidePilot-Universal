@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: User documentation of the current app
+    url: https://slidepilot.gitbook.io/slidepilot
+    about: How SlidePilot for macOS works today.

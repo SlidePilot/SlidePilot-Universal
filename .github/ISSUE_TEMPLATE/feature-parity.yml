@@ -1,0 +1,48 @@
+name: Feature (parity)
+description: Reimplement a feature of SlidePilot for macOS (see docs/feature-parity.md).
+title: "[Parity] "
+labels: ["parity"]
+body:
+  - type: input
+    id: parity-ids
+    attributes:
+      label: Parity IDs
+      description: IDs from docs/feature-parity.md, e.g. CUR-01, CUR-02.
+      placeholder: CUR-01, CUR-02
+    validations:
+      required: true
+  - type: textarea
+    id: old-behavior
+    attributes:
+      label: Old behavior
+      description: What the old app does, with references to old code (file:line) and the docs page.
+    validations:
+      required: true
+  - type: textarea
+    id: native-ui
+    attributes:
+      label: Native UI
+      description: System components to use (ADR 0010, "Native replacement" column). Any custom UI must be justified.
+  - type: textarea
+    id: ipad
+    attributes:
+      label: iPad notes
+      description: Differences or open questions for iPadOS.
+  - type: textarea
+    id: deviations
+    attributes:
+      label: Approved deviations
+      description: Intended differences from the old app (status changed/dropped or an ADR). Leave empty if none.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Testable statements. Accessibility, light/dark mode and keyboard criteria are always included.
+      value: |
+        - [ ] 
+        - [ ] Works on macOS and iPadOS (or the iPad difference is documented)
+        - [ ] Light and dark mode, Dynamic Type (iPad), VoiceOver labels, keyboard navigation
+        - [ ] Strings localized in en, de, fr
+        - [ ] Parity doc status updated
+    validations:
+      required: true

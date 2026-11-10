@@ -100,6 +100,7 @@ A change is done when:
 9. The PR description has the checklist, screenshots for UI changes (light and dark, Mac and iPad), and "How to verify" steps that Pascal can follow without reading code.
 
 ## PR workflow
+- Work on issues with the `implement-issue` skill; it encodes the full workflow below.
 - One issue → one feature branch → one PR. Branch names: `feat/<short-name>`, `fix/<short-name>`, `docs/<short-name>`, `chore/<short-name>`, `ci/<short-name>`.
 - **Never push to `main`. Never merge.** Pascal squash-merges. `main` is protected by a ruleset.
 - Keep PRs small and reviewable. Split if a PR mixes unrelated changes.
@@ -121,5 +122,6 @@ Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
 docs/                   feature-parity.md, architecture.md, decisions/
 .github/                CI workflow, issue templates, PR template
-.claude/                settings, review agents, implement-issue skill (from PR 4)
+.claude/                settings.json (permissions), agents/ (parity-, design-, concurrency-reviewer),
+                        skills/implement-issue (the standard workflow for every issue)
 ```
