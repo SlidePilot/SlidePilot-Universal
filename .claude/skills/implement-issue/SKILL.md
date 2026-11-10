@@ -22,7 +22,7 @@ Follow these steps in order. Talk to Pascal in German; everything written to the
 ## 3. Plan
 - Write down: behaviors to reproduce (with old source), deviations (only those already approved), which module each piece belongs in (Core / Rendering / RemoteProtocol / app), the native components to use (ADR 0010), and the tests.
 - **Stop and ask Pascal** if the plan needs a new deviation from parity, a new dependency, an architectural decision (→ propose an ADR in chat), or custom UI beyond the slide surface, pointer overlay and drawing layer.
-- Create the branch with three separate commands (no `&&`, see "Sandbox and permissions" in `CLAUDE.md`): `git checkout main`, `git pull --ff-only origin main`, `git checkout -b feat/<short-name>` (or `fix/…`).
+- Create the branch with three separate commands (no `&&`, see "Sandbox and permissions" in `CLAUDE.md`): `git checkout main`, `git pull origin main --ff-only`, `git checkout -b feat/<short-name>` (or `fix/…`).
 
 ## 4. Tests first
 - Write Swift Testing tests (`import Testing`, `@Test`, `#expect`) for the logic in the package where it lives. Cover the old behavior's edge cases and the "do not replicate" defects (as regression tests that assert the correct behavior).
@@ -52,7 +52,7 @@ Then update `docs/feature-parity.md` (status `done` for fully matched items, not
 - macOS: **no screenshots** (decision 2026-11-10; Screen Recording is not granted, `screencapture` is denied). Never capture the Mac screen in any other way. Instead, add a "Visual check (Mac)" section to the PR: what Pascal should look at on the Mac (menus, toolbar, windows, light/dark), with the expected result. Use iPad simulator screenshots for the shared SwiftUI UI.
 - Save screenshots in the git-ignored `./.pr-screenshots/` folder (never committed) and check that no personal data is visible (file paths, user or device names). Absolute, `~` and `../` paths are denied for screenshots and attachments.
 - Upload with `gh pr create --attach ./.pr-screenshots/<file>.png` / `gh pr edit <PR> --attach ./.pr-screenshots/<file>.png`. Reference them in the body as `![iPad dark](./.pr-screenshots/ipad-dark.png)`; gh rewrites the path to the uploaded URL. Use `--attach './.pr-screenshots/<file>.png#Alt text'` for alt text. Uploaded files of a public repo are publicly reachable.
-- Pass the PR body inline with `--body '…'`; `--body-file`, `-F` and `--template` are denied.
+- Pass the PR body inline with `--body '…'` and without backticks (they keep gh in the sandbox, where it fails); `--body-file`, `-F` and `--template` are denied.
 - Cloud sessions cannot take screenshots: say so in the PR and make "How to verify" more detailed.
 
 ## 9. Open the PR
