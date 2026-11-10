@@ -1,0 +1,43 @@
+% Split notes on the right combined with /Rotate 0, 90, 180 and 270
+% (pages 2-5). The old app remaps the notes half for rotated pages (NOTES-02).
+\documentclass{beamer}
+\input{common/preamble}
+\usepackage{pgfpages}
+\setbeameroption{show notes on second screen=right}
+\title{Notes Right, Rotated}
+\subtitle{Notes on second screen: right}
+\hypersetup{pdftitle={Notes Right, Rotated}}
+
+% Sets /Rotate for the pages shipped out from here on. pgfpages ships a
+% combined page only when the next slide starts, so the rotation is set in
+% the note: by then the previous combined page is already out.
+\newcommand{\pagerotation}[1]{\global\pdfpageattr{/Rotate #1}}
+
+\newcommand{\rotationframe}[1]{%
+  \begin{frame}{Rotate #1}
+    \centering
+    \Huge $\uparrow$\\[0.3em]
+    \Large Slide half, rotation #1 degrees
+  \end{frame}
+  \note{\pagerotation{#1}Notes half, rotation #1 degrees.}
+}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+\note{Not rotated.}
+
+\rotationframe{0}
+\rotationframe{90}
+\rotationframe{180}
+\rotationframe{270}
+
+\begin{frame}{Last slide}
+  \centering
+  \Large Not rotated
+\end{frame}
+\note{\pagerotation{0}Not rotated.}
+
+\end{document}

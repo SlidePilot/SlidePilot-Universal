@@ -26,7 +26,7 @@ if [[ "${1:-}" == "--video" ]]; then
 fi
 
 for tex in *.tex; do
-  latexmk -pdf -interaction=nonstopmode -halt-on-error -quiet "$tex"
+  latexmk -g -pdf -interaction=nonstopmode -halt-on-error -quiet "$tex"
 done
 latexmk -c -quiet
 rm -f ./*.nav ./*.snm ./*.vrb
