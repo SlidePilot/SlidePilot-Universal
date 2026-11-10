@@ -16,7 +16,8 @@ concurrency:
 env:
   # Pin Xcode explicitly; update together with the runner image (see CLAUDE.md).
   DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
-  IPAD_DESTINATION: platform=iOS Simulator,name=iPad Pro 13-inch (M5),OS=26.5
+  IPAD_NAME: iPad Pro 13-inch (M5)
+  IPAD_OS: "26.5"
 
 jobs:
   packages:
@@ -62,11 +63,52 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      # On some runners the simulator runtimes are not loaded yet when the job
+      # starts, and xcodebuild then finds no iPad at all. Wait for the runtime,
+      # create the device if the image lacks it, and boot it before building.
+      - name: Prepare iPad simulator
+        id: simulator
+        run: |
+          set -euo pipefail
+          # Several runtimes can share a version (e.g. iPhone-only ones), so pick
+          # the one that supports the iPad. Prints "<runtime> <device type>".
+          query='[.runtimes[]
+            | select(.platform == "iOS" and (.version == $os or (.version | startswith($os + "."))))
+            | {rt: .identifier, dt: ([.supportedDeviceTypes[]? | select(.name == $name)][0].identifier)}
+            | select(.dt != null)][0] // empty | "\(.rt) \(.dt)"'
+          match=""
+          for attempt in $(seq 1 30); do
+            match=$(xcrun simctl list runtimes available -j \
+              | jq -r --arg os "${IPAD_OS}" --arg name "${IPAD_NAME}" "${query}")
+            [ -n "${match}" ] && break
+            echo "iOS ${IPAD_OS} runtime for ${IPAD_NAME} not available yet (attempt ${attempt}/30)"
+            sleep 10
+          done
+          if [ -z "${match}" ]; then
+            echo "::error::No iOS ${IPAD_OS} simulator runtime with ${IPAD_NAME} on this runner."
+            xcrun simctl list runtimes
+            exit 1
+          fi
+          read -r runtime device_type <<< "${match}"
+
+          udid=$(xcrun simctl list devices available -j \
+            | jq -r --arg rt "${runtime}" --arg name "${IPAD_NAME}" \
+              '[.devices[$rt][]? | select(.name == $name)][0].udid // empty')
+          if [ -z "${udid}" ]; then
+            echo "Creating '${IPAD_NAME}' on ${runtime}"
+            udid=$(xcrun simctl create "${IPAD_NAME}" "${device_type}" "${runtime}")
+          fi
+
+          echo "Using ${IPAD_NAME} (${udid}) on ${runtime}"
+          xcrun simctl bootstatus "${udid}" -b
+          echo "udid=${udid}" >> "${GITHUB_OUTPUT}"
       - name: Build and test
+        env:
+          IPAD_UDID: ${{ steps.simulator.outputs.udid }}
         run: |
           set -euo pipefail
           xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
-            -destination "${IPAD_DESTINATION}" \
+            -destination "platform=iOS Simulator,id=${IPAD_UDID}" \
             CODE_SIGNING_ALLOWED=NO \
             build test
 
