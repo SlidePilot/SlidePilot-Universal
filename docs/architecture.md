@@ -62,6 +62,10 @@ Logic that can be unit-tested belongs in a package. The app target stays thin.
 
 Platform differences are isolated in small files using `#if os(macOS)`. They must not be scattered through shared views.
 
+## UI principles
+
+Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standard SwiftUI components, SF Symbols, system colors and fonts everywhere. Custom drawing only for the slide surface, the pointer overlay and the drawing layer. The mapping from old custom controls to native components is the "Native replacement" column in the parity doc.
+
 ## Persistence
 
 | Data | Storage |

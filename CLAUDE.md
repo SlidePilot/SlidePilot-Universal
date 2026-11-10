@@ -2,6 +2,14 @@
 
 You are the sole developer of SlidePilot Universal. Pascal is the product owner: he steers, reviews behavior and merges. He does not write code.
 
+## Native design first (top-level rule, ADR 0010)
+The app must look and feel as native as possible on macOS 26 and iPadOS 26.
+- Use **standard system components** wherever one exists: `NavigationSplitView`, toolbars, `.inspector`, sheets, popovers, `Settings` scene, `Commands` for menus and shortcuts, standard buttons, pickers, toggles, `ColorPicker`, steppers, SF Symbols, system colors and fonts. Liquid Glass comes from these; **never imitate it by hand**.
+- **Parity = same functionality, not the same look.** Never recreate the old app's custom controls (swatch/icon buttons, time view, split view, notice banner, …). Use the "Native replacement" column in `docs/feature-parity.md`.
+- Custom drawing only for the **slide surface**, the **pointer overlay** and the **drawing layer**. On iPad, evaluate the PencilKit tool picker for drawing. Any other custom UI must be justified in its PR.
+- No hard-coded colors or font sizes in UI code: system colors, semantic fonts (`.body`, `.title`, …), asset-catalog colors with light/dark variants only where no system color fits.
+- Light and dark mode, Dynamic Type (iPad), VoiceOver labels and keyboard navigation are required for every feature.
+
 ## Language
 - **Chat with Pascal: German.**
 - **Everything in the repo is English:** code, comments, commit messages, branch names, issues, PRs, docs.
@@ -42,7 +50,7 @@ Details: [`docs/architecture.md`](docs/architecture.md). Decisions: [`docs/decis
 - No `DispatchQueue`, no `NotificationCenter` for app state, no singletons for document state. Use structured concurrency and cancel tasks with their owner.
 - Tests use **Swift Testing** (`import Testing`, `@Test`, `#expect`), not XCTest.
 - Localize user-facing strings via `Localizable.xcstrings` (en, de, fr). Use `String(localized:)` / `LocalizedStringKey`; no hard-coded UI strings.
-- Prefer SwiftUI APIs. Drop down to AppKit/UIKit only where SwiftUI cannot do the job, and wrap it in one place.
+- Prefer SwiftUI APIs. Drop down to AppKit/UIKit only where SwiftUI cannot do the job, and wrap it in one place (see "Native design first").
 - Keep comments short and useful; explain *why*, not *what*.
 
 ## Build and test
@@ -71,10 +79,12 @@ A change is done when:
 1. It implements the issue's acceptance criteria and matches the parity item(s), or the deviation is approved and documented.
 2. Logic is covered by Swift Testing tests in the package where it lives.
 3. Builds on macOS and iPadOS **without warnings**; all tests pass locally (if a toolchain exists) and in CI.
-4. The `parity-reviewer` and, for concurrent code, the `concurrency-reviewer` agents found no open issues.
-5. New user-facing strings are in the String Catalog with en, de and fr.
-6. `docs/feature-parity.md` statuses and, if affected, `docs/architecture.md` are updated.
-7. The PR description has the checklist, screenshots for UI changes, and "How to verify" steps that Pascal can follow without reading code.
+4. The `parity-reviewer`, the `design-reviewer` (UI changes) and, for concurrent code, the `concurrency-reviewer` agents found no open issues.
+5. UI uses native components (ADR 0010); every custom UI element is justified in the PR.
+6. Works in light and dark mode, with Dynamic Type on iPad, with VoiceOver (meaningful labels) and with keyboard navigation.
+7. New user-facing strings are in the String Catalog with en, de and fr.
+8. `docs/feature-parity.md` statuses and, if affected, `docs/architecture.md` are updated.
+9. The PR description has the checklist, screenshots for UI changes (light and dark, Mac and iPad), and "How to verify" steps that Pascal can follow without reading code.
 
 ## PR workflow
 - One issue → one feature branch → one PR. Branch names: `feat/<short-name>`, `fix/<short-name>`, `docs/<short-name>`, `chore/<short-name>`, `ci/<short-name>`.
