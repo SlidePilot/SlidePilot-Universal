@@ -6,9 +6,13 @@
       "Bash(xcrun:*)",
       "Bash(swift:*)",
       "Bash(git:*)",
-      "Bash(gh:*)"
+      "Bash(gh:*)",
+      "Bash(scripts/screenshot-app-window.sh:*)",
+      "Bash(./scripts/screenshot-app-window.sh:*)"
     ],
     "deny": [
+      "Bash(screencapture:*)",
+      "Bash(/usr/sbin/screencapture:*)",
       "Bash(gh pr merge:*)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",

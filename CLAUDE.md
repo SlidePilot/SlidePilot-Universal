@@ -14,7 +14,7 @@ The app must look and feel as native as possible on macOS 26 and iPadOS 26.
 Never commit personal data of Pascal or anyone else: e-mail addresses, Apple development team IDs, real bundle IDs/App IDs, device names, local paths containing user names, phone numbers, addresses, signing material. The name "Pascal Braband" in LICENSE/CONTRIBUTING is accepted.
 - Team and bundle ID prefix go only into the git-ignored `Config/Local.xcconfig`.
 - Commits use the GitHub noreply address (`git config user.email` is set per repo; check it before committing in a new clone or cloud session).
-- Screenshots in PRs must not show personal data (file paths, user names, device names).
+- Screenshots in PRs must not show personal data (file paths, user names, device names). Mac screenshots only via `scripts/screenshot-app-window.sh` (captures only the locally built app's window); never capture the screen or other apps. Don't launch other apps.
 - When in doubt, leave it out and ask.
 
 ## Language
@@ -122,6 +122,7 @@ Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
 docs/                   feature-parity.md, architecture.md, decisions/
 .github/                CI workflow, issue templates, PR template
+scripts/                helper scripts (screenshot-app-window.sh)
 .claude/                settings.json (permissions), agents/ (parity-, design-, concurrency-reviewer),
                         skills/implement-issue (the standard workflow for every issue)
 ```

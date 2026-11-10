@@ -49,21 +49,14 @@ Then update `docs/feature-parity.md` (status `done` for fully matched items, not
 
 ## 8. Screenshots
 - iPad simulator: `xcrun simctl io <device> screenshot <file>.png`. Take light and dark (`xcrun simctl ui <device> appearance dark`).
-- macOS: capture only the app window, never the whole screen: `screencapture -o -x -l<windowID> <file>.png`. This needs Screen Recording permission for the terminal; if it is missing, ask Pascal once instead of capturing the screen another way.
-- Make sure no personal data is visible (file paths, user or device names).
-- Publish them on the `pr-assets` branch, not on the feature branch:
-  ```sh
-  git fetch origin pr-assets && git worktree add /tmp/pr-assets pr-assets   # first time: git worktree add --orphan -b pr-assets /tmp/pr-assets
-  mkdir -p /tmp/pr-assets/pr-<PR>/ && cp *.png /tmp/pr-assets/pr-<PR>/
-  git -C /tmp/pr-assets add . && git -C /tmp/pr-assets commit -m "Screenshots for #<PR>" && git -C /tmp/pr-assets push origin pr-assets
-  git worktree remove /tmp/pr-assets
-  ```
-  Embed with `![iPad dark](https://raw.githubusercontent.com/SlidePilot/SlidePilot-Universal/pr-assets/pr-<PR>/<file>.png)`.
+- macOS: **only** with `scripts/screenshot-app-window.sh <file>.png`. It captures one window of the locally built SlidePilot app and refuses everything else. Direct `screencapture` calls are denied; never capture the screen or other apps in any other way. If the script fails, say so in the PR instead of working around it.
+- Save screenshots in the scratchpad (never in the repo) and check that no personal data is visible (file paths, user or device names).
+- Upload with `gh pr create --attach <file>.png` / `gh pr edit <PR> --attach <file>.png` (or `gh pr comment <PR> --attach …`). Reference them in the body as `![iPad dark](./ipad-dark.png)`; gh rewrites the path to the uploaded URL. Use `--attach 'path.png#Alt text'` for alt text. Uploaded files of a public repo are publicly reachable.
 - Cloud sessions cannot take screenshots: say so in the PR and make "How to verify" more detailed.
 
 ## 9. Open the PR
 - Commit with an imperative English subject and a body explaining why. End commit messages and PR descriptions with the attribution lines from the session instructions.
-- `gh pr create` (or mark the draft ready) with `Closes #<N>`, the issue's milestone, and the body from `.github/pull_request_template.md` filled in completely:
+- `gh pr create --attach …` (or mark the draft ready and `gh pr edit --attach …`) with `Closes #<N>`, the issue's milestone, and the body from `.github/pull_request_template.md` filled in completely:
   - Summary and parity IDs
   - What Pascal should check (decisions, deviations, justified custom UI)
   - **How to verify**: numbered click-by-click steps on Mac and iPad that need no code reading, with expected results
