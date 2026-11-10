@@ -65,9 +65,9 @@ Run all of these before pushing in a local session (CI runs the same; see ADR 00
 
 ```sh
 # Packages
-swift test --package-path Packages/SlidePilotCore
-swift test --package-path Packages/SlidePilotRendering
-swift test --package-path Packages/SlidePilotRemoteProtocol
+swift test --disable-sandbox --package-path Packages/SlidePilotCore
+swift test --disable-sandbox --package-path Packages/SlidePilotRendering
+swift test --disable-sandbox --package-path Packages/SlidePilotRemoteProtocol
 
 # macOS app
 xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
@@ -91,6 +91,7 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
 `.claude/settings.json` turns on the Claude Code sandbox and keeps the command allow list narrow.
 - Bash runs sandboxed: no network, writes only inside the project and temp, no reads of personal folders (Desktop, Documents, Downloads, Mail, Messages, Keychains, `~/.ssh`, …).
 - Only the allow-listed `xcodebuild`, `xcrun simctl`, `git fetch/pull/push` and read/PR `gh` commands run outside the sandbox, because they need Xcode services, the keychain or the network.
+- `swift test` and `swift build` run with `--disable-sandbox`: SwiftPM's own manifest sandbox (`sandbox-exec`) cannot start inside the Claude Code sandbox. The Claude Code sandbox still applies.
 - Never work around the sandbox or a denied command (no `git -c`, no `gh api` without asking, no other tools to reach the network or personal files). If a needed command fails because of the sandbox, tell Pascal which command and why, and propose a settings change.
 - Changes to `.claude/settings.json` need Pascal's approval.
 
