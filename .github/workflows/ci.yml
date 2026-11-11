@@ -54,6 +54,16 @@ jobs:
             -destination 'platform=macOS' \
             CODE_SIGNING_ALLOWED=NO \
             build test
+      # Keeps the Mac snapshot target building and working (see CLAUDE.md).
+      - name: Mac snapshots
+        run: |
+          set -euo pipefail
+          xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilotMacSnapshots \
+            -destination 'platform=macOS' \
+            -resultBundlePath build/MacSnapshots.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            test
+          python3 -I scripts/export-mac-snapshots.py
 
   ipados:
     name: iPadOS simulator (build + test)
@@ -112,11 +122,22 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             build test
 
+  no-screen-capture:
+    name: No screen capture APIs
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check sources
+        run: sh scripts/check-no-screen-capture.sh
+
   # Single stable status check for the main branch ruleset.
   ci-success:
     name: ci-success
     if: always()
-    needs: [packages, macos, ipados]
+    needs: [packages, macos, ipados, no-screen-capture]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

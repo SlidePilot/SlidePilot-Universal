@@ -1,0 +1,30 @@
+{
+  "configurations" : [
+    {
+      "id" : "4F1C7A2E-8B3D-4C5E-9A6F-2B7D8E9F0A1B",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "language" : "en",
+    "region" : "US",
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:SlidePilot.xcodeproj",
+      "identifier" : "5A0000000000000000000501",
+      "name" : "SlidePilot"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:SlidePilot.xcodeproj",
+        "identifier" : "5A0000000000000000000502",
+        "name" : "SlidePilotMacSnapshots"
+      }
+    }
+  ],
+  "version" : 1
+}
