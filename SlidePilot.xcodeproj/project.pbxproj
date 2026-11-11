@@ -13,6 +13,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5A0000000000000000000107 /* SlidePilotMacSnapshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SlidePilotMacSnapshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0000000000000000000101 /* SlidePilot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SlidePilot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A0000000000000000000102 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		5A0000000000000000000103 /* Local.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Local.xcconfig.example; sourceTree = "<group>"; };
@@ -21,10 +22,25 @@
 		5A0000000000000000000106 /* SlidePilotRemoteProtocol */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SlidePilotRemoteProtocol; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXContainerItemProxy section */
+		5A0000000000000000000B01 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5A0000000000000000000000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5A0000000000000000000501;
+			remoteInfo = SlidePilot;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5A0000000000000000000201 /* SlidePilot */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = SlidePilot;
+			sourceTree = "<group>";
+		};
+		5A0000000000000000000202 /* SlidePilotMacSnapshots */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SlidePilotMacSnapshots;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -40,6 +56,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5A0000000000000000000404 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -47,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				5A0000000000000000000201 /* SlidePilot */,
+				5A0000000000000000000202 /* SlidePilotMacSnapshots */,
 				5A0000000000000000000004 /* Packages */,
 				5A0000000000000000000003 /* Config */,
 				5A0000000000000000000002 /* Products */,
@@ -57,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				5A0000000000000000000101 /* SlidePilot.app */,
+				5A0000000000000000000107 /* SlidePilotMacSnapshots.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,6 +133,27 @@
 			productReference = 5A0000000000000000000101 /* SlidePilot.app */;
 			productType = "com.apple.product-type.application";
 		};
+		5A0000000000000000000502 /* SlidePilotMacSnapshots */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5A0000000000000000000803 /* Build configuration list for PBXNativeTarget "SlidePilotMacSnapshots" */;
+			buildPhases = (
+				5A0000000000000000000405 /* Sources */,
+				5A0000000000000000000404 /* Frameworks */,
+				5A0000000000000000000406 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5A0000000000000000000C01 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5A0000000000000000000202 /* SlidePilotMacSnapshots */,
+			);
+			name = SlidePilotMacSnapshots;
+			productName = SlidePilotMacSnapshots;
+			productReference = 5A0000000000000000000107 /* SlidePilotMacSnapshots.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -120,6 +166,10 @@
 				TargetAttributes = {
 					5A0000000000000000000501 = {
 						CreatedOnToolsVersion = 26.0;
+					};
+					5A0000000000000000000502 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 5A0000000000000000000501;
 					};
 				};
 			};
@@ -145,12 +195,20 @@
 			projectRoot = "";
 			targets = (
 				5A0000000000000000000501 /* SlidePilot */,
+				5A0000000000000000000502 /* SlidePilotMacSnapshots */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		5A0000000000000000000403 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5A0000000000000000000406 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -167,7 +225,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5A0000000000000000000405 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5A0000000000000000000C01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5A0000000000000000000501 /* SlidePilot */;
+			targetProxy = 5A0000000000000000000B01 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		5A0000000000000000000701 /* Debug */ = {
@@ -298,6 +371,40 @@
 			};
 			name = Release;
 		};
+		5A0000000000000000000705 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5A0000000000000000000102 /* Shared.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BUNDLE_ID_PREFIX).SlidePilotMacSnapshots";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SlidePilot.app/Contents/MacOS/SlidePilot";
+			};
+			name = Debug;
+		};
+		5A0000000000000000000706 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5A0000000000000000000102 /* Shared.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "$(BUNDLE_ID_PREFIX).SlidePilotMacSnapshots";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SlidePilot.app/Contents/MacOS/SlidePilot";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -315,6 +422,15 @@
 			buildConfigurations = (
 				5A0000000000000000000703 /* Debug */,
 				5A0000000000000000000704 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5A0000000000000000000803 /* Build configuration list for PBXNativeTarget "SlidePilotMacSnapshots" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A0000000000000000000705 /* Debug */,
+				5A0000000000000000000706 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

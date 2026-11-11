@@ -14,7 +14,8 @@ The app must look and feel as native as possible on macOS 26 and iPadOS 26.
 Never commit personal data of Pascal or anyone else: e-mail addresses, Apple development team IDs, real bundle IDs/App IDs, device names, local paths containing user names, phone numbers, addresses, signing material. The name "Pascal Braband" in LICENSE/CONTRIBUTING is accepted.
 - Team and bundle ID prefix go only into the git-ignored `Config/Local.xcconfig`.
 - Commits use the GitHub noreply address (`git config user.email` is set per repo; check it before committing in a new clone or cloud session).
-- Screenshots in PRs must not show personal data (file paths, user names, device names). **No Mac screenshots** (Screen Recording is not granted; `screencapture` is denied): use iPad simulator screenshots and describe Mac visual checks for Pascal in the PR. Don't launch other apps.
+- Screenshots in PRs must not show personal data (file paths, user names, device names). Don't launch other apps.
+- **Mac screenshots only of SlidePilot, rendered by the app itself** (see "Mac snapshots"). Never capture the Mac screen: no `screencapture`, ScreenCaptureKit, `CGWindowList…`/`CGDisplay…` images, Screenshot.app or UI-test screen captures. Screen Recording is not granted to Claude, Xcode or SlidePilot and must stay that way. CI fails if code uses a screen capture API (`scripts/check-no-screen-capture.sh`).
 - When in doubt, leave it out and ask.
 
 ## Language
@@ -76,7 +77,7 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 
 - CI additionally runs `swift test --package-path Packages/<name>` for each package. Locally, `swift test` does not work inside the Claude Code sandbox (see "Sandbox and permissions"); use the `-only-testing:` command above.
 
-- The scheme `SlidePilot` runs `SlidePilot.xctestplan`, which contains the test targets of all three packages. Add new test targets (packages or app) to that test plan.
+- The scheme `SlidePilot` runs `SlidePilot.xctestplan`, which contains the test targets of all three packages. Add new test targets (packages or app) to that test plan. Exception: `SlidePilotMacSnapshots` has its own scheme and test plan (`MacSnapshots.xctestplan`), so iPad builds never build it.
 - New packages: add them to the project's `Packages` group (folder reference) **and** as a local package dependency, otherwise Xcode does not see their tests.
 - Signing: `Config/Shared.xcconfig` holds placeholders (`org.example`, no team). For signed local builds, copy `Config/Local.xcconfig.example` to `Config/Local.xcconfig` (git-ignored). CI builds with `CODE_SIGNING_ALLOWED=NO`.
 - The app target uses `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (Xcode 26 default for apps). Packages use the default (nonisolated); mark UI-facing package types `@MainActor` explicitly.
@@ -106,7 +107,25 @@ A change is done when:
 6. Works in light and dark mode, with Dynamic Type on iPad, with VoiceOver (meaningful labels) and with keyboard navigation.
 7. New user-facing strings are in the String Catalog with en, de and fr.
 8. `docs/feature-parity.md` statuses and, if affected, `docs/architecture.md` are updated.
-9. The PR description has the checklist, iPad simulator screenshots for UI changes (light and dark), a "Visual check (Mac)" section, and "How to verify" steps that Pascal can follow without reading code.
+9. The PR description has the checklist, iPad simulator and Mac snapshot screenshots for UI changes (light and dark), a "Visual check (Mac)" section for what snapshots cannot show, and "How to verify" steps that Pascal can follow without reading code.
+
+## Mac snapshots
+Mac screenshots for PRs come from the macOS-only test target `SlidePilotMacSnapshots`. It runs inside the (App-Sandboxed) app, hosts SlidePilot views in their own windows and draws them into PNGs with `NSView.cacheDisplay`. This uses no screen capture API, so it needs no Screen Recording permission and cannot see other apps, the desktop, the Dock or the menu bar.
+
+```sh
+# 1. Remove the previous result (xcodebuild refuses to overwrite it)
+rm -rf build/MacSnapshots.xcresult
+# 2. Render the snapshots (light and dark)
+xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilotMacSnapshots -destination 'platform=macOS,arch=arm64' -resultBundlePath ./build/MacSnapshots.xcresult -quiet test
+# 3. Export them to ./.pr-screenshots/mac/<name>.png
+python3 -I scripts/export-mac-snapshots.py
+```
+
+- Add a snapshot per UI change in `SlidePilotMacSnapshots/MacSnapshots.swift` with `WindowSnapshot.record(view, name:appearance:)` (light and dark). To show an app window, pass one of the app's own `NSWindow`s.
+- Show only fixtures (`Fixtures/`), never personal documents. The window title is fixed to "SlidePilot".
+- The export script only copies PNGs that `WindowSnapshot` marked; `xcresulttool` is not used because the sandbox blocks its temp folder.
+- If signing fails in the session (no certificate available), append `CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=` to step 2. Ad-hoc signing keeps the App Sandbox.
+- Rendered views are close to, but not exactly, what the screen shows: Liquid Glass and vibrancy can look flatter, and menus and popovers are not separate windows of the snapshot. Keep the "Visual check (Mac)" section for those.
 
 ## PR workflow
 - Work on issues with the `implement-issue` skill; it encodes the full workflow below.
@@ -125,8 +144,10 @@ A change is done when:
 
 ## Repository map
 ```
-SlidePilot.xcodeproj    app project; SlidePilot.xctestplan = test plan
+SlidePilot.xcodeproj    app project; SlidePilot.xctestplan = test plan, MacSnapshots.xctestplan = Mac screenshots
 SlidePilot/             app target sources
+SlidePilotMacSnapshots/ macOS-only test target that renders Mac screenshots (see "Mac snapshots")
+scripts/                snapshot export, screen capture guard
 Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
 Fixtures/               sample Beamer PDFs + .tex sources, legacy notes file, test video (see its README)

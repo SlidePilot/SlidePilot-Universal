@@ -11,10 +11,10 @@
 1. 
 
 ## Screenshots
-<!-- iPad simulator, light and dark, for UI changes (attach with gh --attach). No personal data visible. -->
+<!-- iPad simulator and Mac snapshots (SlidePilotMacSnapshots), light and dark, for UI changes (attach with gh --attach). No personal data visible. -->
 
 ### Visual check (Mac)
-<!-- No Mac screenshots: what Pascal should look at on the Mac (menus, toolbar, windows, light/dark) and the expected result. -->
+<!-- What the Mac snapshots cannot show (menus, popovers, Liquid Glass, real window behavior): what Pascal should look at on the Mac and the expected result. -->
 
 ## Reviews
 - parity-reviewer: 
