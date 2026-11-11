@@ -37,12 +37,19 @@ body:
     id: acceptance
     attributes:
       label: Acceptance criteria
-      description: Testable statements. Accessibility, light/dark mode and keyboard criteria are always included.
+      description: Testable statements that apply to every parity feature.
       value: |
         - [ ] 
         - [ ] Works on macOS and iPadOS (or the iPad difference is documented)
-        - [ ] Light and dark mode, Dynamic Type (iPad), VoiceOver labels, keyboard navigation
-        - [ ] Strings localized in en, de, fr
         - [ ] Parity doc status updated
     validations:
       required: true
+  - type: textarea
+    id: ui-acceptance
+    attributes:
+      label: UI acceptance criteria
+      description: For features with user-facing UI. Clear this field if the feature has no UI (e.g. pure logic or file formats).
+      value: |
+        - [ ] Native components only (ADR 0010); custom UI justified in the PR
+        - [ ] Light and dark mode, Dynamic Type (iPad), VoiceOver labels, keyboard navigation
+        - [ ] Strings localized in en, de, fr

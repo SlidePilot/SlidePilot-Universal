@@ -1,0 +1,28 @@
+name: Task (no UI)
+description: Work without user-facing UI, e.g. test fixtures, CI, tooling, docs or refactoring.
+title: "[Task] "
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be done and why. Do not include personal data (names, paths, e-mail addresses).
+    validations:
+      required: true
+  - type: input
+    id: parity-ids
+    attributes:
+      label: Related parity IDs
+      description: IDs from docs/feature-parity.md this task supports, if any.
+      placeholder: NOTES-03, NAV-06
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Testable statements. If the task turns out to change UI, use the parity feature template instead.
+      value: |
+        - [ ] 
+        - [ ] No personal data in files, metadata or commits
+        - [ ] Docs updated (README, docs/architecture.md or docs/feature-parity.md) where affected
+    validations:
+      required: true
