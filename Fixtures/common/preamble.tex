@@ -1,0 +1,24 @@
+% Shared preamble for all fixture decks.
+% Load after \documentclass{beamer}. Keeps the PDFs small, reproducible and
+% free of personal data (see README.md).
+
+% Reproducible output: no PTEX.* info entries (they can contain local paths
+% and the pdfTeX banner). Dates come from SOURCE_DATE_EPOCH (set by build.sh).
+\pdfsuppressptexinfo=-1
+\pdfcompresslevel=9
+\pdfobjcompresslevel=2
+
+\usetheme{default}
+\usefonttheme{professionalfonts}
+\setbeamertemplate{footline}[frame number]
+
+% No author, empty creator and producer. Beamer fills pdfauthor from \author,
+% so \author stays empty as well.
+\author{}
+\date{}
+\hypersetup{
+  pdfauthor={},
+  pdfcreator={},
+  pdfproducer={},
+  pdfsubject={SlidePilot test fixture},
+}

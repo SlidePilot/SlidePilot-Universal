@@ -1,0 +1,36 @@
+% Embedded video via \movie (multimedia package, NAV-07) and \href{run:...}
+% links to a local video and a local document (NAV-06).
+% All paths are relative to this PDF, so keep the folder layout.
+\documentclass{beamer}
+\input{common/preamble}
+\usepackage{multimedia}
+\title{Media}
+\subtitle{SlidePilot test fixture}
+\hypersetup{pdftitle={Media}}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Embedded video (\textbackslash movie)}
+  \centering
+  \movie[width=6.4cm,height=3.6cm]{%
+    \fbox{\parbox[c][3.4cm][c]{6.2cm}{\centering Video poster:\\ media/test-pattern.mp4}}%
+  }{media/test-pattern.mp4}
+\end{frame}
+
+\begin{frame}{Run links (\textbackslash href\{run:\})}
+  \begin{itemize}
+    \item \href{run:media/test-pattern.mp4}{Open the video in the default app}
+    \item \href{run:plain-slides.pdf}{Open another document (plain-slides.pdf)}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Last slide}
+  \centering
+  \Large Last slide
+\end{frame}
+
+\end{document}

@@ -1,0 +1,38 @@
+% Pages with a /Rotate entry: 0, 90, 180 and 270 degrees.
+% The arrow always points to the top edge of the unrotated page.
+\documentclass{beamer}
+\input{common/preamble}
+\title{Rotated Pages}
+\subtitle{SlidePilot test fixture}
+\hypersetup{pdftitle={Rotated Pages}}
+
+% Sets /Rotate for the pages shipped out from here on.
+\newcommand{\pagerotation}[1]{\global\pdfpageattr{/Rotate #1}}
+
+\newcommand{\rotationframe}[1]{%
+  \pagerotation{#1}
+  \begin{frame}{Rotate #1}
+    \centering
+    \Huge $\uparrow$\\[0.3em]
+    \Large Page rotation: #1 degrees
+  \end{frame}
+}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\rotationframe{0}
+\rotationframe{90}
+\rotationframe{180}
+\rotationframe{270}
+\pagerotation{0}
+
+\begin{frame}{Last slide}
+  \centering
+  \Large Not rotated
+\end{frame}
+
+\end{document}

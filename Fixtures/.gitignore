@@ -1,0 +1,10 @@
+# LaTeX build files (build.sh removes them; this keeps interrupted builds out of git)
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb

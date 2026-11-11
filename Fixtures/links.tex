@@ -1,0 +1,45 @@
+% Internal links (GoTo actions) and URL links (NAV-05).
+% The default Beamer navigation symbols are kept on purpose: they are
+% internal links as well.
+\documentclass{beamer}
+\input{common/preamble}
+\title{Links}
+\subtitle{SlidePilot test fixture}
+\hypersetup{pdftitle={Links}}
+
+\begin{document}
+
+\begin{frame}[label=first]
+  \titlepage
+\end{frame}
+
+\begin{frame}[label=back]{Internal links}
+  \begin{itemize}
+    \item \hyperlink{target}{Go to the target slide (page 4)}
+    \item \hyperlink{last}{Go to the last slide (page 5)}
+    \item \hyperlink{first}{Go to the first slide (page 1)}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{URL links}
+  \begin{itemize}
+    \item \href{https://example.com}{https link with text}
+    \item \url{https://example.org/path?query=1}
+    \item \href{mailto:someone@example.com}{mailto link}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[label=target]{Target slide}
+  \centering
+  \Large Link target (page 4)
+
+  \normalsize
+  \hyperlink{back}{Back to the internal links (page 2)}
+\end{frame}
+
+\begin{frame}[label=last]{Last slide}
+  \centering
+  \Large Last slide (page 5)
+\end{frame}
+
+\end{document}

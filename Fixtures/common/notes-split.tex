@@ -1,0 +1,44 @@
+% Body of the split-notes decks ("show notes on second screen").
+% Before \input, define:
+%   \notesposition  right | left | top | bottom
+%   \deckkeywords   value for the PDF Keywords entry (may be empty)
+%   \decktitle      title of the deck
+\documentclass{beamer}
+\input{common/preamble}
+\usepackage{pgfpages}
+\setbeameroption{show notes on second screen=\notesposition}
+\title{\decktitle}
+\subtitle{Notes on second screen: \notesposition}
+\hypersetup{pdftitle={\decktitle}, pdfkeywords={\deckkeywords}}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+\note{Notes for slide 1. The notes half is on the \notesposition.}
+
+\begin{frame}{Slide 2}
+  \begin{itemize}
+    \item Audience half shows this slide.
+    \item \hyperlink{last}{Internal link to the last slide}
+  \end{itemize}
+\end{frame}
+\note{Notes for slide 2.
+  \begin{itemize}
+    \item pgfpages does not move link rectangles: the link on the slide
+      lines up only for notes on the right or top (see README).
+  \end{itemize}}
+
+\begin{frame}{Slide 3}
+  \centering
+  \Large Slide without notes
+\end{frame}
+
+\begin{frame}[label=last]{Slide 4}
+  \centering
+  \Large Last slide
+\end{frame}
+\note{Notes for slide 4 (last slide).}
+
+\end{document}

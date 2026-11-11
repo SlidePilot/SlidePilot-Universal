@@ -19,6 +19,7 @@ SlidePilot-Universal/
 │   ├── SlidePilotCore/            # models and logic, no UI, no PDFKit
 │   ├── SlidePilotRendering/       # PDFKit, render cache, drawing rendering
 │   └── SlidePilotRemoteProtocol/  # Codable messages and pairing crypto (1.1)
+├── Fixtures/                      # sample Beamer PDFs (+ .tex sources), legacy notes file, test video
 ├── docs/
 └── .github/workflows/ci.yml
 ```
@@ -86,4 +87,5 @@ Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standar
 
 - Swift Testing (`import Testing`) in every package and for app logic.
 - Packages are tested with `swift test` and as part of the app's test plan.
+- Shared sample documents live in `Fixtures/` (see its README). The compiled PDFs are committed because CI has no LaTeX. They are not part of the app bundle; how tests load them is decided with the first test that needs them.
 - UI behavior is verified manually with the "How to verify" steps in each PR. UI tests are added only where they pay off.
