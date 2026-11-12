@@ -46,6 +46,7 @@
       "Bash(gh pr create *)",
       "Bash(gh pr edit *)",
       "Bash(gh pr ready *)",
+      "Bash(gh pr close *)",
       "Bash(gh run view *)",
       "Bash(gh run list *)",
       "Bash(gh run watch *)"
@@ -75,6 +76,9 @@
       "Bash(git push * *:main)",
       "Bash(git push * +*)",
       "Bash(gh pr merge *)",
+      "Bash(gh * --delete-branch*)",
+      "Bash(gh pr close -d*)",
+      "Bash(gh pr close * -d*)",
       "Bash(gh repo *)",
       "Bash(gh auth *)",
       "Bash(gh secret *)",
@@ -171,6 +175,7 @@
       "gh pr create *",
       "gh pr edit *",
       "gh pr ready *",
+      "gh pr close *",
       "gh run view *",
       "gh run list *",
       "gh run watch *"
