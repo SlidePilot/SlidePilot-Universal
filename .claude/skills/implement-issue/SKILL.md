@@ -1,16 +1,16 @@
 ---
 name: implement-issue
-description: Implement a GitHub issue of SlidePilot Universal end to end - read the issue, study the old app's code and docs, plan, write tests, implement, build and test, run the parity, concurrency and design reviews, and open a PR with checklist, screenshots and "How to verify" steps for Pascal. Use when asked to work on, implement or fix an issue (e.g. "implement #12").
+description: Implement a GitHub issue of SlidePilot Universal end to end - read the issue, study the old app's code and docs, plan, write tests, implement, build and test, run the parity, concurrency and design reviews, and open a PR with checklist, screenshots and "How to verify" steps for the reviewer. Use when asked to work on, implement or fix an issue (e.g. "implement #12").
 argument-hint: <issue number>
 ---
 
 # Implement an issue
 
-Follow these steps in order. Talk to Pascal in German; everything written to the repo or GitHub is English. Never push to `main`, never merge.
+Follow these steps in order. Talk to the user in German; everything written to the repo or GitHub is English and never names or addresses the product owner (write "the reviewer" or "you"). Never push to `main`, never merge.
 
 ## 1. Read the issue
 - `gh issue view <N> --comments`
-- Note the parity IDs, acceptance criteria, milestone and labels. If acceptance criteria are missing or ambiguous, ask Pascal before planning.
+- Note the parity IDs, acceptance criteria, milestone and labels. If acceptance criteria are missing or ambiguous, ask the user before planning.
 - Check that no open PR already covers it: `gh pr list --search "<N>"`.
 - Set the issue's status on the project board to **In Progress** (see "Project status" below).
 
@@ -22,7 +22,7 @@ Follow these steps in order. Talk to Pascal in German; everything written to the
 
 ## 3. Plan
 - Write down: behaviors to reproduce (with old source), deviations (only those already approved), which module each piece belongs in (Core / Rendering / RemoteProtocol / app), the native components to use (ADR 0010), and the tests.
-- **Stop and ask Pascal** if the plan needs a new deviation from parity, a new dependency, an architectural decision (→ propose an ADR in chat), or custom UI beyond the slide surface, pointer overlay and drawing layer.
+- **Stop and ask the user** if the plan needs a new deviation from parity, a new dependency, an architectural decision (→ propose an ADR in chat), or custom UI beyond the slide surface, pointer overlay and drawing layer.
 - Create the branch with three separate commands (no `&&`, see "Sandbox and permissions" in `CLAUDE.md`): `git checkout main`, `git pull origin main --ff-only`, `git checkout -b feat/<short-name>` (or `fix/…`).
 
 ## 4. Tests first
@@ -60,17 +60,17 @@ Then update `docs/feature-parity.md` (status `done` for fully matched items, not
 - Commit with an imperative English subject and a body explaining why. End commit messages and PR descriptions with the attribution lines from the session instructions.
 - `gh pr create --attach …` (or mark the draft ready and `gh pr edit --attach …`) with `Closes #<N>`, the issue's milestone, and the body from `.github/pull_request_template.md` filled in completely:
   - Summary and parity IDs
-  - What Pascal should check (decisions, deviations, justified custom UI)
+  - What the reviewer should check (decisions, deviations, justified custom UI)
   - **How to verify**: numbered click-by-click steps on Mac and iPad that need no code reading, with expected results
   - iPad screenshots (light/dark) and the "Visual check (Mac)" section
   - Review results (one line per agent)
   - Known limitations and follow-ups
 - Set the issue's status to **In Review** once the PR is open and no longer a draft (see "Project status").
-- Wait for `ci-success` to be green, then tell Pascal in German (short): what was done, the PR link, and what he needs to decide or check.
+- Wait for `ci-success` to be green, then tell the user in German (short): what was done, the PR link, and what needs a decision or check.
 
 ## Project status
 Issues live on project number 4 of the SlidePilot organization (`gh project … 4 --owner SlidePilot`). Its Status field has Backlog, In Progress, In Review and Done. GitHub sets Done when the PR is merged; set the other two yourself.
 - Field and option IDs: `gh project field-list 4 --owner SlidePilot --format json` (field "Status").
 - Item ID of the issue: `gh project item-list 4 --owner SlidePilot --format json --limit 200`, the item whose `content.number` is the issue number (use `--jq` instead of a pipe).
 - Set it: `gh project item-edit --id <item> --project-id <project> --field-id <status field> --single-select-option-id <option>`.
-- If a new issue is not on the board yet, tell Pascal instead of adding it.
+- If a new issue is not on the board yet, tell the user instead of adding it.

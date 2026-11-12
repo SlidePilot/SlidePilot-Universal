@@ -14,7 +14,7 @@
 <!-- iPad simulator and Mac snapshots (SlidePilotMacSnapshots), light and dark, for UI changes (attach with gh --attach). No personal data visible. -->
 
 ### Visual check (Mac)
-<!-- What the Mac snapshots cannot show (menus, popovers, Liquid Glass, real window behavior): what Pascal should look at on the Mac and the expected result. -->
+<!-- What the Mac snapshots cannot show (menus, popovers, Liquid Glass, real window behavior): what the reviewer should look at on the Mac and the expected result. -->
 
 ## Reviews
 - parity-reviewer: 
