@@ -8,11 +8,12 @@
 | [0004](0004-architecture.md) | One project, multiplatform target, local packages | Accepted |
 | [0005](0005-pre-rendering.md) | Leaner pre-rendering cache | Accepted |
 | [0006](0006-remote-protocol.md) | New remote protocol, shipping in 1.1 | Accepted |
-| [0007](0007-notes-companion-file.md) | Companion file for notes, drawings and settings | Accepted (iPad access in Phase 1) |
+| [0007](0007-notes-companion-file.md) | Companion file for notes, drawings and settings | Accepted (location: 0012) |
 | [0008](0008-ci-as-build-feedback.md) | GitHub Actions as build feedback | Accepted |
 | [0009](0009-drop-touch-bar.md) | Drop Touch Bar support | Accepted |
 | [0010](0010-native-design-first.md) | Native design first | Accepted |
 | [0011](0011-universal-purchase-and-direct-download.md) | Universal purchase and free Mac download | Accepted |
+| [0012](0012-companion-file-location.md) | Companion file in the app container, folder access on demand | Accepted |
 
 ## Process
 1. Propose the decision in chat with the product owner (context, options, recommendation).
