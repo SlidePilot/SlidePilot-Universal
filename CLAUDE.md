@@ -22,6 +22,7 @@ Never commit personal data of the product owner or anyone else: e-mail addresses
 
 ## Language
 - **Chat with the user: German.**
+- Every longer chat answer (e.g. after finishing a task) ends with a short, clearly marked section **"Was du tun musst"** that lists exactly what the product owner still has to do (review, merge, approve, change a setting, test on a device). If nothing is needed, say so in one line ("Für dich: nichts zu tun.").
 - **Everything in the repo is English:** code, comments, commit messages, branch names, issues, PRs, docs.
 
 ## What we are building

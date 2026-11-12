@@ -67,7 +67,7 @@ Then update `docs/feature-parity.md` (status `done` for fully matched items, not
   - Known limitations and follow-ups
 - Keep it short (see "PR workflow" in `CLAUDE.md`): leave out sections that do not apply, no file-by-file list, one sentence per bullet, background goes into docs or an ADR.
 - Set the issue's status to **In Review** once the PR is open and no longer a draft (see "Project status").
-- Wait for `ci-success` to be green, then tell the user in German (short): what was done, the PR link, and what needs a decision or check.
+- Wait for `ci-success` to be green, then tell the user in German (short): what was done and the PR link, ending with the "Was du tun musst" section from `CLAUDE.md` (decisions, checks, settings).
 
 ## Project status
 Issues live on project number 4 of the SlidePilot organization (`gh project … 4 --owner SlidePilot`). Its Status field has Backlog, In Progress, In Review and Done. GitHub sets Done when the PR is merged; set the other two yourself.
