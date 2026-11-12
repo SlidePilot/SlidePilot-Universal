@@ -202,6 +202,10 @@
       "allowRead": [
         ".",
         "../SlidePilot-macOS"
+      ],
+      "denyWrite": [
+        ".git/config",
+        ".git/hooks"
       ]
     },
     "credentials": {
