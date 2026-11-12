@@ -99,6 +99,7 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 - Never run `git pull` / `git fetch` without `origin`, and never add `--upload-pack`, `--receive-pack`, `--exec`, `--multiple` or `--repo` (denied).
 - Never work around the sandbox or a denied command (no `git -c`, no `gh api` without asking, no other tools to reach the network or personal files). If a needed command fails because of the sandbox, tell the user which command and why, and propose a settings change.
 - `sandbox.filesystem.denyWrite` blocks sandboxed writes to `.git/config` and `.git/hooks`, because the allow-listed `git fetch/pull/push` run outside the sandbox and would execute hooks or programs set in the config. In a worktree these paths do not reach the main repository's `.git`; that protection comes from the user settings.
+- `gh pr close <N>` runs outside the sandbox so prototype PRs can be closed once their findings PR is open. Deleting the branch while closing is denied (long and short option), because findings docs reference prototype branches.
 - Changes to `.claude/settings.json` need the product owner's approval.
 
 ## Definition of Done
