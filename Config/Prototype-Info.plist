@@ -26,6 +26,10 @@
 			<string>Owner</string>
 			<key>NSIsRelatedItemType</key>
 			<true/>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>slidepilot</string>
+			</array>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>$(PRODUCT_BUNDLE_IDENTIFIER).companion</string>
@@ -40,6 +44,10 @@
 			<string>None</string>
 			<key>NSIsRelatedItemType</key>
 			<true/>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>rtf</string>
+			</array>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.rtf</string>
