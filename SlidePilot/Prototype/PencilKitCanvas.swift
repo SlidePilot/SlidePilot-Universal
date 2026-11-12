@@ -21,6 +21,9 @@ struct PencilKitCanvas: UIViewRepresentable {
         // PencilKit adapts ink colors to dark mode; slides are always light.
         canvas.overrideUserInterfaceStyle = state.adaptsInkToDarkMode ? .unspecified : .light
         canvas.delegate = context.coordinator
+        // PencilKit reports a change only when a stroke ends. Following its
+        // drawing gesture lets the presentation mirror the stroke live.
+        canvas.drawingGestureRecognizer.addTarget(context.coordinator, action: #selector(Coordinator.followDrawingGesture(_:)))
         let picker = PKToolPicker(toolItems: [
             PKToolPickerInkingItem(type: .monoline, color: Self.uiColor(state.color), width: PageDrawing.lineWidth),
         ])
@@ -76,6 +79,20 @@ struct PencilKitCanvas: UIViewRepresentable {
         private var strokeStart: ContinuousClock.Instant?
 
         init(state: DrawingProbeState) { self.state = state }
+
+        @objc func followDrawingGesture(_ recognizer: UIGestureRecognizer) {
+            guard state.liveMirrorsPencilKit else { return }
+            let location = recognizer.location(in: recognizer.view)
+            let point = mapping.relative(x: location.x, y: location.y)
+            switch recognizer.state {
+            case .began:
+                state.liveStroke = DrawingStroke(color: state.color, points: [point])
+            case .changed:
+                state.liveStroke?.points.append(point)
+            default:
+                state.liveStroke = nil
+            }
+        }
 
         func canvasViewDidBeginUsingTool(_ canvasView: PKCanvasView) {
             changeCallsDuringStroke = 0

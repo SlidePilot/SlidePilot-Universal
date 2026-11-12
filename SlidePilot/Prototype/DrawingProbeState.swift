@@ -26,6 +26,7 @@ final class DrawingProbeState {
     var showsToolPicker = true
     var adaptsInkToDarkMode = false
     var interpolatedSampling = true
+    var liveMirrorsPencilKit = true
 
     private(set) var drawings: [Int: PageDrawing] = [:]
     /// The stroke being drawn right now (custom layer only), mirrored live.

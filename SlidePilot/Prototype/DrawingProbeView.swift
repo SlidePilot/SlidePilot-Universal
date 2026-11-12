@@ -68,6 +68,7 @@ struct DrawingProbeView: View {
             Toggle(isOn: $state.pencilOnly) { Text(verbatim: "Pencil only") }
             Menu {
                 Toggle(isOn: $state.interpolatedSampling) { Text(verbatim: "Sample rendered curve (2 pt)") }
+                Toggle(isOn: $state.liveMirrorsPencilKit) { Text(verbatim: "Mirror PencilKit strokes live") }
                 Toggle(isOn: $state.adaptsInkToDarkMode) { Text(verbatim: "Adapt ink to dark mode") }
             } label: { Label { Text(verbatim: "Options") } icon: { Image(systemName: "gearshape") } }
             #endif
