@@ -20,8 +20,72 @@ env:
   IPAD_OS: "26.5"
 
 jobs:
+  # Decides whether the macOS runner jobs are needed. PRs that only touch docs
+  # or Claude configuration skip them; everything else (and every push to main)
+  # runs the full pipeline. Unknown paths always count as code.
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      # A PR checks out its merge commit; depth 2 brings its first parent
+      # (the base branch), so HEAD^1..HEAD is exactly what the PR changes.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: github.event_name == 'pull_request'
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - name: Classify changed files
+        id: filter
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          if [ "${EVENT}" != "pull_request" ]; then
+            echo "Event ${EVENT}: running the full pipeline."
+            echo "code=true" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          files=$(git diff --name-only HEAD^1 HEAD)
+          code=false
+          if [ -z "${files}" ]; then
+            code=true
+          fi
+          while IFS= read -r file; do
+            if [ -z "${file}" ]; then
+              continue
+            fi
+            case "${file}" in
+              docs/* | .claude/* | .github/ISSUE_TEMPLATE/* | \
+              .github/pull_request_template.md | LICENSE)
+                kind="docs" ;;
+              */*)
+                kind="code" ;;   # e.g. Fixtures/README.md: tests may read it
+              *.md)
+                kind="docs" ;;   # Markdown in the repository root only
+              *)
+                kind="code" ;;
+            esac
+            echo "${kind}  ${file}"
+            if [ "${kind}" = "code" ]; then
+              code=true
+            fi
+          done <<< "${files}"
+
+          echo "code=${code}" >> "${GITHUB_OUTPUT}"
+          if [ "${code}" = "true" ]; then
+            echo "Code changes found: running the full pipeline." | tee -a "${GITHUB_STEP_SUMMARY}"
+          else
+            echo "Docs or Claude configuration only: skipping macOS and iPad jobs." | tee -a "${GITHUB_STEP_SUMMARY}"
+          fi
+
   packages:
     name: Packages (swift test)
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: macos-26
     timeout-minutes: 20
     steps:
@@ -41,6 +105,8 @@ jobs:
 
   macos:
     name: macOS (build + test)
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: macos-26
     timeout-minutes: 30
     steps:
@@ -67,6 +133,8 @@ jobs:
 
   ipados:
     name: iPadOS simulator (build + test)
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
     runs-on: macos-26
     timeout-minutes: 30
     steps:
@@ -133,22 +201,35 @@ jobs:
       - name: Check sources
         run: sh scripts/check-no-screen-capture.sh
 
-  # Single stable status check for the main branch ruleset.
+  # Single stable status check for the main branch ruleset. It always runs, so
+  # docs-only PRs still report it. A skipped job only counts as passed when the
+  # change detection itself succeeded and found no code changes.
   ci-success:
     name: ci-success
     if: always()
-    needs: [packages, macos, ipados, no-screen-capture]
+    needs: [changes, packages, macos, ipados, no-screen-capture]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Check results
         env:
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          CODE: ${{ needs.changes.outputs.code }}
           RESULTS: ${{ join(needs.*.result, ' ') }}
         run: |
+          echo "Change detection: ${CHANGES_RESULT} (code=${CODE})"
           echo "Job results: ${RESULTS}"
+          if [ "${CHANGES_RESULT}" != "success" ]; then
+            echo "::error::Change detection did not succeed."
+            exit 1
+          fi
           for result in ${RESULTS}; do
-            if [ "${result}" != "success" ]; then
-              echo "::error::At least one CI job did not succeed."
-              exit 1
+            if [ "${result}" = "success" ]; then
+              continue
             fi
+            if [ "${result}" = "skipped" ] && [ "${CODE}" = "false" ]; then
+              continue
+            fi
+            echo "::error::At least one CI job did not succeed."
+            exit 1
           done
