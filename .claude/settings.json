@@ -20,6 +20,7 @@
       "Bash(git push -u origin *)",
       "Bash(xcodebuild -version)",
       "Bash(xcodebuild -project SlidePilot.xcodeproj *)",
+      "Bash(xcodebuild -exportArchive *)",
       "Bash(xcrun simctl list *)",
       "Bash(xcrun simctl boot *)",
       "Bash(xcrun simctl shutdown *)",
@@ -140,6 +141,7 @@
     "excludedCommands": [
       "xcodebuild -version",
       "xcodebuild -project SlidePilot.xcodeproj *",
+      "xcodebuild -exportArchive *",
       "xcrun simctl list *",
       "xcrun simctl boot *",
       "xcrun simctl shutdown *",
