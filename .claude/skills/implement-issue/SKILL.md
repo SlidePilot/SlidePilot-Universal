@@ -12,6 +12,7 @@ Follow these steps in order. Talk to Pascal in German; everything written to the
 - `gh issue view <N> --comments`
 - Note the parity IDs, acceptance criteria, milestone and labels. If acceptance criteria are missing or ambiguous, ask Pascal before planning.
 - Check that no open PR already covers it: `gh pr list --search "<N>"`.
+- Set the issue's status on the project board to **In Progress** (see "Project status" below).
 
 ## 2. Study the original
 - Read the parity rows for every ID in `docs/feature-parity.md`, including "Native replacement", "Inconsistencies found" and "Known defects – do not replicate".
@@ -64,4 +65,12 @@ Then update `docs/feature-parity.md` (status `done` for fully matched items, not
   - iPad screenshots (light/dark) and the "Visual check (Mac)" section
   - Review results (one line per agent)
   - Known limitations and follow-ups
+- Set the issue's status to **In Review** once the PR is open and no longer a draft (see "Project status").
 - Wait for `ci-success` to be green, then tell Pascal in German (short): what was done, the PR link, and what he needs to decide or check.
+
+## Project status
+Issues live on project number 4 of the SlidePilot organization (`gh project … 4 --owner SlidePilot`). Its Status field has Backlog, In Progress, In Review and Done. GitHub sets Done when the PR is merged; set the other two yourself.
+- Field and option IDs: `gh project field-list 4 --owner SlidePilot --format json` (field "Status").
+- Item ID of the issue: `gh project item-list 4 --owner SlidePilot --format json --limit 200`, the item whose `content.number` is the issue number (use `--jq` instead of a pipe).
+- Set it: `gh project item-edit --id <item> --project-id <project> --field-id <status field> --single-select-option-id <option>`.
+- If a new issue is not on the board yet, tell Pascal instead of adding it.
