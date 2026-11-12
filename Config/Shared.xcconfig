@@ -7,7 +7,7 @@
 BUNDLE_ID_PREFIX = org.example
 DEVELOPMENT_TEAM =
 
-// Product flags. The free Mac edition shows the donation hint (ADR 0003).
+// Product flags. Only the free Mac download shows the donation hint (ADR 0011).
 SLIDEPILOT_EDITION_FLAGS =
 
 #include? "Local.xcconfig"

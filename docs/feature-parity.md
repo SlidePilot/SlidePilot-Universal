@@ -168,8 +168,8 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 | ID | Feature | Old source | Reason | Status |
 |---|---|---|---|---|
 | DROP-01 | Touch Bar (curtains, notes, navigator, next-slide preview, draw, pointer + appearance popover; in draw mode: colors, eraser, close) | `Views/TouchBar/*` | Product-owner decision 2026-11-10 | dropped |
-| DROP-02 | Sparkle updater (Check for Updates…) | `Sparkle.framework`; `Info.plist:52-55` | App Store distribution (ADR 0003) | dropped |
-| DROP-03 | Donation alert after the 5th launch (`AppStartCount`, `AlreadyDisplayedDonationAlert`). Replaced by an App-Store-compliant hint or tip jar **in the free Mac app only**, never in the paid iPad app. Form decided before Phase 5 | `Helpers/AppStartTracker.swift`; `PresenterViewController.swift:143-162` | App Store rules; pricing model (ADR 0003) | changed |
+| DROP-02 | Sparkle updater (Check for Updates…) | `Sparkle.framework`; `Info.plist:52-55` | App Store distribution; the free Mac download has no updater (ADR 0011) | dropped |
+| DROP-03 | Donation alert after the 5th launch (`AppStartCount`, `AlreadyDisplayedDonationAlert`). Replaced by a simple donation hint **in the free Mac download only** (outside the App Store); the App Store version has none. Form decided before Phase 5 | `Helpers/AppStartTracker.swift`; `PresenterViewController.swift:143-162` | Pricing model (ADR 0011) | changed |
 
 ---
 
