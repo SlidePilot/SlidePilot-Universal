@@ -47,7 +47,7 @@ Logic that can be unit-tested belongs in a package. The app target stays thin.
 ## Concurrency model (Swift 6, complete strict checking)
 
 - **UI state** is `@Observable` and `@MainActor`. One `PresentationSession` per open document holds the current page, layout, notes, drawing, pointer, curtain and timer state. Both the presenter and the presentation scene observe the same session.
-- **Render cache** is an `actor`. It renders off the main actor and returns `Sendable` images (`CGImage`). It never mutates shared `PDFPage` state (see DEF-02 in the parity doc).
+- **Render cache** is an `actor`. It renders off the main actor and returns `Sendable` images (`CGImage`). It never mutates shared `PDFPage` state (see DEF-02 in the parity doc). It counts the bytes of its images itself and renders inside `autoreleasepool`; neighborhood and budgets are in ADR 0005.
 - **File observation** (PDF changes on disk) is an `actor` that emits changes through an `AsyncStream`.
 - **Remote** (1.1) is an `actor` owning the `NWListener`/`NWConnection`s.
 - Models crossing isolation boundaries are `Sendable` value types. `@unchecked Sendable` and `nonisolated(unsafe)` need a comment explaining why they are safe.
