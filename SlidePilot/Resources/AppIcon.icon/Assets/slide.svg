@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Placeholder glyph: a slide with a play symbol cut out, and a stand. -->
+  <path fill="#FFFFFF" fill-rule="evenodd" d="M240,300 H784 A48,48 0 0 1 832,348 V652 A48,48 0 0 1 784,700 H240 A48,48 0 0 1 192,652 V348 A48,48 0 0 1 240,300 Z M470,420 L590,500 L470,580 Z"/>
+  <rect x="432" y="740" width="160" height="36" rx="18" fill="#FFFFFF"/>
+</svg>
