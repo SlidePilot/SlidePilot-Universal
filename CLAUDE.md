@@ -22,6 +22,7 @@ Never commit personal data of the product owner or anyone else: e-mail addresses
 
 ## Language
 - **Chat with the user: German.**
+- Every longer chat answer (e.g. after finishing a task) ends with a short, clearly marked section **"Was du tun musst"** that lists exactly what the product owner still has to do (review, merge, approve, change a setting, test on a device). If nothing is needed, say so in one line ("Für dich: nichts zu tun.").
 - **Everything in the repo is English:** code, comments, commit messages, branch names, issues, PRs, docs.
 
 ## What we are building
@@ -137,6 +138,12 @@ python3 -I scripts/export-mac-snapshots.py
 - Keep PRs small and reviewable. Split if a PR mixes unrelated changes.
 - Commit messages: imperative, English, short subject line (≤72 chars), body explains why.
 - PR description: what changed, why, parity IDs, what the reviewer should check, how to verify (step by step), screenshots, known limitations.
+- **Keep PR descriptions, issue comments and commit bodies short.** The reviewer reads them to decide and to test, not to learn the diff:
+  - Leave out sections that do not apply; never write "None", "not run" or "no new strings".
+  - No file-by-file list of changes; one sentence per bullet.
+  - Background worth keeping (settings semantics, measurements, research) goes into `docs/` or an ADR and is linked, not repeated.
+  - Docs, config and CI PRs: summary (2-4 sentences), what to check and, only if useful, how to verify. No checklist except the license line.
+  - Full template (screenshots, reviews, checklist) only for PRs that change app or package code.
 - Link the issue (`Closes #N`) and set the milestone.
 - Wait for the merge before starting work that depends on an open PR.
 
