@@ -94,6 +94,8 @@ nonisolated enum FileProbes {
         // 6. Related items (macOS only): companion and legacy notes through NSFilePresenter.
         #if os(macOS)
         results.append(RelatedItemProbe.write(companion, primary: pdfURL, name: "Write <pdf>.slidepilot as related item"))
+        results.append(RelatedItemProbe.write(companion, primary: pdfURL,
+                                              name: "Write <pdf>.slidepilot as related item, non-atomic", atomic: false))
         if let foundLegacy {
             results.append(RelatedItemProbe.read(foundLegacy, primary: pdfURL, name: "Read legacy notes as related item"))
         }
@@ -136,10 +138,12 @@ nonisolated enum FileProbes {
         return ProbeResult(name: name, outcome: result.outcome, detail: "fileExists \(exists); " + result.detail)
     }
 
-    static func writeAndRemove(_ url: URL, name: String) -> ProbeResult {
+    /// `atomic` writes a temporary file with another name first, which a related-item
+    /// sandbox extension (exact file name only) may not cover.
+    static func writeAndRemove(_ url: URL, name: String, atomic: Bool = true) -> ProbeResult {
         let alreadyThere = FileManager.default.fileExists(atPath: url.path)
         do {
-            try Data("probe".utf8).write(to: url, options: .atomic)
+            try Data("probe".utf8).write(to: url, options: atomic ? .atomic : [])
         } catch {
             return ProbeResult(name: name, outcome: .failed, detail: describe(error))
         }
@@ -234,15 +238,15 @@ nonisolated enum RelatedItemProbe {
         }
     }
 
-    static func write(_ url: URL, primary: URL, name: String) -> ProbeResult {
-        coordinate(url, primary: primary, name: name, writing: true)
+    static func write(_ url: URL, primary: URL, name: String, atomic: Bool = true) -> ProbeResult {
+        coordinate(url, primary: primary, name: name, writing: true, atomic: atomic)
     }
 
     static func read(_ url: URL, primary: URL, name: String) -> ProbeResult {
-        coordinate(url, primary: primary, name: name, writing: false)
+        coordinate(url, primary: primary, name: name, writing: false, atomic: false)
     }
 
-    private static func coordinate(_ url: URL, primary: URL, name: String, writing: Bool) -> ProbeResult {
+    private static func coordinate(_ url: URL, primary: URL, name: String, writing: Bool, atomic: Bool) -> ProbeResult {
         let presenter = Presenter(item: url, primary: primary)
         NSFileCoordinator.addFilePresenter(presenter)
         defer { NSFileCoordinator.removeFilePresenter(presenter) }
@@ -252,7 +256,7 @@ nonisolated enum RelatedItemProbe {
         var result = ProbeResult(name: name, outcome: .failed, detail: "accessor not called")
         if writing {
             coordinator.coordinate(writingItemAt: url, options: .forReplacing, error: &coordinationError) { target in
-                result = FileProbes.writeAndRemove(target, name: name)
+                result = FileProbes.writeAndRemove(target, name: name, atomic: atomic)
             }
         } else {
             coordinator.coordinate(readingItemAt: url, options: [], error: &coordinationError) { target in
