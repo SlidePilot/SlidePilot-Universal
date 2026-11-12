@@ -81,7 +81,7 @@ The 4-task numbers include opening one `PDFDocument` per task. Parallel renderin
 - Only one Mac was measured. Older or smaller Macs (8 GiB RAM) will render more slowly; 5K/6K displays are the expensive case.
 - Displaying the images (SwiftUI `Image`, Core Animation upload) was not measured. It adds GPU memory per *visible* image, not per cached image.
 
-## Real-device measurements Pascal should take
+## Real-device measurements still to take
 
 Run the `RenderMeasurements` suite from the branch `prototype/render-cache-measurements` on a real iPad (Xcode › Test Navigator › `SlidePilotRenderingTests` › `RenderMeasurements`, destination: the iPad) and send the lines starting with `RENDERMEASURE` from the test log. Most useful:
 
@@ -92,7 +92,7 @@ Run the `RenderMeasurements` suite from the branch `prototype/render-cache-measu
 
 ## Recommendation for the production cache
 
-Approved by Pascal and recorded in ADR 0005.
+Approved and recorded in ADR 0005.
 
 1. **One rendition per page and size class, not per view.** Key: (page, display mode/split half, pixel size bucket). The audience window and the presenter's "current" view usually show the same page; render once at the larger size and let the smaller view scale it down. Thumbnails get their own small cache (0.5 MiB each, rendered lazily as the sidebar scrolls).
 2. **Priority order:** current page (audience size) → next page → previous page → further ahead. A navigation cancels queued neighborhood jobs that are no longer near the current page.

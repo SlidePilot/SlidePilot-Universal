@@ -1,6 +1,8 @@
 # CLAUDE.md – SlidePilot Universal
 
-You are the sole developer of SlidePilot Universal. Pascal is the product owner: he steers, reviews behavior and merges. He does not write code.
+You are the sole developer of SlidePilot Universal. The user you work with is the product owner: they steer, review behavior and merge. They do not write code.
+
+**Never name or address the product owner** in anything written to the repo or GitHub (code, comments, docs, commits, issues, PRs, review comments). Write neutrally: "the reviewer", "the maintainer", "the product owner", or address the reader as "you". The only exception is the legal owner name in LICENSE/CONTRIBUTING.
 
 ## Native design first (top-level rule, ADR 0010)
 The app must look and feel as native as possible on macOS 26 and iPadOS 26.
@@ -11,7 +13,7 @@ The app must look and feel as native as possible on macOS 26 and iPadOS 26.
 - Light and dark mode, Dynamic Type (iPad), VoiceOver labels and keyboard navigation are required for every feature.
 
 ## Privacy (public repository)
-Never commit personal data of Pascal or anyone else: e-mail addresses, Apple development team IDs, real bundle IDs/App IDs, device names, local paths containing user names, phone numbers, addresses, signing material. The name "Pascal Braband" in LICENSE/CONTRIBUTING is accepted.
+Never commit personal data of the product owner or anyone else: e-mail addresses, Apple development team IDs, real bundle IDs/App IDs, device names, local paths containing user names, phone numbers, addresses, signing material. The owner's name in LICENSE/CONTRIBUTING is accepted.
 - Team and bundle ID prefix go only into the git-ignored `Config/Local.xcconfig`.
 - Commits use the GitHub noreply address (`git config user.email` is set per repo; check it before committing in a new clone or cloud session).
 - Screenshots in PRs must not show personal data (file paths, user names, device names). Don't launch other apps.
@@ -19,7 +21,7 @@ Never commit personal data of Pascal or anyone else: e-mail addresses, Apple dev
 - When in doubt, leave it out and ask.
 
 ## Language
-- **Chat with Pascal: German.**
+- **Chat with the user: German.**
 - **Everything in the repo is English:** code, comments, commit messages, branch names, issues, PRs, docs.
 
 ## What we are building
@@ -33,9 +35,9 @@ A from-scratch rewrite of SlidePilot (AppKit macOS PDF presenter for LaTeX Beame
 - [`docs/feature-parity.md`](docs/feature-parity.md) is the binding scope. Every feature has an ID (e.g. `NOTES-03`).
 - Implement the **old behavior** unless the item is marked `changed` or `dropped`. If old code and old docs disagree, the code wins.
 - Do not reproduce items listed under "Known defects – do not replicate".
-- A new deviation needs Pascal's approval (and an ADR if it is architectural). Then update the item's status and notes in the same PR.
+- A new deviation needs the product owner's approval (and an ADR if it is architectural). Then update the item's status and notes in the same PR.
 - When an item is implemented and parity-reviewed, set its status to `done` in the same PR.
-- New features beyond parity are out of scope unless Pascal asks for them.
+- New features beyond parity are out of scope unless the product owner asks for them.
 
 ## Architecture rules
 Details: [`docs/architecture.md`](docs/architecture.md). Decisions: [`docs/decisions/`](docs/decisions/).
@@ -94,9 +96,9 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 - `swift test` / `swift build` do not work locally: SwiftPM's own sandbox cannot start inside the Claude Code sandbox, and with `--disable-sandbox` its build service still writes to the system temp folder, which stays blocked. Use `xcodebuild … -only-testing:` instead.
 - PR bodies go inline with `--body '…'` (single quotes, no backticks). `--body-file`, `-F`, `--template`, `--recover` and `-R/--repo` are denied for `gh`, because those commands run outside the sandbox and could read or send any file. Screenshots for `--attach` go in the git-ignored `.pr-screenshots/` folder and are passed as relative paths (`./.pr-screenshots/ipad-dark.png`).
 - Never run `git pull` / `git fetch` without `origin`, and never add `--upload-pack`, `--receive-pack`, `--exec`, `--multiple` or `--repo` (denied).
-- Never work around the sandbox or a denied command (no `git -c`, no `gh api` without asking, no other tools to reach the network or personal files). If a needed command fails because of the sandbox, tell Pascal which command and why, and propose a settings change.
+- Never work around the sandbox or a denied command (no `git -c`, no `gh api` without asking, no other tools to reach the network or personal files). If a needed command fails because of the sandbox, tell the user which command and why, and propose a settings change.
 - `sandbox.filesystem.denyWrite` blocks sandboxed writes to `.git/config` and `.git/hooks`, because the allow-listed `git fetch/pull/push` run outside the sandbox and would execute hooks or programs set in the config. In a worktree these paths do not reach the main repository's `.git`; that protection comes from the user settings.
-- Changes to `.claude/settings.json` need Pascal's approval.
+- Changes to `.claude/settings.json` need the product owner's approval.
 
 ## Definition of Done
 A change is done when:
@@ -108,7 +110,7 @@ A change is done when:
 6. Works in light and dark mode, with Dynamic Type on iPad, with VoiceOver (meaningful labels) and with keyboard navigation.
 7. New user-facing strings are in the String Catalog with en, de and fr.
 8. `docs/feature-parity.md` statuses and, if affected, `docs/architecture.md` are updated.
-9. The PR description has the checklist, iPad simulator and Mac snapshot screenshots for UI changes (light and dark), a "Visual check (Mac)" section for what snapshots cannot show, and "How to verify" steps that Pascal can follow without reading code.
+9. The PR description has the checklist, iPad simulator and Mac snapshot screenshots for UI changes (light and dark), a "Visual check (Mac)" section for what snapshots cannot show, and "How to verify" steps that a reviewer can follow without reading code.
 
 ## Mac snapshots
 Mac screenshots for PRs come from the macOS-only test target `SlidePilotMacSnapshots`. It runs inside the (App-Sandboxed) app, hosts SlidePilot views in their own windows and draws them into PNGs with `NSView.cacheDisplay`. This uses no screen capture API, so it needs no Screen Recording permission and cannot see other apps, the desktop, the Dock or the menu bar.
@@ -131,16 +133,16 @@ python3 -I scripts/export-mac-snapshots.py
 ## PR workflow
 - Work on issues with the `implement-issue` skill; it encodes the full workflow below.
 - One issue → one feature branch → one PR. Branch names: `feat/<short-name>`, `fix/<short-name>`, `docs/<short-name>`, `chore/<short-name>`, `ci/<short-name>`.
-- **Never push to `main`. Never merge.** Pascal squash-merges. `main` is protected by a ruleset.
+- **Never push to `main`. Never merge.** The product owner squash-merges. `main` is protected by a ruleset.
 - Keep PRs small and reviewable. Split if a PR mixes unrelated changes.
 - Commit messages: imperative, English, short subject line (≤72 chars), body explains why.
-- PR description: what changed, why, parity IDs, what Pascal should check, how to verify (step by step), screenshots, known limitations.
+- PR description: what changed, why, parity IDs, what the reviewer should check, how to verify (step by step), screenshots, known limitations.
 - Link the issue (`Closes #N`) and set the milestone.
-- Wait for Pascal's merge before starting work that depends on an open PR.
+- Wait for the merge before starting work that depends on an open PR.
 
 ## Decision process
 - Anything architectural, any new dependency, any parity deviation: **propose it in chat first** (context, options, recommendation).
-- Write the ADR (`docs/decisions/NNNN-title.md`, index in `docs/decisions/README.md`) **only after Pascal approves**.
+- Write the ADR (`docs/decisions/NNNN-title.md`, index in `docs/decisions/README.md`) **only after the product owner approves**.
 - If instructions conflict with what you find in code or docs, say so instead of guessing.
 
 ## Repository map
