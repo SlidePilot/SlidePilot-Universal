@@ -1,6 +1,6 @@
 # 0003 – App Store distribution
 
-- Status: Accepted (pricing model deferred)
+- Status: Superseded by [0011](0011-universal-purchase-and-direct-download.md)
 - Date: 2026-11-10
 
 ## Context

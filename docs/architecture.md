@@ -81,7 +81,7 @@ Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standar
 ## Product configuration
 
 - Bundle identifier, team and version come from `Config/*.xcconfig`. No code assumes a specific bundle ID. That keeps a later split into two App Store apps (free Mac, paid iPad) possible.
-- Features that differ between products (e.g. the donation hint, free Mac app only) are behind a compile-time flag set in the xcconfig, not behind `#if os(...)`.
+- Features that differ between products (e.g. the donation hint, free Mac download only, ADR 0011) are behind a compile-time flag set in the xcconfig, not behind `#if os(...)`.
 
 ## Testing
 
