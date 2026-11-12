@@ -8,6 +8,7 @@ Claude Code cloud sessions run on Linux without a Swift/Xcode toolchain. Local s
 
 ## Decision
 - Every PR is built and tested by GitHub Actions on macOS runners (macOS app, iPad simulator, package tests).
+  - Amendment (2026-11-12): PRs that only change documentation, Claude configuration or issue/PR templates skip the macOS runner jobs. The required check `ci-success` still runs and passes. Any path not on that list, and every push to `main`, runs the full pipeline.
 - In cloud sessions, CI is the only build and test feedback. A PR is not ready until CI is green.
 - Local sessions also run the build and test commands from `CLAUDE.md` before pushing.
 
