@@ -58,13 +58,14 @@ Then update `docs/feature-parity.md` (status `done` for fully matched items, not
 
 ## 9. Open the PR
 - Commit with an imperative English subject and a body explaining why. End commit messages and PR descriptions with the attribution lines from the session instructions.
-- `gh pr create --attach …` (or mark the draft ready and `gh pr edit --attach …`) with `Closes #<N>`, the issue's milestone, and the body from `.github/pull_request_template.md` filled in completely:
-  - Summary and parity IDs
+- `gh pr create --attach …` (or mark the draft ready and `gh pr edit --attach …`) with `Closes #<N>`, the issue's milestone, and the body from `.github/pull_request_template.md`:
+  - Summary (2-4 sentences) and parity IDs
   - What the reviewer should check (decisions, deviations, justified custom UI)
   - **How to verify**: numbered click-by-click steps on Mac and iPad that need no code reading, with expected results
   - iPad screenshots (light/dark) and the "Visual check (Mac)" section
   - Review results (one line per agent)
   - Known limitations and follow-ups
+- Keep it short (see "PR workflow" in `CLAUDE.md`): leave out sections that do not apply, no file-by-file list, one sentence per bullet, background goes into docs or an ADR.
 - Set the issue's status to **In Review** once the PR is open and no longer a draft (see "Project status").
 - Wait for `ci-success` to be green, then tell the user in German (short): what was done, the PR link, and what needs a decision or check.
 
