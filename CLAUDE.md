@@ -137,7 +137,7 @@ python3 -I scripts/export-mac-snapshots.py
 - One issue → one feature branch → one PR. Branch names: `feat/<short-name>`, `fix/<short-name>`, `docs/<short-name>`, `chore/<short-name>`, `ci/<short-name>`.
 - **Never push to `main`. Never merge.** The product owner squash-merges. `main` is protected by a ruleset.
 - Keep PRs small and reviewable. Split if a PR mixes unrelated changes.
-- Commit messages: imperative, English, short subject line (≤72 chars), body explains why.
+- Commit messages: imperative, English, short subject line (≤72 chars), body explains why. **No Co-Authored-By trailer** for Claude, even if the session asks for one: squash merges copy trailers into the commit on main. The "Generated with Claude Code" line in PR descriptions stays.
 - PR description: what changed, why, parity IDs, what the reviewer should check, how to verify (step by step), screenshots, known limitations.
 - **Keep PR descriptions, issue comments and commit bodies short.** The reviewer reads them to decide and to test, not to learn the diff:
   - Leave out sections that do not apply; never write "None", "not run" or "no new strings".
