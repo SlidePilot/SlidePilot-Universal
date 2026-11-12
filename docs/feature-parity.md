@@ -68,7 +68,7 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 
 | ID | Feature | Old source | Docs | iPad notes | Native replacement | Milestone | Status |
 |---|---|---|---|---|---|---|---|
-| PRE-01 | Render cache. Old: `NSCache` keyed by (page, display mode), count limit 200; pages 0…200 rendered in the background on open (full mode only); ±50 pages around each requested page. Not user-configurable. New (ADR 0005): current + next first, neighborhood in the background, memory-based limit; final scope after measurement in Phase 1 | `Helpers/RenderCache.swift:60-135,178-228` | `pre-rendering` | Stricter memory budget on iPad | – | P2 | changed |
+| PRE-01 | Render cache. Old: `NSCache` keyed by (page, display mode), count limit 200; pages 0…200 rendered in the background on open (full mode only); ±50 pages around each requested page. Not user-configurable. New (ADR 0005): current + next first, neighborhood in the background, memory-based limit (512 MiB macOS, 192 MiB iPadOS), neighborhood −1…+3, no pre-render on open; see ADR 0005 and `docs/prototypes/render-cache.md` | `Helpers/RenderCache.swift:60-135,178-228` | `pre-rendering` | Stricter memory budget on iPad | – | P2 | changed |
 | PRE-02 | The cache also serves thumbnails and remote slide images | `ThumbnailNavigation.swift:318`; `Remote/RemoteController.swift:40-55` | – | Same | – | P2 | planned |
 
 ## 4. Timing
