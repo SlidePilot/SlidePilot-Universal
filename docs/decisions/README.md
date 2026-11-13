@@ -14,6 +14,7 @@
 | [0010](0010-native-design-first.md) | Native design first | Accepted |
 | [0011](0011-universal-purchase-and-direct-download.md) | Universal purchase and free Mac download | Accepted |
 | [0012](0012-companion-file-location.md) | Companion file in the app container, folder access on demand | Accepted |
+| [0013](0013-pdf-change-detection.md) | Detect PDF changes with a file presenter | Accepted |
 
 ## Process
 1. Propose the decision in chat with the product owner (context, options, recommendation).
