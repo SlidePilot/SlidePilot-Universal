@@ -39,6 +39,19 @@ enum WindowSnapshot {
         appearance: Appearance,
         sourceLocation: SourceLocation = #_sourceLocation
     ) async throws {
+        let window = makeWindow(view, size: size, appearance: appearance)
+        defer { window.close() }
+
+        try await record(window, name: "\(name)-\(appearance.rawValue)", sourceLocation: sourceLocation)
+    }
+
+    /// Hosts `view` in a titled window that stays open, for snapshots of several states.
+    /// Close it when done.
+    static func makeWindow(
+        _ view: some View,
+        size: CGSize = CGSize(width: 900, height: 600),
+        appearance: Appearance
+    ) -> NSWindow {
         let window = NSWindow(
             contentRect: CGRect(origin: .zero, size: size),
             styleMask: [.titled, .closable, .miniaturizable, .resizable],
@@ -54,9 +67,7 @@ enum WindowSnapshot {
         window.contentView = hostingView
         window.center()
         window.orderFront(nil)
-        defer { window.close() }
-
-        try await record(window, name: "\(name)-\(appearance.rawValue)", sourceLocation: sourceLocation)
+        return window
     }
 
     /// Renders a window of this app and records it as a test attachment.
