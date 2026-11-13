@@ -20,18 +20,12 @@ struct ReloadProbeView: View {
     }
 
     var body: some View {
-        NavigationSplitView {
-            List(session.log.reversed()) { entry in
-                LabeledContent {
-                    Text(verbatim: "\(entry.milliseconds) ms").monospacedDigit()
-                } label: {
-                    Text(verbatim: entry.text)
-                }
-            }
-            .navigationTitle(Text(verbatim: "Events"))
-        } detail: {
-            VStack(spacing: 16) {
+        // One column on every platform: a split view collapses to the event list on iPhone
+        // and hides the page.
+        VStack(spacing: 0) {
+            VStack(spacing: 12) {
                 PageImage(page: session.document?.page(at: session.currentPage))
+                    .frame(maxHeight: 360)
                 HStack {
                     Button {
                         session.showPage(session.currentPage - 1)
@@ -50,9 +44,24 @@ struct ReloadProbeView: View {
                 }
                 .labelStyle(.iconOnly)
                 Text(verbatim: "Reloads: \(session.reloadCount) · DocumentGroup deliveries: \(session.documentGroupDeliveries)")
+                    .font(.footnote)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
             }
             .padding()
+            List {
+                Section {
+                    ForEach(session.log.reversed()) { entry in
+                        LabeledContent {
+                            Text(verbatim: "\(entry.milliseconds) ms").monospacedDigit()
+                        } label: {
+                            Text(verbatim: entry.text)
+                        }
+                    }
+                } header: {
+                    Text(verbatim: "Events (newest first)")
+                }
+            }
         }
         .toolbar {
             ToolbarItemGroup {
@@ -92,13 +101,22 @@ struct ReloadProbeView: View {
                     }
                 }
             }
-            .frame(minWidth: 500, minHeight: 400)
+            .frame(minWidth: Self.sheetMinimumSize?.width, minHeight: Self.sheetMinimumSize?.height)
         }
         .task { session.start(initialData: document.data) }
         .onDisappear { session.stop() }
         .onChange(of: document.digest) {
             session.documentGroupDelivered(digest: document.digest, byteCount: document.data.count)
         }
+    }
+
+    /// Mac sheets need a size; on iOS the sheet fills the screen (an iPhone is narrower than 500 pt).
+    private static var sheetMinimumSize: CGSize? {
+        #if os(macOS)
+        CGSize(width: 500, height: 400)
+        #else
+        nil
+        #endif
     }
 
     private func copyToPasteboard(_ text: String) {
