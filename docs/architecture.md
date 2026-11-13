@@ -38,9 +38,9 @@ Dependencies only point downward. Core never imports SwiftUI, AppKit, UIKit or P
 | Module | Contents | Must not contain |
 |---|---|---|
 | **SlidePilotCore** | Value-type models: layout configuration, notes position/mode, pointer configuration, drawing model (relative strokes), timer logic (wall-clock based), per-document settings, companion file format, legacy notes page format and file names, keyboard command definitions | UI frameworks, PDFKit, file system watching |
-| **SlidePilotRendering** | PDF loading, page geometry for split notes (half-page rects incl. rotation), render cache actor, thumbnail rendering, drawing rasterization and export into PDF annotations, link and movie annotation extraction, legacy notes RTF read/write (RTF needs the AppKit/UIKit attributed-string extensions) | SwiftUI views, app state |
+| **SlidePilotRendering** | PDF loading, page geometry for split notes (half-page rects incl. rotation), render cache actor, thumbnail rendering, drawing rasterization and export into PDF annotations, link and movie annotation extraction, legacy notes RTF read/write (RTF needs the AppKit/UIKit attributed-string extensions), watching and reloading the opened PDF (`PDFFileObserver`, it validates new versions with PDFKit) | SwiftUI views, app state |
 | **SlidePilotRemoteProtocol** | Codable message types, protocol versioning, pairing and key derivation | Network sockets (the app owns those) |
-| **App target** | SwiftUI scenes and views, `@Observable` state, menus/commands, settings UI, file access (bookmarks, file presenters), platform-specific code | Business logic that could be tested in a package |
+| **App target** | SwiftUI scenes and views, `@Observable` state, menus/commands, settings UI, file access (bookmarks), platform-specific code | Business logic that could be tested in a package |
 
 Logic that can be unit-tested belongs in a package. The app target stays thin.
 
@@ -48,7 +48,7 @@ Logic that can be unit-tested belongs in a package. The app target stays thin.
 
 - **UI state** is `@Observable` and `@MainActor`. One `PresentationSession` per open document holds the current page, layout, notes, drawing, pointer, curtain and timer state. Both the presenter and the presentation scene observe the same session.
 - **Render cache** is an `actor`. It renders off the main actor and returns `Sendable` images (`CGImage`). It never mutates shared `PDFPage` state (see DEF-02 in the parity doc). It counts the bytes of its images itself and renders inside `autoreleasepool`; neighborhood and budgets are in ADR 0005.
-- **File observation** (PDF changes on disk) is an `actor` that wraps an `NSFilePresenter` and emits changes through an `AsyncStream`. Reloads are debounced, read the whole file with coordination, are validated and skipped when the bytes did not change (ADR 0013).
+- **File observation** (PDF changes on disk) is an `actor` (`PDFFileObserver` in Rendering) fed by an `NSFilePresenter`; it emits new versions through an `AsyncStream` that the `PresentationSession` consumes for as long as the document view lives. Reloads are debounced, read the whole file with coordination, are validated and skipped when the bytes did not change (ADR 0013).
 - **Remote** (1.1) is an `actor` owning the `NWListener`/`NWConnection`s.
 - Models crossing isolation boundaries are `Sendable` value types. `@unchecked Sendable` and `nonisolated(unsafe)` need a comment explaining why they are safe.
 - No `DispatchQueue` in new code. Use structured concurrency; long-running tasks are cancelled when their owner goes away.
