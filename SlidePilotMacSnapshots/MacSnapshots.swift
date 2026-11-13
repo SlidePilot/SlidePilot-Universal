@@ -10,9 +10,18 @@ import Testing
 @Suite(.serialized)
 struct MacSnapshots {
     @Test(arguments: WindowSnapshot.Appearance.allCases)
-    func openedDocument(appearance: WindowSnapshot.Appearance) async throws {
-        let pdf = try #require(PDFDocument(data: Fixture.data("plain-slides.pdf")))
-        let view = DocumentView(title: "plain-slides", pageCount: pdf.pageCount)
-        try await WindowSnapshot.record(view, name: "document-opened", appearance: appearance)
+    func firstSlide(appearance: WindowSnapshot.Appearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        try await WindowSnapshot.record(DocumentView(document: document), name: "slides-first", appearance: appearance)
+    }
+
+    // LAY-09: after the last slide the preview shows the end-of-deck page.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func lastSlide(appearance: WindowSnapshot.Appearance) async throws {
+        let data = try Fixture.data("plain-slides.pdf")
+        let pdf = try #require(PDFDocument(data: data))
+        let document = try PDFFileDocument(data: data)
+        let view = DocumentView(document: document, page: pdf.pageCount - 1)
+        try await WindowSnapshot.record(view, name: "slides-last", appearance: appearance)
     }
 }
