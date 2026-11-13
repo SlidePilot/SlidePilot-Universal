@@ -17,7 +17,7 @@ SlidePilot-Universal/
 ├── Config/                        # xcconfig files (bundle ID, team, versions)
 ├── Packages/
 │   ├── SlidePilotCore/            # models and logic, no UI, no PDFKit
-│   ├── SlidePilotRendering/       # PDFKit, render cache, drawing rendering
+│   ├── SlidePilotRendering/       # PDFKit, render cache, drawing rendering, legacy notes RTF
 │   └── SlidePilotRemoteProtocol/  # Codable messages and pairing crypto (1.1)
 ├── Fixtures/                      # sample Beamer PDFs (+ .tex sources), legacy notes file, test video
 ├── docs/
@@ -37,8 +37,8 @@ Dependencies only point downward. Core never imports SwiftUI, AppKit, UIKit or P
 
 | Module | Contents | Must not contain |
 |---|---|---|
-| **SlidePilotCore** | Value-type models: layout configuration, notes position/mode, pointer configuration, drawing model (relative strokes), timer logic (wall-clock based), per-document settings, companion file format, legacy notes RTF import/export parser, keyboard command definitions | UI frameworks, PDFKit, file system watching |
-| **SlidePilotRendering** | PDF loading, page geometry for split notes (half-page rects incl. rotation), render cache actor, thumbnail rendering, drawing rasterization and export into PDF annotations, link and movie annotation extraction | SwiftUI views, app state |
+| **SlidePilotCore** | Value-type models: layout configuration, notes position/mode, pointer configuration, drawing model (relative strokes), timer logic (wall-clock based), per-document settings, companion file format, legacy notes page format and file names, keyboard command definitions | UI frameworks, PDFKit, file system watching |
+| **SlidePilotRendering** | PDF loading, page geometry for split notes (half-page rects incl. rotation), render cache actor, thumbnail rendering, drawing rasterization and export into PDF annotations, link and movie annotation extraction, legacy notes RTF read/write (RTF needs the AppKit/UIKit attributed-string extensions) | SwiftUI views, app state |
 | **SlidePilotRemoteProtocol** | Codable message types, protocol versioning, pairing and key derivation | Network sockets (the app owns those) |
 | **App target** | SwiftUI scenes and views, `@Observable` state, menus/commands, settings UI, file access (bookmarks, file presenters), platform-specific code | Business logic that could be tested in a package |
 
@@ -74,7 +74,7 @@ Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standar
 | Data | Storage |
 |---|---|
 | Notes, drawings, per-document settings | One **companion file** per PDF (format defined in Core, versioned) in the **app container**, matched to the PDF by bookmark (ADR 0012). Entries that hold only settings expire 28 days after last open; entries with notes or drawings do not expire |
-| Legacy notes `<pdf>-notes.rtf` | Imported automatically on open; RTF export stays available |
+| Legacy notes `<pdf>-notes.rtf` | Imported on open (macOS, after a folder grant) or with Import Notes… (iPad); RTF export stays available |
 | Global preferences (layout, pointer, awake, crossfade, save drawings, time size) | `UserDefaults` through one typed settings store |
 | Access to PDFs and neighbouring files | Security-scoped bookmarks. Folder access is requested only when needed (videos, `run:` links, legacy notes on macOS) and stored as a bookmark (ADR 0012) |
 | Trusted remote devices (1.1) | Keychain |
@@ -88,5 +88,5 @@ Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standar
 
 - Swift Testing (`import Testing`) in every package and for app logic.
 - Packages are tested with `swift test` and as part of the app's test plan.
-- Shared sample documents live in `Fixtures/` (see its README). The compiled PDFs are committed because CI has no LaTeX. They are not part of the app bundle; how tests load them is decided with the first test that needs them.
+- Shared sample documents live in `Fixtures/` (see its README). The compiled PDFs are committed because CI has no LaTeX. They are not part of the app bundle. Package tests run unhosted on the Mac and in the simulator, so they read fixtures from the source tree through `#filePath` (see `LegacyNotesRTFTests`).
 - UI behavior is verified manually with the "How to verify" steps in each PR. UI tests are added only where they pay off.
