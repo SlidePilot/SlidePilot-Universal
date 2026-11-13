@@ -1,3 +1,4 @@
+import PDFKit
 import Testing
 @testable import SlidePilot
 
@@ -10,8 +11,8 @@ import Testing
 struct MacSnapshots {
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func openedDocument(appearance: WindowSnapshot.Appearance) async throws {
-        // Same title and page count as Fixtures/plain-slides.pdf.
-        let view = DocumentView(title: "plain-slides", pageCount: 6)
+        let pdf = try #require(PDFDocument(data: Fixture.data("plain-slides.pdf")))
+        let view = DocumentView(title: "plain-slides", pageCount: pdf.pageCount)
         try await WindowSnapshot.record(view, name: "document-opened", appearance: appearance)
     }
 }

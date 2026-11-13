@@ -98,6 +98,7 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 - PR bodies and issue comments go inline with `--body '…'` (single quotes, no backticks). `--body-file`, `-F`, `--template`, `--recover` and `-R/--repo` are denied for `gh`, because those commands run outside the sandbox and could read or send any file. Screenshots for `--attach` go in the git-ignored `.pr-screenshots/` folder and are passed as relative paths (`./.pr-screenshots/ipad-dark.png`).
 - Never run `git pull` / `git fetch` without `origin`, and never add `--upload-pack`, `--receive-pack`, `--exec`, `--multiple` or `--repo` (denied).
 - Never work around the sandbox or a denied command (no `git -c`, no `gh api` without asking, no other tools to reach the network or personal files). If a needed command fails because of the sandbox, tell the user which command and why, and propose a settings change.
+- `sandbox.filesystem.allowWrite` lets sandboxed commands write only into the iOS simulators' local Files storage ("On My iPad"), so `scripts/sim-copy-fixtures.sh` can put the fixtures there (see "iPad simulator testing").
 - `sandbox.filesystem.denyWrite` blocks sandboxed writes to `.git/config` and `.git/hooks`, because the allow-listed `git fetch/pull/push` run outside the sandbox and would execute hooks or programs set in the config. In a worktree these paths do not reach the main repository's `.git`; that protection comes from the user settings.
 - `gh pr close <N>` runs outside the sandbox so prototype PRs can be closed once their findings PR is open. Deleting the branch while closing is denied (long and short option), because findings docs reference prototype branches.
 - Changes to `.claude/settings.json` need the product owner's approval.
@@ -127,10 +128,23 @@ python3 -I scripts/export-mac-snapshots.py
 ```
 
 - Add a snapshot per UI change in `SlidePilotMacSnapshots/MacSnapshots.swift` with `WindowSnapshot.record(view, name:appearance:)` (light and dark). To show an app window, pass one of the app's own `NSWindow`s.
-- Show only fixtures (`Fixtures/`), never personal documents. The window title is fixed to "SlidePilot".
+- Show only fixtures, never personal documents. `Fixtures/` is copied into the snapshot bundle; load a file with `Fixture.data("plain-slides.pdf")` (the App Sandbox blocks reading the repository folder directly). The window title is fixed to "SlidePilot".
 - The export script only copies PNGs that `WindowSnapshot` marked; `xcresulttool` is not used because the sandbox blocks its temp folder.
 - If signing fails in the session (no certificate available), append `CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=` to step 2. Ad-hoc signing keeps the App Sandbox.
 - Rendered views are close to, but not exactly, what the screen shows: Liquid Glass and vibrancy can look flatter, and menus and popovers are not separate windows of the snapshot. Keep the "Visual check (Mac)" section for those.
+
+## iPad simulator testing
+Test and take iPad screenshots with the real document browser and the fixtures:
+
+```sh
+# 1. Boot the simulator and open the Files app once, so its local storage exists
+xcrun simctl boot <UDID>
+# 2. Copy the fixtures to "On My iPad/SlidePilot Fixtures"
+scripts/sim-copy-fixtures.sh <UDID>
+```
+
+- Then install and launch the app, open a fixture from the document browser (Browse > On My iPad > SlidePilot Fixtures) and drive it with the iOS Simulator tools (tap, swipe, keys); screenshots with `xcrun simctl io <UDID> screenshot ./.pr-screenshots/<file>.png`.
+- The script writes only into the simulator's local Files storage; nothing else of the simulator or the Mac.
 
 ## PR workflow
 - Work on issues with the `implement-issue` skill; it encodes the full workflow below.
@@ -158,7 +172,7 @@ python3 -I scripts/export-mac-snapshots.py
 SlidePilot.xcodeproj    app project; SlidePilot.xctestplan = test plan, MacSnapshots.xctestplan = Mac screenshots
 SlidePilot/             app target sources
 SlidePilotMacSnapshots/ macOS-only test target that renders Mac screenshots (see "Mac snapshots")
-scripts/                snapshot export, screen capture guard
+scripts/                snapshot export, screen capture guard, simulator fixture copy
 Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
 Fixtures/               sample Beamer PDFs + .tex sources, legacy notes file, test video (see its README)
