@@ -6,7 +6,15 @@ import Testing
 @Suite struct PDFInspectorTests {
     @Test func readsPageCountOfAValidPDF() throws {
         let info = try PDFInspector.inspect(TestPDF.make(pages: 6))
-        #expect(info == PDFDocumentInfo(pageCount: 6))
+        #expect(info.pageCount == 6)
+        #expect(info.pageSizes.allSatisfy { $0 == TestPDF.pageSize })
+    }
+
+    @Test func reportsPageSizesInTheirDisplayedOrientation() throws {
+        let data = try TestPDF.rotating(TestPDF.make(pages: 4), by: [0, 90, 180, 270])
+        let info = try PDFInspector.inspect(data)
+        let portrait = CGSize(width: TestPDF.pageSize.height, height: TestPDF.pageSize.width)
+        #expect(info.pageSizes == [TestPDF.pageSize, portrait, TestPDF.pageSize, portrait])
     }
 
     @Test func acceptsASinglePage() throws {
@@ -53,33 +61,5 @@ import Testing
     @Test func acceptsAPDFWithOnlyAnOwnerPassword() throws {
         let info = try PDFInspector.inspect(TestPDF.make(pages: 3, ownerPassword: "owner"))
         #expect(info.pageCount == 3)
-    }
-}
-
-/// Builds small PDFs in memory, so the tests need no files on disk.
-enum TestPDF {
-    static func make(pages: Int, userPassword: String? = nil, ownerPassword: String? = nil) -> Data {
-        let data = NSMutableData()
-        var mediaBox = CGRect(x: 0, y: 0, width: 362.8, height: 272.1)
-        var info: [CFString: Any] = [:]
-        if let userPassword {
-            info[kCGPDFContextUserPassword] = userPassword
-            info[kCGPDFContextOwnerPassword] = ownerPassword ?? userPassword
-        } else if let ownerPassword {
-            info[kCGPDFContextOwnerPassword] = ownerPassword
-            info[kCGPDFContextAllowsCopying] = false
-        }
-        guard
-            let consumer = CGDataConsumer(data: data as CFMutableData),
-            let context = CGContext(consumer: consumer, mediaBox: &mediaBox, info as CFDictionary)
-        else { return Data() }
-        for _ in 0..<pages {
-            context.beginPDFPage(nil)
-            context.setFillColor(CGColor(red: 0.2, green: 0.4, blue: 0.8, alpha: 1))
-            context.fill(CGRect(x: 20, y: 20, width: 100, height: 60))
-            context.endPDFPage()
-        }
-        context.closePDF()
-        return data as Data
     }
 }

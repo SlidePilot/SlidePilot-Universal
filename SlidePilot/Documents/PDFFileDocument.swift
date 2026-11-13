@@ -17,10 +17,14 @@ nonisolated struct PDFFileDocument: FileDocument {
             throw DocumentOpenError(fileName: fileName, reason: .notAPDF)
         }
         do {
-            info = try PDFInspector.inspect(data)
+            try self.init(data: data)
         } catch {
             throw DocumentOpenError(fileName: fileName, reason: error)
         }
+    }
+
+    init(data: Data) throws(PDFOpenError) {
+        info = try PDFInspector.inspect(data)
         self.data = data
     }
 
