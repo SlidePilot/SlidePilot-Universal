@@ -5,7 +5,7 @@ import SwiftUI
 /// layout. Interim content of the document window until the presenter layout (#13, LAY-01).
 struct CurrentAndNextSlides: View {
     let cache: RenderCache
-    let page: Int
+    @Binding var page: Int
 
     /// The old app's default layout padding.
     private let padding: CGFloat = 30
@@ -15,6 +15,14 @@ struct CurrentAndNextSlides: View {
             let available = max(0, proxy.size.width - padding)
             HStack(spacing: padding) {
                 SlideSurface(cache: cache, page: page, role: .current)
+                    // VoiceOver users without a keyboard swipe up or down to change slides.
+                    .accessibilityAdjustableAction { direction in
+                        switch direction {
+                        case .increment: page = min(cache.info.pageCount - 1, page + 1)
+                        case .decrement: page = max(0, page - 1)
+                        @unknown default: break
+                        }
+                    }
                     .frame(width: available * 0.6)
                 NextSlidePreview(cache: cache, currentPage: page)
                     .frame(width: available * 0.4)

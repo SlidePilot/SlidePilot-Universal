@@ -72,6 +72,7 @@ public actor RenderCache {
         background = (0..<max(0, configuration.backgroundWorkers)).map { _ in SlideRasterizer(data: data) }
     }
 
+    // Jobs hold the cache weakly, so closing a document cancels its queued renders here.
     deinit {
         for job in jobs.values { job.task.cancel() }
         for job in thumbnailJobs.values { job.task.cancel() }
@@ -93,7 +94,8 @@ public actor RenderCache {
                 return try await job.task.value
             } catch is CancellationError where !Task.isCancelled {
                 // The job was a neighborhood job the presenter has moved away from,
-                // but this caller still wants the page: try again.
+                // but this caller still wants the page: start a new job.
+                if jobs[key]?.id == job.id { jobs[key] = nil }
                 continue
             }
         }
@@ -109,6 +111,7 @@ public actor RenderCache {
         let neighborhood = neighborhoodKeys
         for (key, job) in jobs where !neighborhood.contains(key) {
             job.task.cancel()
+            jobs[key] = nil
         }
 
         // Current, next, previous, then further ahead (ADR 0005).
@@ -201,18 +204,25 @@ public actor RenderCache {
     private func startJob(for key: SlideKey, box: PixelSize, size: PixelSize, on rasterizer: SlideRasterizer) -> Job {
         jobs[key]?.task.cancel()
         let id = makeJobID()
-        let task = Task {
-            let slide = try await rasterizer.render(page: key.page, region: key.region, fitting: box)
-            self.store(slide, for: key, jobID: id)
-            return slide
+        let task = Task { [weak self] in
+            do {
+                let slide = try await rasterizer.render(page: key.page, region: key.region, fitting: box)
+                await self?.finishJob(id, for: key, with: slide)
+                return slide
+            } catch {
+                // Cancelled or failed jobs are removed too, so the page can be rendered again.
+                await self?.finishJob(id, for: key, with: nil)
+                throw error
+            }
         }
         let job = Job(id: id, size: size, task: task)
         jobs[key] = job
         return job
     }
 
-    private func store(_ slide: RenderedSlide, for key: SlideKey, jobID: UInt64) {
-        if jobs[key]?.id == jobID { jobs[key] = nil }
+    private func finishJob(_ id: UInt64, for key: SlideKey, with slide: RenderedSlide?) {
+        if jobs[key]?.id == id { jobs[key] = nil }
+        guard let slide else { return }
         slides.insert(slide, for: key)
         slides.evict(toFit: configuration.budgetBytes, protected: protectedKeys, preferred: neighborhoodKeys)
     }

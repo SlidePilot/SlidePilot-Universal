@@ -15,7 +15,7 @@ struct DocumentView: View {
     }
 
     var body: some View {
-        CurrentAndNextSlides(cache: cache, page: page)
+        CurrentAndNextSlides(cache: cache, page: $page)
             .shrinksOnMemoryWarning(cache)
             // Interim slide change with ← and → until the navigation commands (#17, NAV-01).
             .focusable()

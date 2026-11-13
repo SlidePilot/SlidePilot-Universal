@@ -12,12 +12,13 @@ struct NextSlidePreview: View {
         if next < cache.info.pageCount {
             SlideSurface(cache: cache, page: next, region: region, role: .next)
         } else {
-            EndOfDeckView(aspectRatio: lastPageSize)
+            EndOfDeckView(aspectRatio: endPageSize)
         }
     }
 
-    private var lastPageSize: CGSize {
-        guard let size = cache.info.pageSizes.last else { return CGSize(width: 4, height: 3) }
+    /// The old app sized the black page like the first page (`PDFPageView.displayBlank`).
+    private var endPageSize: CGSize {
+        guard let size = cache.info.pageSizes.first else { return CGSize(width: 4, height: 3) }
         return region.size(onPageOfSize: size)
     }
 }

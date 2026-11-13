@@ -83,6 +83,10 @@ import Testing
             #expect(full.pixelSize.width > full.pixelSize.height)
             #expect(PixelProbe.color(of: full.image, atUnit: CGPoint(x: 0.25, y: 0.5)) == topOrLeft)
             #expect(PixelProbe.color(of: full.image, atUnit: CGPoint(x: 0.75, y: 0.5)) == bottomOrRight)
+            let left = try await cache.image(page: 0, region: .leftHalf, fitting: Self.box)
+            let right = try await cache.image(page: 0, region: .rightHalf, fitting: Self.box)
+            #expect(PixelProbe.color(of: left.image, atUnit: CGPoint(x: 0.5, y: 0.5)) == topOrLeft)
+            #expect(PixelProbe.color(of: right.image, atUnit: CGPoint(x: 0.5, y: 0.5)) == bottomOrRight)
         } else {
             #expect(full.pixelSize.width < full.pixelSize.height)
             let top = try await cache.image(page: 0, region: .topHalf, fitting: Self.box)
@@ -194,6 +198,21 @@ import Testing
         }
         let pages = Set(await cache.cachedKeys.map(\.page))
         #expect(pages.isSuperset(of: 189...193))
+    }
+
+    /// Jobs cancelled while queued must not block the page when the presenter comes back.
+    @Test(.timeLimit(.minutes(1)))
+    func returningToAPageWithACancelledJobRendersIt() async throws {
+        let cache = try makeCache(pages: 200)
+        for _ in 0..<5 {
+            await cache.focus(on: 1, region: .full, fitting: Self.box)
+            await cache.focus(on: 100, region: .full, fitting: Self.box)
+            await cache.focus(on: 3, region: .full, fitting: Self.box)
+        }
+        for page in [1, 2, 3, 4, 5, 6] {
+            let slide = try await cache.image(page: page, region: .full, fitting: Self.box)
+            #expect(slide.pageIndex == page)
+        }
     }
 
     // PRE-02: thumbnails come from the same cache, in their own store and budget.
