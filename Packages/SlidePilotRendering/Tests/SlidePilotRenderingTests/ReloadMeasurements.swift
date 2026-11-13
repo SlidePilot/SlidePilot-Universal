@@ -37,6 +37,31 @@ struct ReloadMeasurements {
         Self.publish(report, name: "reload-url-backed")
     }
 
+    /// Does a bookmark of the PDF still resolve after the file was replaced?
+    @Test(arguments: WritePattern.allCases.filter { $0 != .touchOnly })
+    func bookmarkAfterRewrite(pattern: WritePattern) async throws {
+        let directory = FileManager.default.temporaryDirectory.appending(path: "bookmark-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let file = directory.appending(path: "deck.pdf")
+        try ReloadScenarios.makePDF(pages: 3, seed: 1).write(to: file)
+        let bookmark = try file.bookmarkData(options: [.minimalBookmark], includingResourceValuesForKeys: nil, relativeTo: nil)
+        let inodeBefore = FileStamp.current(file)?.inode
+
+        try await ReloadScenarios.write(ReloadScenarios.makePDF(pages: 5, seed: 2), to: file, pattern: pattern)
+
+        var stale = false
+        let line: String
+        do {
+            let resolved = try URL(resolvingBookmarkData: bookmark, options: [.withoutUI], relativeTo: nil, bookmarkDataIsStale: &stale)
+            let samePath = resolved.standardizedFileURL.resolvingSymlinksInPath() == file.standardizedFileURL.resolvingSymlinksInPath()
+            line = "- \(pattern.rawValue): resolves, same path \(samePath), stale \(stale), new inode \(inodeBefore != FileStamp.current(file)?.inode)"
+        } catch {
+            line = "- \(pattern.rawValue): does NOT resolve (\(ReloadPipeline.describe(error)))"
+        }
+        Self.publish(line, name: "reload-bookmark")
+    }
+
     private static var repository: URL {
         URL(filePath: #filePath)
             .deletingLastPathComponent()
