@@ -12,6 +12,7 @@ Follow these steps in order. Talk to the user in German; everything written to t
 - `gh issue view <N> --comments`
 - Note the parity IDs, acceptance criteria, milestone and labels. If acceptance criteria are missing or ambiguous, ask the user before planning.
 - Check that no open PR already covers it: `gh pr list --search "<N>"`.
+- Check that it is not blocked (open "blocked by" issues or the label `needs-decision`, see "Dependencies and decisions"). If it is, tell the user and do not start.
 - Set the issue's status on the project board to **In Progress** (see "Project status" below).
 
 ## 2. Study the original
@@ -76,3 +77,11 @@ Issues live on project number 4 of the SlidePilot organization (`gh project … 
 - Item ID of the issue: `gh project item-list 4 --owner SlidePilot --format json --limit 200`, the item whose `content.number` is the issue number (use `--jq` instead of a pipe).
 - Set it: `gh project item-edit --id <item> --project-id <project> --field-id <status field> --single-select-option-id <option>`.
 - If a new issue is not on the board yet, tell the user instead of adding it.
+
+## Dependencies and decisions
+The board is the live project overview, so blockers must be on the issues themselves. There is no extra status for waiting; views filter on these instead ("Ready to start", "Waiting for you", "Blocked", see `docs/project-board.md`).
+- **Blocked by another issue:** use GitHub's native issue dependency ("blocked by"), never a label or a sentence in the body. GitHub unblocks the issue when the blocker closes. Set it with the GraphQL mutation `addBlockedBy` (`gh api graphql -f query='mutation { … }'`; get node IDs with `issue(number: N) { id }`). Batch several mutations into one call.
+- **Waiting for a product-owner decision** (approval of a deviation or proposal, prototype acceptance): add the label `needs-decision` and say in a comment what has to be decided. Remove the label once the decision is made.
+- When you create an issue, set its dependencies right away. When an issue turns out to depend on another one, add the dependency then.
+- An issue that was already started and then becomes blocked stays **In Progress**; it shows up under "Blocked" through the dependency. Do not move it back to Backlog.
+- Never remove a dependency just to start work; if you think it is wrong, ask the user.
