@@ -10,6 +10,7 @@
 		5A0000000000000000000301 /* SlidePilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = 5A0000000000000000000901 /* SlidePilotCore */; };
 		5A0000000000000000000302 /* SlidePilotRendering in Frameworks */ = {isa = PBXBuildFile; productRef = 5A0000000000000000000902 /* SlidePilotRendering */; };
 		5A0000000000000000000303 /* SlidePilotRemoteProtocol in Frameworks */ = {isa = PBXBuildFile; productRef = 5A0000000000000000000903 /* SlidePilotRemoteProtocol */; };
+		5A0000000000000000000304 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 5A0000000000000000000108 /* Fixtures */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +21,7 @@
 		5A0000000000000000000104 /* SlidePilotCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SlidePilotCore; sourceTree = "<group>"; };
 		5A0000000000000000000105 /* SlidePilotRendering */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SlidePilotRendering; sourceTree = "<group>"; };
 		5A0000000000000000000106 /* SlidePilotRemoteProtocol */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SlidePilotRemoteProtocol; sourceTree = "<group>"; };
+		5A0000000000000000000108 /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +74,7 @@
 				5A0000000000000000000201 /* SlidePilot */,
 				5A0000000000000000000202 /* SlidePilotMacSnapshots */,
 				5A0000000000000000000004 /* Packages */,
+				5A0000000000000000000108 /* Fixtures */,
 				5A0000000000000000000003 /* Config */,
 				5A0000000000000000000002 /* Products */,
 			);
@@ -212,6 +215,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A0000000000000000000304 /* Fixtures in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
