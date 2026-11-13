@@ -1,3 +1,4 @@
+import CoreGraphics
 import PDFKit
 import Testing
 @testable import SlidePilot
@@ -23,5 +24,27 @@ struct MacSnapshots {
         let document = try PDFFileDocument(data: data)
         let view = DocumentView(document: document, page: pdf.pageCount - 1)
         try await WindowSnapshot.record(view, name: "slides-last", appearance: appearance)
+    }
+
+    // PROTOTYPE (issue #7): presenter with the bundled fixture, and the presentation surface.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func prototypePresenter(appearance: WindowSnapshot.Appearance) async throws {
+        let session = PrototypeSession()
+        session.openSample()
+        try await WindowSnapshot.record(
+            PresenterView(session: session), name: "prototype-presenter",
+            size: CGSize(width: 1200, height: 700), appearance: appearance
+        )
+    }
+
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func prototypePresentation(appearance: WindowSnapshot.Appearance) async throws {
+        let session = PrototypeSession()
+        session.openSample()
+        session.pageIndex = 1
+        try await WindowSnapshot.record(
+            PresentationView(session: session, host: "snapshot"), name: "prototype-presentation",
+            size: CGSize(width: 960, height: 540), appearance: appearance
+        )
     }
 }
