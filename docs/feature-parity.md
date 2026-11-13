@@ -48,7 +48,8 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 | LAY-06 | Slide navigator (**O**, close with the menu or **Esc**). It is a 180-pt thumbnail sidebar with a page-number field. Typing a letter or digit focuses the field and **Return** jumps to the page. Thumbnails do not follow links. Text search was a TODO in the old app and is not part of parity | `Views/Thumbnail/ThumbnailNavigation.swift:318-384`; `PresenterViewController.swift:353-413`; `Views/Thumbnail/ThumbnailView.swift:33` | `customize-layout` | Sidebar / sheet | Custom thumbnail sidebar → `NavigationSplitView` sidebar or `.inspector` with a thumbnail `List`; page field → `.searchable` / toolbar `TextField` | P2 | planned |
 | LAY-07 | Optional crossfade between slides on the presentation window (0.6 s). UserDefaults `crossfadeSlides`, default off | `Views/Slide/PDFPageView.swift:280-293`; `Controllers/PreferencesController.swift:120-128` | – | Same | `Toggle` in Settings | P2 | planned |
 | LAY-08 | Drawing mode replaces the presenter layout with the current slide only (see DRAW-05) | `SlideArrangementView+ViewSetup.swift:14-37` | `drawing` | Same | – | P3 | planned |
-| LAY-09 | End of deck: the next-slide preview shows a black image after the last slide | `Views/Slide/NSColor+Extension.swift` | – | Same | – | P2 | planned |
+| LAY-09 | End of deck: the next-slide preview shows a black image after the last slide, sized like the first page (the new app uses its displayed size and the shown half). The new app adds a centered "End of presentation" note, so the end cannot be mistaken for a black slide in the deck (approved deviation) | `Views/Slide/NSColor+Extension.swift`; `Views/Slide/SlideArrangementView.swift:115-125` | – | Same | – | P2 | changed |
+| LAY-10 | Each slot has a title: "Current Slide n / count", "Next Slide" ("Finished Presentation" after the last slide) and "Notes Slide n / count" | `SlideArrangementView.swift:99-128` | `customize-layout` | Same | Standard `Text` label per slot, semantic font | P2 | planned |
 
 ## 3. Navigation, links and media
 
@@ -69,7 +70,7 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 | ID | Feature | Old source | Docs | iPad notes | Native replacement | Milestone | Status |
 |---|---|---|---|---|---|---|---|
 | PRE-01 | Render cache. Old: `NSCache` keyed by (page, display mode), count limit 200; pages 0…200 rendered in the background on open (full mode only); ±50 pages around each requested page. Not user-configurable. New (ADR 0005): current + next first, neighborhood in the background, memory-based limit (512 MiB macOS, 192 MiB iPadOS), neighborhood −1…+3, no pre-render on open; see ADR 0005 and `docs/prototypes/render-cache.md` | `Helpers/RenderCache.swift:60-135,178-228` | `pre-rendering` | Stricter memory budget on iPad | – | P2 | changed |
-| PRE-02 | The cache also serves thumbnails and remote slide images | `ThumbnailNavigation.swift:318`; `Remote/RemoteController.swift:40-55` | – | Same | – | P2 | planned |
+| PRE-02 | The cache also serves thumbnails and remote slide images. New: thumbnails have their own small store (32 MiB macOS, 16 MiB iPadOS) and render lazily on a background worker; remote clients request any size and region and get the cached rendition (at least the requested size), which they scale down themselves. The navigator (LAY-06) and the remote (REM-04) use this API when they are built | `ThumbnailNavigation.swift:318`; `Remote/RemoteController.swift:40-55` | – | Same | – | P2 | changed |
 
 ## 4. Timing
 

@@ -3,10 +3,14 @@ import PDFKit
 
 /// What the app needs to know about a PDF right after opening it.
 public struct PDFDocumentInfo: Sendable, Equatable {
-    public let pageCount: Int
+    /// Size of every page in points, in its displayed orientation (`/Rotate` applied).
+    /// Lets views lay out slides before they are rendered.
+    public let pageSizes: [CGSize]
 
-    public init(pageCount: Int) {
-        self.pageCount = pageCount
+    public var pageCount: Int { pageSizes.count }
+
+    public init(pageSizes: [CGSize]) {
+        self.pageSizes = pageSizes
     }
 }
 
@@ -22,7 +26,7 @@ public enum PDFOpenError: Error, Sendable, Equatable {
 
 /// Checks that opened file data is a PDF that can be presented.
 public enum PDFInspector {
-    /// Parses `data` and returns its page count, or the reason it cannot be presented.
+    /// Parses `data` and returns its page sizes, or the reason it cannot be presented.
     ///
     /// Runs on any thread: it only reads a `PDFDocument` it owns and lets it go before returning.
     public static func inspect(_ data: Data) throws(PDFOpenError) -> PDFDocumentInfo {
@@ -30,6 +34,9 @@ public enum PDFInspector {
         // A user password locks the document; an owner password alone does not.
         guard !document.isLocked else { throw .locked }
         guard document.pageCount > 0 else { throw .noPages }
-        return PDFDocumentInfo(pageCount: document.pageCount)
+        let sizes = (0..<document.pageCount).map { index in
+            document.page(at: index).map(PageGeometry.displayedSize) ?? .zero
+        }
+        return PDFDocumentInfo(pageSizes: sizes)
     }
 }

@@ -1,33 +1,28 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%lld slides" : {
+    "Current slide, %lld of %lld" : {
       "localizations" : {
-        "de" : {
-          "variations" : {
-            "plural" : {
-              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld Folie" } },
-              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld Folien" } }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld slide" } },
-              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld slides" } }
-            }
-          }
-        },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld diapositive" } },
-              "many" : { "stringUnit" : { "state" : "translated", "value" : "%lld diapositives" } },
-              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld diapositives" } }
-            }
-          }
-        }
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie, %1$lld von %2$lld" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle, %1$lld sur %2$lld" } }
+      }
+    },
+    "End of presentation" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ende der Präsentation" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fin de la présentation" } }
+      }
+    },
+    "Next slide, %lld of %lld" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie, %1$lld von %2$lld" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante, %1$lld sur %2$lld" } }
+      }
+    },
+    "Next slide: end of presentation" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie: Ende der Präsentation" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante : fin de la présentation" } }
       }
     },
     "The document “%@” could not be opened." : {
@@ -58,12 +53,6 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Das PDF ist mit einem Passwort geschützt. Entferne das Passwort und öffne es erneut." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le PDF est protégé par un mot de passe. Supprimez le mot de passe et ouvrez-le à nouveau." } }
-      }
-    },
-    "Untitled PDF" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unbenanntes PDF" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "PDF sans titre" } }
       }
     }
   },
