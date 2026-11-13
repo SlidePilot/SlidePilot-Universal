@@ -1,16 +1,69 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "No Presentation Open" : {
+    "%lld slides" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Präsentation geöffnet" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune présentation ouverte" } }
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld Folie" } },
+              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld Folien" } }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld slide" } },
+              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld slides" } }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : { "stringUnit" : { "state" : "translated", "value" : "%lld diapositive" } },
+              "many" : { "stringUnit" : { "state" : "translated", "value" : "%lld diapositives" } },
+              "other" : { "stringUnit" : { "state" : "translated", "value" : "%lld diapositives" } }
+            }
+          }
+        }
       }
     },
-    "Open a PDF to start presenting." : {
+    "The document “%@” could not be opened." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffne ein PDF, um mit der Präsentation zu beginnen." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrez un PDF pour commencer la présentation." } }
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das Dokument „%@“ konnte nicht geöffnet werden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le document « %@ » n’a pas pu être ouvert." } }
+      }
+    },
+    "The document could not be opened." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das Dokument konnte nicht geöffnet werden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le document n’a pas pu être ouvert." } }
+      }
+    },
+    "The file is damaged or is not a PDF document." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Datei ist beschädigt oder kein PDF-Dokument." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le fichier est endommagé ou n’est pas un document PDF." } }
+      }
+    },
+    "The PDF does not contain any pages." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das PDF enthält keine Seiten." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le PDF ne contient aucune page." } }
+      }
+    },
+    "The PDF is protected with a password. Remove the password and open it again." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das PDF ist mit einem Passwort geschützt. Entferne das Passwort und öffne es erneut." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le PDF est protégé par un mot de passe. Supprimez le mot de passe et ouvrez-le à nouveau." } }
+      }
+    },
+    "Untitled PDF" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unbenanntes PDF" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "PDF sans titre" } }
       }
     }
   },

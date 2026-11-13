@@ -57,7 +57,8 @@ Logic that can be unit-tested belongs in a package. The app target stays thin.
 
 | | macOS | iPadOS |
 |---|---|---|
-| Presenter | Main `WindowGroup` window | Main scene on the device |
+| Documents | `DocumentGroup(viewing:)`: open panel, Open Recent, one window per PDF; the app keeps running without windows | `DocumentGroup(viewing:)`: document browser at launch |
+| Presenter | The PDF's document window | The PDF's document scene on the device |
 | Presentation | Second window, full screen on the second screen if present | Scene on the external display (`UIWindowScene` external display role) *(Phase 1)* |
 | Menus / shortcuts | `Commands` | Same `Commands` (shown with a hardware keyboard) |
 | Settings | `Settings` scene | Sheet |

@@ -9,7 +9,9 @@ import Testing
 @Suite(.serialized)
 struct MacSnapshots {
     @Test(arguments: WindowSnapshot.Appearance.allCases)
-    func emptyState(appearance: WindowSnapshot.Appearance) async throws {
-        try await WindowSnapshot.record(ContentView(), name: "empty-state", appearance: appearance)
+    func openedDocument(appearance: WindowSnapshot.Appearance) async throws {
+        // Same title and page count as Fixtures/plain-slides.pdf.
+        let view = DocumentView(title: "plain-slides", pageCount: 6)
+        try await WindowSnapshot.record(view, name: "document-opened", appearance: appearance)
     }
 }
