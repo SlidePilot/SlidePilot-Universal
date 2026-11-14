@@ -22,6 +22,9 @@ struct SlideSurface: View {
     @State private var box: PixelSize?
 
     private struct Request: Equatable {
+        /// A reloaded PDF comes with a new cache (DOC-08); the old image stays until the
+        /// new one is rendered.
+        let cache: ObjectIdentifier
         let page: Int
         let region: PageRegion
         let box: PixelSize?
@@ -48,7 +51,7 @@ struct SlideSurface: View {
             } action: { newBox in
                 box = newBox
             }
-            .task(id: Request(page: page, region: region, box: box)) {
+            .task(id: Request(cache: ObjectIdentifier(cache), page: page, region: region, box: box)) {
                 await load()
             }
             .slideOutline()
