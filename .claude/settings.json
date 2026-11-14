@@ -211,14 +211,21 @@
       ],
       "allowRead": [
         ".",
-        "../SlidePilot-macOS"
+        "../SlidePilot-macOS",
+        "../../../../SlidePilot-macOS"
       ],
       "allowWrite": [
         "~/Library/Developer/CoreSimulator/Devices"
       ],
       "denyWrite": [
         ".git/config",
-        ".git/hooks"
+        ".git/config.worktree",
+        ".git/hooks",
+        ".git/worktrees/*/config.worktree",
+        "../../../.git/config",
+        "../../../.git/config.worktree",
+        "../../../.git/hooks",
+        "../../../.git/worktrees/*/config.worktree"
       ]
     },
     "credentials": {
