@@ -14,7 +14,9 @@ final class PrototypeAppDelegate: NSObject, UIApplicationDelegate {
     ) -> UISceneConfiguration {
         let role = connectingSceneSession.role
         PrototypeSession.shared.record("ipad: scene requested, role \(role.rawValue)")
-        let configuration = UISceneConfiguration(name: nil, sessionRole: role)
+        // The external-display configuration is also declared in Config/Info.plist.
+        let name: String? = role == .windowExternalDisplayNonInteractive ? "External Display" : nil
+        let configuration = UISceneConfiguration(name: name, sessionRole: role)
         if role == .windowExternalDisplayNonInteractive {
             configuration.delegateClass = ExternalDisplaySceneDelegate.self
         }
@@ -87,6 +89,9 @@ enum IPadDisplayDescription {
             + ", scene \(Int(geometry.coordinateSpace.bounds.width))×\(Int(geometry.coordinateSpace.bounds.height)) pt"
             + ", \(screen.maximumFramesPerSecond) fps"
         if screen.mirrored != nil { text += ", MIRRORING" }
+        // Shows whether our scene delegate is attached or iPadOS/SwiftUI used another one.
+        text += ", delegate \(scene.delegate.map { String(describing: type(of: $0)) } ?? "none")"
+        text += ", config \(scene.session.configuration.name ?? "unnamed")"
         if scene.isFullScreen { text += ", full screen" }
         if screen == UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first(where: { $0.session.role == .windowApplication })?.screen {
             text += ", device screen"
