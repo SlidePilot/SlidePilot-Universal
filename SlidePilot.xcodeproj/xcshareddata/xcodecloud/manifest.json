@@ -1,0 +1,9 @@
+{
+  "id" : "8999e18b-9335-49dd-be5a-e6f0084be37f",
+  "targets" : [
+    {
+      "id" : "0401ffb8-3e0a-441d-bb0f-9c21cd802b50",
+      "name" : "SlidePilot"
+    }
+  ]
+}

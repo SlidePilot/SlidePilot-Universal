@@ -1,6 +1,6 @@
 # 0011 – Universal purchase and free Mac download
 
-- Status: Accepted
+- Status: Accepted (signing IDs: [0014](0014-commit-signing-ids.md))
 - Date: 2026-11-12
 - Supersedes: [0003](0003-app-store-distribution.md)
 
