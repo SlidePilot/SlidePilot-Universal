@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<!-- Upload to App Store Connect / TestFlight. The team and bundle ID
-	     come from the archive (Config/Local.xcconfig), never from this file. -->
+	     come from the archive (Config/Shared.xcconfig), never from this file. -->
 	<key>method</key>
 	<string>app-store-connect</string>
 	<key>destination</key>

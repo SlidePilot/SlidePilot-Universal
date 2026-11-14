@@ -13,8 +13,8 @@ The app must look and feel as native as possible on macOS 26 and iPadOS 26.
 - Light and dark mode, Dynamic Type (iPad), VoiceOver labels and keyboard navigation are required for every feature.
 
 ## Privacy (public repository)
-Never commit personal data of the product owner or anyone else: e-mail addresses, Apple development team IDs, real bundle IDs/App IDs, device names, local paths containing user names, phone numbers, addresses, signing material. The owner's name in LICENSE/CONTRIBUTING is accepted.
-- Team and bundle ID prefix go only into the git-ignored `Config/Local.xcconfig`.
+Never commit personal data of the product owner or anyone else: e-mail addresses, device names, local paths containing user names, phone numbers, addresses, signing material (certificates, keys, profiles, API keys). The owner's name in LICENSE/CONTRIBUTING is accepted.
+- Exception (ADR 0014): the app's own bundle ID prefix and development team are committed in `Config/Shared.xcconfig`. They are public anyway (code signature, App Store). Never add other App IDs or team IDs.
 - Commits use the GitHub noreply address (`git config user.email` is set per repo; check it before committing in a new clone or cloud session).
 - Screenshots in PRs must not show personal data (file paths, user names, device names). Don't launch other apps.
 - **Mac screenshots only of SlidePilot, rendered by the app itself** (see "Mac snapshots"). Never capture the Mac screen: no `screencapture`, ScreenCaptureKit, `CGWindowList…`/`CGDisplay…` images, Screenshot.app or UI-test screen captures. Screen Recording is not granted to Claude, Xcode or SlidePilot and must stay that way. CI fails if code uses a screen capture API (`scripts/check-no-screen-capture.sh`).
@@ -82,7 +82,8 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 
 - The scheme `SlidePilot` runs `SlidePilot.xctestplan`, which contains the test targets of all three packages. Add new test targets (packages or app) to that test plan. Exception: `SlidePilotMacSnapshots` has its own scheme and test plan (`MacSnapshots.xctestplan`), so iPad builds never build it.
 - New packages: add them to the project's `Packages` group (folder reference) **and** as a local package dependency, otherwise Xcode does not see their tests.
-- Signing: `Config/Shared.xcconfig` holds placeholders (`org.example`, no team). For signed local builds, copy `Config/Local.xcconfig.example` to `Config/Local.xcconfig` (git-ignored). CI builds with `CODE_SIGNING_ALLOWED=NO`.
+- Signing: `Config/Shared.xcconfig` holds the real bundle ID prefix and team (ADR 0014), so local and Xcode Cloud builds sign without extra setup. The git-ignored `Config/Local.xcconfig` can override them (e.g. for a fork). CI builds with `CODE_SIGNING_ALLOWED=NO`.
+- Releases: Xcode Cloud archives and uploads both platforms when started manually; see [`docs/release.md`](docs/release.md).
 - The app target uses `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (Xcode 26 default for apps). Packages use the default (nonisolated); mark UI-facing package types `@MainActor` explicitly.
 
 - CI: `.github/workflows/ci.yml` on `macos-26` with Xcode pinned via `DEVELOPER_DIR` (currently Xcode 26.6, iPad simulator iOS 26.5). The required status check is **`ci-success`**; it only passes if all jobs pass. PRs that only change docs (`docs/`, root `*.md`, `LICENSE`), Claude configuration (`.claude/`) or issue/PR templates skip the macOS and iPad jobs (job `changes`); any other path runs everything. When the runner image changes, update the pinned Xcode and simulator OS in one PR.
