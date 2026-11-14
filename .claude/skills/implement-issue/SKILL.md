@@ -17,14 +17,15 @@ Follow these steps in order. Talk to the user in German; everything written to t
 
 ## 2. Study the original
 - Read the parity rows for every ID in `docs/feature-parity.md`, including "Native replacement", "Inconsistencies found" and "Known defects – do not replicate".
-- Read the old code at the referenced file:line locations and follow it until the full behavior is clear: `../SlidePilot-macOS/SlidePilot/` (local) or `/opt/reference/SlidePilot-macOS/SlidePilot/` (cloud).
+- Read the old code at the referenced file:line locations and follow it until the full behavior is clear: `../../../../SlidePilot-macOS/SlidePilot/` (local worktree; `../SlidePilot-macOS/SlidePilot/` from the main checkout) or `/opt/reference/SlidePilot-macOS/SlidePilot/` (cloud).
 - Read the matching docs page: `https://slidepilot.gitbook.io/slidepilot/basic-features/<page>.md`.
 - Read the relevant ADRs in `docs/decisions/` and the affected sections of `docs/architecture.md`.
 
 ## 3. Plan
 - Write down: behaviors to reproduce (with old source), deviations (only those already approved), which module each piece belongs in (Core / Rendering / RemoteProtocol / app), the native components to use (ADR 0010), and the tests.
 - **Stop and ask the user** if the plan needs a new deviation from parity, a new dependency, an architectural decision (→ propose an ADR in chat), or custom UI beyond the slide surface, pointer overlay and drawing layer.
-- Create the branch with three separate commands (no `&&`, see "Sandbox and permissions" in `CLAUDE.md`): `git checkout main`, `git pull origin main --ff-only`, `git checkout -b feat/<short-name>` (or `fix/…`).
+- Local session: work in the session's own worktree (see "Worktrees" in `CLAUDE.md`). If the session runs in the main checkout, call `EnterWorktree` first. Rename the worktree's branch with `git branch -m feat/<short-name>` (or `fix/…`); the "could not lock config file" message after the rename is harmless, `git push -u` sets the upstream later. Never switch branches in the main checkout.
+- Cloud session: `git checkout -b feat/<short-name>` from the default branch.
 
 ## 4. Tests first
 - Write Swift Testing tests (`import Testing`, `@Test`, `#expect`) for the logic in the package where it lives. Cover the old behavior's edge cases and the "do not replicate" defects (as regression tests that assert the correct behavior).
