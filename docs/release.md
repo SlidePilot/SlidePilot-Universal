@@ -38,7 +38,7 @@ Remove an old archive first (`rm -rf ./build/SlidePilot-macOS.xcarchive`) if one
 After the upload, App Store Connect processes the build (usually 10–30 minutes). Then add it to an internal TestFlight group.
 
 ## What each build contains
-- **App icon:** `SlidePilot/Resources/AppIcon.icon` (Icon Composer, placeholder until the final icon in the release preparation issue).
+- **App icon:** `SlidePilot/Resources/AppIcon.icon` (Icon Composer; design notes and the alternative glyph in [`design/app-icon`](design/app-icon/README.md)).
 - **Export compliance:** `ITSAppUsesNonExemptEncryption = NO` in the generated Info.plist. The app only uses encryption provided by the OS. Revisit this if the remote protocol adds its own encryption.
 - **Privacy manifest:** `SlidePilot/Resources/PrivacyInfo.xcprivacy`. No tracking, no collected data. When code starts using a required-reason API (e.g. `UserDefaults`, file timestamps, disk space, system boot time), add it with its reason to `NSPrivacyAccessedAPITypes` in the same PR.
 - **macOS sandbox:** App Sandbox and Hardened Runtime are on; file access is read-only for files the user selects. Writing the notes companion file (ADR 0007) will need read-write access.
