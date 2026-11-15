@@ -15,7 +15,7 @@ The glyph reduces the yoke of the old SlidePilot icon to two simple shapes with 
 | `hub` (front) | Hub ring (outer radius 158, inner radius 70) |
 | `horns` (back) | Two arcs around the hub (radius 300, stroke 108): the hinted handles of the yoke |
 
-All values are in points on the 1024 × 1024 canvas. The arcs leave a gap of 88° at the top and 136° at the bottom, so they reach further up than down. The glyph sits 59 points below the canvas center to look optically centered.
+All values are in points on the 1024 × 1024 canvas. The arcs leave a gap of 88° at the top and 136° at the bottom, so they reach further up than down. The hub center sits 32 points below the canvas center, so the glyph looks optically centered.
 
 The SVGs are white; the colors come from the fills in `icon.json`.
 
