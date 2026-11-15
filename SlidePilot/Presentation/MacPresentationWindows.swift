@@ -38,8 +38,11 @@ final class MacPresentationWindows {
         return isNew
     }
 
+    /// Closing the document ends its presentation (DOC-04).
     func presenterDidClose(_ id: PresentationSession.ID) {
+        let presentation = entries[id]?.presentation
         entries[id] = nil
+        presentation?.close()
     }
 
     /// Brings a running presentation to the front and keeps the presenter key.
@@ -159,7 +162,7 @@ struct PresentationWindowContent: View {
     let id: PresentationSession.ID?
     @Environment(SessionRegistry.self) private var registry
     @Environment(MacPresentationWindows.self) private var windows
-    @Environment(\.dismissWindow) private var dismissWindow
+    @Environment(\.dismiss) private var dismiss
     @State private var window: NSWindow?
 
     var body: some View {
@@ -176,8 +179,10 @@ struct PresentationWindowContent: View {
                     _ = windows.showRunningPresentation(id)
                 })
         } else {
+            // Fallback if the document went away first: close this window. The window
+            // itself, not by value, since the scene's value is non-optional.
             Color.black
-                .onAppear { dismissWindow(id: PresentationScene.id, value: id) }
+                .onAppear { dismiss() }
         }
     }
 }
