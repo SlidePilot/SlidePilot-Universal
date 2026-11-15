@@ -28,7 +28,7 @@ Never commit personal data of the product owner or anyone else: e-mail addresses
 ## What we are building
 A from-scratch rewrite of SlidePilot (AppKit macOS PDF presenter for LaTeX Beamer) as **one universal SwiftUI app for macOS 26 and iPadOS 26**, Swift 6.
 
-- Old app (read-only reference, never copy code from it): `../SlidePilot-macOS` (local) or `/opt/reference/SlidePilot-macOS` (cloud sessions). Paths in the parity doc are relative to its `SlidePilot/` folder.
+- Old app (read-only reference, never copy code from it): next to the repository folder, i.e. `../../../../SlidePilot-macOS` from a session worktree (`../SlidePilot-macOS` from the main checkout), or `/opt/reference/SlidePilot-macOS` (cloud sessions). Paths in the parity doc are relative to its `SlidePilot/` folder.
 - Old user docs: <https://slidepilot.gitbook.io/slidepilot> (index: `/llms.txt`, each page available as `.md`).
 - GitHub: `SlidePilot/SlidePilot-Universal`. Milestones: Phase 0 – Foundation … Phase 5 – Polish & Release.
 
@@ -100,7 +100,14 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 - Never run `git pull` / `git fetch` without `origin`, and never add `--upload-pack`, `--receive-pack`, `--exec`, `--multiple` or `--repo` (denied).
 - Never work around the sandbox or a denied command (no `git -c`, no `gh api` without asking, no other tools to reach the network or personal files). If a needed command fails because of the sandbox, tell the user which command and why, and propose a settings change.
 - `sandbox.filesystem.allowWrite` lets sandboxed commands write into the iOS simulators' device data (`~/Library/Developer/CoreSimulator/Devices`), so `scripts/sim-copy-fixtures.sh` can put the fixtures into "On My iPad" (see "iPad simulator testing"). The rule names the whole folder because sandbox paths with `*` only match the path itself, not files below it.
-- `sandbox.filesystem.denyWrite` blocks sandboxed writes to `.git/config` and `.git/hooks`, because the allow-listed `git fetch/pull/push` run outside the sandbox and would execute hooks or programs set in the config. In a worktree these paths do not reach the main repository's `.git`; that protection comes from the user settings.
+- `sandbox.filesystem.denyWrite` blocks sandboxed writes to `.git/config`, `.git/hooks` and the per-worktree `config.worktree` files, because the allow-listed `git fetch/pull/push` run outside the sandbox and would execute hooks or programs set in the config. Relative sandbox paths resolve against the session's own checkout, so each rule appears twice: once for the main checkout and once with `../../../` for a worktree under `.claude/worktrees/<name>` (same for `../SlidePilot-macOS`).
+
+## Worktrees (local sessions)
+- **Every local session works in its own worktree** under `.claude/worktrees/<name>`, created by the desktop app (or `EnterWorktree`) from current `origin/main`. Run every command from that worktree's root: never `cd` into another checkout and never use `git -C`. Allow-listed commands only leave the sandbox when run on their own, so `cd … && git push` fails without network.
+- **The main checkout stays on an up-to-date `main`.** No feature work, branch switches or edits there; the maintainer updates it with `git pull origin main --ff-only` in a terminal.
+- A session reads `.claude/settings.json` and the skills from its own checkout. A worktree cut from an older `main` keeps the old rules. When `.claude/` changed on `main` since the branch was cut (`git diff --quiet HEAD origin/main -- .claude` fails after `git fetch origin main`), finish the branch as is and do the next task in a fresh session; the sandbox cannot rebase across `.claude/` changes, because it blocks writes to those files.
+- Change `.claude/settings.json` or skills only in a session's own worktree, never as uncommitted edits in the main checkout. Edit them with the Edit tool (sandboxed shell writes are blocked).
+- The sandbox cannot add or remove worktrees outside its own session. Old worktrees are removed by the maintainer in a terminal: `git worktree remove --force .claude/worktrees/<name>`, then `git worktree prune`.
 - `gh api graphql …` (issue dependencies, labels) and `gh api orgs/SlidePilot/projectsV2/4/views …` (project views) run outside the sandbox but stay on "ask": every call needs the product owner's click. Batch several mutations into one GraphQL call to keep the prompts few. Use them only for the project bookkeeping in the `implement-issue` skill ("Project status").
 - `gh pr close <N>` runs outside the sandbox so prototype PRs can be closed once their findings PR is open. Deleting the branch while closing is denied (long and short option), because findings docs reference prototype branches.
 - Changes to `.claude/settings.json` need the product owner's approval.
