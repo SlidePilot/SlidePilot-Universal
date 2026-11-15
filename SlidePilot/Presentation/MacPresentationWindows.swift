@@ -23,8 +23,9 @@ final class MacPresentationWindows {
     }
 
     @ObservationIgnored private var entries: [PresentationSession.ID: Entry] = [:]
-    /// Consumed by the placement of the next presentation window.
-    @ObservationIgnored private var nextScreen: CGDirectDisplayID?
+    /// Screens for the presentation windows about to open, consumed in order by their
+    /// placement (several documents can open at once).
+    @ObservationIgnored private var pendingScreens: [CGDirectDisplayID?] = []
 
     func isPresenting(_ id: PresentationSession.ID) -> Bool {
         entries[id]?.isPresenting == true
@@ -45,6 +46,9 @@ final class MacPresentationWindows {
     /// Returns `false` when no presentation window is open.
     func showRunningPresentation(_ id: PresentationSession.ID) -> Bool {
         guard let entry = entries[id], entry.isPresenting, let window = entry.presentation else { return false }
+        if window.isMiniaturized {
+            window.deminiaturize(nil)
+        }
         window.orderFront(nil)
         entry.presenter?.makeKeyAndOrderFront(nil)
         return true
@@ -54,18 +58,19 @@ final class MacPresentationWindows {
     func prepareToOpen(_ id: PresentationSession.ID, on screen: CGDirectDisplayID? = nil) {
         let screens = NSScreen.screens.compactMap(\.displayID)
         let presenterScreen = entries[id]?.presenter?.screen?.displayID
-        nextScreen = screen ?? PresentationScreenPolicy.screen(in: screens, presenterScreen: presenterScreen)
-        entries[id, default: Entry()].screen = nextScreen
+        let target = screen ?? PresentationScreenPolicy.screen(in: screens, presenterScreen: presenterScreen)
+        pendingScreens.append(target)
+        entries[id, default: Entry()].screen = target
     }
 
     /// Opens the presentation window directly on the chosen screen, so it never shows up
     /// on the presenter's screen first. `WindowPlacement` uses top-left coordinates
     /// relative to the screen with the menu bar.
     func placement() -> WindowPlacement {
-        defer { nextScreen = nil }
+        let next = pendingScreens.isEmpty ? nil : pendingScreens.removeFirst()
         let screens = NSScreen.screens
         guard let primary = screens.first,
-              let target = screens.first(where: { $0.displayID == nextScreen }) ?? screens.first
+              let target = screens.first(where: { $0.displayID == next }) ?? screens.first
         else { return WindowPlacement() }
         let frame = target.visibleFrame
         let position = CGPoint(x: frame.minX, y: primary.frame.maxY - frame.maxY)
@@ -79,10 +84,19 @@ final class MacPresentationWindows {
         entries[id, default: Entry()].isPresenting = true
         window.tabbingMode = .disallowed
         window.collectionBehavior.insert(.fullScreenPrimary)
+        // Deliberately unowned and short-lived: it only finishes setting up this window and
+        // checks that the window is still the session's presentation before touching it.
         Task {
             // Full screen is ignored while SwiftUI is still setting up the new window.
             try? await Task.sleep(for: .milliseconds(150))
-            guard self.entries[id]?.presentation === window else { return }
+            guard let entry = self.entries[id], entry.presentation === window else { return }
+            // Safety net if the placement went to another screen than chosen.
+            if !window.styleMask.contains(.fullScreen), let screen = entry.screen,
+               window.screen?.displayID != screen,
+               let target = NSScreen.screens.first(where: { $0.displayID == screen })
+            {
+                window.setFrame(target.visibleFrame, display: true)
+            }
             if !window.styleMask.contains(.fullScreen) {
                 window.toggleFullScreen(nil)
             }
@@ -90,18 +104,25 @@ final class MacPresentationWindows {
         }
     }
 
-    func presentationDidClose(_ id: PresentationSession.ID) {
+    /// Ignores a late call from a window that was already replaced by a new one.
+    func presentationDidClose(_ id: PresentationSession.ID, window: NSWindow?) {
+        guard let entry = entries[id], window == nil || entry.presentation === window else { return }
         entries[id]?.presentation = nil
         entries[id]?.isPresenting = false
     }
 
     /// Closes the presentation window and waits until SwiftUI has removed it, so the same
-    /// session can open a new one.
-    func closePresentation(_ id: PresentationSession.ID) async {
+    /// session can open a new one. Returns `false` if the waiting task was cancelled.
+    func closePresentation(_ id: PresentationSession.ID) async -> Bool {
         entries[id]?.presentation?.close()
         for _ in 0..<40 where isPresenting(id) {
-            try? await Task.sleep(for: .milliseconds(50))
+            do {
+                try await Task.sleep(for: .milliseconds(50))
+            } catch {
+                return false
+            }
         }
+        return !Task.isCancelled
     }
 
     /// Decides how a running presentation reacts to a screen change.
@@ -139,12 +160,21 @@ struct PresentationWindowContent: View {
     @Environment(SessionRegistry.self) private var registry
     @Environment(MacPresentationWindows.self) private var windows
     @Environment(\.dismissWindow) private var dismissWindow
+    @State private var window: NSWindow?
 
     var body: some View {
         if let id, let session = registry.session(for: id) {
             PresentationView(session: session)
-                .background(WindowBridge { windows.attachPresentation($0, for: id) })
-                .onDisappear { windows.presentationDidClose(id) }
+                .background(WindowBridge { newWindow in
+                    window = newWindow
+                    windows.attachPresentation(newWindow, for: id)
+                })
+                .onDisappear { windows.presentationDidClose(id, window: window) }
+                // After a click into the presentation, ⌥⌘P still works and hands the
+                // keyboard back to the presenter.
+                .focusedSceneValue(\.startPresentation, StartPresentationAction {
+                    _ = windows.showRunningPresentation(id)
+                })
         } else {
             Color.black
                 .onAppear { dismissWindow(id: PresentationScene.id, value: id) }
@@ -157,11 +187,14 @@ struct PresentationWindowContent: View {
 private struct PresenterWindowModifier: ViewModifier {
     let session: PresentationSession
     @Environment(MacPresentationWindows.self) private var windows
+    @Environment(SessionRegistry.self) private var registry
     @Environment(\.openWindow) private var openWindow
 
     func body(content: Content) -> some View {
         content
             .background(WindowBridge { window in
+                // The presentation window looks the session up, so register it first.
+                registry.register(session)
                 if windows.attachPresenter(window, for: session.id),
                    PresentationScreenPolicy.startsWhenOpening(screenCount: NSScreen.screens.count)
                 {
@@ -193,11 +226,13 @@ private struct PresenterWindowModifier: ViewModifier {
             try? await Task.sleep(for: .seconds(1))
             if Task.isCancelled { return }
             let current = NSScreen.screens.compactMap(\.displayID)
+            // Later notifications of the same burst find nothing new.
+            guard current != previous else { continue }
             defer { previous = current }
             guard case .reopen(let screen) = windows.reaction(for: session.id, previous: previous, current: current)
             else { continue }
             // A full-screen window in another Space cannot be moved: open a new one there.
-            await windows.closePresentation(session.id)
+            guard await windows.closePresentation(session.id) else { return }
             windows.prepareToOpen(session.id, on: screen)
             openWindow(id: PresentationScene.id, value: session.id)
         }

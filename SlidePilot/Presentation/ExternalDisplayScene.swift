@@ -7,8 +7,8 @@ import UIKit
 final class AppDelegate: NSObject, UIApplicationDelegate {
     let registry = SessionRegistry()
 
-    /// UIKit creates scene delegates by class, so the external-display scene cannot be
-    /// handed the registry. It reads it here; this reference holds no document state.
+    /// The only global path to the app-owned registry: UIKit creates scene delegates by
+    /// class, so there is no other way to hand it to the external-display scene.
     private(set) static weak var current: AppDelegate?
 
     override init() {
@@ -38,7 +38,11 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        guard let windowScene = scene as? UIWindowScene, let registry = AppDelegate.current?.registry else { return }
+        guard let windowScene = scene as? UIWindowScene else { return }
+        guard let registry = AppDelegate.current?.registry else {
+            assertionFailure("The app delegate creates the registry before any scene connects.")
+            return
+        }
         let window = UIWindow(windowScene: windowScene)
         let host = UIHostingController(rootView: ExternalDisplayView().environment(registry))
         host.view.backgroundColor = .black
