@@ -10,6 +10,8 @@ struct SlideSurface: View {
     enum Role {
         case current
         case next
+        /// The audience's slide on the presentation window or external display.
+        case presentation
     }
 
     let cache: RenderCache
@@ -54,7 +56,8 @@ struct SlideSurface: View {
             .task(id: Request(cache: ObjectIdentifier(cache), page: page, region: region, box: box)) {
                 await load()
             }
-            .slideOutline()
+            // The presentation shows the slide on black without a frame.
+            .slideOutline(role != .presentation)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(accessibilityLabel)
             .accessibilityAddTraits(.isImage)
@@ -72,6 +75,7 @@ struct SlideSurface: View {
         return switch role {
         case .current: Text("Current slide, \(number) of \(count)")
         case .next: Text("Next slide, \(number) of \(count)")
+        case .presentation: Text("Presentation, slide \(number) of \(count)")
         }
     }
 
@@ -96,9 +100,11 @@ struct SlideSurface: View {
 extension View {
     /// A hairline around a slide, so white pages stand out from a light window background
     /// and black pages from a dark one.
-    func slideOutline() -> some View {
+    func slideOutline(_ isShown: Bool = true) -> some View {
         overlay {
-            Rectangle().strokeBorder(.separator, lineWidth: 1)
+            if isShown {
+                Rectangle().strokeBorder(.separator, lineWidth: 1)
+            }
         }
     }
 }

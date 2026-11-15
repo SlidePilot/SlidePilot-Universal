@@ -3,10 +3,13 @@ import Observation
 import SlidePilotCore
 import SlidePilotRendering
 
-/// State of one open document: the slides and the current page.
+/// State of one open document: the slides and the current page. The presenter and the
+/// presentation observe the same session (DOC-04).
 /// Later issues add layout, notes, drawing, pointer, curtain and timer state.
 @Observable
-final class PresentationSession {
+final class PresentationSession: Identifiable {
+    /// Identifies the session's presentation window (macOS) and its registry entry.
+    let id = UUID()
     /// Replaced when the PDF is reloaded; views read page sizes from `cache.info`.
     private(set) var cache: RenderCache
     private(set) var position: DeckPosition

@@ -1,4 +1,5 @@
 import PDFKit
+import SwiftUI
 import Testing
 @testable import SlidePilot
 
@@ -12,7 +13,7 @@ struct MacSnapshots {
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func firstSlide(appearance: WindowSnapshot.Appearance) async throws {
         let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
-        try await WindowSnapshot.record(DocumentView(document: document), name: "slides-first", appearance: appearance)
+        try await WindowSnapshot.record(DocumentView(document: document).snapshotScene(), name: "slides-first", appearance: appearance)
     }
 
     // LAY-09: after the last slide the preview shows the end-of-deck page.
@@ -21,7 +22,7 @@ struct MacSnapshots {
         let data = try Fixture.data("plain-slides.pdf")
         let pdf = try #require(PDFDocument(data: data))
         let document = try PDFFileDocument(data: data)
-        let view = DocumentView(document: document, page: pdf.pageCount - 1)
+        let view = DocumentView(document: document, page: pdf.pageCount - 1).snapshotScene()
         try await WindowSnapshot.record(view, name: "slides-last", appearance: appearance)
     }
 
@@ -38,7 +39,7 @@ struct MacSnapshots {
         let url = folder.appending(path: "slides.pdf")
         try long.write(to: url)
 
-        let view = DocumentView(document: try PDFFileDocument(data: long), fileURL: url, page: 5)
+        let view = DocumentView(document: try PDFFileDocument(data: long), fileURL: url, page: 5).snapshotScene()
         let window = WindowSnapshot.makeWindow(view, appearance: appearance)
         defer { window.close() }
         // Let the file presenter register before the first change.
@@ -51,5 +52,28 @@ struct MacSnapshots {
         try long.write(to: url, options: .atomic)
         try await Task.sleep(for: .seconds(4))
         try await WindowSnapshot.record(window, name: "reload-longer-\(appearance.rawValue)")
+    }
+
+    // DOC-04: the presentation window shows the current slide on black.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func presentation(appearance: WindowSnapshot.Appearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        let session = PresentationSession(data: document.data, info: document.info, page: 1)
+        let view = PresentationView(session: session)
+        try await WindowSnapshot.record(view, name: "presentation", size: CGSize(width: 960, height: 600), appearance: appearance)
+    }
+
+    // DOC-05 (iPad): the external display while no document is open. Rendered on the Mac
+    // to check the logo and text; the iPad shows the same view.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func readyToPresent(appearance: WindowSnapshot.Appearance) async throws {
+        try await WindowSnapshot.record(ReadyToPresentView(), name: "ready-to-present", size: CGSize(width: 960, height: 540), appearance: appearance)
+    }
+}
+
+private extension View {
+    /// The environment the app's scenes provide.
+    func snapshotScene() -> some View {
+        environment(SessionRegistry()).environment(MacPresentationWindows())
     }
 }

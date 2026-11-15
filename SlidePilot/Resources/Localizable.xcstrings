@@ -25,6 +25,36 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante : fin de la présentation" } }
       }
     },
+    "Presentation" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présentation" } }
+      }
+    },
+    "Presentation, slide %lld of %lld" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation, Folie %1$lld von %2$lld" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présentation, diapositive %1$lld sur %2$lld" } }
+      }
+    },
+    "Ready to present" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bereit zum Präsentieren" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Prêt à présenter" } }
+      }
+    },
+    "Show the presentation in full screen" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation im Vollbildmodus zeigen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher la présentation en plein écran" } }
+      }
+    },
+    "Start Presentation" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation starten" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Démarrer la présentation" } }
+      }
+    },
     "The document “%@” could not be opened." : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Das Dokument „%@“ konnte nicht geöffnet werden." } },
