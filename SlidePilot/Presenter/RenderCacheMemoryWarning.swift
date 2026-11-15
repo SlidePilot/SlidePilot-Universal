@@ -5,14 +5,15 @@ import SwiftUI
 import UIKit
 
 extension View {
-    /// Shrinks the cache to the neighborhood when iPadOS reports memory pressure (ADR 0005).
-    func shrinksOnMemoryWarning(_ cache: RenderCache) -> some View {
+    /// Shrinks the session's cache to the neighborhood when iPadOS reports memory pressure (ADR 0005).
+    func shrinksOnMemoryWarning(_ session: PresentationSession) -> some View {
         task {
             let warnings = NotificationCenter.default.notifications(
                 named: UIApplication.didReceiveMemoryWarningNotification
             )
             for await _ in warnings {
-                await cache.shrinkToNeighborhood()
+                // Read on every warning: a reload replaces the cache.
+                await session.cache.shrinkToNeighborhood()
             }
         }
     }
@@ -20,7 +21,7 @@ extension View {
 #else
 extension View {
     /// macOS has no memory warnings; the byte budget alone limits the cache.
-    func shrinksOnMemoryWarning(_ cache: RenderCache) -> some View {
+    func shrinksOnMemoryWarning(_ session: PresentationSession) -> some View {
         self
     }
 }

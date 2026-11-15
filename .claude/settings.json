@@ -214,7 +214,7 @@
         "../SlidePilot-macOS"
       ],
       "allowWrite": [
-        "~/Library/Developer/CoreSimulator/Devices/*/data/Containers/Shared/AppGroup/*/File Provider Storage"
+        "~/Library/Developer/CoreSimulator/Devices"
       ],
       "denyWrite": [
         ".git/config",

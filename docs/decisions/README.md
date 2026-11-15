@@ -12,9 +12,10 @@
 | [0008](0008-ci-as-build-feedback.md) | GitHub Actions as build feedback | Accepted |
 | [0009](0009-drop-touch-bar.md) | Drop Touch Bar support | Accepted |
 | [0010](0010-native-design-first.md) | Native design first | Accepted |
-| [0011](0011-universal-purchase-and-direct-download.md) | Universal purchase and free Mac download | Accepted |
+| [0011](0011-universal-purchase-and-direct-download.md) | Universal purchase and free Mac download | Accepted (signing IDs: 0014) |
 | [0012](0012-companion-file-location.md) | Companion file in the app container, folder access on demand | Accepted |
 | [0013](0013-pdf-change-detection.md) | Detect PDF changes with a file presenter | Accepted |
+| [0014](0014-commit-signing-ids.md) | Commit the bundle ID prefix and development team | Accepted |
 
 ## Process
 1. Propose the decision in chat with the product owner (context, options, recommendation).

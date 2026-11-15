@@ -1,15 +1,16 @@
 // Shared build settings for the SlidePilot app target.
-// Real values for the bundle ID prefix and the development team are
-// personal data and must not be committed. Put them into the
-// git-ignored Config/Local.xcconfig (see Config/Local.xcconfig.example).
-
-// Placeholder defaults: build without signing, e.g. in CI.
-BUNDLE_ID_PREFIX = org.example
-DEVELOPMENT_TEAM =
+// The bundle ID prefix and the development team are those of the App Store
+// app record (ADR 0014). They are public anyway: the team ID is part of every
+// signed build and the bundle ID is listed in the App Store. Committing them
+// lets Xcode Cloud and fresh checkouts archive without extra setup.
+BUNDLE_ID_PREFIX = de.pascalbraband
+DEVELOPMENT_TEAM = FFSR8KUJW2
 
 // Product flags. Only the free Mac download shows the donation hint (ADR 0011).
 SLIDEPILOT_EDITION_FLAGS =
 
+// Optional, git-ignored overrides, e.g. for a fork signed with its own team
+// (see Config/Local.xcconfig.example).
 #include? "Local.xcconfig"
 
 PRODUCT_BUNDLE_IDENTIFIER = $(BUNDLE_ID_PREFIX).SlidePilot
