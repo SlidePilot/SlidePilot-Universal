@@ -144,6 +144,7 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 | SET-04 | Keep the display awake (UserDefaults `isSleepDisabled`, default off) via an IOPM `NoDisplaySleep` assertion while the app runs | `Helpers/AwakeManager.swift`; `PreferencesController.swift:35-67` | – | `isIdleTimerDisabled` | `Toggle` in Settings | P2 | planned |
 | SET-05 | General pane: Keep awake, Crossfade slides, Save drawings | `Views/Preferences/GeneralPreferencesViewController.swift` | `drawing` | Same | `Form` with `Toggle`s | P4 | planned |
 | SET-06 | Help menu item (**⌘?**) opens the online docs | `AppDelegate.swift:163` | – | Link in settings | Standard Help menu (`CommandGroup(replacing: .help)`) | P5 | planned |
+| SET-07 | **New (product-owner decision 2026-11-15):** overview of the stored document data in Settings. One row per companion entry (NOTES-10): PDF name, what it holds (notes, drawings, settings), last opened, size, and "PDF not found" when the bookmark does not resolve. Delete single entries or all not-found entries, with confirmation; RTF and drawings export (NOTES-06, DRAW-10) stay available before deleting. Nothing is deleted automatically: a missing PDF may only be on an unmounted drive, in iCloud or mid-recompile. Needed because the companion file lives in the app container (ADR 0012), so deleting a PDF no longer removes its notes and drawings | – | – | Same | `List` with swipe/⌫ delete and `confirmationDialog` in the Settings scene (macOS) / settings sheet (iPad) | P4 | planned |
 
 ## 10. Remote (ships with 1.1)
 
