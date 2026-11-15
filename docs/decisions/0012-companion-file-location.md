@@ -12,7 +12,7 @@ ADR 0007 introduced one companion file per PDF (notes, drawings, per-document se
 
 ## Decision
 - The companion file lives in the **app container**. It is matched to its PDF through a security-scoped bookmark (and the `documentIdentifier` where the system provides one), so renames and moves keep the match.
-- Container entries that contain notes or drawings **do not expire**. The 28-day expiry (old per-document settings) applies only to entries that hold nothing but settings.
+- Container entries that contain notes or drawings **do not expire**. The expiry of the old per-document settings applies only to entries that hold nothing but settings. It was 28 days in the old app; the new app uses 12 months (SET-03, amended 2026-11-15), so decks presented once a year keep their settings.
 - Access to the PDF's folder is requested **only when needed** and stored as a bookmark:
   - when the PDF references neighbouring files (`\movie`, `run:` links; NAV-06/07), on all platforms;
   - on macOS, when a legacy notes file exists next to the PDF (NOTES-08).
