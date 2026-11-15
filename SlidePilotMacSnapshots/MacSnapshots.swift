@@ -25,6 +25,14 @@ struct MacSnapshots {
         try await WindowSnapshot.record(view, name: "slides-last", appearance: appearance)
     }
 
+    // LAY-06: the navigator is open on slide 3.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func navigator(appearance: WindowSnapshot.Appearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        let view = DocumentView(document: document, page: 2, showsNavigator: true)
+        try await WindowSnapshot.record(view, name: "navigator", size: CGSize(width: 1100, height: 600), appearance: appearance)
+    }
+
     // DOC-08: a copy of a 6-page deck is open on slide 6 and is rewritten in place with a
     // 4-page deck (like pdflatex), then replaced atomically with the 6-page deck again.
     // Expected: slide 4 of 4 with the end-of-deck page, then slide 4 of 6 with slide 5 next.

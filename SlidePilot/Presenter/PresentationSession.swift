@@ -30,6 +30,11 @@ final class PresentationSession {
         position.showPrevious()
     }
 
+    /// Jumps to `page`, clamped to the deck (slide navigator, LAY-06).
+    func showPage(_ page: Int) {
+        position.show(page)
+    }
+
     /// Shows a recompiled version of the PDF (DOC-08). The page stays, clamped to the
     /// new last page when the deck got shorter (DEF-18).
     func reload(with version: PDFVersion) {

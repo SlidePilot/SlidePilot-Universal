@@ -10,6 +10,8 @@ struct SlideSurface: View {
     enum Role {
         case current
         case next
+        /// A small image in the slide navigator, from the cache's thumbnail store (PRE-02).
+        case thumbnail
     }
 
     let cache: RenderCache
@@ -72,6 +74,7 @@ struct SlideSurface: View {
         return switch role {
         case .current: Text("Current slide, \(number) of \(count)")
         case .next: Text("Next slide, \(number) of \(count)")
+        case .thumbnail: Text("Slide \(number) of \(count)")
         }
     }
 
@@ -83,12 +86,17 @@ struct SlideSurface: View {
             try? await Task.sleep(for: .milliseconds(150))
             if Task.isCancelled { return }
         }
-        if role == .current {
+        let rendered: RenderedSlide?
+        switch role {
+        case .current:
             await cache.focus(on: page, region: region, fitting: box)
+            rendered = try? await cache.image(page: page, region: region, fitting: box)
+        case .next:
+            rendered = try? await cache.image(page: page, region: region, fitting: box)
+        case .thumbnail:
+            rendered = try? await cache.thumbnail(page: page, region: region, fitting: box)
         }
-        guard let rendered = try? await cache.image(page: page, region: region, fitting: box),
-              !Task.isCancelled
-        else { return }
+        guard let rendered, !Task.isCancelled else { return }
         slide = rendered
     }
 }
