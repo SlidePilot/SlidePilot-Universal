@@ -15,7 +15,9 @@ import UIKit
 ///   is open the window shows the system document browser. So the accessory is registered
 ///   once on the root view controller of every app window, which stays for the window's
 ///   lifetime, and carries the window's ID. Its scene uses `ExternalDisplaySceneDelegate`,
-///   the same as on iPadOS 26.
+///   the same as on iPadOS 26. While iPadOS swaps the accessories on a window switch or at
+///   launch, the display briefly mirrors the device (hardware test); a single accessory
+///   for all windows was tried and is not presented for the other windows.
 @MainActor
 final class AppWindowTracker {
     private let registry: SessionRegistry
@@ -41,9 +43,7 @@ final class AppWindowTracker {
         #if compiler(>=6.4)
         let usesAccessories: Bool
         if #available(iOS 27, *) { usesAccessories = true } else { usesAccessories = false }
-        oneAccessory = DiagnosticsLog.shared.usesOneAccessory
-        // As early as possible: until a window has an accessory, iPadOS mirrors the device.
-        let connections = center.notifications(named: UIScene.willConnectNotification)
+        // On activation, because the root view controller may not exist yet when a window connects.
         let activations = center.notifications(named: UIScene.didActivateNotification)
         let disconnections = center.notifications(named: UIScene.didDisconnectNotification)
         #endif
@@ -58,15 +58,9 @@ final class AppWindowTracker {
                 #if compiler(>=6.4)
                 guard usesAccessories, #available(iOS 27, *) else { return }
                 group.addTask {
-                    for await notification in connections {
-                        guard let scene = notification.object as? UIWindowScene else { continue }
-                        await self.registerAccessory(on: scene, at: "connect")
-                    }
-                }
-                group.addTask {
                     for await notification in activations {
                         guard let scene = notification.object as? UIWindowScene else { continue }
-                        await self.registerAccessory(on: scene, at: "activate")
+                        await self.registerAccessory(on: scene)
                     }
                 }
                 group.addTask {
@@ -86,38 +80,21 @@ final class AppWindowTracker {
         DiagnosticsLog.shared.record("ipad: key window \(id.prefix(8))")
     }
 
-    /// TEMPORARY (hardware tests for #13): one accessory for all windows, showing the key
-    /// window's document, instead of one per window.
-    private var oneAccessory = false
-
     #if compiler(>=6.4)
     @available(iOS 27, *)
-    private func registerAccessory(on scene: UIWindowScene, at moment: String) {
-        guard let id = Self.id(of: scene), registrations[id] == nil else { return }
-        if oneAccessory, !registrations.isEmpty { return }
-        guard let root = scene.keyWindow?.rootViewController ?? scene.windows.first?.rootViewController else {
-            DiagnosticsLog.shared.record("ipad: no root view controller at \(moment) of window \(id.prefix(8))")
-            return
-        }
+    private func registerAccessory(on scene: UIWindowScene) {
+        guard let id = Self.id(of: scene), registrations[id] == nil,
+              let root = scene.keyWindow?.rootViewController ?? scene.windows.first?.rootViewController
+        else { return }
         let configuration = UISceneConfiguration(name: "External Display", sessionRole: .windowExternalDisplayNonInteractive)
         configuration.delegateClass = ExternalDisplaySceneDelegate.self
-        let accessory: UISceneAccessory = oneAccessory
-            ? .externalNonInteractive(sceneConfiguration: configuration)
-            : .externalNonInteractive(sceneConfiguration: configuration, userInfo: id)
-        registrations[id] = root.registerSceneAccessory(accessory)
-        DiagnosticsLog.shared.record(
-            "ipad: \(oneAccessory ? "single" : "window") accessory registered at \(moment) for window \(id.prefix(8))"
-        )
+        registrations[id] = root.registerSceneAccessory(.externalNonInteractive(sceneConfiguration: configuration, userInfo: id))
+        DiagnosticsLog.shared.record("ipad: external display accessory registered for window \(id.prefix(8))")
     }
 
     @available(iOS 27, *)
     private func forget(_ scene: UIScene) {
-        guard registrations.removeValue(forKey: scene.session.persistentIdentifier) != nil else { return }
-        guard oneAccessory, registrations.isEmpty else { return }
-        // Hand the single accessory over to another open window.
-        for case let other as UIWindowScene in UIApplication.shared.connectedScenes where other != scene {
-            registerAccessory(on: other, at: "handover")
-        }
+        registrations[scene.session.persistentIdentifier] = nil
     }
     #endif
 }
