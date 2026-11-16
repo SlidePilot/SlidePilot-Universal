@@ -105,7 +105,8 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 }
 
-private struct ExternalDisplayView: View {
+/// What the external display shows: the active document's presentation or the ready screen.
+struct ExternalDisplayView: View {
     @Environment(SessionRegistry.self) private var registry
 
     var body: some View {
