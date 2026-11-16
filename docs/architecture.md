@@ -1,6 +1,6 @@
 # Architecture
 
-SlidePilot Universal is one SwiftUI app for macOS 26 and iPadOS 26. The decisions behind this document are recorded in [`docs/decisions/`](decisions/). This document describes the target state; sections marked *(Phase 1)* are confirmed or revised after the Phase 1 prototypes.
+SlidePilot Universal is one SwiftUI app for macOS 26 and iOS/iPadOS 26 (iPad and, from 1.0 on, iPhone including the iPhone Duo, ADR 0015). The decisions behind this document are recorded in [`docs/decisions/`](decisions/). This document describes the target state; sections marked *(Phase 1)* are confirmed or revised after the Phase 1 prototypes.
 
 ## Repository layout
 
@@ -49,13 +49,13 @@ Logic that can be unit-tested belongs in a package. The app target stays thin.
 - **UI state** is `@Observable` and `@MainActor`. One `PresentationSession` per open document holds the current page, layout, notes, drawing, pointer, curtain and timer state. Both the presenter and the presentation scene observe the same session.
 - **Render cache** is an `actor`. It renders off the main actor and returns `Sendable` images (`CGImage`). It never mutates shared `PDFPage` state (see DEF-02 in the parity doc). It counts the bytes of its images itself and renders inside `autoreleasepool`; neighborhood and budgets are in ADR 0005.
 - **File observation** (PDF changes on disk) is an `actor` (`PDFFileObserver` in Rendering) fed by an `NSFilePresenter`; it emits new versions through an `AsyncStream` that the `PresentationSession` consumes for as long as the document view lives. Reloads are debounced, read the whole file with coordination, are validated and skipped when the bytes did not change (ADR 0013).
-- **Remote** (1.1) is an `actor` owning the `NWListener`/`NWConnection`s.
+- **Remote** (1.1) is an `actor` owning the `NWListener`/`NWConnection`s. Every instance can be presenter and controller (ADR 0015).
 - Models crossing isolation boundaries are `Sendable` value types. `@unchecked Sendable` and `nonisolated(unsafe)` need a comment explaining why they are safe.
 - No `DispatchQueue` in new code. Use structured concurrency; long-running tasks are cancelled when their owner goes away.
 
 ## Scenes and windows
 
-| | macOS | iPadOS |
+| | macOS | iOS (iPad, iPhone) |
 |---|---|---|
 | Documents | `DocumentGroup(viewing:)`: open panel, Open Recent, one window per PDF; the app keeps running without windows | `DocumentGroup(viewing:)`: document browser at launch |
 | Presenter | The PDF's document window | The PDF's document scene on the device |
@@ -64,6 +64,8 @@ Logic that can be unit-tested belongs in a package. The app target stays thin.
 | Settings | `Settings` scene | Sheet |
 
 Platform differences are isolated in small files using `#if os(macOS)`. They must not be scattered through shared views.
+
+iPhone and iPad share the iOS column. Layouts adapt to the available size and size classes, never to the device idiom, the orientation or fixed screen sizes: the iPhone Duo shows the compact layout on its outer display and the regular, iPad-like layout on its inner display, and folding keeps the scene and the presentation state (ADR 0015).
 
 ## UI principles
 

@@ -1,6 +1,6 @@
 # 0001 – Minimum OS: macOS 26 and iPadOS 26
 
-- Status: Accepted
+- Status: Accepted (iPhone: [0015](0015-iphone-and-remote-mode.md))
 - Date: 2026-11-10
 
 ## Context
