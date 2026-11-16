@@ -31,32 +31,52 @@ final class AppWindowTracker {
         scene.session.role == .windowApplication ? scene.session.persistentIdentifier : nil
     }
 
-    /// Runs for the app's lifetime.
-    func follow() async {
-        await withDiscardingTaskGroup { group in
-            group.addTask {
-                for await notification in NotificationCenter.default.notifications(named: UIWindow.didBecomeKeyNotification) {
-                    guard let window = notification.object as? UIWindow else { continue }
-                    await self.activate(window)
-                }
-            }
-            // Xcode 26 (Swift 6.2) has no iPadOS 27 SDK, so this is compiled only by newer compilers.
-            #if compiler(>=6.4)
-            if #available(iOS 27, *) {
+    /// Starts following the app windows for the app's lifetime. Call it at launch, before
+    /// the first window connects: the observers are registered right here, so the first
+    /// window's notifications are not missed while the task starts.
+    func start() {
+        let center = NotificationCenter.default
+        let keyWindows = center.notifications(named: UIWindow.didBecomeKeyNotification)
+        // Xcode 26 (Swift 6.2) has no iPadOS 27 SDK, so this is compiled only by newer compilers.
+        #if compiler(>=6.4)
+        let usesAccessories: Bool
+        if #available(iOS 27, *) { usesAccessories = true } else { usesAccessories = false }
+        oneAccessory = DiagnosticsLog.shared.usesOneAccessory
+        // As early as possible: until a window has an accessory, iPadOS mirrors the device.
+        let connections = center.notifications(named: UIScene.willConnectNotification)
+        let activations = center.notifications(named: UIScene.didActivateNotification)
+        let disconnections = center.notifications(named: UIScene.didDisconnectNotification)
+        #endif
+        Task {
+            await withDiscardingTaskGroup { group in
                 group.addTask {
-                    for await notification in NotificationCenter.default.notifications(named: UIScene.didActivateNotification) {
+                    for await notification in keyWindows {
+                        guard let window = notification.object as? UIWindow else { continue }
+                        await self.activate(window)
+                    }
+                }
+                #if compiler(>=6.4)
+                guard usesAccessories, #available(iOS 27, *) else { return }
+                group.addTask {
+                    for await notification in connections {
                         guard let scene = notification.object as? UIWindowScene else { continue }
-                        await self.registerAccessory(on: scene)
+                        await self.registerAccessory(on: scene, at: "connect")
                     }
                 }
                 group.addTask {
-                    for await notification in NotificationCenter.default.notifications(named: UIScene.didDisconnectNotification) {
+                    for await notification in activations {
+                        guard let scene = notification.object as? UIWindowScene else { continue }
+                        await self.registerAccessory(on: scene, at: "activate")
+                    }
+                }
+                group.addTask {
+                    for await notification in disconnections {
                         guard let scene = notification.object as? UIScene else { continue }
                         await self.forget(scene)
                     }
                 }
+                #endif
             }
-            #endif
         }
     }
 
@@ -66,22 +86,40 @@ final class AppWindowTracker {
         DiagnosticsLog.shared.record("ipad: key window \(id.prefix(8))")
     }
 
+    /// TEMPORARY (hardware tests for #13): one accessory for all windows, showing the key
+    /// window's document, instead of one per window.
+    private var oneAccessory = false
+
     #if compiler(>=6.4)
     @available(iOS 27, *)
-    private func registerAccessory(on scene: UIWindowScene) {
-        guard let id = Self.id(of: scene), registrations[id] == nil,
-              let root = scene.keyWindow?.rootViewController ?? scene.windows.first?.rootViewController
-        else { return }
+    private func registerAccessory(on scene: UIWindowScene, at moment: String) {
+        guard let id = Self.id(of: scene), registrations[id] == nil else { return }
+        if oneAccessory, !registrations.isEmpty { return }
+        guard let root = scene.keyWindow?.rootViewController ?? scene.windows.first?.rootViewController else {
+            DiagnosticsLog.shared.record("ipad: no root view controller at \(moment) of window \(id.prefix(8))")
+            return
+        }
         let configuration = UISceneConfiguration(name: "External Display", sessionRole: .windowExternalDisplayNonInteractive)
         configuration.delegateClass = ExternalDisplaySceneDelegate.self
-        registrations[id] = root.registerSceneAccessory(.externalNonInteractive(sceneConfiguration: configuration, userInfo: id))
-        DiagnosticsLog.shared.record("ipad: external display accessory registered for window \(id.prefix(8))")
+        let accessory: UISceneAccessory = oneAccessory
+            ? .externalNonInteractive(sceneConfiguration: configuration)
+            : .externalNonInteractive(sceneConfiguration: configuration, userInfo: id)
+        registrations[id] = root.registerSceneAccessory(accessory)
+        DiagnosticsLog.shared.record(
+            "ipad: \(oneAccessory ? "single" : "window") accessory registered at \(moment) for window \(id.prefix(8))"
+        )
+    }
+
+    @available(iOS 27, *)
+    private func forget(_ scene: UIScene) {
+        guard registrations.removeValue(forKey: scene.session.persistentIdentifier) != nil else { return }
+        guard oneAccessory, registrations.isEmpty else { return }
+        // Hand the single accessory over to another open window.
+        for case let other as UIWindowScene in UIApplication.shared.connectedScenes where other != scene {
+            registerAccessory(on: other, at: "handover")
+        }
     }
     #endif
-
-    private func forget(_ scene: UIScene) {
-        registrations[scene.session.persistentIdentifier] = nil
-    }
 }
 
 extension View {

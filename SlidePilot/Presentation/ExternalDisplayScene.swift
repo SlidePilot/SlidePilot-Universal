@@ -24,7 +24,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         DiagnosticsLog.shared.record("ipad: launch, \(application.openSessions.count) open scene session(s)")
         Task { await Self.logSceneChanges() }
         // Lives as long as the app; the app delegate is never released.
-        Task { [windows] in await windows.follow() }
+        windows.start()
         return true
     }
 

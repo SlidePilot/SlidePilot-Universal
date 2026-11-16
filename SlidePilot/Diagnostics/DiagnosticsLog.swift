@@ -13,6 +13,12 @@ final class DiagnosticsLog {
     static let shared = DiagnosticsLog()
 
     private(set) var entries: [String] = []
+
+    /// iPadOS 27 test switch, read at launch: one external display accessory for all
+    /// windows instead of one per window.
+    var usesOneAccessory = UserDefaults.standard.bool(forKey: "DiagnosticsOneAccessory") {
+        didSet { UserDefaults.standard.set(usesOneAccessory, forKey: "DiagnosticsOneAccessory") }
+    }
     @ObservationIgnored private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier ?? "SlidePilot",
         category: "Diagnostics"
@@ -53,15 +59,28 @@ struct DiagnosticsButton: View {
 }
 
 private struct DiagnosticsView: View {
-    private let log = DiagnosticsLog.shared
+    @Bindable private var log = DiagnosticsLog.shared
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
-            List(Array(log.entries.enumerated().reversed()), id: \.offset) { _, entry in
-                Text(verbatim: entry)
-                    .font(.caption.monospaced())
-                    .textSelection(.enabled)
+            List {
+                #if os(iOS)
+                Section {
+                    Toggle(isOn: $log.usesOneAccessory) {
+                        Text(verbatim: "One display accessory for all windows")
+                    }
+                } footer: {
+                    Text(verbatim: "Takes effect after quitting and reopening the app.")
+                }
+                #endif
+                Section {
+                    ForEach(Array(log.entries.enumerated().reversed()), id: \.offset) { _, entry in
+                        Text(verbatim: entry)
+                            .font(.caption.monospaced())
+                            .textSelection(.enabled)
+                    }
+                }
             }
             .navigationTitle(Text(verbatim: "Diagnostics"))
             .toolbar {
