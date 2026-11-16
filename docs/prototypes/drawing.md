@@ -2,7 +2,7 @@
 
 Issue #11 · Parity DRAW-01, DRAW-02 (also DRAW-03, DRAW-04, DRAW-08, DRAW-10) · ADR 0010 · Phase 1 – Risk Prototypes
 
-> **Status: done.** Simulator, unit-test, Apple Pencil (real iPads) and mouse/trackpad (Mac) results are in. The recommendation is approved by the product owner; the ADR follows. Still open: whether the iPad shows `PKToolPicker` (see recommendation 3).
+> **Status: done.** Simulator, unit-test, Apple Pencil (real iPads) and mouse/trackpad (Mac) results are in. The recommendation is approved by the product owner and recorded in [ADR 0016](../decisions/0016-drawing-engine.md).
 
 ## Question
 
@@ -83,7 +83,7 @@ A probe app on the branch `proto/drawing` (draft PR #67, not merged). It shows a
 - **iPadOS:** `PKCanvasView` gives Pencil-quality ink, palm rejection and a Pencil-only policy for free, but reports changes only per stroke and brings its own undo stack and color handling.
 - **Both:** the model, the read-only rendering and the export are shared and independent of the input engine.
 
-## Recommendation (approved, except the tool picker question)
+## Recommendation (approved, ADR 0016)
 
 1. **One model in Core** (`PageDrawing`, relative points, per-page section mapping) as the single source of truth on both platforms. Read-only views (presentation, next-slide preview, thumbnails) and the PDF export render the model with Core Graphics; they never use PencilKit.
 2. **Mac: custom drawing layer** (mouse and trackpad), as allowed by ADR 0010.
@@ -92,7 +92,7 @@ A probe app on the branch `proto/drawing` (draft PR #67, not merged). It shows a
    - monoline ink, width 2, strokes sampled along the rendered curve, rebuilt with PencilKit's own point size,
    - live mirroring through a passive touch tracker from the first contact,
    - one undo history per page through the model and the system `UndoManager`, not PencilKit's stack,
-   - the drawing commands (colors, clear, canvas background, done) in our own toolbar and `Commands`, the same on both platforms. Whether `PKToolPicker` is shown in addition (only the monoline pen) is a design decision for the product owner; the parity scope (6 colors, no stroke eraser, DRAW-03) argues against more tools.
+   - the drawing commands (colors, clear, canvas background, done) in our own toolbar and `Commands`, the same on both platforms. **No `PKToolPicker` for now** (product-owner decision): it adds little over parity (6 colors, no stroke eraser, DRAW-03), floats over the slide and brings its own colors and undo. Changing the color must stay quick: current color visible, presets one step away. The picker may be revisited after 2.0.
 4. **No custom layer on the iPad.** The device check showed it is clearly worse with the Pencil.
 
 This is an architectural decision, so it becomes an ADR once approved.

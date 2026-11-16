@@ -17,6 +17,7 @@
 | [0013](0013-pdf-change-detection.md) | Detect PDF changes with a file presenter | Accepted |
 | [0014](0014-commit-signing-ids.md) | Commit the bundle ID prefix and development team | Accepted |
 | [0015](0015-iphone-and-remote-mode.md) | iPhone support and remote as a mode of the app, both in 2.0 | Accepted |
+| [0016](0016-drawing-engine.md) | Drawing: shared relative model, PencilKit input on iPad, own toolbar | Accepted |
 
 ## Process
 1. Propose the decision in chat with the product owner (context, options, recommendation).
