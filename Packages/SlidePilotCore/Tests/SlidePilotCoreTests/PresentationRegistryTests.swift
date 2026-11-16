@@ -23,38 +23,15 @@ struct PresentationRegistryTests {
         #expect(registry.session(for: UUID()) == nil)
     }
 
-    @Test func newestSessionIsActive() {
+    @Test func withoutWindowsNewestSessionIsActive() {
         let registry = PresentationRegistry<Session>()
         let first = Session()
         let second = Session()
         registry.register(first)
         registry.register(second)
         #expect(registry.activeSession === second)
-    }
-
-    @Test func activatingMakesSessionActive() {
-        let registry = PresentationRegistry<Session>()
-        let first = Session()
-        let second = Session()
-        registry.register(first)
-        registry.register(second)
-        registry.activate(first.id)
-        #expect(registry.activeSession === first)
-    }
-
-    @Test func unregisteringActiveFallsBackToPreviouslyActive() {
-        let registry = PresentationRegistry<Session>()
-        let first = Session()
-        let second = Session()
-        let third = Session()
-        [first, second, third].forEach(registry.register)
-        registry.activate(first.id)
-        registry.unregister(first.id)
-        #expect(registry.activeSession === third)
-        #expect(registry.session(for: first.id) == nil)
-        registry.unregister(third.id)
         registry.unregister(second.id)
-        #expect(registry.activeSession == nil)
+        #expect(registry.activeSession === first)
     }
 
     @Test func registeringTwiceKeepsOneEntry() {
@@ -69,11 +46,43 @@ struct PresentationRegistryTests {
         #expect(registry.session(for: first.id) == nil)
     }
 
-    @Test func activatingUnknownIDChangesNothing() {
+    @Test func findsSessionByWindow() {
         let registry = PresentationRegistry<Session>()
         let first = Session()
         registry.register(first)
-        registry.activate(UUID())
+        #expect(registry.session(inWindow: "A") == nil)
+        registry.register(first, inWindow: "A")
+        #expect(registry.session(inWindow: "A") === first)
+        #expect(registry.session(inWindow: "B") == nil)
+    }
+
+    // Hardware test: two windows on iPad, switching between them.
+    @Test func activeWindowDecidesActiveSession() {
+        let registry = PresentationRegistry<Session>()
+        let first = Session()
+        let second = Session()
+        registry.activateWindow("A")
+        registry.register(first, inWindow: "A")
         #expect(registry.activeSession === first)
+        registry.activateWindow("B")
+        #expect(registry.activeSession == nil)
+        registry.register(second, inWindow: "B")
+        #expect(registry.activeSession === second)
+        registry.activateWindow("A")
+        #expect(registry.activeSession === first)
+        registry.unregister(first.id)
+        #expect(registry.activeSession == nil)
+    }
+
+    @Test func newDocumentInSameWindowReplacesOldOne() {
+        let registry = PresentationRegistry<Session>()
+        let old = Session()
+        let new = Session()
+        registry.activateWindow("A")
+        registry.register(old, inWindow: "A")
+        // The new document can appear before the old one disappears.
+        registry.register(new, inWindow: "A")
+        registry.unregister(old.id)
+        #expect(registry.activeSession === new)
     }
 }

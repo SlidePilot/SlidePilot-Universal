@@ -6,7 +6,7 @@ import UIKit
 /// scene delegate: SwiftUI has no scene type for it (docs/prototypes/external-display.md).
 final class AppDelegate: NSObject, UIApplicationDelegate {
     let registry = SessionRegistry()
-    private let accessories = ExternalDisplayAccessories()
+    private lazy var windows = AppWindowTracker(registry: registry)
 
     /// The only global path to the app-owned registry: UIKit creates scene delegates by
     /// class, so there is no other way to hand it to the external-display scene.
@@ -25,7 +25,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         discardStaleExternalDisplaySessions(of: application)
         Task { await Self.logSceneChanges() }
         // Lives as long as the app; the app delegate is never released.
-        Task { [accessories] in await accessories.followAppWindows() }
+        Task { [windows] in await windows.follow() }
         return true
     }
 
@@ -82,7 +82,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 }
 
 /// Takes over a connected display, cable or AirPlay, at once (DOC-04, DOC-05 changed): the
-/// presentation of the most recently active document, or the ready screen.
+/// presentation of the document in the active app window, or the ready screen.
+/// See `AppWindowTracker` for how iPadOS 26 and 27 connect it.
 final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
 
@@ -93,8 +94,16 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
             assertionFailure("The app delegate creates the registry before any scene connects.")
             return
         }
+        // iPadOS 27: the accessory of one app window, which shows that window's document.
+        var appWindow: String?
+        #if compiler(>=6.4)
+        if #available(iOS 27, *) {
+            appWindow = connectionOptions.sceneAccessoryUserInfo as? String
+        }
+        #endif
+        DiagnosticsLog.shared.record("ipad: external display for window \(appWindow?.prefix(8) ?? "active")")
         let window = UIWindow(windowScene: windowScene)
-        let host = UIHostingController(rootView: ExternalDisplayView().environment(registry))
+        let host = UIHostingController(rootView: ExternalDisplayView(appWindow: appWindow).environment(registry))
         host.view.backgroundColor = .black
         window.rootViewController = host
         window.isHidden = false
@@ -108,13 +117,19 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 }
 
-/// What the external display shows: the active document's presentation or the ready screen.
+/// What the external display shows: a document's presentation or the ready screen.
 struct ExternalDisplayView: View {
+    /// The app window whose document is shown; `nil` follows the active window.
+    var appWindow: String?
     @Environment(SessionRegistry.self) private var registry
+
+    private var session: PresentationSession? {
+        if let appWindow { registry.session(inWindow: appWindow) } else { registry.activeSession }
+    }
 
     var body: some View {
         Group {
-            if let session = registry.activeSession {
+            if let session {
                 PresentationView(session: session)
             } else {
                 ReadyToPresentView()

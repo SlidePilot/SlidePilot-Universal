@@ -10,7 +10,6 @@ struct DocumentView: View {
     @State private var session: PresentationSession
     @FocusState private var hasKeyboardFocus: Bool
     @Environment(SessionRegistry.self) private var registry
-    @Environment(\.scenePhase) private var scenePhase
 
     init(document: PDFFileDocument, fileURL: URL? = nil, page: Int = 0) {
         self.fileURL = fileURL
@@ -23,10 +22,10 @@ struct DocumentView: View {
             // The presentation surfaces find the session in the registry (DOC-04).
             .onAppear { registry.register(session) }
             .onDisappear { registry.unregister(session.id) }
-            // The iPad external display shows the most recently active document.
-            .onChange(of: scenePhase, initial: true) {
-                if scenePhase == .active { registry.activate(session.id) }
-            }
+            #if os(iOS)
+            // The iPad external display shows the document of the active window.
+            .onAppWindowChange { registry.register(session, inWindow: $0) }
+            #endif
             // TEMPORARY (hardware tests for #13).
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {

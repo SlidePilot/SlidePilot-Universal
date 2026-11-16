@@ -45,7 +45,7 @@ struct SlidePilotApp: App {
         #else
         // The external display: a UIKit scene (ExternalDisplayScene.swift), offered by the
         // system up to iPadOS 26 and registered as a scene accessory from iPadOS 27
-        // (ExternalDisplayAccessory.swift).
+        // (AppWindowTracker.swift).
         DocumentGroup(viewing: PDFFileDocument.self) { file in
             DocumentView(document: file.document, fileURL: file.fileURL)
                 .environment(registry)
