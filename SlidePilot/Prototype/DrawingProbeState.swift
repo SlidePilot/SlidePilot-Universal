@@ -27,6 +27,11 @@ final class DrawingProbeState {
     var adaptsInkToDarkMode = false
     var interpolatedSampling = true
     var liveMirrorsPencilKit = true
+    /// Point size PencilKit stores for a monoline stroke drawn at width 2
+    /// (4 pt, measured). Rebuilt strokes need the same size, or they look
+    /// thinner. Kept here, not in the canvas, because rotating the iPad
+    /// switches the layout and recreates the canvas.
+    var pencilKitPointWidth = 2 * PageDrawing.lineWidth
 
     private(set) var drawings: [Int: PageDrawing] = [:]
     /// The stroke being drawn right now (custom layer only), mirrored live.

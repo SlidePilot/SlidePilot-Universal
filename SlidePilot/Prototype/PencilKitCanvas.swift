@@ -52,7 +52,7 @@ struct PencilKitCanvas: UIViewRepresentable {
         if coordinator.appliedRevision != state.externalRevision || coordinator.appliedMapping != mapping {
             let drawing = state.currentDrawing
             var pk = PKDrawing()
-            let width = coordinator.inkPointWidth
+            let width = state.pencilKitPointWidth
             let duration = ContinuousClock().measure {
                 pk = PencilKitBridge.pkDrawing(from: drawing, mapping: mapping, lineWidth: width)
             }
@@ -83,10 +83,6 @@ struct PencilKitCanvas: UIViewRepresentable {
         let state: DrawingProbeState
         var toolPicker: PKToolPicker?
         var tracker: TouchTracker?
-        /// Point size PencilKit stores for a monoline stroke drawn at width 2.
-        /// Rebuilt strokes need the same size, or they look thinner. Measured
-        /// from the first drawn stroke; until then the nominal width.
-        var inkPointWidth = PageDrawing.lineWidth
         private var liveGeneration = 0
         var mapping = CanvasMapping(section: .fullPage, canvasWidth: 1, canvasHeight: 1)
         var appliedRevision = -1
@@ -138,8 +134,8 @@ struct PencilKitCanvas: UIViewRepresentable {
             if strokeStart != nil { changeCallsDuringStroke += 1 }
             var strokes: [DrawingStroke] = []
             let drawing = canvasView.drawing
-            if let size = drawing.strokes.last?.path.first?.size, size.width > 0, size.width != inkPointWidth {
-                inkPointWidth = size.width
+            if let size = drawing.strokes.last?.path.first?.size, size.width > 0, size.width != state.pencilKitPointWidth {
+                state.pencilKitPointWidth = size.width
                 state.record("PK point size of a drawn stroke: \(String(format: "%.2f × %.2f", size.width, size.height))")
             }
             let sampling: PencilKitBridge.Sampling = state.interpolatedSampling ? .interpolated(spacing: 2) : .controlPoints
