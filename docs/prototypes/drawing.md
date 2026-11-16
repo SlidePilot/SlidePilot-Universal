@@ -2,7 +2,7 @@
 
 Issue #11 · Parity DRAW-01, DRAW-02 (also DRAW-03, DRAW-04, DRAW-08, DRAW-10) · ADR 0010 · Phase 1 – Risk Prototypes
 
-> **Status: iPad checks done.** Simulator, unit-test and Apple Pencil results on real iPads are in. The mouse/trackpad check on the Mac is still open (see [Open checks](#open-checks)). The recommendation needs the product owner's approval and then an ADR.
+> **Status: done.** Simulator, unit-test, Apple Pencil (real iPads) and mouse/trackpad (Mac) results are in. The recommendation is approved by the product owner; the ADR follows. Still open: whether the iPad shows `PKToolPicker` (see recommendation 3).
 
 ## Question
 
@@ -60,6 +60,7 @@ A probe app on the branch `proto/drawing` (draft PR #67, not merged). It shows a
 | 9 | Export | Ink annotation count matches the number of strokes |
 | 10 | Dark mode | With the canvas and picker forced to light, the picker offers black and black stays black. Without it, PencilKit shows black ink as white |
 | 11 | Slow finger strokes | Shown in the mirror from the first touch, while drawing |
+| 12 | Mac, mouse and trackpad (custom layer) | Drawing works |
 
 ## Observations
 
@@ -82,7 +83,7 @@ A probe app on the branch `proto/drawing` (draft PR #67, not merged). It shows a
 - **iPadOS:** `PKCanvasView` gives Pencil-quality ink, palm rejection and a Pencil-only policy for free, but reports changes only per stroke and brings its own undo stack and color handling.
 - **Both:** the model, the read-only rendering and the export are shared and independent of the input engine.
 
-## Recommendation (proposal, not yet approved)
+## Recommendation (approved, except the tool picker question)
 
 1. **One model in Core** (`PageDrawing`, relative points, per-page section mapping) as the single source of truth on both platforms. Read-only views (presentation, next-slide preview, thumbnails) and the PDF export render the model with Core Graphics; they never use PencilKit.
 2. **Mac: custom drawing layer** (mouse and trackpad), as allowed by ADR 0010.
@@ -95,10 +96,6 @@ A probe app on the branch `proto/drawing` (draft PR #67, not merged). It shows a
 4. **No custom layer on the iPad.** The device check showed it is clearly worse with the Pencil.
 
 This is an architectural decision, so it becomes an ADR once approved.
-
-## Open checks
-
-On the Mac (run `proto/drawing`, My Mac): draw with mouse and trackpad on the custom layer, check that the mirror follows live and that undo, clear and white canvas work.
 
 ## Follow-ups
 
