@@ -6,6 +6,7 @@ import UIKit
 /// scene delegate: SwiftUI has no scene type for it (docs/prototypes/external-display.md).
 final class AppDelegate: NSObject, UIApplicationDelegate {
     let registry = SessionRegistry()
+    private let accessories = ExternalDisplayAccessories()
 
     /// The only global path to the app-owned registry: UIKit creates scene delegates by
     /// class, so there is no other way to hand it to the external-display scene.
@@ -23,6 +24,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         DiagnosticsLog.shared.record("ipad: launch, \(application.openSessions.count) open scene session(s)")
         discardStaleExternalDisplaySessions(of: application)
         Task { await Self.logSceneChanges() }
+        // Lives as long as the app; the app delegate is never released.
+        Task { [accessories] in await accessories.followAppWindows() }
         return true
     }
 
