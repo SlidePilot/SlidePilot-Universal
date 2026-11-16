@@ -89,6 +89,9 @@ final class DrawingProbeState {
     /// Called by the PencilKit canvas; the canvas already shows the change.
     func replaceStrokesFromCanvas(_ strokes: [DrawingStroke]) {
         mutate(bumpRevision: false) { $0.strokes = strokes }
+        // The live stroke stays until the finished stroke is in the model;
+        // clearing it earlier makes the mirror flash empty for a moment.
+        liveStroke = nil
     }
 
     func clear() { mutate { $0.clear() } }
