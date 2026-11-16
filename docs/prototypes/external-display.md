@@ -74,7 +74,7 @@ Approved by the product owner after the tests. They change DOC-05 (see `docs/fea
 7. **External display (cable or AirPlay) connected:** the app takes over the display at once. With a document open it shows the presentation; without one it shows a ready screen with the app logo and a short text (for example "Ready to present"). This differs from the Mac on purpose: the system hands the app a display, no window opens.
 8. **No external display:** the iPad shows only the presenter.
 
-**AirPlay (both platforms):** supported and tested in 1.0, with no AirPlay UI in the app. Mac: "Use as Separate Display" behaves like a cable display. iPad: AirPlay mirroring is handled by the external-display scene.
+**AirPlay (both platforms):** supported and tested in 2.0, with no AirPlay UI in the app. Mac: "Use as Separate Display" behaves like a cable display. iPad: AirPlay mirroring is handled by the external-display scene.
 
 ## Recommendation
 
