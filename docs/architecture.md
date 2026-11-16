@@ -1,6 +1,6 @@
 # Architecture
 
-SlidePilot Universal is one SwiftUI app for macOS 26 and iOS/iPadOS 26 (iPad and, from 1.0 on, iPhone including the iPhone Duo, ADR 0015). The decisions behind this document are recorded in [`docs/decisions/`](decisions/). This document describes the target state; sections marked *(Phase 1)* are confirmed or revised after the Phase 1 prototypes.
+SlidePilot Universal is one SwiftUI app for macOS 26 and iOS/iPadOS 26 (iPad and, from 2.0 on, iPhone including the iPhone Duo, ADR 0015). The decisions behind this document are recorded in [`docs/decisions/`](decisions/). This document describes the target state; sections marked *(Phase 1)* are confirmed or revised after the Phase 1 prototypes.
 
 ## Repository layout
 
@@ -18,7 +18,7 @@ SlidePilot-Universal/
 ├── Packages/
 │   ├── SlidePilotCore/            # models and logic, no UI, no PDFKit
 │   ├── SlidePilotRendering/       # PDFKit, render cache, drawing rendering, legacy notes RTF
-│   └── SlidePilotRemoteProtocol/  # Codable messages and pairing crypto (1.1)
+│   └── SlidePilotRemoteProtocol/  # Codable messages and pairing crypto (2.1)
 ├── Fixtures/                      # sample Beamer PDFs (+ .tex sources), legacy notes file, test video
 ├── docs/
 └── .github/workflows/ci.yml
@@ -49,7 +49,7 @@ Logic that can be unit-tested belongs in a package. The app target stays thin.
 - **UI state** is `@Observable` and `@MainActor`. One `PresentationSession` per open document holds the current page, layout, notes, drawing, pointer, curtain and timer state. Both the presenter and the presentation scene observe the same session.
 - **Render cache** is an `actor`. It renders off the main actor and returns `Sendable` images (`CGImage`). It never mutates shared `PDFPage` state (see DEF-02 in the parity doc). It counts the bytes of its images itself and renders inside `autoreleasepool`; neighborhood and budgets are in ADR 0005.
 - **File observation** (PDF changes on disk) is an `actor` (`PDFFileObserver` in Rendering) fed by an `NSFilePresenter`; it emits new versions through an `AsyncStream` that the `PresentationSession` consumes for as long as the document view lives. Reloads are debounced, read the whole file with coordination, are validated and skipped when the bytes did not change (ADR 0013).
-- **Remote** (1.1) is an `actor` owning the `NWListener`/`NWConnection`s. Every instance can be presenter and controller (ADR 0015).
+- **Remote** (2.1) is an `actor` owning the `NWListener`/`NWConnection`s. Every instance can be presenter and controller (ADR 0015).
 - Models crossing isolation boundaries are `Sendable` value types. `@unchecked Sendable` and `nonisolated(unsafe)` need a comment explaining why they are safe.
 - No `DispatchQueue` in new code. Use structured concurrency; long-running tasks are cancelled when their owner goes away.
 
@@ -79,7 +79,7 @@ Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standar
 | Legacy notes `<pdf>-notes.rtf` | Imported on open (macOS, after a folder grant) or with Import Notes… (iPad); RTF export stays available |
 | Global preferences (layout, pointer, awake, crossfade, save drawings, time size) | `UserDefaults` through one typed settings store |
 | Access to PDFs and neighbouring files | Security-scoped bookmarks. Folder access is requested only when needed (videos, `run:` links, legacy notes on macOS) and stored as a bookmark (ADR 0012) |
-| Trusted remote devices (1.1) | Keychain |
+| Trusted remote devices (2.1) | Keychain |
 
 ## Product configuration
 

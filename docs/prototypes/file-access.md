@@ -79,7 +79,7 @@ Approved by the product owner; recorded in [ADR 0012](../decisions/0012-companio
 - #26 (legacy RTF notes): macOS asks for the folder when a legacy file exists; iPadOS gets Import Notes…; keep the case-sensitive search order.
 - #20 (videos and `run:` links): ask for the folder when the PDF references neighbouring files.
 - #10 (auto-reload prototype): watching the PDF needs no folder grant; recompiles that replace the file (new inode) should be checked there.
-- Mac↔iPad sync of notes is not covered by the container location. It is out of scope for 1.0; RTF export remains the way to move notes.
+- Mac↔iPad sync of notes is not covered by the container location. It is out of scope for 2.0; RTF export remains the way to move notes.
 
 ## Re-running
 

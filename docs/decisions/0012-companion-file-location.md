@@ -21,6 +21,6 @@ ADR 0007 introduced one companion file per PDF (notes, drawings, per-document se
 
 ## Consequences
 - Notes and drawings are saved without any prompt, on every platform and location.
-- Notes do not travel with the PDF to another device or into a copied project folder. RTF export (NOTES-06/10) stays the way to move them. Sync is out of scope for 1.0.
+- Notes do not travel with the PDF to another device or into a copied project folder. Sync is out of scope for 2.0; iCloud sync is evaluated for 2.1 (#93). A PDF that is copied, moved to another volume or downloaded again loses the bookmark match; the app then offers to take over the orphaned entry (NOTES-12). To move or keep them, users export a `.slidepilot` file with notes, drawings and settings (NOTES-11, amended 2026-11-16); RTF export (NOTES-06) stays for notes alone. The stored data overview in Settings (SET-07) shows what the container holds.
 - Users who present videos or keep legacy notes grant folder access once per folder.
 - NOTES-08 is `changed` (iPad import instead of auto-load). DOC-10, NOTES-10 and SET-02 notes reference this ADR.
