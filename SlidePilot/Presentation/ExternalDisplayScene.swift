@@ -22,7 +22,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         DiagnosticsLog.shared.record("ipad: launch, \(application.openSessions.count) open scene session(s)")
-        discardStaleExternalDisplaySessions(of: application)
         Task { await Self.logSceneChanges() }
         // Lives as long as the app; the app delegate is never released.
         Task { [windows] in await windows.follow() }
@@ -64,20 +63,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         let configuration = UISceneConfiguration(name: "External Display", sessionRole: role)
         configuration.delegateClass = ExternalDisplaySceneDelegate.self
         return configuration
-    }
-
-    /// iPadOS restores a display's scene session with the configuration it got when it was
-    /// created, without asking again. A session from a build without this scene delegate
-    /// would keep mirroring the device, so it is discarded and the next connection asks anew.
-    private func discardStaleExternalDisplaySessions(of application: UIApplication) {
-        for session in application.openSessions where session.role == .windowExternalDisplayNonInteractive {
-            let delegateClass: AnyClass? = session.configuration.delegateClass
-            DiagnosticsLog.shared.record("ipad: restored external display session, delegate \(String(describing: delegateClass))")
-            guard delegateClass != ExternalDisplaySceneDelegate.self else { continue }
-            application.requestSceneSessionDestruction(session, options: nil) { error in
-                DiagnosticsLog.shared.record("ipad: could not discard a stale external display session: \(error.localizedDescription)")
-            }
-        }
     }
 }
 
