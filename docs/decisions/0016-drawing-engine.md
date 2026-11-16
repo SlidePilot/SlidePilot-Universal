@@ -26,7 +26,8 @@ The Phase 1 prototype (#11, [findings](../prototypes/drawing.md)) compared a cus
 **Controls**
 - **No `PKToolPicker` for now.** Drawing is controlled by our own toolbar and `Commands`, the same on Mac and iPad: the six preset colors of the old app, clear, transparent or white canvas, done (DRAW-03, DRAW-04). Only standard components are used (ADR 0010).
 - **Changing the color must be quick:** the toolbar shows the current color, and the six presets are reachable in one step from the toolbar, without opening a settings sheet or a nested menu.
-- Whether the iPad shows the tool picker (and more pens) is revisited after 2.0, as a new decision.
+- **Apple Pencil double-tap and squeeze** (new, beyond parity) follow the user's system setting: "switch to last used" switches to the previously used color, "show color palette" opens the color choice, "off" does nothing (DRAW-11).
+- Whether the iPad shows the tool picker (and more pens) is revisited in 2.1, as a new decision.
 
 **Undo**
 - One undo history per page, through the model and the system `UndoManager` (DRAW-08). Undo only changes the visible slide. Clearing and changing the canvas background are part of the history.

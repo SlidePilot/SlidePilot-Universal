@@ -128,6 +128,7 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 | DRAW-08 | Undo/redo per stroke, clear and background change (**⌘Z / ⇧⌘Z**). The undo stack is cleared when leaving draw mode | `CanvasView.swift:119-135` | – | Same | System `UndoManager` (Edit menu, iPad undo gestures); one history per page (ADR 0016) | P3 | planned |
 | DRAW-09 | The canvas is hidden on the presentation window while a curtain is shown | `PresentationViewController.swift:138-159` | – | Same | – | P3 | planned |
 | DRAW-10 | Export drawings (**⇧⌘S**, File ▸ Export Drawings): a copy of the PDF with one ink annotation per stroke, crop box reset to media box. Default name `<pdf>-<localized "Drawings">.pdf`. The new app exports the white background and the real line width (see DEF-05) | `Helpers/DrawingsExporter.swift:25-79`; `AppDelegate.swift:455-504` | `drawing` | Share sheet / file exporter | `fileExporter`; iPad: `ShareLink` | P3 | changed |
+| DRAW-11 | **New (product-owner decision 2026-11-16):** Apple Pencil double-tap (and squeeze on Apple Pencil Pro) in draw mode follows the system setting: "Switch between current tool and last used" switches to the previously used color, "Show color palette" opens the color choice, "Off" does nothing (ADR 0016) | – | – | Apple Pencil only | `UIPencilInteraction` with the user's preferred tap and squeeze actions | P3 | planned |
 
 ## 8. Curtain
 

@@ -92,7 +92,7 @@ A probe app on the branch `proto/drawing` (draft PR #67, not merged). It shows a
    - monoline ink, width 2, strokes sampled along the rendered curve, rebuilt with PencilKit's own point size,
    - live mirroring through a passive touch tracker from the first contact,
    - one undo history per page through the model and the system `UndoManager`, not PencilKit's stack,
-   - the drawing commands (colors, clear, canvas background, done) in our own toolbar and `Commands`, the same on both platforms. **No `PKToolPicker` for now** (product-owner decision): it adds little over parity (6 colors, no stroke eraser, DRAW-03), floats over the slide and brings its own colors and undo. Changing the color must stay quick: current color visible, presets one step away. The picker may be revisited after 2.0.
+   - the drawing commands (colors, clear, canvas background, done) in our own toolbar and `Commands`, the same on both platforms. **No `PKToolPicker` for now** (product-owner decision): it adds little over parity (6 colors, no stroke eraser, DRAW-03), floats over the slide and brings its own colors and undo. Changing the color must stay quick: current color visible, presets one step away. The picker is revisited in 2.1. Apple Pencil double-tap and squeeze switch to the previously used color (DRAW-11).
 4. **No custom layer on the iPad.** The device check showed it is clearly worse with the Pencil.
 
 This is an architectural decision, so it becomes an ADR once approved.
