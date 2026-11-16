@@ -10,8 +10,9 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 
 **Columns**
 - **ID:** a stable identifier. Issues and PRs reference it.
+- **iPad notes:** also apply to the iPhone, including both displays of the iPhone Duo, unless the item says otherwise (ADR 0015).
 - **Native replacement:** the system component that replaces an old UI element (ADR 0010). Parity means the same functionality, not the same look. Custom drawing is allowed only for the slide surface, the pointer overlay and the drawing layer; any other custom UI must be justified in its PR. `–` = no UI element.
-- **Milestone:** P1 = Phase 1 – Risk Prototypes, P2 = Presenting, P3 = Notes, Pointer, Drawing, P4 = Remote Protocol, Settings, Localization, P5 = Polish & Release. Remote is implemented in P4 but ships with 2.1, not 2.0 (ADR 0006).
+- **Milestone:** P1 = Phase 1 – Risk Prototypes, P2 = Presenting, P3 = Notes, Pointer, Drawing, P4 = Remote Protocol, Settings, Localization, P5 = Polish & Release. Remote is implemented in P4 and ships with 2.0 (ADR 0015). The iPhone work is done together at the end of P4 (ADR 0015).
 - **Status:**
   - `planned`: not yet implemented.
   - `changed`: implemented, but deliberately different from the old app.
@@ -148,17 +149,17 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 | SET-06 | Help menu item (**⌘?**) opens the online docs | `AppDelegate.swift:163` | – | Link in settings | Standard Help menu (`CommandGroup(replacing: .help)`) | P5 | planned |
 | SET-07 | **New (product-owner decision 2026-11-15):** overview of the stored document data in Settings. One row per companion entry (NOTES-10): PDF name, what it holds (notes, drawings, settings), last opened, size, and "PDF not found" when the bookmark does not resolve. Delete single entries or all not-found entries, with confirmation; RTF and drawings export (NOTES-06, DRAW-10) stay available before deleting. Nothing is deleted automatically: a missing PDF may only be on an unmounted drive, in iCloud or mid-recompile. Needed because the companion file lives in the app container (ADR 0012), so deleting a PDF no longer removes its notes and drawings | – | – | Same | `List` with swipe/⌫ delete and `confirmationDialog` in the Settings scene (macOS) / settings sheet (iPad) | P4 | planned |
 
-## 10. Remote (ships with 2.1)
+## 10. Remote
 
 | ID | Feature | Old source | Docs | iPad notes | Native replacement | Milestone | Status |
 |---|---|---|---|---|---|---|---|
-| REM-01 | Remote control from an iPhone app. **New protocol** (Network framework, Bonjour, encrypted connection keyed from pairing, Codable messages); not compatible with the old SlidePilot Remote app (ADR 0006) | `Remote/RemoteService.swift` (MultipeerConnectivity, service `slidepilot-ctrl`) | `remote` | iPad acts as host as well | – | P4 | changed |
+| REM-01 | Remote control from an iPhone app. **Changed (ADR 0015):** no separate remote app; every instance (iPhone, iPad, Mac) can control another instance and be controlled. The controller picks the device and one of its open presentations; an instance never controls itself. **New protocol** (Network framework, Bonjour, encrypted connection keyed from pairing, Codable messages); not compatible with the old SlidePilot Remote app (ADR 0006) | `Remote/RemoteService.swift` (MultipeerConnectivity, service `slidepilot-ctrl`) | `remote` | iPad acts as host as well | – | P4 | changed |
 | REM-02 | Discovery list in Settings ▸ Remote; Connect; pairing code shown on both devices and confirmed; device becomes trusted and reconnects automatically when both apps are active | `RemoteService.swift:192-211,314-364`; `Views/Preferences/RemoteVerificationViewController.swift` | `remote` | Same | `Form` with a device `List`; pairing code in an alert/sheet | P4 | planned |
 | REM-03 | Trusted devices: list and remove (Trusted Devices sheet). Disconnect button (also removes trust) | `Views/Preferences/TrustedDevicesViewController.swift:27-47` | `remote` | Same | `List` with swipe-to-delete / Delete button | P4 | planned |
 | REM-04 | Host → phone: current slide, next slide (black at the end), notes slide (split mode), notes text, meta (slide number, slide count, curtain state). Sent on page change, document open, notes position change, curtain change, notes edit and when a device connects. After an auto-reload (DOC-08) the host sends an update too | `Remote/RemoteController.swift:23-87,153-159` | `remote` | Same | – | P4 | planned |
 | REM-05 | Phone → host: next/previous slide, black/white/hide curtain, pointer position and pointer finish | `RemoteService.swift:151-185`; `RemoteController.swift:194-206` | `remote` | Same | – | P4 | planned |
 | REM-06 | Only verified devices may send commands and receive content (the old app did not check this, see DEF-04) | `RemoteService.swift:151-185` | – | Same | – | P4 | changed |
-| REM-07 | iPhone remote app UI: swipe to change slides, pinch to zoom, curtain button (long press for black/white), double tap + hold + drag for the pointer, layout button, progress button | separate repo (not in reference) | `remote` | – | Standard iOS components (separate work) | P4 | planned |
+| REM-07 | Remote UI (old: iPhone remote app): swipe to change slides, pinch to zoom, curtain button (long press for black/white), double tap + hold + drag for the pointer, layout button, progress button. **Changed (ADR 0015):** a remote mode of the app on iPhone, iPad and Mac instead of a separate app | separate repo (not in reference) | `remote` | – | Standard components; entry from the document browser (iPhone, iPad) and a menu command (Mac) | P4 | changed |
 
 ## 11. Localization
 

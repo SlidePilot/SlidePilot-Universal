@@ -1,6 +1,6 @@
 # 0006 – New remote protocol, shipping in 2.1
 
-- Status: Accepted
+- Status: Accepted (release 2.0 and remote mode instead of a separate app: [0015](0015-iphone-and-remote-mode.md))
 - Date: 2026-11-10
 
 ## Context
