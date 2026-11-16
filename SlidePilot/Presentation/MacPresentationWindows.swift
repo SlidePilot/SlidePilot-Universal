@@ -20,6 +20,9 @@ final class MacPresentationWindows {
         /// The screen the presentation was opened on or last seen on.
         var screen: CGDirectDisplayID?
         var isPresenting = false
+        /// Where the presenter was before the last screen change, so it can be put back.
+        var presenterFrame: CGRect?
+        var presenterScreen: CGDirectDisplayID?
     }
 
     @ObservationIgnored private var entries: [PresentationSession.ID: Entry] = [:]
@@ -55,6 +58,30 @@ final class MacPresentationWindows {
         window.orderFront(nil)
         entry.presenter?.makeKeyAndOrderFront(nil)
         return true
+    }
+
+    /// Remembers where the presenter window is now.
+    func rememberPresenterPlace(_ id: PresentationSession.ID) {
+        guard let presenter = entries[id]?.presenter else { return }
+        entries[id]?.presenterFrame = presenter.frame
+        entries[id]?.presenterScreen = presenter.screen?.displayID
+    }
+
+    /// Puts the presenter window back if macOS moved it onto the presentation's screen
+    /// during a screen change (hardware test M3).
+    func keepPresenterInPlace(_ id: PresentationSession.ID) {
+        guard let entry = entries[id], let presenter = entry.presenter, let frame = entry.presenterFrame else { return }
+        let screens = NSScreen.screens.compactMap(\.displayID)
+        let current = presenter.screen?.displayID
+        guard PresentationScreenPolicy.presenterShouldReturn(
+            from: current,
+            to: entry.presenterScreen,
+            presentationScreen: entry.screen,
+            screens: screens
+        ) else { return }
+        DiagnosticsLog.shared.record("mac: presenter moved to \(current.map(String.init) ?? "-") with the presentation, moving it back")
+        presenter.setFrame(frame, display: true)
+        presenter.makeKeyAndOrderFront(nil)
     }
 
     /// Chooses the screen for the presentation window that opens next.
@@ -135,11 +162,17 @@ final class MacPresentationWindows {
         current: [CGDirectDisplayID]
     ) -> PresentationScreenPolicy.Reaction<CGDirectDisplayID> {
         guard let entry = entries[id], entry.isPresenting else { return .keep }
+        // The presenter's screen from before the change: macOS may already have moved it.
+        let presenterScreen = entry.presenterScreen ?? entry.presenter?.screen?.displayID
         let reaction = PresentationScreenPolicy.reaction(
             previous: previous,
             current: current,
             presentationScreen: entry.screen,
-            presenterScreen: entry.presenter?.screen?.displayID
+            presenterScreen: presenterScreen
+        )
+        DiagnosticsLog.shared.record(
+            "mac: screens \(previous) → \(current), presentation on \(entry.screen.map(String.init) ?? "-"), "
+                + "presenter was on \(presenterScreen.map(String.init) ?? "-") now \(entry.presenter?.screen?.displayID.map(String.init) ?? "-") → \(reaction)"
         )
         if reaction == .keep, let screen = entry.presentation?.screen?.displayID {
             // macOS may have moved the window itself; remember where it is now.
@@ -219,6 +252,7 @@ private struct PresenterWindowModifier: ViewModifier {
 
     private func startPresentation() {
         guard !windows.showRunningPresentation(session.id) else { return }
+        windows.rememberPresenterPlace(session.id)
         windows.prepareToOpen(session.id)
         openWindow(id: PresentationScene.id, value: session.id)
     }
@@ -234,12 +268,18 @@ private struct PresenterWindowModifier: ViewModifier {
             // Later notifications of the same burst find nothing new.
             guard current != previous else { continue }
             defer { previous = current }
-            guard case .reopen(let screen) = windows.reaction(for: session.id, previous: previous, current: current)
-            else { continue }
-            // A full-screen window in another Space cannot be moved: open a new one there.
-            guard await windows.closePresentation(session.id) else { return }
-            windows.prepareToOpen(session.id, on: screen)
-            openWindow(id: PresentationScene.id, value: session.id)
+            if case .reopen(let screen) = windows.reaction(for: session.id, previous: previous, current: current) {
+                // A full-screen window in another Space cannot be moved: open a new one there.
+                guard await windows.closePresentation(session.id) else { return }
+                windows.prepareToOpen(session.id, on: screen)
+                openWindow(id: PresentationScene.id, value: session.id)
+                // macOS may move the presenter while the new window enters full screen.
+                try? await Task.sleep(for: .seconds(2))
+                if Task.isCancelled { return }
+            }
+            guard windows.isPresenting(session.id) else { continue }
+            windows.keepPresenterInPlace(session.id)
+            windows.rememberPresenterPlace(session.id)
         }
     }
 }

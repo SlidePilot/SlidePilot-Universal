@@ -27,6 +27,12 @@ struct DocumentView: View {
             .onChange(of: scenePhase, initial: true) {
                 if scenePhase == .active { registry.activate(session.id) }
             }
+            // TEMPORARY (hardware tests for #13).
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    DiagnosticsButton()
+                }
+            }
             #if os(macOS)
             .presenterWindow(for: session)
             #endif

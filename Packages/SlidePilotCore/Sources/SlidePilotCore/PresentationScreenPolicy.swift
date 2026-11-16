@@ -46,4 +46,19 @@ public enum PresentationScreenPolicy {
         }
         return .keep
     }
+
+    /// Whether the presenter window should go back to the screen it was on before a screen
+    /// change. macOS can move it to a newly connected screen (back to where it was in an
+    /// earlier session), so it would end up behind the presentation that took that screen.
+    public static func presenterShouldReturn<ScreenID: Hashable>(
+        from currentScreen: ScreenID?,
+        to previousScreen: ScreenID?,
+        presentationScreen: ScreenID?,
+        screens: [ScreenID]
+    ) -> Bool {
+        guard let currentScreen, let previousScreen, currentScreen != previousScreen,
+              screens.contains(previousScreen)
+        else { return false }
+        return currentScreen == presentationScreen
+    }
 }

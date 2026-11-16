@@ -56,4 +56,19 @@ struct PresentationScreenPolicyTests {
     @Test func unknownPresentationScreenKeepsPresentation() {
         #expect(Policy.reaction(previous: [1], current: [1, 2], presentationScreen: nil, presenterScreen: 1) == .keep)
     }
+
+    // Hardware test M3: macOS moved the presenter to the new screen together with the presentation.
+    @Test func presenterReturnsWhenMovedOntoPresentationScreen() {
+        #expect(Policy.presenterShouldReturn(from: 2, to: 1, presentationScreen: 2, screens: [1, 2]))
+    }
+
+    @Test func presenterStaysWhenNotOnPresentationScreen() {
+        #expect(!Policy.presenterShouldReturn(from: 3, to: 1, presentationScreen: 2, screens: [1, 2, 3]))
+        #expect(!Policy.presenterShouldReturn(from: 1, to: 1, presentationScreen: 2, screens: [1, 2]))
+    }
+
+    @Test func presenterStaysWhenPreviousScreenIsGone() {
+        #expect(!Policy.presenterShouldReturn(from: 2, to: 1, presentationScreen: 2, screens: [2]))
+        #expect(!Policy.presenterShouldReturn(from: nil, to: 1, presentationScreen: 2, screens: [1, 2]))
+    }
 }
