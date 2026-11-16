@@ -12,7 +12,7 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 - **ID:** a stable identifier. Issues and PRs reference it.
 - **iPad notes:** also apply to the iPhone, including both displays of the iPhone Duo, unless the item says otherwise (ADR 0015).
 - **Native replacement:** the system component that replaces an old UI element (ADR 0010). Parity means the same functionality, not the same look. Custom drawing is allowed only for the slide surface, the pointer overlay and the drawing layer; any other custom UI must be justified in its PR. `–` = no UI element.
-- **Milestone:** P1 = Phase 1 – Risk Prototypes, P2 = Presenting, P3 = Notes, Pointer, Drawing, P4 = Remote Protocol, Settings, Localization, P5 = Polish & Release. Remote is implemented in P4 but ships with 2.1, not 2.0 (ADR 0006).
+- **Milestone:** P1 = Phase 1 – Risk Prototypes, P2 = Presenting, P3 = Notes, Pointer, Drawing, P4 = Remote Protocol, Settings, Localization, P5 = Polish & Release. Remote is implemented in P4 and ships with 2.0 (ADR 0015). The iPhone work is done together at the end of P4 (ADR 0015).
 - **Status:**
   - `planned`: not yet implemented.
   - `changed`: implemented, but deliberately different from the old app.
@@ -149,7 +149,7 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 | SET-06 | Help menu item (**⌘?**) opens the online docs | `AppDelegate.swift:163` | – | Link in settings | Standard Help menu (`CommandGroup(replacing: .help)`) | P5 | planned |
 | SET-07 | **New (product-owner decision 2026-11-15):** overview of the stored document data in Settings. One row per companion entry (NOTES-10): PDF name, what it holds (notes, drawings, settings), last opened, size, and "PDF not found" when the bookmark does not resolve. Delete single entries or all not-found entries, with confirmation; RTF and drawings export (NOTES-06, DRAW-10) stay available before deleting. Nothing is deleted automatically: a missing PDF may only be on an unmounted drive, in iCloud or mid-recompile. Needed because the companion file lives in the app container (ADR 0012), so deleting a PDF no longer removes its notes and drawings | – | – | Same | `List` with swipe/⌫ delete and `confirmationDialog` in the Settings scene (macOS) / settings sheet (iPad) | P4 | planned |
 
-## 10. Remote (ships with 2.1)
+## 10. Remote
 
 | ID | Feature | Old source | Docs | iPad notes | Native replacement | Milestone | Status |
 |---|---|---|---|---|---|---|---|

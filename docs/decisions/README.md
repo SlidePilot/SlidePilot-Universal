@@ -7,7 +7,7 @@
 | [0003](0003-app-store-distribution.md) | App Store distribution | Superseded by 0011 |
 | [0004](0004-architecture.md) | One project, multiplatform target, local packages | Accepted |
 | [0005](0005-pre-rendering.md) | Leaner pre-rendering cache | Accepted |
-| [0006](0006-remote-protocol.md) | New remote protocol, shipping in 2.1 | Accepted (remote mode: 0015) |
+| [0006](0006-remote-protocol.md) | New remote protocol, shipping in 2.1 | Accepted (2.0 and remote mode: 0015) |
 | [0007](0007-notes-companion-file.md) | Companion file for notes, drawings and settings | Accepted (location: 0012) |
 | [0008](0008-ci-as-build-feedback.md) | GitHub Actions as build feedback | Accepted |
 | [0009](0009-drop-touch-bar.md) | Drop Touch Bar support | Accepted |
@@ -16,7 +16,7 @@
 | [0012](0012-companion-file-location.md) | Companion file in the app container, folder access on demand | Accepted |
 | [0013](0013-pdf-change-detection.md) | Detect PDF changes with a file presenter | Accepted |
 | [0014](0014-commit-signing-ids.md) | Commit the bundle ID prefix and development team | Accepted |
-| [0015](0015-iphone-and-remote-mode.md) | iPhone support in 2.0 and remote as a mode of the app | Accepted |
+| [0015](0015-iphone-and-remote-mode.md) | iPhone support and remote as a mode of the app, both in 2.0 | Accepted |
 
 ## Process
 1. Propose the decision in chat with the product owner (context, options, recommendation).
