@@ -21,16 +21,16 @@ struct PencilKitCanvas: UIViewRepresentable {
         // PencilKit adapts ink colors to dark mode; slides are always light.
         canvas.overrideUserInterfaceStyle = state.adaptsInkToDarkMode ? .unspecified : .light
         canvas.delegate = context.coordinator
-        // PencilKit reports a change only when a stroke ends. Following its
-        // drawing gesture lets the presentation mirror the stroke live.
-        canvas.drawingGestureRecognizer.addTarget(context.coordinator, action: #selector(Coordinator.followDrawingGesture(_:)))
-        // With a finger, the drawing gesture begins only after some movement
-        // (to tell drawing from scrolling). The tracker sees the touch from
-        // its start, so the mirror gets the beginning of the stroke too.
+        // PencilKit reports a change only when a stroke ends, and with a
+        // finger its drawing gesture begins only after a clear movement (to
+        // tell drawing from scrolling). A passive touch tracker feeds the
+        // mirror from the first contact on, so slow finger strokes show live.
         let tracker = TouchTracker()
         tracker.delegate = context.coordinator
+        tracker.onTouches = { [weak coordinator = context.coordinator] phase, points, isPencil in
+            coordinator?.followTouches(phase, points, isPencil: isPencil)
+        }
         canvas.addGestureRecognizer(tracker)
-        context.coordinator.tracker = tracker
         let picker = PKToolPicker(toolItems: [
             PKToolPickerInkingItem(type: .monoline, color: Self.uiColor(state.color), width: PageDrawing.lineWidth),
         ])
@@ -82,7 +82,6 @@ struct PencilKitCanvas: UIViewRepresentable {
     final class Coordinator: NSObject, PKCanvasViewDelegate, PKToolPickerObserver, UIGestureRecognizerDelegate {
         let state: DrawingProbeState
         var toolPicker: PKToolPicker?
-        var tracker: TouchTracker?
         private var liveGeneration = 0
         var mapping = CanvasMapping(section: .fullPage, canvasWidth: 1, canvasHeight: 1)
         var appliedRevision = -1
@@ -93,28 +92,27 @@ struct PencilKitCanvas: UIViewRepresentable {
 
         init(state: DrawingProbeState) { self.state = state }
 
-        @objc func followDrawingGesture(_ recognizer: UIGestureRecognizer) {
+        func followTouches(_ phase: TouchTracker.Phase, _ locations: [CGPoint], isPencil: Bool) {
             guard state.liveMirrorsPencilKit else { return }
-            let location = recognizer.location(in: recognizer.view)
-            let point = mapping.relative(x: location.x, y: location.y)
-            switch recognizer.state {
+            let points = locations.map { mapping.relative(x: $0.x, y: $0.y) }
+            switch phase {
             case .began:
+                // Fingers do not draw in "Pencil only" mode.
+                guard isPencil || !state.pencilOnly else { return }
                 liveGeneration += 1
-                let earlier = (tracker?.locations ?? []).map { mapping.relative(x: $0.x, y: $0.y) }
-                state.liveStroke = DrawingStroke(color: state.color, points: earlier + [point])
-            case .changed:
-                state.liveStroke?.points.append(point)
+                state.liveStroke = DrawingStroke(color: state.color, points: points)
+            case .moved:
+                state.liveStroke?.points += points
             case .ended:
                 // Cleared by the model update that follows, to avoid a flash.
                 // Fallback in case PencilKit adds no stroke (nothing to update).
-                state.liveStroke?.points.append(point)
                 let generation = liveGeneration
                 Task { @MainActor [weak self] in
                     try? await Task.sleep(for: .milliseconds(500))
                     guard let self, self.liveGeneration == generation else { return }
                     self.state.liveStroke = nil
                 }
-            default:
+            case .cancelled:
                 state.liveStroke = nil
             }
         }
@@ -163,8 +161,12 @@ struct PencilKitCanvas: UIViewRepresentable {
 
 /// Observes the touches of one stroke from the first contact on and never
 /// recognizes, so it does not interfere with PencilKit's own gestures.
+/// A second finger cancels the stroke, because PencilKit does not draw then.
 final class TouchTracker: UIGestureRecognizer {
-    private(set) var locations: [CGPoint] = []
+    enum Phase { case began, moved, ended, cancelled }
+
+    var onTouches: ((Phase, [CGPoint], Bool) -> Void)?
+    private var tracked: UITouch?
 
     override init(target: Any? = nil, action: Selector? = nil) {
         super.init(target: target, action: action)
@@ -174,22 +176,39 @@ final class TouchTracker: UIGestureRecognizer {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        guard locations.isEmpty, let touch = touches.first else { return }
-        append(touch, event)
+        if tracked != nil || (event.allTouches?.count ?? 0) > 1 {
+            finish(.cancelled)
+            return
+        }
+        guard let touch = touches.first else { return }
+        tracked = touch
+        onTouches?(.began, locations(of: touch, event), touch.type == .pencil)
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
-        guard let touch = touches.first else { return }
-        append(touch, event)
+        guard let tracked, touches.contains(tracked) else { return }
+        onTouches?(.moved, locations(of: tracked, event), tracked.type == .pencil)
     }
 
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) { state = .failed }
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) { state = .failed }
-    override func reset() { locations = [] }
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
+        guard let tracked, touches.contains(tracked) else { return }
+        finish(.ended)
+    }
 
-    private func append(_ touch: UITouch, _ event: UIEvent) {
-        let samples = event.coalescedTouches(for: touch) ?? [touch]
-        locations += samples.map { $0.location(in: view) }
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
+        finish(.cancelled)
+    }
+
+    override func reset() { tracked = nil }
+
+    private func finish(_ phase: Phase) {
+        if tracked != nil { onTouches?(phase, [], tracked?.type == .pencil) }
+        tracked = nil
+        state = .failed
+    }
+
+    private func locations(of touch: UITouch, _ event: UIEvent) -> [CGPoint] {
+        (event.coalescedTouches(for: touch) ?? [touch]).map { $0.location(in: view) }
     }
 }
 #endif
