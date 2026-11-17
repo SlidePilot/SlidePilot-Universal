@@ -26,12 +26,6 @@ struct DocumentView: View {
             // The iPad external display shows the document of the active window.
             .onAppWindowChange { registry.register(session, inWindow: $0) }
             #endif
-            // TEMPORARY (hardware tests for #13).
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    DiagnosticsButton()
-                }
-            }
             #if os(macOS)
             .presenterWindow(for: session)
             #endif

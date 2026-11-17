@@ -21,32 +21,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        DiagnosticsLog.shared.record("ipad: launch, \(application.openSessions.count) open scene session(s)")
-        Task { await Self.logSceneChanges() }
         // Lives as long as the app; the app delegate is never released.
         windows.start()
         return true
-    }
-
-    /// TEMPORARY (hardware tests for #13): every scene that connects or disconnects,
-    /// including SwiftUI's, to see whether iPadOS offers an external-display scene at all.
-    private static func logSceneChanges() async {
-        let connections = NotificationCenter.default.notifications(named: UIScene.willConnectNotification)
-        for await notification in connections {
-            guard let scene = notification.object as? UIScene else { continue }
-            DiagnosticsLog.shared.record("ipad: scene will connect → \(describe(scene))")
-        }
-    }
-
-    static func describe(_ scene: UIScene) -> String {
-        var text = "role \(scene.session.role.rawValue), config \(scene.session.configuration.name ?? "unnamed")"
-        text += ", delegate \(scene.delegate.map { String(describing: type(of: $0)) } ?? "none")"
-        if let windowScene = scene as? UIWindowScene {
-            let size = windowScene.screen.bounds.size
-            text += ", screen \(Int(size.width))×\(Int(size.height)) pt"
-            text += ", scenes on device: \(UIApplication.shared.connectedScenes.count)"
-        }
-        return text
     }
 
     func application(
@@ -55,7 +32,6 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         options: UIScene.ConnectionOptions
     ) -> UISceneConfiguration {
         let role = connectingSceneSession.role
-        DiagnosticsLog.shared.record("ipad: configuration requested for role \(role.rawValue)")
         guard role == .windowExternalDisplayNonInteractive else {
             return UISceneConfiguration(name: nil, sessionRole: role)
         }
@@ -73,7 +49,6 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        DiagnosticsLog.shared.record("ipad: external display delegate connecting → \(AppDelegate.describe(scene))")
         guard let windowScene = scene as? UIWindowScene else { return }
         guard let registry = AppDelegate.current?.registry else {
             assertionFailure("The app delegate creates the registry before any scene connects.")
@@ -86,18 +61,15 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
             appWindow = connectionOptions.sceneAccessoryUserInfo as? String
         }
         #endif
-        DiagnosticsLog.shared.record("ipad: external display for window \(appWindow?.prefix(8) ?? "active")")
         let window = UIWindow(windowScene: windowScene)
         let host = UIHostingController(rootView: ExternalDisplayView(appWindow: appWindow).environment(registry))
         host.view.backgroundColor = .black
         window.rootViewController = host
         window.isHidden = false
         self.window = window
-        DiagnosticsLog.shared.record("ipad: external display shows its window")
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
-        DiagnosticsLog.shared.record("ipad: external display disconnected")
         window = nil
     }
 }

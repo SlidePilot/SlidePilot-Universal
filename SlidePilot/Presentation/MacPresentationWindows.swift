@@ -25,6 +25,9 @@ final class MacPresentationWindows {
         var presenterScreen: CGDirectDisplayID?
         /// The frame of `presenterScreen` at that time, to convert `presenterFrame`.
         var presenterScreenFrame: CGRect?
+        /// The connected screens at that time: moves after a screen change are macOS's, not the user's.
+        var screensAtPresenterPlace: [CGDirectDisplayID] = []
+        var presenterMoves: Task<Void, Never>?
     }
 
     @ObservationIgnored private var entries: [PresentationSession.ID: Entry] = [:]
@@ -40,12 +43,22 @@ final class MacPresentationWindows {
     func attachPresenter(_ window: NSWindow, for id: PresentationSession.ID) -> Bool {
         let isNew = entries[id]?.presenter == nil
         entries[id, default: Entry()].presenter = window
+        if isNew {
+            // Ends with the entry in presenterDidClose.
+            let moves = NotificationCenter.default.notifications(named: NSWindow.didMoveNotification, object: window)
+            entries[id]?.presenterMoves = Task { [weak self] in
+                for await _ in moves {
+                    self?.presenterDidMove(id)
+                }
+            }
+        }
         return isNew
     }
 
     /// Closing the document ends its presentation (DOC-04).
     func presenterDidClose(_ id: PresentationSession.ID) {
         let presentation = entries[id]?.presentation
+        entries[id]?.presenterMoves?.cancel()
         entries[id] = nil
         presentation?.close()
     }
@@ -68,6 +81,15 @@ final class MacPresentationWindows {
         entries[id]?.presenterFrame = presenter.frame
         entries[id]?.presenterScreen = presenter.screen?.displayID
         entries[id]?.presenterScreenFrame = presenter.screen?.frame
+        entries[id]?.screensAtPresenterPlace = NSScreen.screens.compactMap(\.displayID)
+    }
+
+    /// A move by the user while presenting becomes the place to return to.
+    private func presenterDidMove(_ id: PresentationSession.ID) {
+        guard let entry = entries[id], entry.isPresenting,
+              entry.screensAtPresenterPlace == NSScreen.screens.compactMap(\.displayID)
+        else { return }
+        rememberPresenterPlace(id)
     }
 
     /// Puts the presenter window back if macOS moved it onto the presentation's screen
@@ -85,11 +107,9 @@ final class MacPresentationWindows {
             presentationScreen: entry.screen,
             screens: screens
         ) else { return }
-        DiagnosticsLog.shared.record("mac: presenter moved to \(current.map(String.init) ?? "-") with the presentation, moving it back")
-        presenter.setFrame(
-            PresentationScreenPolicy.frame(frame, savedOn: oldScreenFrame, screenNowAt: screen.frame),
-            display: true
-        )
+        let restored = PresentationScreenPolicy.frame(frame, savedOn: oldScreenFrame, screenNowAt: screen.frame)
+        // The screen may have a smaller resolution now.
+        presenter.setFrame(presenter.constrainFrameRect(restored, to: screen), display: true)
         presenter.makeKeyAndOrderFront(nil)
     }
 
@@ -178,10 +198,6 @@ final class MacPresentationWindows {
             current: current,
             presentationScreen: entry.screen,
             presenterScreen: presenterScreen
-        )
-        DiagnosticsLog.shared.record(
-            "mac: screens \(previous) → \(current), presentation on \(entry.screen.map(String.init) ?? "-"), "
-                + "presenter was on \(presenterScreen.map(String.init) ?? "-") now \(entry.presenter?.screen?.displayID.map(String.init) ?? "-") → \(reaction)"
         )
         if reaction == .keep, let screen = entry.presentation?.screen?.displayID {
             // macOS may have moved the window itself; remember where it is now.

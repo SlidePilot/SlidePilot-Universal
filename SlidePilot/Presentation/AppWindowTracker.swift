@@ -77,19 +77,18 @@ final class AppWindowTracker {
     private func activate(_ window: UIWindow) {
         guard let scene = window.windowScene, let id = Self.id(of: scene) else { return }
         registry.activateWindow(id)
-        DiagnosticsLog.shared.record("ipad: key window \(id.prefix(8))")
     }
 
     #if compiler(>=6.4)
     @available(iOS 27, *)
     private func registerAccessory(on scene: UIWindowScene) {
-        guard let id = Self.id(of: scene), registrations[id] == nil,
+        // Skips a scene that disconnected meanwhile, so `forget` stays its last word.
+        guard scene.activationState != .unattached, let id = Self.id(of: scene), registrations[id] == nil,
               let root = scene.keyWindow?.rootViewController ?? scene.windows.first?.rootViewController
         else { return }
         let configuration = UISceneConfiguration(name: "External Display", sessionRole: .windowExternalDisplayNonInteractive)
         configuration.delegateClass = ExternalDisplaySceneDelegate.self
         registrations[id] = root.registerSceneAccessory(.externalNonInteractive(sceneConfiguration: configuration, userInfo: id))
-        DiagnosticsLog.shared.record("ipad: external display accessory registered for window \(id.prefix(8))")
     }
 
     @available(iOS 27, *)
