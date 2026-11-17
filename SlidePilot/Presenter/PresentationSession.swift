@@ -13,6 +13,8 @@ final class PresentationSession: Identifiable {
     /// Replaced when the PDF is reloaded; views read page sizes from `cache.info`.
     private(set) var cache: RenderCache
     private(set) var position: DeckPosition
+    /// Stopwatch/timer of this document; starts in stopwatch mode (TIME-02 to TIME-05).
+    var timer = PresentationTimer()
     /// The bytes on screen; the file observer compares changes with them.
     @ObservationIgnored private(set) var data: Data
 

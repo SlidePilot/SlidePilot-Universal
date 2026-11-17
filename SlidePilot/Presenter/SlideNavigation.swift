@@ -31,6 +31,7 @@ extension PresentationSession {
     /// call `showNextPage()` directly.
     func nextSlideCommand() {
         showNextPage()
+        timer.nextSlideCommandWasUsed()
     }
 }
 

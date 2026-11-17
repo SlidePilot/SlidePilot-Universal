@@ -236,6 +236,8 @@ struct PresentationWindowContent: View {
                 .focusedSceneValue(\.startPresentation, StartPresentationAction {
                     _ = windows.showRunningPresentation(id)
                 })
+                // Start/Stop, Reset and Mode also work after a click into the presentation.
+                .focusedSceneValue(\.presenterTimer, FocusedPresenterTimer(session: session, showSetTimer: nil))
         } else {
             // Fallback if the document went away first: close this window. The window
             // itself, not by value, since the scene's value is non-optional.

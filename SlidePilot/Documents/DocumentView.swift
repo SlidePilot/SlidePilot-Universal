@@ -18,6 +18,7 @@ struct DocumentView: View {
     var body: some View {
         CurrentAndNextSlides(session: session)
             .shrinksOnMemoryWarning(session)
+            .presenterTimer(session)
             // The presentation surfaces find the session in the registry (DOC-04).
             .onAppear { registry.register(session) }
             .onDisappear { registry.unregister(session.id) }
