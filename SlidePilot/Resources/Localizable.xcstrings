@@ -1,6 +1,18 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Connect a display, or start Screen Mirroring in Control Center." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Schließe einen Bildschirm an oder starte „Bildschirmsynchronisierung“ im Kontrollzentrum." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connectez un écran ou lancez « Recopie de l’écran » dans le centre de contrôle." } }
+      }
+    },
+    "Connected" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbunden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connecté" } }
+      }
+    },
     "Current slide, %lld of %lld" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie, %1$lld von %2$lld" } },
@@ -13,6 +25,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fin de la présentation" } }
       }
     },
+    "External Display" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Externer Bildschirm" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran externe" } }
+      }
+    },
     "Next slide, %lld of %lld" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie, %1$lld von %2$lld" } },
@@ -23,6 +41,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie: Ende der Präsentation" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante : fin de la présentation" } }
+      }
+    },
+    "Not connected" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verbunden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Non connecté" } }
+      }
+    },
+    "Present on a second screen" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Auf einem zweiten Bildschirm präsentieren" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présenter sur un second écran" } }
       }
     },
     "Presentation" : {
@@ -83,6 +113,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Das PDF ist mit einem Passwort geschützt. Entferne das Passwort und öffne es erneut." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le PDF est protégé par un mot de passe. Supprimez le mot de passe et ouvrez-le à nouveau." } }
+      }
+    },
+    "The presentation is shown on the external display." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Präsentation wird auf dem externen Bildschirm gezeigt." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "La présentation est affichée sur l’écran externe." } }
       }
     }
   },

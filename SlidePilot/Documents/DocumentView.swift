@@ -25,6 +25,8 @@ struct DocumentView: View {
             #if os(iOS)
             // The iPad external display shows the document of the active window.
             .onAppWindowChange { registry.register(session, inWindow: $0) }
+            // How to present on a second screen (#82); the Mac needs no hint.
+            .externalDisplayHint()
             #endif
             #if os(macOS)
             .presenterWindow(for: session)
