@@ -32,6 +32,24 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran externe" } }
       }
     },
+    "Go Back" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zurück" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Revenir" } }
+      }
+    },
+    "Go back to the previously viewed slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zur zuletzt gezeigten Folie zurückkehren" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Revenir à la dernière diapositive affichée" } }
+      }
+    },
+    "Next Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante" } }
+      }
+    },
     "Next slide, %lld of %lld" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie, %1$lld von %2$lld" } },
@@ -67,6 +85,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation, Folie %1$lld von %2$lld" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présentation, diapositive %1$lld sur %2$lld" } }
+      }
+    },
+    "Previous Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vorherige Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive précédente" } }
       }
     },
     "Ready to present" : {

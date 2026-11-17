@@ -8,7 +8,6 @@ struct DocumentView: View {
     /// provides no URL; the PDF is then shown as opened.
     let fileURL: URL?
     @State private var session: PresentationSession
-    @FocusState private var hasKeyboardFocus: Bool
     @Environment(SessionRegistry.self) private var registry
 
     init(document: PDFFileDocument, fileURL: URL? = nil, page: Int = 0) {
@@ -39,18 +38,8 @@ struct DocumentView: View {
                     session.reload(with: version)
                 }
             }
-            // Interim slide change with ← and → until the navigation commands (#17, NAV-01).
-            .focusable()
-            .focusEffectDisabled()
-            .focused($hasKeyboardFocus)
-            .onAppear { hasKeyboardFocus = true }
-            .onKeyPress(.leftArrow) {
-                session.showPreviousPage()
-                return .handled
-            }
-            .onKeyPress(.rightArrow) {
-                session.showNextPage()
-                return .handled
-            }
+            // Slide change with keys, menu, toolbar and swipes (NAV-01 to NAV-03).
+            .slideNavigationKeys(session)
+            .presenterNavigation(session)
     }
 }

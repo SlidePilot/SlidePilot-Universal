@@ -51,6 +51,9 @@ struct SlidePilotApp: App {
                 .environment(registry)
                 .environment(appDelegate.externalDisplays)
         }
+        .commands {
+            PresentationCommands()
+        }
 
         #endif
     }
