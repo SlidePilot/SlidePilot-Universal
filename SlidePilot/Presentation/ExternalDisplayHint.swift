@@ -13,12 +13,18 @@ struct ExternalDisplayTip: Tip {
 }
 
 extension View {
-    /// Adds the external-display status button with its tip to the presenter's toolbar.
+    /// Adds the external-display status button to the presenter's toolbar and the tip above
+    /// the slides. Inline, because a popover tip on a toolbar item of a document window is
+    /// never shown (iPadOS 27 simulator); the tip takes no space once it is invalidated.
     func externalDisplayHint() -> some View {
         toolbar {
             ToolbarItem(placement: .primaryAction) {
                 ExternalDisplayStatusButton()
             }
+        }
+        .safeAreaInset(edge: .top) {
+            TipView(ExternalDisplayTip())
+                .padding(.horizontal)
         }
     }
 }
@@ -44,7 +50,6 @@ struct ExternalDisplayStatusButton: View {
         .accessibilityValue(status.isConnected
             ? Text("Connected", comment: "Accessibility value of the external display button")
             : Text("Not connected", comment: "Accessibility value of the external display button"))
-        .popoverTip(tip)
         .popover(isPresented: $showsExplanation) {
             ExternalDisplayExplanation(isConnected: status.isConnected)
         }
