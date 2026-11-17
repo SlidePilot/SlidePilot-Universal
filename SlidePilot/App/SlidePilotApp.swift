@@ -27,6 +27,7 @@ struct SlidePilotApp: App {
         }
         .commands {
             PresentationCommands()
+            LayoutCommands()
             ModeratorCommands()
         }
 
@@ -55,6 +56,9 @@ struct SlidePilotApp: App {
         .commands {
             PresentationCommands()
             ModeratorCommands()
+        }
+        .commands {
+            LayoutCommands()
         }
 
         #endif

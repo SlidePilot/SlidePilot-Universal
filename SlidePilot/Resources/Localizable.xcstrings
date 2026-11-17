@@ -19,6 +19,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Horloge" } }
       }
     },
+    "Arrangement" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Anordnung" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Disposition" } }
+      }
+    },
     "Connect a display, or start Screen Mirroring in Control Center." : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Schließe einen Bildschirm an oder starte „Bildschirmsynchronisierung“ im Kontrollzentrum." } },
@@ -104,6 +110,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante : fin de la présentation" } }
       }
     },
+    "No Notes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Notizen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune note" } }
+      }
+    },
     "Overtime %@" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Überzogen %@" } },
@@ -133,6 +145,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation, Folie %1$lld von %2$lld" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présentation, diapositive %1$lld sur %2$lld" } }
+      }
+    },
+    "Preview Next Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vorschau nächste Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aperçu de la diapositive suivante" } }
       }
     },
     "Previous Slide" : {
@@ -177,10 +195,40 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Régler le minuteur…" } }
       }
     },
+    "Separator" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Trenner" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Séparateur" } }
+      }
+    },
+    "Show Current Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie anzeigen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher la diapositive courante" } }
+      }
+    },
+    "Show Notes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen anzeigen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher les notes" } }
+      }
+    },
     "Show the presentation in full screen" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation im Vollbildmodus zeigen" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher la présentation en plein écran" } }
+      }
+    },
+    "Single Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Eine Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Une diapositive" } }
+      }
+    },
+    "Slides" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositives" } }
       }
     },
     "Start Presentation" : {
@@ -211,6 +259,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Stoppuhr" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Chronomètre" } }
+      }
+    },
+    "Swipe up or down to resize the slides" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nach oben oder unten wischen, um die Größe der Folien zu ändern" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Balayez vers le haut ou le bas pour redimensionner les diapositives" } }
       }
     },
     "The document “%@” could not be opened." : {
@@ -253,6 +307,24 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Präsentation wird auf dem externen Bildschirm gezeigt." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "La présentation est affichée sur l’écran externe." } }
+      }
+    },
+    "Three Slides, Large Left" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Drei Folien, groß links" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Trois diapositives, grande à gauche" } }
+      }
+    },
+    "Three Slides, Large Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Drei Folien, groß rechts" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Trois diapositives, grande à droite" } }
+      }
+    },
+    "Two Slides" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zwei Folien" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Deux diapositives" } }
       }
     }
   },
