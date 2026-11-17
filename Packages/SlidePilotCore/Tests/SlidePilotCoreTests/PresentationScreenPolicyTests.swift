@@ -1,3 +1,4 @@
+import CoreGraphics
 import SlidePilotCore
 import Testing
 
@@ -70,5 +71,15 @@ struct PresentationScreenPolicyTests {
     @Test func presenterStaysWhenPreviousScreenIsGone() {
         #expect(!Policy.presenterShouldReturn(from: 2, to: 1, presentationScreen: 2, screens: [2]))
         #expect(!Policy.presenterShouldReturn(from: nil, to: 1, presentationScreen: 2, screens: [1, 2]))
+    }
+
+    @Test func frameFollowsItsScreenWhenTheMainScreenChanges() {
+        // The built-in screen was main at (0, 0); an external screen became main to its left.
+        let saved = CGRect(x: 100, y: 50, width: 800, height: 600)
+        let builtInBefore = CGRect(x: 0, y: 0, width: 1512, height: 982)
+        let builtInNow = CGRect(x: 1920, y: -100, width: 1512, height: 982)
+        #expect(Policy.frame(saved, savedOn: builtInBefore, screenNowAt: builtInNow)
+            == CGRect(x: 2020, y: -50, width: 800, height: 600))
+        #expect(Policy.frame(saved, savedOn: builtInBefore, screenNowAt: builtInBefore) == saved)
     }
 }

@@ -23,6 +23,8 @@ final class MacPresentationWindows {
         /// Where the presenter was before the last screen change, so it can be put back.
         var presenterFrame: CGRect?
         var presenterScreen: CGDirectDisplayID?
+        /// The frame of `presenterScreen` at that time, to convert `presenterFrame`.
+        var presenterScreenFrame: CGRect?
     }
 
     @ObservationIgnored private var entries: [PresentationSession.ID: Entry] = [:]
@@ -65,12 +67,16 @@ final class MacPresentationWindows {
         guard let presenter = entries[id]?.presenter else { return }
         entries[id]?.presenterFrame = presenter.frame
         entries[id]?.presenterScreen = presenter.screen?.displayID
+        entries[id]?.presenterScreenFrame = presenter.screen?.frame
     }
 
     /// Puts the presenter window back if macOS moved it onto the presentation's screen
     /// during a screen change (hardware test M3).
     func keepPresenterInPlace(_ id: PresentationSession.ID) {
-        guard let entry = entries[id], let presenter = entry.presenter, let frame = entry.presenterFrame else { return }
+        guard let entry = entries[id], let presenter = entry.presenter, let frame = entry.presenterFrame,
+              let oldScreenFrame = entry.presenterScreenFrame,
+              let screen = NSScreen.screens.first(where: { $0.displayID == entry.presenterScreen })
+        else { return }
         let screens = NSScreen.screens.compactMap(\.displayID)
         let current = presenter.screen?.displayID
         guard PresentationScreenPolicy.presenterShouldReturn(
@@ -80,7 +86,10 @@ final class MacPresentationWindows {
             screens: screens
         ) else { return }
         DiagnosticsLog.shared.record("mac: presenter moved to \(current.map(String.init) ?? "-") with the presentation, moving it back")
-        presenter.setFrame(frame, display: true)
+        presenter.setFrame(
+            PresentationScreenPolicy.frame(frame, savedOn: oldScreenFrame, screenNowAt: screen.frame),
+            display: true
+        )
         presenter.makeKeyAndOrderFront(nil)
     }
 

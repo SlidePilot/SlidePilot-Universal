@@ -1,3 +1,5 @@
+import CoreGraphics
+
 /// Where the Mac presentation window goes (DOC-05, changed).
 ///
 /// Screens are given in system order (the first one has the menu bar) and identified by
@@ -60,5 +62,12 @@ public enum PresentationScreenPolicy {
               screens.contains(previousScreen)
         else { return false }
         return currentScreen == presentationScreen
+    }
+
+    /// Where a window frame saved on a screen lies now. Window frames are global, with the
+    /// origin on the screen with the menu bar, so they shift when another screen becomes
+    /// the main screen: keep the frame's offset from its screen instead.
+    public static func frame(_ frame: CGRect, savedOn oldScreenFrame: CGRect, screenNowAt newScreenFrame: CGRect) -> CGRect {
+        frame.offsetBy(dx: newScreenFrame.minX - oldScreenFrame.minX, dy: newScreenFrame.minY - oldScreenFrame.minY)
     }
 }
