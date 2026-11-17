@@ -59,9 +59,9 @@ struct MacSnapshots {
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func goBackEnabled(appearance: WindowSnapshot.Appearance) async throws {
         let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
-        let session = PresentationSession(data: document.data, info: document.info)
+        let session = PresentationSession(data: document.data, info: document.info, layoutStore: InMemoryPresenterLayoutStore())
         session.showNextPage()
-        let view = CurrentAndNextSlides(session: session).presenterNavigation(session)
+        let view = PresenterLayoutView(session: session).presenterNavigation(session)
         try await WindowSnapshot.record(view, name: "go-back-enabled", appearance: appearance)
     }
 
