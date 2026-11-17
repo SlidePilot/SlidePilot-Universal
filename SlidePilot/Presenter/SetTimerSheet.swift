@@ -84,12 +84,17 @@ private struct DurationFields: View {
     @Binding var components: TimerDurationComponents
 
     var body: some View {
-        HStack(spacing: 0) {
-            wheel("Hours", value: $components.hours, range: TimerDurationComponents.hourRange)
-            wheel("Minutes", value: $components.minutes, range: TimerDurationComponents.minuteRange)
-            wheel("Seconds", value: $components.seconds, range: TimerDurationComponents.secondRange)
+        Form {
+            Section {
+                HStack(spacing: 0) {
+                    wheel("Hours", value: $components.hours, range: TimerDurationComponents.hourRange)
+                    wheel("Minutes", value: $components.minutes, range: TimerDurationComponents.minuteRange)
+                    wheel("Seconds", value: $components.seconds, range: TimerDurationComponents.secondRange)
+                }
+            }
         }
-        .padding(.horizontal)
+        // The document's navigation would otherwise add a back button to the sheet.
+        .navigationBarBackButtonHidden()
     }
 
     private func wheel(_ title: LocalizedStringKey, value: Binding<Int>, range: ClosedRange<Int>) -> some View {

@@ -62,6 +62,8 @@ private struct TimerToolbar: ToolbarContent {
         ToolbarItem {
             TimeModePicker(session: session)
                 .pickerStyle(.segmented)
+                // Only as wide as its labels; the iPad toolbar would stretch it.
+                .fixedSize()
         }
         ToolbarItemGroup {
             Button("Set Timer…", systemImage: "timer") {
