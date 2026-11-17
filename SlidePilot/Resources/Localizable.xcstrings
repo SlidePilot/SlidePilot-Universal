@@ -8,6 +8,7 @@
       }
     },
     "Connected" : {
+      "comment" : "Accessibility value of the external display button",
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbunden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connecté" } }
@@ -44,6 +45,7 @@
       }
     },
     "Not connected" : {
+      "comment" : "Accessibility value of the external display button",
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verbunden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Non connecté" } }

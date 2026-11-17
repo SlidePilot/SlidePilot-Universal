@@ -41,7 +41,9 @@ struct ExternalDisplayStatusButton: View {
         } label: {
             Label("External Display", systemImage: status.isConnected ? "rectangle.fill.on.rectangle.fill" : Self.mirroringSymbol)
         }
-        .accessibilityValue(status.isConnected ? Text("Connected") : Text("Not connected"))
+        .accessibilityValue(status.isConnected
+            ? Text("Connected", comment: "Accessibility value of the external display button")
+            : Text("Not connected", comment: "Accessibility value of the external display button"))
         .popoverTip(tip)
         .popover(isPresented: $showsExplanation) {
             ExternalDisplayExplanation(isConnected: status.isConnected)
@@ -60,7 +62,7 @@ private struct ExternalDisplayExplanation: View {
             } else {
                 // The same text as the tip.
                 Label {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading) {
                         ExternalDisplayTip().title
                             .font(.headline)
                         ExternalDisplayTip().message
