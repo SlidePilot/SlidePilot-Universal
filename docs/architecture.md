@@ -46,7 +46,7 @@ Logic that can be unit-tested belongs in a package. The app target stays thin.
 
 ## Concurrency model (Swift 6, complete strict checking)
 
-- **UI state** is `@Observable` and `@MainActor`. One `PresentationSession` per open document holds the current page, layout, notes, drawing, pointer, curtain and timer state. Both the presenter and the presentation scene observe the same session.
+- **UI state** is `@Observable` and `@MainActor`. One `PresentationSession` per open document holds the current page, layout, notes, drawing, pointer, curtain and timer state. Both the presenter and the presentation scene observe the same session. The document view registers its session in the app-owned `PresentationRegistry` (Core); the Mac presentation window looks it up by ID, the iPad external display shows the one in the active app window (`PresentationRegistry` tracks the window of each session).
 - **Render cache** is an `actor`. It renders off the main actor and returns `Sendable` images (`CGImage`). It never mutates shared `PDFPage` state (see DEF-02 in the parity doc). It counts the bytes of its images itself and renders inside `autoreleasepool`; neighborhood and budgets are in ADR 0005.
 - **File observation** (PDF changes on disk) is an `actor` (`PDFFileObserver` in Rendering) fed by an `NSFilePresenter`; it emits new versions through an `AsyncStream` that the `PresentationSession` consumes for as long as the document view lives. Reloads are debounced, read the whole file with coordination, are validated and skipped when the bytes did not change (ADR 0013).
 - **Remote** (2.0) is an `actor` owning the `NWListener`/`NWConnection`s. Every instance can be presenter and controller (ADR 0015).
@@ -59,7 +59,7 @@ Logic that can be unit-tested belongs in a package. The app target stays thin.
 |---|---|---|
 | Documents | `DocumentGroup(viewing:)`: open panel, Open Recent, one window per PDF; the app keeps running without windows | `DocumentGroup(viewing:)`: document browser at launch |
 | Presenter | The PDF's document window | The PDF's document scene on the device |
-| Presentation | Second window, full screen on the second screen if present | Scene on the external display (`UIWindowScene` external display role) *(Phase 1)* |
+| Presentation | `WindowGroup` per document, opened by the presenter: full screen on the second screen if present (opens with the document), or on request with Start Presentation. AppKit glue for screen choice, full screen and screen changes in `MacPresentationWindows`; screen rules in `PresentationScreenPolicy` (Core) | UIKit scene delegate for the external display role (cable or AirPlay), set up by an app delegate adaptor; from iPadOS 27 registered as a scene accessory on each app window (`AppWindowTracker`). Shows the document of the active app window or a ready screen |
 | Menus / shortcuts | `Commands` | Same `Commands` (shown with a hardware keyboard) |
 | Settings | `Settings` scene | Sheet |
 
