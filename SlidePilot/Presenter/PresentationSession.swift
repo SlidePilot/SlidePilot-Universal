@@ -33,6 +33,13 @@ final class PresentationSession: Identifiable {
         position.showPrevious()
     }
 
+    var canGoBack: Bool { position.canGoBack }
+
+    /// Shows the previously viewed page (NAV-03).
+    func goBack() {
+        position.goBack()
+    }
+
     /// Shows a recompiled version of the PDF (DOC-08). The page stays, clamped to the
     /// new last page when the deck got shorter (DEF-18).
     func reload(with version: PDFVersion) {

@@ -50,6 +50,9 @@ struct SlidePilotApp: App {
             DocumentView(document: file.document, fileURL: file.fileURL)
                 .environment(registry)
         }
+        .commands {
+            PresentationCommands()
+        }
 
         #endif
     }
