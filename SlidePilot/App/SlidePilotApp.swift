@@ -52,6 +52,7 @@ struct SlidePilotApp: App {
                 .environment(registry)
         }
         .commands {
+            PresentationCommands()
             ModeratorCommands()
         }
 

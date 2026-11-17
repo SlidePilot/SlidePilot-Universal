@@ -64,6 +64,8 @@ enum WindowSnapshot {
         let hostingView = NSHostingView(rootView: view)
         // Keep the requested size instead of shrinking to the ideal size.
         hostingView.sizingOptions = []
+        // Shows the view's `.toolbar` items in the window, like in a scene window.
+        hostingView.sceneBridgingOptions = [.toolbars]
         window.contentView = hostingView
         window.center()
         window.orderFront(nil)
