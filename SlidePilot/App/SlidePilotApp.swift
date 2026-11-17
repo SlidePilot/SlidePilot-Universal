@@ -27,6 +27,7 @@ struct SlidePilotApp: App {
         }
         .commands {
             PresentationCommands()
+            ModeratorCommands()
         }
 
         // The presentation window of each document (DOC-04 to DOC-06). It is opened by the
@@ -49,6 +50,9 @@ struct SlidePilotApp: App {
         DocumentGroup(viewing: PDFFileDocument.self) { file in
             DocumentView(document: file.document, fileURL: file.fileURL)
                 .environment(registry)
+        }
+        .commands {
+            ModeratorCommands()
         }
 
         #endif

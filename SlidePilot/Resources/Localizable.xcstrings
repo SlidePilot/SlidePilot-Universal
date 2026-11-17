@@ -1,6 +1,24 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@, stopped" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%@, gestoppt" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%@, arrêté" } }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Abbrechen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Annuler" } }
+      }
+    },
+    "Clock" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Uhr" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Horloge" } }
+      }
+    },
     "Current slide, %lld of %lld" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie, %1$lld von %2$lld" } },
@@ -13,6 +31,30 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fin de la présentation" } }
       }
     },
+    "Hours" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Stunden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Heures" } }
+      }
+    },
+    "Minutes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Minuten" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Minutes" } }
+      }
+    },
+    "Mode" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Modus" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Mode" } }
+      }
+    },
+    "Moderator" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Moderator" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Moderator" } }
+      }
+    },
     "Next slide, %lld of %lld" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie, %1$lld von %2$lld" } },
@@ -23,6 +65,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie: Ende der Präsentation" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante : fin de la présentation" } }
+      }
+    },
+    "Overtime %@" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Überzogen %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dépassement %@" } }
       }
     },
     "Presentation" : {
@@ -43,6 +91,36 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Prêt à présenter" } }
       }
     },
+    "Reset Time" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeit zurücksetzen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réinitialiser le temps" } }
+      }
+    },
+    "Seconds" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Sekunden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Secondes" } }
+      }
+    },
+    "Set" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Stellen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Régler" } }
+      }
+    },
+    "Set Timer" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Timer stellen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Régler le minuteur" } }
+      }
+    },
+    "Set Timer…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Timer stellen …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Régler le minuteur…" } }
+      }
+    },
     "Show the presentation in full screen" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation im Vollbildmodus zeigen" } },
@@ -53,6 +131,30 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation starten" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Démarrer la présentation" } }
+      }
+    },
+    "Start Time" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeit starten" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Démarrer le temps" } }
+      }
+    },
+    "Start/Stop Time" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeit starten/stoppen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Démarrer/arrêter le temps" } }
+      }
+    },
+    "Stop Time" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeit stoppen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Arrêter le temps" } }
+      }
+    },
+    "Stopwatch" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Stoppuhr" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Chronomètre" } }
       }
     },
     "The document “%@” could not be opened." : {
@@ -83,6 +185,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Das PDF ist mit einem Passwort geschützt. Entferne das Passwort und öffne es erneut." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le PDF est protégé par un mot de passe. Supprimez le mot de passe et ouvrez-le à nouveau." } }
+      }
+    },
+    "Timer" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Timer" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Minuteur" } }
       }
     }
   },
