@@ -1,11 +1,14 @@
 #if os(iOS)
+import SlidePilotCore
 import SwiftUI
+import TipKit
 import UIKit
 
 /// Owns the session registry on iPadOS and hands the external-display role to a UIKit
 /// scene delegate: SwiftUI has no scene type for it (docs/prototypes/external-display.md).
 final class AppDelegate: NSObject, UIApplicationDelegate {
     let registry = SessionRegistry()
+    let externalDisplays = ExternalDisplayStatus()
     private lazy var windows = AppWindowTracker(registry: registry)
 
     /// The only global path to the app-owned registry: UIKit creates scene delegates by
@@ -23,6 +26,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         // Lives as long as the app; the app delegate is never released.
         windows.start()
+        // Fails only if called twice; without it the external-display tip stays hidden.
+        try? Tips.configure()
         return true
     }
 
@@ -50,10 +55,14 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
-        guard let registry = AppDelegate.current?.registry else {
+        guard let app = AppDelegate.current else {
             assertionFailure("The app delegate creates the registry before any scene connects.")
             return
         }
+        let registry = app.registry
+        app.externalDisplays.connect(session.persistentIdentifier)
+        // Users who connected a display once know how; the tip never comes back (#82).
+        ExternalDisplayTip().invalidate(reason: .actionPerformed)
         // iPadOS 27: the accessory of one app window, which shows that window's document.
         var appWindow: String?
         #if compiler(>=6.4)
@@ -70,6 +79,7 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
+        AppDelegate.current?.externalDisplays.disconnect(scene.session.persistentIdentifier)
         window = nil
     }
 }

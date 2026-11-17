@@ -55,6 +55,16 @@ struct MacSnapshots {
         try await WindowSnapshot.record(window, name: "reload-longer-\(appearance.rawValue)")
     }
 
+    // NAV-03: after a slide change the Go Back toolbar button is enabled.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func goBackEnabled(appearance: WindowSnapshot.Appearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        let session = PresentationSession(data: document.data, info: document.info)
+        session.showNextPage()
+        let view = CurrentAndNextSlides(session: session).presenterNavigation(session)
+        try await WindowSnapshot.record(view, name: "go-back-enabled", appearance: appearance)
+    }
+
     // DOC-04: the presentation window shows the current slide on black.
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func presentation(appearance: WindowSnapshot.Appearance) async throws {

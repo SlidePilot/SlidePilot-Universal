@@ -16,5 +16,9 @@ struct PresentationView: View {
             SlideSurface(cache: session.cache, page: session.currentPage, role: .presentation)
         }
         .ignoresSafeArea()
+        #if os(macOS)
+        // A click makes the presentation window key; the keys keep working there (NAV-01).
+        .slideNavigationKeys(session)
+        #endif
     }
 }
