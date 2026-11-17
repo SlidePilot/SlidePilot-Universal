@@ -30,6 +30,8 @@ struct TouchSplitView<Leading: View, Trailing: View>: View {
                         let current = PresenterSplit.leadingWidth(fraction: fraction, width: width, separatorWidth: lineWidth)
                         onDrag(PresenterSplit.fraction(leadingWidth: current + step * width, width: width, separatorWidth: lineWidth))
                     }
+                    // Above the trailing column, so its touch area wins over the slot.
+                    .zIndex(1)
                     trailing
                         .frame(maxWidth: .infinity)
                 }
@@ -69,9 +71,9 @@ private struct SplitHandle: View {
                     .fill(isDragging ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
                     .frame(width: 6, height: 44)
             }
-            // A comfortable touch target around the 1 pt line.
+            // A 45 pt touch target around the 1 pt line (iPad minimum 44 pt).
             .frame(maxHeight: .infinity)
-            .contentShape(.interaction, Rectangle().inset(by: -12))
+            .contentShape(.interaction, Rectangle().inset(by: -22))
             .contentShape(.hoverEffect, Capsule().inset(by: -6))
             .hoverEffect(.highlight)
             .gesture(
