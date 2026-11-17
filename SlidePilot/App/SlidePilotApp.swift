@@ -49,6 +49,7 @@ struct SlidePilotApp: App {
         DocumentGroup(viewing: PDFFileDocument.self) { file in
             DocumentView(document: file.document, fileURL: file.fileURL)
                 .environment(registry)
+                .environment(appDelegate.externalDisplays)
         }
         .commands {
             PresentationCommands()
