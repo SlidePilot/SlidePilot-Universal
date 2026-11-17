@@ -1,4 +1,5 @@
 import PDFKit
+import SlidePilotCore
 import SwiftUI
 import Testing
 @testable import SlidePilot
@@ -13,7 +14,7 @@ struct MacSnapshots {
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func firstSlide(appearance: WindowSnapshot.Appearance) async throws {
         let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
-        try await WindowSnapshot.record(DocumentView(document: document).snapshotScene(), name: "slides-first", appearance: appearance)
+        try await WindowSnapshot.record(DocumentView(document: document, layoutStore: InMemoryPresenterLayoutStore()).snapshotScene(), name: "slides-first", appearance: appearance)
     }
 
     // LAY-09: after the last slide the preview shows the end-of-deck page.
@@ -22,7 +23,7 @@ struct MacSnapshots {
         let data = try Fixture.data("plain-slides.pdf")
         let pdf = try #require(PDFDocument(data: data))
         let document = try PDFFileDocument(data: data)
-        let view = DocumentView(document: document, page: pdf.pageCount - 1).snapshotScene()
+        let view = DocumentView(document: document, page: pdf.pageCount - 1, layoutStore: InMemoryPresenterLayoutStore()).snapshotScene()
         try await WindowSnapshot.record(view, name: "slides-last", appearance: appearance)
     }
 
@@ -39,7 +40,7 @@ struct MacSnapshots {
         let url = folder.appending(path: "slides.pdf")
         try long.write(to: url)
 
-        let view = DocumentView(document: try PDFFileDocument(data: long), fileURL: url, page: 5).snapshotScene()
+        let view = DocumentView(document: try PDFFileDocument(data: long), fileURL: url, page: 5, layoutStore: InMemoryPresenterLayoutStore()).snapshotScene()
         let window = WindowSnapshot.makeWindow(view, appearance: appearance)
         defer { window.close() }
         // Let the file presenter register before the first change.
@@ -58,7 +59,7 @@ struct MacSnapshots {
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func presentation(appearance: WindowSnapshot.Appearance) async throws {
         let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
-        let session = PresentationSession(data: document.data, info: document.info, page: 1)
+        let session = PresentationSession(data: document.data, info: document.info, page: 1, layoutStore: InMemoryPresenterLayoutStore())
         let view = PresentationView(session: session)
         try await WindowSnapshot.record(view, name: "presentation", size: CGSize(width: 960, height: 600), appearance: appearance)
     }
@@ -68,6 +69,33 @@ struct MacSnapshots {
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func readyToPresent(appearance: WindowSnapshot.Appearance) async throws {
         try await WindowSnapshot.record(ReadyToPresentView(), name: "ready-to-present", size: CGSize(width: 960, height: 540), appearance: appearance)
+    }
+}
+
+extension MacSnapshots {
+    // LAY-01 to LAY-03: each arrangement. Triple left is the default layout after showing
+    // the notes (N); triple right and single are chosen in View ▸ Arrangement; two slides
+    // shows a moved separator.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func arrangements(appearance: WindowSnapshot.Appearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        var tripleLeft = PresenterLayout.default
+        tripleLeft.setVisible(.notes, true)
+        var tripleRight = PresenterLayout(arrangement: .tripleRight)
+        tripleRight.setLeadingFraction(0.45, in: .tripleRight)
+        var double = PresenterLayout.default
+        double.setLeadingFraction(0.7, in: .double)
+        let layouts: [(String, PresenterLayout)] = [
+            ("layout-triple-left", tripleLeft),
+            ("layout-triple-right", tripleRight),
+            ("layout-double-moved", double),
+            ("layout-single", PresenterLayout(arrangement: .single)),
+        ]
+        for (name, layout) in layouts {
+            let store = InMemoryPresenterLayoutStore(layout: layout)
+            let view = DocumentView(document: document, page: 1, layoutStore: store).snapshotScene()
+            try await WindowSnapshot.record(view, name: name, size: CGSize(width: 1200, height: 700), appearance: appearance)
+        }
     }
 }
 

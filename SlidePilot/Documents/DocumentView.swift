@@ -1,8 +1,8 @@
+import SlidePilotCore
 import SlidePilotRendering
 import SwiftUI
 
-/// Content of a document window, the presenter (DOC-04): the current slide and the
-/// next-slide preview until the presenter layout (LAY-01).
+/// Content of a document window, the presenter (DOC-04), in the presenter layout (LAY-01).
 struct DocumentView: View {
     /// The opened file, watched for recompiles (DOC-08). `nil` when the document system
     /// provides no URL; the PDF is then shown as opened.
@@ -11,13 +11,14 @@ struct DocumentView: View {
     @FocusState private var hasKeyboardFocus: Bool
     @Environment(SessionRegistry.self) private var registry
 
-    init(document: PDFFileDocument, fileURL: URL? = nil, page: Int = 0) {
+    init(document: PDFFileDocument, fileURL: URL? = nil, page: Int = 0, layoutStore: any PresenterLayoutStore = UserDefaultsPresenterLayoutStore.app) {
         self.fileURL = fileURL
-        _session = State(initialValue: PresentationSession(data: document.data, info: document.info, page: page))
+        _session = State(initialValue: PresentationSession(data: document.data, info: document.info, page: page, layoutStore: layoutStore))
     }
 
     var body: some View {
-        CurrentAndNextSlides(session: session)
+        PresenterLayoutView(session: session)
+            .presenterLayoutControls(session.layout)
             .shrinksOnMemoryWarning(session)
             // The presentation surfaces find the session in the registry (DOC-04).
             .onAppear { registry.register(session) }

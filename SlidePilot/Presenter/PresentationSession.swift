@@ -15,9 +15,12 @@ final class PresentationSession: Identifiable {
     private(set) var position: DeckPosition
     /// The bytes on screen; the file observer compares changes with them.
     @ObservationIgnored private(set) var data: Data
+    /// The presenter's arrangement and slots (LAY-01 to LAY-05).
+    let layout: PresenterLayoutModel
 
-    init(data: Data, info: PDFDocumentInfo, page: Int = 0) {
+    init(data: Data, info: PDFDocumentInfo, page: Int = 0, layoutStore: any PresenterLayoutStore = UserDefaultsPresenterLayoutStore.app) {
         self.data = data
+        layout = PresenterLayoutModel(store: layoutStore)
         // Cheap to create: the cache opens the PDF on its first render.
         cache = RenderCache(data: data, info: info)
         position = DeckPosition(page: page, pageCount: info.pageCount)

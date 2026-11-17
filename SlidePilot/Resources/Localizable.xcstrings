@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Arrangement" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Anordnung" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Disposition" } }
+      }
+    },
     "Current slide, %lld of %lld" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie, %1$lld von %2$lld" } },
@@ -25,6 +31,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante : fin de la présentation" } }
       }
     },
+    "No Notes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Notizen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune note" } }
+      }
+    },
     "Presentation" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation" } },
@@ -37,10 +49,34 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présentation, diapositive %1$lld sur %2$lld" } }
       }
     },
+    "Preview Next Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vorschau nächste Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aperçu de la diapositive suivante" } }
+      }
+    },
     "Ready to present" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Bereit zum Präsentieren" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Prêt à présenter" } }
+      }
+    },
+    "Separator" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Trenner" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Séparateur" } }
+      }
+    },
+    "Show Current Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie anzeigen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher la diapositive courante" } }
+      }
+    },
+    "Show Notes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen anzeigen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher les notes" } }
       }
     },
     "Show the presentation in full screen" : {
@@ -49,10 +85,28 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher la présentation en plein écran" } }
       }
     },
+    "Single Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Eine Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Une diapositive" } }
+      }
+    },
+    "Slides" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositives" } }
+      }
+    },
     "Start Presentation" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation starten" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Démarrer la présentation" } }
+      }
+    },
+    "Swipe up or down to resize the slides" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nach oben oder unten wischen, um die Größe der Folien zu ändern" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Balayez vers le haut ou le bas pour redimensionner les diapositives" } }
       }
     },
     "The document “%@” could not be opened." : {
@@ -83,6 +137,24 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Das PDF ist mit einem Passwort geschützt. Entferne das Passwort und öffne es erneut." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le PDF est protégé par un mot de passe. Supprimez le mot de passe et ouvrez-le à nouveau." } }
+      }
+    },
+    "Three Slides, Large Left" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Drei Folien, groß links" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Trois diapositives, grande à gauche" } }
+      }
+    },
+    "Three Slides, Large Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Drei Folien, groß rechts" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Trois diapositives, grande à droite" } }
+      }
+    },
+    "Two Slides" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zwei Folien" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Deux diapositives" } }
       }
     }
   },
