@@ -1,7 +1,7 @@
 import SlidePilotCore
 import SwiftUI
 
-/// The clock and the stopwatch/timer at the top left of the presenter (TIME-01 to TIME-03,
+/// The stopwatch/timer and the clock at the top of the presenter (TIME-01 to TIME-03,
 /// TIME-06). Plain system text with monospaced digits instead of the old custom time view
 /// (ADR 0010).
 struct TimeDisplay: View {
@@ -14,20 +14,18 @@ struct TimeDisplay: View {
     @ScaledMetric(relativeTo: .largeTitle) private var smallFontSize: CGFloat = 55
 
     var body: some View {
-        // Wraps below each other when Dynamic Type makes both too wide for one row.
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: spacing) { clock; timerValue }
-            VStack(alignment: .leading, spacing: 0) { clock; timerValue }
+        // Like the old app: two equal halves, the timer centered in the left one and the
+        // clock in the right one, so neither moves when the other's width changes.
+        HStack(spacing: 0) {
+            timerValue.frame(maxWidth: .infinity)
+            clock.frame(maxWidth: .infinity)
         }
         .font(.system(size: size == .small ? smallFontSize : normalFontSize, weight: .light))
         .monospacedDigit()
         .lineLimit(1)
-        // Shrinks instead of truncating in narrow iPad windows at large text sizes.
-        .minimumScaleFactor(0.5)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        // Shrinks instead of truncating in narrow windows and at large text sizes.
+        .minimumScaleFactor(0.3)
     }
-
-    private var spacing: CGFloat { size == .small ? 30 : 40 }
 
     /// TIME-01: the wall clock with seconds in the user's locale (12 or 24 h, DEF-09).
     private var clock: some View {

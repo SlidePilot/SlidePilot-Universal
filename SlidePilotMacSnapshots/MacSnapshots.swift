@@ -80,7 +80,7 @@ struct MacSnapshots {
         .padding(30)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(.background)
-        try await WindowSnapshot.record(view, name: "time-display", size: CGSize(width: 700, height: 260), appearance: appearance)
+        try await WindowSnapshot.record(view, name: "time-display", size: CGSize(width: 1000, height: 300), appearance: appearance)
     }
 
     // TIME-03: the Set Timer sheet.
