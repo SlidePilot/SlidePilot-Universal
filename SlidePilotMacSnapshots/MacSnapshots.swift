@@ -74,6 +74,32 @@ struct MacSnapshots {
         try await WindowSnapshot.record(view, name: "presentation", size: CGSize(width: 960, height: 600), appearance: appearance)
     }
 
+    // TIME-01 to TIME-03, TIME-06: clock with a running stopwatch (normal size) and a timer
+    // in overtime (small size).
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func timeDisplay(appearance: WindowSnapshot.Appearance) async throws {
+        var stopwatch = PresentationTimer()
+        stopwatch.toggle(at: .now.addingTimeInterval(-754))
+        var timer = PresentationTimer(mode: .timer)
+        timer.setTimerDuration(60)
+        timer.toggle(at: .now.addingTimeInterval(-125))
+        let view = VStack(alignment: .leading, spacing: 20) {
+            TimeDisplay(timer: stopwatch, size: .normal)
+            TimeDisplay(timer: timer, size: .small)
+        }
+        .padding(30)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(.background)
+        try await WindowSnapshot.record(view, name: "time-display", size: CGSize(width: 1000, height: 300), appearance: appearance)
+    }
+
+    // TIME-03: the Set Timer sheet.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func setTimer(appearance: WindowSnapshot.Appearance) async throws {
+        let view = SetTimerSheet(duration: 20 * 60) { _ in }
+        try await WindowSnapshot.record(view, name: "set-timer", size: CGSize(width: 480, height: 300), appearance: appearance)
+    }
+
     // DOC-05 (iPad): the external display while no document is open. Rendered on the Mac
     // to check the logo and text; the iPad shows the same view.
     @Test(arguments: WindowSnapshot.Appearance.allCases)

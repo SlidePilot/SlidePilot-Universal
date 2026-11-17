@@ -238,6 +238,8 @@ struct PresentationWindowContent: View {
                 })
                 // Like the old app, A, P and N also work while the presentation is key (LAY-02).
                 .focusedSceneValue(\.presenterLayout, session.layout)
+                // Start/Stop, Reset and Mode also work after a click into the presentation.
+                .focusedSceneValue(\.presenterTimer, FocusedPresenterTimer(session: session, showSetTimer: nil))
         } else {
             // Fallback if the document went away first: close this window. The window
             // itself, not by value, since the scene's value is non-optional.

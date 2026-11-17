@@ -19,6 +19,7 @@ struct DocumentView: View {
         PresenterLayoutView(session: session)
             .presenterLayoutControls(session.layout)
             .shrinksOnMemoryWarning(session)
+            .presenterTimer(session)
             // The presentation surfaces find the session in the registry (DOC-04).
             .onAppear { registry.register(session) }
             .onDisappear { registry.unregister(session.id) }
