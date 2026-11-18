@@ -113,7 +113,7 @@ public actor RemoteSession<Outgoing: RemoteWireMessage, Incoming: RemoteWireMess
                 }
             }
             defer {
-                // The UI must not wait for the reader to notice the cancellation.
+                // Event consumers see the end right away, before the reader is cancelled.
                 eventContinuation.finish()
                 group.cancelAll()
             }

@@ -55,6 +55,10 @@ nonisolated struct KeychainTrustStore: TrustStore {
             item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
             #endif
             status = SecItemAdd(item as CFDictionary, nil)
+            if status == errSecDuplicateItem {
+                // Another pairing of the same device added it in between.
+                status = SecItemUpdate(baseQuery(account: device.instanceID) as CFDictionary, attributes as CFDictionary)
+            }
         }
         guard status == errSecSuccess else { throw KeychainError(status: status) }
     }
