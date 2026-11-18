@@ -40,7 +40,7 @@ struct MacSnapshots {
         let url = folder.appending(path: "slides.pdf")
         try long.write(to: url)
 
-        let view = DocumentView(document: try PDFFileDocument(data: long), fileURL: url, page: 5, layoutStore: InMemoryPresenterLayoutStore()).snapshotScene()
+        let view = DocumentView(document: try PDFFileDocument(data: long), fileURL: url, page: 5, layoutStore: InMemoryPresenterLayoutStore(), companionStore: nil).snapshotScene()
         let window = WindowSnapshot.makeWindow(view, appearance: appearance)
         defer { window.close() }
         // Let the file presenter register before the first change.

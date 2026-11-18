@@ -19,10 +19,19 @@ final class PresentationSession: Identifiable {
     @ObservationIgnored private(set) var data: Data
     /// The presenter's arrangement and slots (LAY-01 to LAY-05).
     let layout: PresenterLayoutModel
+    /// Per-document settings and, later, notes in the companion file (NOTES-10, SET-02).
+    let companion: DocumentCompanion
 
-    init(data: Data, info: PDFDocumentInfo, page: Int = 0, layoutStore: any PresenterLayoutStore = UserDefaultsPresenterLayoutStore.app) {
+    init(
+        data: Data,
+        info: PDFDocumentInfo,
+        page: Int = 0,
+        layoutStore: any PresenterLayoutStore = UserDefaultsPresenterLayoutStore.app,
+        companionStore: CompanionStore? = .app
+    ) {
         self.data = data
         layout = PresenterLayoutModel(store: layoutStore)
+        companion = DocumentCompanion(store: companionStore)
         // Cheap to create: the cache opens the PDF on its first render.
         cache = RenderCache(data: data, info: info)
         position = DeckPosition(page: page, pageCount: info.pageCount)

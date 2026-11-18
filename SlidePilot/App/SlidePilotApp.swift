@@ -1,3 +1,4 @@
+import SlidePilotCore
 import SwiftUI
 
 @main
@@ -12,6 +13,7 @@ struct SlidePilotApp: App {
     init() {
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
+        CompanionStore.cleanUpAtLaunch()
     }
     #endif
 

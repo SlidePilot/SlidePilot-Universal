@@ -44,6 +44,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle, %1$lld sur %2$lld" } }
       }
     },
+    "Don’t Use" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verwenden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas utiliser" } }
+      }
+    },
     "End of presentation" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Ende der Präsentation" } },
@@ -225,6 +231,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Une diapositive" } }
       }
     },
+    "SlidePilot has stored data for a PDF named “%@” with the same number of pages that can no longer be found. You can use it for this PDF." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot hat Daten zu einem PDF namens „%@“ mit derselben Seitenzahl gespeichert, das nicht mehr gefunden wird. Du kannst sie für dieses PDF verwenden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a enregistré des données pour un PDF nommé « %@ » avec le même nombre de pages, qui est introuvable. Vous pouvez les utiliser pour ce PDF." } }
+      }
+    },
     "Slides" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien" } },
@@ -325,6 +337,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Zwei Folien" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Deux diapositives" } }
+      }
+    },
+    "Use Data" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten verwenden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Utiliser les données" } }
+      }
+    },
+    "Use Data from a Missing PDF?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten eines fehlenden PDFs verwenden?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Utiliser les données d’un PDF introuvable ?" } }
       }
     }
   },
