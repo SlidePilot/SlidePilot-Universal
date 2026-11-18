@@ -38,6 +38,7 @@ struct SlidePilotApp: App {
             PresentationCommands()
             LayoutCommands()
             ModeratorCommands()
+            NotesFormatCommands()
         }
 
         // The presentation window of each document (DOC-04 to DOC-06). It is opened by the
@@ -75,6 +76,7 @@ struct SlidePilotApp: App {
         }
         .commands {
             LayoutCommands()
+            NotesFormatCommands()
         }
 
         #endif

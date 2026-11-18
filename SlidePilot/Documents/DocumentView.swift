@@ -66,7 +66,9 @@ private struct PresenterClock: ViewModifier {
     let session: PresentationSession
 
     func body(content: Content) -> some View {
-        content.presenterTimeDisplay(session)
+        content
+            .presenterTimeDisplay(session)
+            .finishesNotesEditingOnTap(session.notes)
     }
 }
 
@@ -80,6 +82,7 @@ private struct PresenterChrome: ViewModifier {
             .presenterLayoutControls(session.layout)
             .presenterTimerControls(session)
             .presenterNavigation(session)
+            .notesEditingControls(session.notes)
             // Black and white curtain and its warning (CUR-01, CUR-02).
             .presenterCurtain(session)
             #if os(iOS)

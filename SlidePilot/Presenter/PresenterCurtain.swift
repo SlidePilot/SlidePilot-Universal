@@ -15,7 +15,8 @@ extension View {
     func blackCurtainKey(_ session: PresentationSession) -> some View {
         onKeyPress(keys: ["."]) { press in
             // Plain "." only; ⌘. and other combinations stay with the system.
-            guard press.modifiers.isEmpty else { return .ignored }
+            // Typed into the notes while they are edited (NOTES-04).
+            guard press.modifiers.isEmpty, !session.notes.isEditing else { return .ignored }
             session.curtain.toggle(.black)
             return .handled
         }

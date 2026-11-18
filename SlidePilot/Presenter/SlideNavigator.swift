@@ -87,7 +87,7 @@ extension View {
     /// in the presenter, so Esc arrives wherever the focus is.
     func navigatorEscapeKey(_ session: PresentationSession) -> some View {
         onKeyPress(.escape) {
-            guard session.isNavigatorDisplayed else { return .ignored }
+            guard session.isNavigatorDisplayed, !session.notes.isEditing else { return .ignored }
             session.isNavigatorDisplayed = false
             return .handled
         }
@@ -211,7 +211,8 @@ struct SlideNavigator: View {
             isPageFieldFocused = true
         }
         #endif
-        .focusedSceneValue(\.isEditingText, isPageFieldFocused)
+        // Set only while focused, so it does not hide the notes editor's value.
+        .focusedSceneValue(\.isEditingText, isPageFieldFocused ? true : nil)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Text("Slide Navigator"))
     }

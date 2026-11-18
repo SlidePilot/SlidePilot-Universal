@@ -66,11 +66,21 @@ private struct SlideNavigationKeys: ViewModifier {
             .focusEffectDisabled()
             .focused($hasKeyboardFocus)
             .onAppear { hasKeyboardFocus = true }
+            // Finishing the notes (Done, ⌘↩) gives the keys back to the slides (NOTES-04).
+            .onChange(of: session.notes.isEditing) { _, isEditing in
+                if !isEditing {
+                    hasKeyboardFocus = true
+                }
+            }
+            // SwiftUI offers key presses to this view before an AppKit/UIKit text view
+            // inside it, so they are passed on while the notes are edited (NOTES-04).
             .onKeyPress(keys: Self.previousKeys) { _ in
+                guard !session.notes.isEditing else { return .ignored }
                 session.showPreviousPage()
                 return .handled
             }
             .onKeyPress(keys: Self.nextKeys) { _ in
+                guard !session.notes.isEditing else { return .ignored }
                 session.nextSlideCommand()
                 return .handled
             }
@@ -93,7 +103,8 @@ private struct PresenterNavigation: ViewModifier {
             }
             #if os(iOS)
             .contentShape(.rect)
-            .gesture(swipe)
+            // Off while the notes are edited, so dragging in the text never changes slides.
+            .gesture(swipe, isEnabled: !session.notes.isEditing)
             #endif
     }
 

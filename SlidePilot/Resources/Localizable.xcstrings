@@ -195,10 +195,112 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante : fin de la présentation" } }
       }
     },
-    "No Notes" : {
+    "Align Left" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Notizen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune note" } }
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Linksbündig" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aligner à gauche" } }
+      }
+    },
+    "Align Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Rechtsbündig" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aligner à droite" } }
+      }
+    },
+    "Bigger" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Größer" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus grand" } }
+      }
+    },
+    "Bold" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fett" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gras" } }
+      }
+    },
+    "Center" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zentriert" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Centrer" } }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fertig" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Terminé" } }
+      }
+    },
+    "Finish editing the notes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bearbeiten der Notizen beenden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Terminer la modification des notes" } }
+      }
+    },
+    "Font" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Schrift" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Police" } }
+      }
+    },
+    "Format" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Format" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Format" } }
+      }
+    },
+    "Italic" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kursiv" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Italique" } }
+      }
+    },
+    "List…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Liste …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Liste…" } }
+      }
+    },
+    "Notes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Notes" } }
+      }
+    },
+    "Notes Can’t Be Shown" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen können nicht angezeigt werden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible d’afficher les notes" } }
+      }
+    },
+    "Smaller" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kleiner" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus petit" } }
+      }
+    },
+    "Spacing…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Abstand …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Espacement…" } }
+      }
+    },
+    "Text" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Text" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Texte" } }
+      }
+    },
+    "These notes were saved by a newer version of SlidePilot." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Diese Notizen wurden mit einer neueren Version von SlidePilot gesichert." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ces notes ont été enregistrées avec une version plus récente de SlidePilot." } }
+      }
+    },
+    "Underline" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unterstrichen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Souligné" } }
       }
     },
     "Page Number" : {
