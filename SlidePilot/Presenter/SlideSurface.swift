@@ -31,6 +31,8 @@ struct SlideSurface: View {
     @State private var pageLinks: PageLinks?
     /// Counts crossfaded slide changes, so the new slide is a new view on top of the old one.
     @State private var generation = 0
+    /// The cache the shown image came from; a reloaded PDF fades in too, like the old app.
+    @State private var slideCache: ObjectIdentifier?
 
     private struct LinkRequest: Equatable {
         let cache: ObjectIdentifier
@@ -157,7 +159,11 @@ struct SlideSurface: View {
         guard let rendered = try? await cache.image(page: page, region: region, fitting: box),
               !Task.isCancelled
         else { return }
-        let isNewSlide = slide.map { $0.pageIndex != rendered.pageIndex || $0.region != rendered.region } ?? false
+        let renderedCache = ObjectIdentifier(cache)
+        let isNewSlide = slide.map {
+            $0.pageIndex != rendered.pageIndex || $0.region != rendered.region || slideCache != renderedCache
+        } ?? false
+        slideCache = renderedCache
         guard crossfades, isNewSlide else {
             // The same view shows the new image at once: no transition runs.
             slide = rendered

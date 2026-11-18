@@ -24,6 +24,8 @@ public final class DisplayAwakeKeeper {
         blocker.isBlocking = settings.keepsDisplayAwake
         observation = Task { [blocker] in
             for await keepsAwake in Observations({ settings.keepsDisplayAwake }) {
+                // A value queued before the keeper went must not block again after its deinit.
+                guard !Task.isCancelled else { break }
                 blocker.isBlocking = keepsAwake
             }
         }
