@@ -123,39 +123,68 @@ final class Input {
 
     // MARK: Mouse
 
+    // AppKit ignores mouse events posted to a process, so mouse events go
+    // through the system event stream. Before each event the host checks that
+    // the frontmost window at that point is a normal window of the test build;
+    // otherwise it stops. The pointer is moved back afterwards.
+
     enum Button: String { case left, right }
 
     /// Clicks at a point given in the window's own coordinates (points from its
     /// top-left corner). The point must lie inside that test build window.
-    func click(target: VerifiedTarget, window: WindowInfo, at point: CGPoint, button: Button, count: Int) async throws {
+    func click(target: VerifiedTarget, window: WindowInfo, at point: CGPoint, button: Button, count: Int, menuOpen: Bool) async throws {
+        try refuseInMenu(menuOpen)
         let location = try globalPoint(point, in: window)
         let (down, up, mouseButton): (CGEventType, CGEventType, CGMouseButton) = button == .left
             ? (.leftMouseDown, .leftMouseUp, .left) : (.rightMouseDown, .rightMouseUp, .right)
+        let restore = pointerLocation()
+        defer { movePointer(to: restore) }
         for click in 1...max(1, min(count, 3)) {
             for type in [down, up] {
-                post(type, at: location, button: mouseButton, clickState: click, window: window, target: target)
+                try post(type, at: location, button: mouseButton, clickState: click, target: target)
             }
             try await Task.sleep(for: .milliseconds(40))
         }
     }
 
-    /// Drags from one point to another (window coordinates), e.g. to draw on a slide.
-    func drag(target: VerifiedTarget, window: WindowInfo, points: [CGPoint]) async throws {
+    /// Drags along points in window coordinates, e.g. to draw on a slide.
+    func drag(target: VerifiedTarget, window: WindowInfo, points: [CGPoint], menuOpen: Bool) async throws {
+        try refuseInMenu(menuOpen)
         guard points.count >= 2, points.count <= 500 else { throw PolicyError.refused("a drag needs 2 to 500 points") }
         let locations = try points.map { try globalPoint($0, in: window) }
-        post(.leftMouseDown, at: locations[0], button: .left, clickState: 1, window: window, target: target)
-        for location in locations.dropFirst() {
-            try await Task.sleep(for: .milliseconds(12))
-            post(.leftMouseDragged, at: location, button: .left, clickState: 1, window: window, target: target)
+        let restore = pointerLocation()
+        defer { movePointer(to: restore) }
+        try post(.leftMouseDown, at: locations[0], button: .left, clickState: 1, target: target)
+        do {
+            for location in locations.dropFirst() {
+                try await Task.sleep(for: .milliseconds(12))
+                try post(.leftMouseDragged, at: location, button: .left, clickState: 1, target: target)
+            }
+        } catch {
+            // Never leave the button pressed.
+            postUnchecked(.leftMouseUp, at: locations[0], button: .left)
+            throw error
         }
-        post(.leftMouseUp, at: locations[locations.count - 1], button: .left, clickState: 1, window: window, target: target)
+        try post(.leftMouseUp, at: locations[locations.count - 1], button: .left, clickState: 1, target: target)
     }
 
-    func scroll(target: VerifiedTarget, window: WindowInfo, at point: CGPoint, dx: Int32, dy: Int32) throws {
+    func scroll(target: VerifiedTarget, window: WindowInfo, at point: CGPoint, dx: Int32, dy: Int32, menuOpen: Bool) throws {
+        try refuseInMenu(menuOpen)
         let location = try globalPoint(point, in: window)
+        try checkFrontmost(at: location, target: target)
+        let restore = pointerLocation()
+        defer { movePointer(to: restore) }
+        movePointer(to: location)
         guard let event = CGEvent(scrollWheelEvent2Source: nil, units: .pixel, wheelCount: 2, wheel1: dy, wheel2: dx, wheel3: 0) else { return }
         event.location = location
-        event.postToPid(target.pid)
+        event.post(tap: .cghidEventTap)
+    }
+
+    /// In an open menu a click could choose a blocked item; use menu/press or escape.
+    private func refuseInMenu(_ menuOpen: Bool) throws {
+        if menuOpen {
+            throw PolicyError.refused("a menu is open; choose items with menu/press or close it with escape")
+        }
     }
 
     private func globalPoint(_ point: CGPoint, in window: WindowInfo) throws -> CGPoint {
@@ -166,12 +195,60 @@ final class Input {
         return location
     }
 
-    private func post(_ type: CGEventType, at location: CGPoint, button: CGMouseButton, clickState: Int, window: WindowInfo, target: VerifiedTarget) {
+    private func post(_ type: CGEventType, at location: CGPoint, button: CGMouseButton, clickState: Int, target: VerifiedTarget) throws {
+        try checkFrontmost(at: location, target: target)
         guard let event = CGEvent(mouseEventSource: nil, mouseType: type, mouseCursorPosition: location, mouseButton: button) else { return }
         event.setIntegerValueField(.mouseEventClickState, value: Int64(clickState))
-        event.setIntegerValueField(.mouseEventWindowUnderMousePointer, value: Int64(window.id))
-        event.setIntegerValueField(.mouseEventWindowUnderMousePointerThatCanHandleThisEvent, value: Int64(window.id))
-        event.postToPid(target.pid)
+        event.post(tap: .cghidEventTap)
+    }
+
+    private func postUnchecked(_ type: CGEventType, at location: CGPoint, button: CGMouseButton) {
+        CGEvent(mouseEventSource: nil, mouseType: type, mouseCursorPosition: location, mouseButton: button)?.post(tap: .cghidEventTap)
+    }
+
+    /// The frontmost visible window at `location` (in z-order, including the
+    /// menu bar, Dock, notifications and other apps) must be a test build
+    /// window below menu level. Anything else in front stops the event.
+    private func checkFrontmost(at location: CGPoint, target: VerifiedTarget) throws {
+        let options: CGWindowListOption = [.optionOnScreenOnly, .excludeDesktopElements]
+        let windows = CGWindowListCopyWindowInfo(options, kCGNullWindowID) as? [[String: Any]] ?? []
+        for info in windows {
+            guard let boundsInfo = info[kCGWindowBounds as String] as? NSDictionary,
+                  let bounds = CGRect(dictionaryRepresentation: boundsInfo), bounds.contains(location) else { continue }
+            if let alpha = info[kCGWindowAlpha as String] as? Double, alpha <= 0 { continue }
+            let pid = info[kCGWindowOwnerPID as String] as? Int32
+            let layer = info[kCGWindowLayer as String] as? Int ?? 0
+            guard pid == target.pid, layer < Int(CGWindowLevelForKey(.popUpMenuWindow)) else {
+                throw PolicyError.refused("another window is in front of the test build at \(location); nothing was clicked")
+            }
+            return
+        }
+        throw PolicyError.refused("no test build window at \(location)")
+    }
+
+    private func pointerLocation() -> CGPoint {
+        CGEvent(source: nil)?.location ?? .zero
+    }
+
+    private func movePointer(to location: CGPoint) {
+        CGWarpMouseCursorPosition(location)
+        CGAssociateMouseAndMouseCursorPosition(1)
+    }
+
+    // MARK: Menus
+
+    /// A menu (menu bar or context menu) is open when one of the app's AXMenu
+    /// elements has a size; closed menus report an empty frame.
+    func isMenuOpen(target: VerifiedTarget) -> Bool {
+        var open = false
+        walk(root: AXUIElementCreateApplication(target.pid), maxDepth: 12, maxNodes: 8000) { node in
+            if role(of: node.element) == kAXMenuRole, let frame = frame(of: node.element), frame.width > 0, frame.height > 0 {
+                open = true
+                return false
+            }
+            return true
+        }
+        return open
     }
 
     // MARK: Helpers
@@ -207,6 +284,9 @@ final class Input {
                 let title = attribute(item, kAXTitleAttribute) as String? ?? ""
                 if Policy.isBlockedMenuTitle(title) {
                     throw PolicyError.refused("menu item \(title) is blocked for the test host")
+                }
+                if let identifier: String = attribute(item, kAXIdentifierAttribute), Policy.isBlockedMenuIdentifier(identifier) {
+                    throw PolicyError.refused("menu item \(title) (\(identifier)) is blocked for the test host")
                 }
                 let commandChar = (attribute(item, kAXMenuItemCmdCharAttribute) as String?)?.lowercased()
                 if itemRole == kAXMenuItemRole, let commandChar, ["v", "o"].contains(commandChar) {

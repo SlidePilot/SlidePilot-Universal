@@ -22,7 +22,7 @@ The app is signed ad hoc, so macOS binds both grants to this exact binary. After
 
 - It acts only on a running app with the test build's bundle ID, a valid signature, the App Sandbox and no file access entitlements. Otherwise it refuses.
 - Screenshots and recordings contain only the test build's windows (including its menus and sheets). Other apps, the desktop, notifications, the cursor and system panels are left out by macOS, even when they overlap.
-- Input goes only to the test build. Paste, AutoFill, Services, Open, Share, Print and Import are refused.
+- Input goes only to the test build. Clicks and drags briefly move the mouse pointer (it is put back afterwards) and happen only where a test build window is frontmost. Paste, AutoFill, Services, Open, Share, Print and Import are refused.
 - It reads requests from and writes captures to `/private/tmp/claude/slidepilot-testhost`. It has no network access.
 - Its menu shows the permissions, whether it is recording (red record icon) and the last action. Quit it whenever you don't want Claude to test the Mac app; Claude then falls back to app-rendered snapshots.
 

@@ -151,6 +151,18 @@ enum Policy {
             || normalized.hasPrefix("autofill") || normalized.hasPrefix("import")
     }
 
+    /// AppKit gives standard menu items language-independent identifiers (the
+    /// action selector, e.g. "paste:", or "_NSMenuItemAutoFillIdentifier").
+    static let blockedMenuIdentifierParts = [
+        "paste", "autofill", "opendocument", "openrecent", "services", "share", "print", "runpagelayout",
+        "import", "startdictation",
+    ]
+
+    static func isBlockedMenuIdentifier(_ identifier: String) -> Bool {
+        let lowered = identifier.lowercased()
+        return blockedMenuIdentifierParts.contains { lowered.contains($0) }
+    }
+
     /// ⌘V (and variants) pastes, ⌘O opens files: both are refused as keystrokes.
     static func isBlockedShortcut(key: String, modifiers: CGEventFlags) -> Bool {
         guard modifiers.contains(.maskCommand) else { return false }

@@ -148,7 +148,8 @@ python3 -I scripts/mac-test-host.py quit
 ```
 
 - Screenshots and recordings land in `./.pr-screenshots/mac/`. `screenshot NAME` captures all test build windows on the display (including open menus and sheets), `--window ID` one window. Look at each file before using it.
-- Use `tree` (accessibility outline with paths) to find controls, then `press --path …` or `menu …`; `click`/`drag`/`scroll` take points from the window's top-left corner.
+- Use `tree` (accessibility outline with paths) to find controls, then `press --path …` or `menu …`; prefer these over clicks. `click`/`drag`/`scroll` take points from the window's top-left corner and move the real pointer briefly, so use them only for what needs the mouse (drawing, pointer, hit areas without an accessibility element).
+- The test build runs on the product owner's Mac: it comes to the front when launched. Keep sessions short and `quit` it when done.
 - Paste, AutoFill, Services, Open, Share, Print and Import are refused by design, and only Escape works while a menu is open. Never try to work around a refusal; test that part manually via "How to verify".
 - If `status` gets no answer or reports a missing permission, the host is not running or not granted: tell the product owner (setup in `Tools/TestHost/README.md`) and fall back to "Mac snapshots". Never start or rebuild the installed host yourself.
 - Changing anything in `Tools/TestHost/` invalidates the grants. Only do it in a PR of its own that the product owner asked for.

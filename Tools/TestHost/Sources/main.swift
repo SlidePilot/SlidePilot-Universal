@@ -27,6 +27,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         host.start()
     }
 
+    /// Quitting while recording would leave an unplayable movie file.
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard host.isRecording else { return .terminateNow }
+        Task {
+            await host.stopRecordingIfNeeded()
+            NSApp.reply(toApplicationShouldTerminate: true)
+        }
+        return .terminateLater
+    }
+
     private func updateIcon() {
         let symbol = host.isRecording ? "record.circle" : "camera.viewfinder"
         statusItem?.button?.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "SlidePilot Test Host")

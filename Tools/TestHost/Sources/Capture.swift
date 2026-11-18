@@ -20,15 +20,24 @@ struct WindowInfo {
 @MainActor
 final class Capture {
     private var recording: (stream: SCStream, delegate: RecordingDelegate, url: URL, timeout: Task<Void, Never>)?
-    var isRecording: Bool { recording != nil }
+    /// A stop in progress, so a second stop waits for the same file and a new
+    /// recording cannot start until the movie is finalized.
+    private var stopping: Task<URL, any Error>?
+    var isRecording: Bool { recording != nil || stopping != nil }
 
     /// On-screen windows of the target, front to back.
+    /// Windows on another Space, minimized or just appearing are not on screen;
+    /// a short retry covers windows that are still appearing.
     func windows(of target: VerifiedTarget) async throws -> (SCShareableContent, [SCWindow]) {
-        let content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
-        let windows = content.windows.filter {
-            $0.owningApplication?.processID == target.pid && $0.isOnScreen && $0.frame.width > 1 && $0.frame.height > 1
+        for attempt in 0..<4 {
+            let content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
+            let windows = content.windows.filter {
+                $0.owningApplication?.processID == target.pid && $0.isOnScreen && $0.frame.width > 1 && $0.frame.height > 1
+            }
+            if !windows.isEmpty || attempt == 3 { return (content, windows) }
+            try await Task.sleep(for: .milliseconds(250))
         }
-        return (content, windows)
+        throw PolicyError.refused("unreachable")
     }
 
     func windowInfos(of target: VerifiedTarget) async throws -> [WindowInfo] {
@@ -65,7 +74,9 @@ final class Capture {
     }
 
     func startRecording(of target: VerifiedTarget, to url: URL, maxSeconds: Int, onTimeout: @escaping @MainActor () -> Void) async throws {
-        guard recording == nil else { throw PolicyError.refused("a recording is already running") }
+        // Check, suspend, set: safe because Host handles one request at a time
+        // and the timeout path only stops recordings.
+        guard recording == nil, stopping == nil else { throw PolicyError.refused("a recording is already running") }
         let (content, windows) = try await windows(of: target)
         let (filter, rect) = try appFilter(content: content, windows: windows, target: target)
         let config = SCStreamConfiguration()
@@ -95,18 +106,38 @@ final class Capture {
 
     @discardableResult
     func stopRecording() async throws -> URL {
+        if let stopping { return try await stopping.value }
         guard let recording else { throw PolicyError.refused("no recording is running") }
         self.recording = nil
         recording.timeout.cancel()
-        try await recording.stream.stopCapture()
-        try await recording.delegate.finished()
-        return recording.url
+        let stream = recording.stream
+        let delegate = recording.delegate
+        let url = recording.url
+        let task = Task { @MainActor () throws -> URL in
+            try await Self.finish(stream: stream, delegate: delegate)
+            return url
+        }
+        stopping = task
+        defer { stopping = nil }
+        return try await task.value
+    }
+
+    private static func finish(stream: SCStream, delegate: RecordingDelegate) async throws {
+        // stopCapture fails if the stream already ended (e.g. the test build
+        // quit); the delegate still reports how writing the file ended.
+        do { try await stream.stopCapture() } catch {}
+        let watchdog = Task {
+            try? await Task.sleep(for: .seconds(10))
+            if !Task.isCancelled { delegate.fail(PolicyError.refused("the recording did not finish")) }
+        }
+        defer { watchdog.cancel() }
+        try await delegate.finished()
     }
 
     /// A display filter that includes only the target's process.
     private func appFilter(content: SCShareableContent, windows: [SCWindow], target: VerifiedTarget) throws -> (SCContentFilter, CGRect) {
         guard let front = windows.first(where: { $0.windowLayer == 0 }) ?? windows.first else {
-            throw PolicyError.refused("the test build has no window on screen")
+            throw PolicyError.refused("the test build has no window on the current screen (another Space, minimized or full screen elsewhere?)")
         }
         let center = CGPoint(x: front.frame.midX, y: front.frame.midY)
         guard let display = content.displays.first(where: { $0.frame.contains(center) }),
@@ -135,9 +166,8 @@ final class Capture {
 }
 
 /// Waits for SCRecordingOutput to finish writing the movie file.
-/// ScreenCaptureKit calls the delegate on its own queue; the state is behind a
-/// Mutex, so the unchecked Sendable conformance is safe.
-final class RecordingDelegate: NSObject, SCRecordingOutputDelegate, @unchecked Sendable {
+/// ScreenCaptureKit calls the delegate on its own queue; the state is behind a Mutex.
+final class RecordingDelegate: NSObject, SCRecordingOutputDelegate, Sendable {
     private enum State {
         case running
         case waiting(CheckedContinuation<Void, any Error>)
@@ -147,6 +177,8 @@ final class RecordingDelegate: NSObject, SCRecordingOutputDelegate, @unchecked S
 
     func recordingOutputDidFinishRecording(_ recordingOutput: SCRecordingOutput) { finish(nil) }
     func recordingOutput(_ recordingOutput: SCRecordingOutput, didFailWithError error: any Error) { finish(error) }
+    /// Ends the wait if ScreenCaptureKit never calls back.
+    func fail(_ error: any Error) { finish(error) }
 
     private func finish(_ error: (any Error)?) {
         let continuation: CheckedContinuation<Void, any Error>? = state.withLock { state in

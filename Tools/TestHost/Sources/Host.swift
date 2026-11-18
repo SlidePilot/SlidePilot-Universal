@@ -22,11 +22,19 @@ final class Host {
     var onChange: (() -> Void)?
     var isRecording: Bool { capture.isRecording }
 
+    /// Finalizes a running recording, e.g. before the host quits.
+    func stopRecordingIfNeeded() async {
+        if capture.isRecording { _ = try? await capture.stopRecording() }
+    }
+
     func start() {
         prepareExchange()
-        timer = Timer.scheduledTimer(withTimeInterval: 0.15, repeats: true) { [weak self] _ in
+        let timer = Timer(timeInterval: 0.15, repeats: true) { [weak self] _ in
             MainActor.assumeIsolated { self?.poll() }
         }
+        // Common modes: requests keep running while the status menu is open.
+        RunLoop.main.add(timer, forMode: .common)
+        self.timer = timer
     }
 
     /// The exchange folders must be real folders owned by this user; a symbolic
@@ -116,6 +124,7 @@ final class Host {
             let url = URL(fileURLWithPath: path).resolvingSymlinksInPath()
             try Policy.verifyBundle(at: url)
             let documents = try (args["documents"] as? [String] ?? []).map { try Policy.inboxDocument($0, inbox: inbox) }
+            if capture.isRecording { _ = try? await capture.stopRecording() }
             for app in NSRunningApplication.runningApplications(withBundleIdentifier: Policy.targetBundleID) {
                 app.forceTerminate()
             }
@@ -177,7 +186,15 @@ final class Host {
             let name = try Policy.checkedFileName(args["name"] as? String ?? "", extensions: ["mov"])
             let seconds = min(max(args["maxSeconds"] as? Int ?? 60, 1), 300)
             try await capture.startRecording(of: target, to: out.appendingPathComponent(name), maxSeconds: seconds) { [weak self] in
-                Task { _ = try? await self?.capture.stopRecording(); self?.setLastAction("Recording stopped after \(seconds) s") }
+                Task {
+                    guard let self else { return }
+                    do {
+                        try await self.capture.stopRecording()
+                        self.setLastAction("Recording stopped after \(seconds) s")
+                    } catch {
+                        self.setLastAction("Recording failed: \(error)")
+                    }
+                }
             }
             onChange?()
             return ["file": name, "maxSeconds": seconds]
@@ -205,28 +222,29 @@ final class Host {
         case "key":
             let target = try Policy.currentTarget()
             guard let combo = args["keys"] as? String else { throw PolicyError.refused("key needs keys") }
-            try input.key(target: target, combo: combo, menuOpen: try await menuIsOpen(target))
+            try input.key(target: target, combo: combo, menuOpen: input.isMenuOpen(target: target))
             return "pressed \(combo)"
 
         case "type":
             let target = try Policy.currentTarget()
             guard let text = args["text"] as? String else { throw PolicyError.refused("type needs text") }
-            try await input.type(target: target, text: text, menuOpen: try await menuIsOpen(target))
+            try await input.type(target: target, text: text, menuOpen: input.isMenuOpen(target: target))
             return "typed \(text.count) characters"
 
         case "click", "scroll", "drag":
             let target = try Policy.currentTarget()
             let window = try await window(args, target: target)
+            let menuOpen = input.isMenuOpen(target: target)
             switch command {
             case "click":
                 let button = Input.Button(rawValue: args["button"] as? String ?? "left") ?? .left
-                try await input.click(target: target, window: window, at: try point(args["at"]), button: button, count: args["count"] as? Int ?? 1)
+                try await input.click(target: target, window: window, at: try point(args["at"]), button: button, count: args["count"] as? Int ?? 1, menuOpen: menuOpen)
             case "scroll":
                 try input.scroll(target: target, window: window, at: try point(args["at"]),
-                                 dx: Int32(args["dx"] as? Int ?? 0), dy: Int32(args["dy"] as? Int ?? 0))
+                                 dx: Int32(args["dx"] as? Int ?? 0), dy: Int32(args["dy"] as? Int ?? 0), menuOpen: menuOpen)
             default:
                 let points = try (args["points"] as? [Any] ?? []).map(point)
-                try await input.drag(target: target, window: window, points: points)
+                try await input.drag(target: target, window: window, points: points, menuOpen: menuOpen)
             }
             return "\(command) in window \(window.id)"
 
@@ -239,11 +257,6 @@ final class Host {
         let configuration = NSWorkspace.OpenConfiguration()
         configuration.activates = true
         _ = try await NSWorkspace.shared.open(documents, withApplicationAt: appURL, configuration: configuration)
-    }
-
-    /// Popup and context menus use the pop-up menu window level.
-    private func menuIsOpen(_ target: VerifiedTarget) async throws -> Bool {
-        try await capture.windowInfos(of: target).contains { $0.layer == Int(CGWindowLevelForKey(.popUpMenuWindow)) }
     }
 
     private func window(_ args: [String: Any], target: VerifiedTarget) async throws -> WindowInfo {
