@@ -1,3 +1,4 @@
+import SlidePilotCore
 import SwiftUI
 
 @main
@@ -14,6 +15,8 @@ struct SlidePilotApp: App {
         NSWindow.allowsAutomaticWindowTabbing = false
     }
     #endif
+    /// The app-wide settings (SET-01), shared by all windows.
+    @State private var settings = AppSettings(store: UserDefaults.standard)
 
     var body: some Scene {
         // One window per PDF (DOC-01/02). The system provides the open panel at launch,
@@ -44,6 +47,11 @@ struct SlidePilotApp: App {
         .defaultWindowPlacement { _, _ in
             presentationWindows.placement()
         }
+
+        Settings {
+            SettingsView()
+                .environment(settings)
+        }
         #else
         // The external display: a UIKit scene (ExternalDisplayScene.swift), offered by the
         // system up to iPadOS 26 and registered as a scene accessory from iPadOS 27
@@ -52,10 +60,12 @@ struct SlidePilotApp: App {
             DocumentView(document: file.document, fileURL: file.fileURL)
                 .environment(registry)
                 .environment(appDelegate.externalDisplays)
+                .environment(settings)
         }
         .commands {
             PresentationCommands()
             ModeratorCommands()
+            SettingsCommands()
         }
         .commands {
             LayoutCommands()

@@ -133,6 +133,15 @@ extension MacSnapshots {
             try await WindowSnapshot.record(view, name: name, size: CGSize(width: 1200, height: 700), appearance: appearance)
         }
     }
+
+    // SET-01, SET-05: the General pane of the Settings window, Keep awake on. Only the pane:
+    // the window's tab bar is not drawn outside a Settings scene.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func settingsGeneral(appearance: WindowSnapshot.Appearance) async throws {
+        let settings = AppSettings(store: InMemorySettingsStore(values: [AppSettings.Key.keepsDisplayAwake: true]))
+        let view = SettingsPane { GeneralSettingsView() }.environment(settings)
+        try await WindowSnapshot.record(view, name: "settings-general", size: CGSize(width: 500, height: 160), appearance: appearance)
+    }
 }
 
 private extension View {
