@@ -44,7 +44,7 @@
       }
     },
     "Connected" : {
-      "comment" : "Accessibility value of the external display button",
+      "comment" : "Accessibility value of the external display button; status of a remote device",
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbunden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connecté" } }
@@ -567,6 +567,222 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Weißer Bildschirm" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran blanc" } }
+      }
+    },
+    "Remote" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Remote" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remote" } }
+      }
+    },
+    "Pair" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Koppeln" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumeler" } }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "OK" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "OK" } }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fertig" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Terminé" } }
+      }
+    },
+    "Code: %@\n\nPair only if “%@” shows the same code." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Code: %1$@\n\nKopple nur, wenn „%2$@“ denselben Code zeigt." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Code : %1$@\n\nJumelez uniquement si « %2$@ » affiche le même code." } }
+      }
+    },
+    "Allow remote control" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fernsteuerung erlauben" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser le contrôle à distance" } }
+      }
+    },
+    "Paired devices can find this device and control its presentations." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gekoppelte Geräte können dieses Gerät finden und seine Präsentationen steuern." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les appareils jumelés peuvent trouver cet appareil et contrôler ses présentations." } }
+      }
+    },
+    "Nearby Devices" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Geräte in der Nähe" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Appareils à proximité" } }
+      }
+    },
+    "Open SlidePilot on another device on the same network and open Settings ▸ Remote there too. Then connect and check that both devices show the same code." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffne SlidePilot auf einem anderen Gerät im selben Netzwerk und dort ebenfalls Einstellungen ▸ Remote. Verbinde dann die Geräte und prüfe, ob beide denselben Code zeigen." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrez SlidePilot sur un autre appareil du même réseau, puis Réglages ▸ Remote sur celui-ci aussi. Connectez ensuite les appareils et vérifiez qu’ils affichent le même code." } }
+      }
+    },
+    "Trusted Devices…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vertrauenswürdige Geräte …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Appareils de confiance…" } }
+      }
+    },
+    "Pair with “%@”?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Mit „%@“ koppeln?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumeler avec « %@ » ?" } }
+      }
+    },
+    "The pairing was cancelled. To pair, open Settings ▸ Remote on both devices and confirm the code on both." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das Koppeln wurde abgebrochen. Öffne zum Koppeln auf beiden Geräten Einstellungen ▸ Remote und bestätige den Code auf beiden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le jumelage a été annulé. Pour jumeler, ouvrez Réglages ▸ Remote sur les deux appareils et confirmez le code sur chacun." } }
+      }
+    },
+    "Update SlidePilot on “%@” to the latest version." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktualisiere SlidePilot auf „%@“ auf die neueste Version." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Mettez à jour SlidePilot sur « %@ » vers la dernière version." } }
+      }
+    },
+    "Update SlidePilot on this device to the latest version." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktualisiere SlidePilot auf diesem Gerät auf die neueste Version." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Mettez à jour SlidePilot sur cet appareil vers la dernière version." } }
+      }
+    },
+    "The devices could not verify each other. Try again." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Geräte konnten sich nicht gegenseitig verifizieren. Versuche es erneut." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les appareils n’ont pas pu se vérifier mutuellement. Réessayez." } }
+      }
+    },
+    "Check that both devices are on the same network and SlidePilot is open on “%@”." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Prüfe, ob beide Geräte im selben Netzwerk sind und SlidePilot auf „%@“ geöffnet ist." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vérifiez que les deux appareils sont sur le même réseau et que SlidePilot est ouvert sur « %@ »." } }
+      }
+    },
+    "Connect" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbinden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connecter" } }
+      }
+    },
+    "Connect to %@" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Mit %@ verbinden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Se connecter à %@" } }
+      }
+    },
+    "Disconnect" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Trennen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Déconnecter" } }
+      }
+    },
+    "Disconnect %@" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%@ trennen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Déconnecter %@" } }
+      }
+    },
+    "Pairing…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wird gekoppelt …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumelage…" } }
+      }
+    },
+    "Trusted" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vertrauenswürdig" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "De confiance" } }
+      }
+    },
+    "No Trusted Devices" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine vertrauenswürdigen Geräte" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucun appareil de confiance" } }
+      }
+    },
+    "Devices you pair with appear here." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gekoppelte Geräte erscheinen hier." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les appareils que vous jumelez apparaissent ici." } }
+      }
+    },
+    "Trusted Devices" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vertrauenswürdige Geräte" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Appareils de confiance" } }
+      }
+    },
+    "Remove “%@”?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ entfernen?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer « %@ » ?" } }
+      }
+    },
+    "Remove" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Entfernen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer" } }
+      }
+    },
+    "Remove %@" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%@ entfernen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer %@" } }
+      }
+    },
+    "“%@” has to be paired again before either device can control the other." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ muss erneut gekoppelt werden, bevor eines der Geräte das andere steuern kann." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » doit être de nouveau jumelé avant que l’un des appareils puisse contrôler l’autre." } }
+      }
+    },
+    "Paired %@" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gekoppelt am %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumelé le %@" } }
+      }
+    },
+    "Searching for devices…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Suche nach Geräten …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recherche d’appareils…" } }
+      }
+    },
+    "Pairing with “%@” Cancelled" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Koppeln mit „%@“ abgebrochen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumelage avec « %@ » annulé" } }
+      }
+    },
+    "Can’t Connect to “%@”" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Verbindung zu „%@“" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible de se connecter à « %@ »" } }
+      }
+    },
+    "Pairing with “%@” Failed" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Koppeln mit „%@“ fehlgeschlagen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Échec du jumelage avec « %@ »" } }
+      }
+    },
+    "Disconnect “%@”?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ trennen?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Déconnecter « %@ » ?" } }
+      }
+    },
+    "“%@” is also removed from the trusted devices and has to be paired again." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ wird auch aus den vertrauenswürdigen Geräten entfernt und muss erneut gekoppelt werden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » est aussi retiré des appareils de confiance et doit être de nouveau jumelé." } }
       }
     }
   },

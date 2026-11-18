@@ -13,6 +13,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     let settings = AppSettings(store: UserDefaults.standard)
     /// Keeps the display awake while the app runs, if the setting is on (SET-04).
     private lazy var displayAwakeKeeper = DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker())
+    /// Advertises this instance and keeps pairing state (REM-02); one per app.
+    private(set) lazy var remote = RemoteService.live(settings: settings)
     private lazy var windows = AppWindowTracker(registry: registry)
 
     /// The only global path to the app-owned registry: UIKit creates scene delegates by
@@ -31,6 +33,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         // Lives as long as the app; the app delegate is never released.
         windows.start()
         _ = displayAwakeKeeper
+        _ = remote
         // Fails only if called twice; without it the external-display tip stays hidden.
         try? Tips.configure()
         CompanionStore.cleanUpAtLaunch()

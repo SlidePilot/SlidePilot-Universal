@@ -39,6 +39,7 @@ public final class AppSettings {
     public enum Key {
         public static let keepsDisplayAwake = "isSleepDisabled"
         public static let crossfadesSlides = "crossfadeSlides"
+        public static let allowsRemoteControl = "allowsRemoteControl"
     }
 
     /// Keep the display awake while the app runs (SET-04, SET-05). Default off.
@@ -51,11 +52,18 @@ public final class AppSettings {
         didSet { store.set(crossfadesSlides, forKey: Key.crossfadesSlides) }
     }
 
+    /// Other devices may find this one and control it once paired (REM-02). Default on, as
+    /// the old app was always reachable.
+    public var allowsRemoteControl: Bool {
+        didSet { store.set(allowsRemoteControl, forKey: Key.allowsRemoteControl) }
+    }
+
     @ObservationIgnored private let store: any SettingsStore
 
     public init(store: any SettingsStore) {
         self.store = store
         keepsDisplayAwake = store.object(forKey: Key.keepsDisplayAwake) as? Bool ?? false
         crossfadesSlides = store.object(forKey: Key.crossfadesSlides) as? Bool ?? false
+        allowsRemoteControl = store.object(forKey: Key.allowsRemoteControl) as? Bool ?? true
     }
 }

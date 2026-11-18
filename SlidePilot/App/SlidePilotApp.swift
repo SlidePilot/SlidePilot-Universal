@@ -7,6 +7,7 @@ struct SlidePilotApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     private var registry: SessionRegistry { appDelegate.registry }
     private var settings: AppSettings { appDelegate.settings }
+    private var remote: RemoteService { appDelegate.remote }
     #else
     @NSApplicationDelegateAdaptor(MacAppDelegate.self) private var appDelegate
     @State private var registry = SessionRegistry()
@@ -15,11 +16,14 @@ struct SlidePilotApp: App {
     @State private var settings: AppSettings
     /// Keeps the display awake while the app runs, if the setting is on (SET-04).
     @State private var displayAwakeKeeper: DisplayAwakeKeeper
+    /// Advertises this instance and keeps pairing state (REM-02); one per app.
+    @State private var remote: RemoteService
 
     init() {
         let settings = AppSettings(store: UserDefaults.standard)
         _settings = State(initialValue: settings)
         _displayAwakeKeeper = State(initialValue: DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker()))
+        _remote = State(initialValue: RemoteService.live(settings: settings))
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
         CompanionStore.cleanUpAtLaunch()
@@ -65,6 +69,7 @@ struct SlidePilotApp: App {
         Settings {
             SettingsView()
                 .environment(settings)
+                .environment(remote)
         }
         #else
         // The external display: a UIKit scene (ExternalDisplayScene.swift), offered by the
@@ -75,6 +80,7 @@ struct SlidePilotApp: App {
                 .environment(registry)
                 .environment(appDelegate.externalDisplays)
                 .environment(settings)
+                .environment(remote)
         }
         .commands {
             PresentationCommands()

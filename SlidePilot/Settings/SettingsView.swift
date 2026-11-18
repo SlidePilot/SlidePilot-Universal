@@ -4,7 +4,7 @@ import SwiftUI
 /// iPad settings sheet.
 ///
 /// Each pane lives in its own file and provides form sections. Later issues add their pane
-/// here: Layout (#16), Pointer and Remote (#37).
+/// here: Layout (#16) and Pointer.
 struct SettingsView: View {
     var body: some View {
         #if os(macOS)
@@ -12,11 +12,21 @@ struct SettingsView: View {
             Tab("General", systemImage: "gearshape") {
                 SettingsPane { GeneralSettingsView() }
             }
+            Tab("Remote", systemImage: "antenna.radiowaves.left.and.right") {
+                RemoteSettingsPane()
+            }
         }
         #else
         NavigationStack {
             Form {
                 GeneralSettingsView()
+                Section {
+                    NavigationLink {
+                        RemoteSettingsPane()
+                    } label: {
+                        Label("Remote", systemImage: "antenna.radiowaves.left.and.right")
+                    }
+                }
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -28,6 +38,8 @@ struct SettingsView: View {
                 }
             }
         }
+        // Here, so the pairing code shows on every page of the sheet (REM-02).
+        .remoteAlerts()
         #endif
     }
 }

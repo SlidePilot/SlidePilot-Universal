@@ -48,6 +48,16 @@ struct AppSettingsTests {
         #expect(!AppSettings(store: store).keepsDisplayAwake)
     }
 
+    // REM-02: reachable by default, like the old app.
+    @Test func remoteControlIsAllowedByDefault() {
+        let store = InMemorySettingsStore()
+        let settings = AppSettings(store: store)
+        #expect(settings.allowsRemoteControl)
+        settings.allowsRemoteControl = false
+        #expect(store.values["allowsRemoteControl"] as? Bool == false)
+        #expect(!AppSettings(store: store).allowsRemoteControl)
+    }
+
     @Test func userDefaultsRoundTrip() throws {
         let suite = "AppSettingsTests-\(UUID().uuidString)"
         let defaults = try #require(UserDefaults(suiteName: suite))

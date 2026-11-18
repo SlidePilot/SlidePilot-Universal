@@ -1,0 +1,15 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSLocalNetworkUsageDescription" : {
+      "comment" : "Reason shown in the system's local network permission prompt (remote, REM-02)",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot findet deine anderen Geräte im lokalen Netzwerk, damit sie deine Präsentationen steuern können und du ihre." } },
+        "en" : { "stringUnit" : { "state" : "new", "value" : "SlidePilot finds your other devices on the local network, so they can control your presentations and you can control theirs." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot trouve vos autres appareils sur le réseau local, pour qu’ils puissent contrôler vos présentations et vous les leurs." } }
+      }
+    }
+  },
+  "version" : "1.0"
+}
