@@ -3,9 +3,9 @@ import SlidePilotRendering
 import SwiftUI
 import UniformTypeIdentifiers
 
-extension FolderAccess {
+extension FolderAccessStore {
     /// The folders the user allowed the app to read (ADR 0012), shared by all windows.
-    static let app = FolderAccess(store: UserDefaults.standard)
+    static let app = FolderAccessStore(settings: UserDefaults.standard)
 }
 
 /// Import Notes… and Export Notes… of the focused presenter window (NOTES-06).
@@ -18,8 +18,9 @@ extension FocusedValues {
     @Entry var notesFile: FocusedNotesFile?
 }
 
-/// File ▸ Import Notes… (⇧⌘O) and Export Notes… (⌘S), the old Open and Save Notes
-/// (NOTES-06). Notes are saved automatically, so Save became an RTF export.
+/// File ▸ Import Notes… (⇧⌘O) and Export Notes… (⇧⌘E), the old Open and Save Notes
+/// (NOTES-06). Notes are saved automatically, so Save became an RTF export; ⌘S is not
+/// used, so a habitual save does not open a save panel.
 struct NotesFileCommands: Commands {
     var body: some Commands {
         CommandGroup(after: .importExport) {
@@ -36,7 +37,7 @@ private struct NotesFileMenuItems: View {
             .keyboardShortcut("o", modifiers: [.command, .shift])
             .disabled(notesFile == nil)
         Button("Export Notes…") { notesFile?.exportNotes() }
-            .keyboardShortcut("s", modifiers: .command)
+            .keyboardShortcut("e", modifiers: [.command, .shift])
             .disabled(notesFile == nil)
     }
 }
@@ -88,7 +89,10 @@ private struct NotesFileTransferModifier: ViewModifier {
         let notes: CompanionNotes
     }
 
-    @State private var picking: Picking?
+    /// What the open panel picks; kept after it closes, because SwiftUI resets the
+    /// presentation before it calls the completion handler.
+    @State private var picking = Picking.notesFile
+    @State private var isPicking = false
     @State private var exportFile: RTFNotesFile?
     @State private var legacyNotesFile: URL?
     @State private var pendingImport: PendingImport?
@@ -100,18 +104,16 @@ private struct NotesFileTransferModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .focusedSceneValue(\.notesFile, session.notes.isAvailable ? FocusedNotesFile(
-                importNotes: { picking = .notesFile },
+                importNotes: { pick(.notesFile) },
                 exportNotes: { Task { await export() } }
             ) : nil)
             // One importer for both cases: two importers on the same view would not both work.
             .fileImporter(
-                isPresented: Binding(get: { picking != nil }, set: { if !$0 { picking = nil } }),
+                isPresented: $isPicking,
                 allowedContentTypes: picking == .notesFile ? [.rtf] : [.folder]
             ) { result in
-                let picked = picking
-                picking = nil
-                guard case .success(let url) = result, let picked else { return }
-                switch picked {
+                guard case .success(let url) = result else { return }
+                switch picking {
                 case .notesFile:
                     Task { await importNotes(from: url, accessing: url) }
                 case .folder(let notesFile):
@@ -146,7 +148,7 @@ private struct NotesFileTransferModifier: ViewModifier {
                 presenting: legacyNotesFile
             ) { notesFile in
                 Button("Allow Access…") {
-                    picking = .folder(of: notesFile)
+                    pick(.folder(of: notesFile))
                 }
                 Button("Not Now", role: .cancel) {
                     companion.updateSettings { $0.declinedLegacyNotes = true }
@@ -178,6 +180,11 @@ private struct NotesFileTransferModifier: ViewModifier {
     }
 
     // MARK: - Open panel
+
+    private func pick(_ target: Picking) {
+        picking = target
+        isPicking = true
+    }
 
     private var defaultDirectory: URL? {
         if case .folder(let notesFile) = picking {
@@ -213,7 +220,7 @@ private struct NotesFileTransferModifier: ViewModifier {
             notesFile: notesFile,
             hasNotes: !(companion.notes?.isEmpty ?? true),
             declined: companion.settings.declinedLegacyNotes == true,
-            grantedFolder: notesFile.flatMap { FolderAccess.app.grantedFolder(containing: $0) }
+            grantedFolder: notesFile.flatMap { FolderAccessStore.app.grantedFolder(containing: $0) }
         )
         switch action {
         case .none:
@@ -231,14 +238,15 @@ private struct NotesFileTransferModifier: ViewModifier {
         defer {
             if isAccessing { folder.stopAccessingSecurityScopedResource() }
         }
-        guard FileFolderBookmarks().folder(folder, contains: notesFile) else {
+        guard FolderAccessStore.folderContains(folder, notesFile) else {
             failure = Failure(
                 title: "The Notes Couldn’t Be Imported",
                 message: Text("Choose the folder that contains “\(notesFile.lastPathComponent)”.")
             )
             return
         }
-        FolderAccess.app.addGrant(for: folder)
+        // Without a bookmark the access still lasts until the app quits.
+        try? FolderAccessStore.app.addGrant(for: folder)
         await importNotes(from: notesFile, accessing: folder)
     }
 
