@@ -71,6 +71,10 @@ private struct CompanionFileModifier: ViewModifier {
                     apply(settings)
                 }
             }
+            // The navigator is a per-document setting like in the old app (SET-02, LAY-06).
+            .onChange(of: session.isNavigatorDisplayed) { _, isDisplayed in
+                companion.updateSettings { $0.isNavigatorDisplayed = isDisplayed }
+            }
             .alert(
                 Text("Use Data from a Missing PDF?"),
                 isPresented: Binding(get: { companion.orphan != nil }, set: { _ in }),
@@ -139,6 +143,9 @@ private struct CompanionFileModifier: ViewModifier {
     private func apply(_ settings: DocumentSettings) {
         if let layout = settings.layout {
             session.layout.applyStoredLayout(layout)
+        }
+        if let isNavigatorDisplayed = settings.isNavigatorDisplayed {
+            session.isNavigatorDisplayed = isNavigatorDisplayed
         }
     }
 }

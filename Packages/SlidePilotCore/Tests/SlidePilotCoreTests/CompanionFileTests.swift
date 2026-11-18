@@ -30,6 +30,15 @@ struct CompanionFileFormatTests {
         #expect(json?["formatVersion"] as? Int == 1)
     }
 
+    // SET-02: the navigator state round-trips; files without it (written before #18) read as "not saved".
+    @Test func navigatorStateIsOptional() throws {
+        var item = entry()
+        item.settings.isNavigatorDisplayed = true
+        #expect(try CompanionFileFormat.decode(CompanionFileFormat.encode(item)).entry.settings.isNavigatorDisplayed == true)
+        #expect(try CompanionFileFormat.decode(CompanionFileFormat.encode(entry())).entry.settings.isNavigatorDisplayed == nil)
+        #expect(!DocumentSettings(isNavigatorDisplayed: false).isEmpty)
+    }
+
     // A file from a later app version is read, flagged and keeps working with unknown fields.
     @Test func readsNewerVersionsWithUnknownFields() throws {
         var json = try #require(try JSONSerialization.jsonObject(with: CompanionFileFormat.encode(entry())) as? [String: Any])

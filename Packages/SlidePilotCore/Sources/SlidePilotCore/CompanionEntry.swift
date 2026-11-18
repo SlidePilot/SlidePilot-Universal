@@ -27,9 +27,12 @@ public struct PDFReference: Codable, Sendable, Equatable {
 public struct DocumentSettings: Sendable, Equatable {
     /// The presenter layout of this document (LAY-05).
     public var layout: PresenterLayout?
+    /// Whether the slide navigator sidebar is shown (LAY-06).
+    public var isNavigatorDisplayed: Bool?
 
-    public init(layout: PresenterLayout? = nil) {
+    public init(layout: PresenterLayout? = nil, isNavigatorDisplayed: Bool? = nil) {
         self.layout = layout
+        self.isNavigatorDisplayed = isNavigatorDisplayed
     }
 
     public var isEmpty: Bool { self == DocumentSettings() }
@@ -37,18 +40,20 @@ public struct DocumentSettings: Sendable, Equatable {
 
 extension DocumentSettings: Codable {
     private enum CodingKeys: String, CodingKey {
-        case layout
+        case layout, isNavigatorDisplayed
     }
 
     /// A damaged or unknown field falls back to "not saved" instead of failing the entry.
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         layout = try? container.decodeIfPresent(PresenterLayout.self, forKey: .layout)
+        isNavigatorDisplayed = try? container.decodeIfPresent(Bool.self, forKey: .isNavigatorDisplayed)
     }
 
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(layout, forKey: .layout)
+        try container.encodeIfPresent(isNavigatorDisplayed, forKey: .isNavigatorDisplayed)
     }
 }
 
