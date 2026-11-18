@@ -94,6 +94,14 @@ public struct PresenterLayout: Sendable, Equatable {
         setVisible(slot, !isVisible(slot))
     }
 
+    /// Puts `slot` at `position` and the slot that was there where `slot` was, like dropping a
+    /// slide symbol on a slot in the old layout editor (`moveSlide(_:to:swap: true)`). A slot
+    /// that was hidden becomes visible and the replaced one hidden (LAY-04).
+    public mutating func setSlot(_ slot: PresenterSlot, at position: Int) {
+        guard slots.indices.contains(position) else { return }
+        move(slot, to: position, swap: true)
+    }
+
     /// The leading column's share of the width in `arrangement`, between 0 and 1.
     public func leadingFraction(in arrangement: PresenterArrangement) -> Double {
         leadingFractions[arrangement] ?? arrangement.defaultLeadingFraction
@@ -243,6 +251,18 @@ public enum PresenterSplit {
         let clamped = self.leadingWidth(fraction: leadingWidth / available, width: width, separatorWidth: separatorWidth)
         return clamped / available
     }
+}
+
+/// Space around each slot of the presenter (LAY-04). Global, not per document (LAY-05). The
+/// raw values are the old app's `layoutPadding` user default in points.
+public enum LayoutPadding: Int, Sendable, CaseIterable {
+    case none = 0
+    case small = 15
+    case normal = 30
+
+    public static let `default` = LayoutPadding.normal
+
+    public var points: Double { Double(rawValue) }
 }
 
 // Encodes dictionaries keyed by these enums as JSON objects instead of key-value arrays.

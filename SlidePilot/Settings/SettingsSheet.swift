@@ -3,10 +3,11 @@ import SwiftUI
 
 /// Opens the settings sheet of the focused document window (SET-01, iPad).
 struct ShowSettingsAction {
-    let perform: () -> Void
+    let perform: (SettingsTab?) -> Void
 
-    func callAsFunction() {
-        perform()
+    /// Opens the sheet, on `tab` if given (Edit Layout… opens it on Layout, LAY-04).
+    func callAsFunction(_ tab: SettingsTab? = nil) {
+        perform(tab)
     }
 }
 
@@ -44,6 +45,7 @@ extension View {
 
 private struct SettingsSheetModifier: ViewModifier {
     @State private var isShowingSettings = false
+    @State private var initialTab: SettingsTab?
 
     func body(content: Content) -> some View {
         content
@@ -52,14 +54,18 @@ private struct SettingsSheetModifier: ViewModifier {
                 // menu when space is short.
                 ToolbarItem(placement: .secondaryAction) {
                     Button("Settings", systemImage: "gearshape") {
+                        initialTab = nil
                         isShowingSettings = true
                     }
                 }
             }
             .sheet(isPresented: $isShowingSettings) {
-                SettingsView()
+                SettingsView(initialTab: initialTab)
             }
-            .focusedSceneValue(\.showSettings, ShowSettingsAction { isShowingSettings = true })
+            .focusedSceneValue(\.showSettings, ShowSettingsAction { tab in
+                initialTab = tab
+                isShowingSettings = true
+            })
     }
 }
 #endif

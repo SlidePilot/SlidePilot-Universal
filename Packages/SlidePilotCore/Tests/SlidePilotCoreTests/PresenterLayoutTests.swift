@@ -103,6 +103,35 @@ struct PresenterLayoutTests {
         #expect(layout.leadingFraction(in: .tripleRight) == 0.4)
     }
 
+    // LAY-04: choosing a slide for a slot swaps it with the slide there, like dropping a
+    // slide symbol on a slot in the old editor (moveSlide swap: true).
+    @Test func setSlotSwapsVisibleSlots() {
+        var layout = PresenterLayout.default
+        layout.setSlot(.next, at: 0)
+        #expect(layout.slots == [.next, .current, .notes])
+        #expect(layout.arrangement == .double)
+    }
+
+    // LAY-04: a hidden slide put into a slot replaces the slide there, which becomes hidden.
+    @Test func setSlotShowsHiddenSlide() {
+        var layout = PresenterLayout.default
+        layout.setSlot(.notes, at: 1)
+        #expect(layout.visibleSlots == [.current, .notes])
+        #expect(!layout.isVisible(.next))
+
+        var single = PresenterLayout(arrangement: .single)
+        single.setSlot(.notes, at: 0)
+        #expect(single.visibleSlots == [.notes])
+    }
+
+    @Test func setSlotIgnoresSameSlotAndInvalidPosition() {
+        var layout = PresenterLayout(arrangement: .tripleRight, slots: [.next, .notes, .current])
+        layout.setSlot(.notes, at: 1)
+        layout.setSlot(.current, at: 3)
+        layout.setSlot(.current, at: -1)
+        #expect(layout.slots == [.next, .notes, .current])
+    }
+
     @Test func invalidSlotsFallBackToDefaultOrder() {
         let layout = PresenterLayout(arrangement: .tripleLeft, slots: [.current, .current, .notes])
         #expect(layout.slots == [.current, .next, .notes])
@@ -164,6 +193,9 @@ struct PresenterLayoutModelTests {
         model.toggle(.notes)
         model.setLeadingFraction(0.55, in: .tripleLeft)
         #expect(store.layout == model.layout)
+
+        model.setSlot(.current, at: 0)
+        #expect(store.layout?.slots.first == .current)
 
         let next = PresenterLayoutModel(store: store)
         #expect(next.arrangement == .tripleLeft)

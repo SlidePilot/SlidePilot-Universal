@@ -43,6 +43,8 @@ struct SlidePilotApp: App {
                 .environment(registry)
                 .environment(presentationWindows)
                 .environment(appDelegate.companions)
+                // Padding and time display size of the presenter (LAY-04, TIME-06).
+                .environment(settings)
         }
         .commands {
             PresentationCommands()

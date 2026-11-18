@@ -58,6 +58,37 @@ struct AppSettingsTests {
         #expect(!AppSettings(store: store).allowsRemoteControl)
     }
 
+    // LAY-04, TIME-06: padding 30 pt and normal time size by default, the old keys and values.
+    @Test func layoutDefaultsAndOldValues() {
+        let store = InMemorySettingsStore()
+        let settings = AppSettings(store: store)
+        #expect(settings.layoutPadding == .normal)
+        #expect(settings.timeDisplaySize == .normal)
+        #expect(AppSettings.Key.layoutPadding == "layoutPadding")
+        #expect(AppSettings.Key.timeDisplaySize == "timeSize")
+
+        settings.layoutPadding = .small
+        settings.timeDisplaySize = .hidden
+        #expect(store.values["layoutPadding"] as? Int == 15)
+        #expect(store.values["timeSize"] as? Int == 0)
+
+        let reloaded = AppSettings(store: store)
+        #expect(reloaded.layoutPadding == .small)
+        #expect(reloaded.timeDisplaySize == .hidden)
+    }
+
+    // An unknown stored value (e.g. 20 pt) falls back to the default, like the old app.
+    @Test func unknownLayoutValuesFallBack() {
+        let store = InMemorySettingsStore(values: ["layoutPadding": 20, "timeSize": 7])
+        let settings = AppSettings(store: store)
+        #expect(settings.layoutPadding == .normal)
+        #expect(settings.timeDisplaySize == .normal)
+    }
+
+    @Test func layoutPaddingPoints() {
+        #expect(LayoutPadding.allCases.map(\.points) == [0, 15, 30])
+    }
+
     @Test func userDefaultsRoundTrip() throws {
         let suite = "AppSettingsTests-\(UUID().uuidString)"
         let defaults = try #require(UserDefaults(suiteName: suite))

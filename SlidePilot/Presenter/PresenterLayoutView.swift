@@ -6,8 +6,13 @@ import SwiftUI
 struct PresenterLayoutView: View {
     let session: PresentationSession
 
-    /// The old app's default layout padding; the Layout settings (#16) make it adjustable.
-    private let padding: CGFloat = 30
+    /// Optional, so snapshots and previews without settings use the default.
+    @Environment(AppSettings.self) private var settings: AppSettings?
+
+    /// The space around each slot, from the Layout settings (LAY-04).
+    private var padding: CGFloat {
+        (settings?.layoutPadding ?? .default).points
+    }
 
     private var layout: PresenterLayoutModel { session.layout }
 

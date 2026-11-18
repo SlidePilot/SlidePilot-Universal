@@ -74,6 +74,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas utiliser" } }
       }
     },
+    "Edit Layout…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Layout bearbeiten …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Modifier la disposition…" } }
+      }
+    },
     "End of presentation" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Ende der Präsentation" } },
@@ -92,10 +98,34 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Général" } }
       }
     },
+    "Hidden" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ausgeblendet" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Masqué" } }
+      }
+    },
     "Keep display awake" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Bildschirm wach halten" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Garder l’écran allumé" } }
+      }
+    },
+    "Layout" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Layout" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Disposition" } }
+      }
+    },
+    "None" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kein" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucun" } }
+      }
+    },
+    "Normal" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } }
       }
     },
     "Settings" : {
@@ -110,10 +140,34 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages…" } }
       }
     },
+    "Size of the clock and the stopwatch or timer above the slides." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Größe der Uhr und der Stoppuhr oder des Timers über den Folien." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Taille de l’horloge et du chronomètre ou minuteur au-dessus des diapositives." } }
+      }
+    },
+    "Slide padding" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folienabstand" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Marge des diapositives" } }
+      }
+    },
     "Slides fade into each other on the presentation screen." : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Folien gehen auf dem Präsentationsbildschirm ineinander über." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les diapositives se fondent les unes dans les autres sur l’écran de présentation." } }
+      }
+    },
+    "Small" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Klein" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Petit" } }
+      }
+    },
+    "Space around each slide in the presenter view." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Abstand um jede Folie in der Moderatoransicht." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Espace autour de chaque diapositive dans la vue présentateur." } }
       }
     },
     "The display does not dim or sleep while SlidePilot is open." : {
@@ -295,6 +349,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Diese Notizen wurden mit einer neueren Version von SlidePilot gesichert." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ces notes ont été enregistrées avec une version plus récente de SlidePilot." } }
+      }
+    },
+    "Time display" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeitanzeige" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Affichage de l’heure" } }
       }
     },
     "Underline" : {

@@ -102,6 +102,11 @@ public final class PresenterLayoutModel {
         layout.toggle(slot)
     }
 
+    /// Shows `slot` at `position`, swapping it with the slot there (LAY-04).
+    public func setSlot(_ slot: PresenterSlot, at position: Int) {
+        layout.setSlot(slot, at: position)
+    }
+
     public func leadingFraction(in arrangement: PresenterArrangement) -> Double {
         layout.leadingFraction(in: arrangement)
     }
