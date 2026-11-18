@@ -8,6 +8,7 @@ struct SlidePilotApp: App {
     private var registry: SessionRegistry { appDelegate.registry }
     private var settings: AppSettings { appDelegate.settings }
     #else
+    @NSApplicationDelegateAdaptor(MacAppDelegate.self) private var appDelegate
     @State private var registry = SessionRegistry()
     @State private var presentationWindows = MacPresentationWindows()
     /// The app-wide settings (SET-01), shared by all windows.
@@ -21,6 +22,7 @@ struct SlidePilotApp: App {
         _displayAwakeKeeper = State(initialValue: DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker()))
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
+        CompanionStore.cleanUpAtLaunch()
         #if DEBUG
         TestHostAppearance.apply()
         #endif
@@ -36,6 +38,7 @@ struct SlidePilotApp: App {
             DocumentView(document: file.document, fileURL: file.fileURL)
                 .environment(registry)
                 .environment(presentationWindows)
+                .environment(appDelegate.companions)
         }
         .commands {
             PresentationCommands()

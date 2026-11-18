@@ -33,6 +33,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         _ = displayAwakeKeeper
         // Fails only if called twice; without it the external-display tip stays hidden.
         try? Tips.configure()
+        CompanionStore.cleanUpAtLaunch()
         return true
     }
 
