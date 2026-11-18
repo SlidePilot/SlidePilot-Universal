@@ -135,7 +135,8 @@ final class Host {
             var arguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US", "-ApplePersistenceIgnoreState", "YES"]
             if let appearance = args["appearance"] as? String {
                 guard ["light", "dark"].contains(appearance) else { throw PolicyError.refused("appearance is light or dark") }
-                if appearance == "dark" { arguments += ["-AppleInterfaceStyle", "Dark"] }
+                // Read by the test build itself (TestHostAppearance.swift).
+                arguments += ["-SlidePilotTestAppearance", appearance]
             }
             configuration.arguments = arguments
             let app = try await NSWorkspace.shared.openApplication(at: url, configuration: configuration)
