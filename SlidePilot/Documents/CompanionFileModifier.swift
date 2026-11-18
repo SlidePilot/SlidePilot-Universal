@@ -52,7 +52,8 @@ private struct CompanionFileModifier: ViewModifier {
     /// Provided on the Mac only; iPadOS saves when the app leaves the foreground.
     @Environment(OpenCompanions.self) private var openCompanions: OpenCompanions?
     #if os(macOS)
-    @State private var window: NSWindow?
+    /// A reference, not a value: storing the window must not redraw the document window.
+    @State private var windowReference = WindowReference()
     #endif
 
     private var companion: DocumentCompanion { session.companion }
@@ -110,11 +111,11 @@ private struct CompanionFileModifier: ViewModifier {
             #if os(macOS)
             // The presenter window shows the system's edited dot in its close button (DOC-09).
             .background(WindowBridge { newWindow in
-                window = newWindow
+                windowReference.window = newWindow
                 newWindow.isDocumentEdited = companion.isEdited
             })
             .onChange(of: companion.isEdited) { _, isEdited in
-                window?.isDocumentEdited = isEdited
+                windowReference.window?.isDocumentEdited = isEdited
             }
             #endif
     }
@@ -162,5 +163,12 @@ private final class BackgroundTask {
         UIApplication.shared.endBackgroundTask(id)
         id = .invalid
     }
+}
+#endif
+
+#if os(macOS)
+/// The presenter window of a document, for the edited dot (DOC-09).
+private final class WindowReference {
+    weak var window: NSWindow?
 }
 #endif

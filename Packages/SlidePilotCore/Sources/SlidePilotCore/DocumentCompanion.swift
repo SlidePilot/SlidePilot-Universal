@@ -70,7 +70,11 @@ public final class DocumentCompanion {
         }
         entry = loaded
         isStored = opening.isStored
-        orphan = opening.orphan
+        // Assigned only on a real change: every assignment of an observed property redraws
+        // the views that read it, here the whole document window right after it appeared.
+        if orphan != opening.orphan {
+            orphan = opening.orphan
+        }
         if loaded != opening.entry {
             scheduleSave()
         }

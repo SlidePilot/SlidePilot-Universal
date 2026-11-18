@@ -1,4 +1,5 @@
 import Foundation
+import Observation
 import SlidePilotCore
 import Synchronization
 import Testing
@@ -453,6 +454,21 @@ struct DocumentCompanionTests {
         #expect(companion.entry?.pdf.fileName == "renamed.pdf")
         await companion.flush()
         #expect(await makeCompanion().open(pdfAt: renamed, pageCount: 3)?.layout?.arrangement == .single)
+    }
+
+    // Opening a PDF without orphaned data must not notify observers of `orphan`: the app's
+    // alert reads it, so a needless notification redraws the window while it appears, and the
+    // Mac navigator sidebar flashed (#25 review).
+    @Test func openingWithoutOrphanDoesNotNotifyObservers() async {
+        let companion = makeCompanion()
+        let notified = Mutex(false)
+        withObservationTracking {
+            _ = companion.orphan
+        } onChange: {
+            notified.withLock { $0 = true }
+        }
+        await companion.open(pdfAt: locator.add("talk.pdf"), pageCount: 3)
+        #expect(!notified.withLock { $0 })
     }
 
     @Test func withoutStoreNothingIsLoaded() async {
