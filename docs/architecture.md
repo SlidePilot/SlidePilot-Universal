@@ -77,7 +77,7 @@ Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standar
 |---|---|
 | Notes, drawings, per-document settings | One **companion file** per PDF (format defined in Core, versioned) in the **app container**, matched to the PDF by bookmark (ADR 0012). Entries that hold only settings expire 12 months after last open (SET-03); entries with notes or drawings do not expire |
 | Legacy notes `<pdf>-notes.rtf` | Imported on open (macOS, after a folder grant) or with Import Notes… (iPad); RTF export stays available |
-| Global preferences (layout, pointer, awake, crossfade, save drawings, time size) | `UserDefaults` through one typed settings store |
+| Global preferences (layout, pointer, awake, crossfade, save drawings, time size) | `UserDefaults` through one typed settings store: `AppSettings` (Core, `@MainActor @Observable`) with an injectable `SettingsStore`; one instance per app, passed to the scenes through the environment |
 | Access to PDFs and neighbouring files | Security-scoped bookmarks. Folder access is requested only when needed (videos, `run:` links, legacy notes on macOS) and stored as a bookmark (ADR 0012) |
 | Trusted remote devices (2.0) | Keychain |
 

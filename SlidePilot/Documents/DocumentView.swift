@@ -28,6 +28,8 @@ struct DocumentView: View {
             .onAppWindowChange { registry.register(session, inWindow: $0) }
             // How to present on a second screen (#82); the Mac needs no hint.
             .externalDisplayHint()
+            // The Mac has the Settings window instead (SET-01).
+            .settingsSheet()
             #endif
             #if os(macOS)
             .presenterWindow(for: session)

@@ -50,6 +50,48 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fin de la présentation" } }
       }
     },
+    "Crossfade slides" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien überblenden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fondu entre les diapositives" } }
+      }
+    },
+    "General" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Allgemein" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Général" } }
+      }
+    },
+    "Keep display awake" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bildschirm wach halten" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Garder l’écran allumé" } }
+      }
+    },
+    "Settings" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages" } }
+      }
+    },
+    "Settings…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages…" } }
+      }
+    },
+    "Slides fade into each other on the presentation screen." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Folien gehen auf dem Präsentationsbildschirm ineinander über." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les diapositives se fondent les unes dans les autres sur l’écran de présentation." } }
+      }
+    },
+    "The display does not dim or sleep while SlidePilot is open." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Der Bildschirm wird nicht abgedunkelt und schläft nicht ein, solange SlidePilot geöffnet ist." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "L’écran ne s’assombrit pas et ne se met pas en veille tant que SlidePilot est ouvert." } }
+      }
+    },
     "External Display" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Externer Bildschirm" } },
