@@ -13,16 +13,20 @@ extension FocusedValues {
 }
 
 extension View {
-    /// Adds the clock, the stopwatch/timer, their toolbar controls and the Set Timer sheet
-    /// to a presenter window.
-    func presenterTimer(_ session: PresentationSession) -> some View {
+    /// The clock and the stopwatch/timer above the slides.
+    func presenterTimeDisplay(_ session: PresentationSession) -> some View {
+        modifier(PresenterTimeDisplayModifier(session: session))
+    }
+
+    /// The timer's toolbar controls, the Set Timer sheet and the menu commands. Separate
+    /// from the display because on iPad the navigator puts them on another view (LAY-06).
+    func presenterTimerControls(_ session: PresentationSession) -> some View {
         modifier(PresenterTimerModifier(session: session))
     }
 }
 
-private struct PresenterTimerModifier: ViewModifier {
+private struct PresenterTimeDisplayModifier: ViewModifier {
     let session: PresentationSession
-    @State private var isSettingTimer = false
     // TIME-06: global, the layout editor and settings of later issues change it.
     @AppStorage(TimeDisplaySize.defaultsKey) private var size = TimeDisplaySize.default
 
@@ -36,6 +40,15 @@ private struct PresenterTimerModifier: ViewModifier {
                         .padding(.top, size == .small ? 5 : 20)
                 }
             }
+    }
+}
+
+private struct PresenterTimerModifier: ViewModifier {
+    let session: PresentationSession
+    @State private var isSettingTimer = false
+
+    func body(content: Content) -> some View {
+        content
             .toolbar {
                 TimerToolbar(session: session, isSettingTimer: $isSettingTimer)
             }

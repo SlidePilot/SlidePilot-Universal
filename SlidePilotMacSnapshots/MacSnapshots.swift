@@ -133,6 +133,21 @@ extension MacSnapshots {
             try await WindowSnapshot.record(view, name: name, size: CGSize(width: 1200, height: 700), appearance: appearance)
         }
     }
+
+    // LAY-06: the navigator's list with slide 3 selected. Snapshots of the whole split view
+    // leave the sidebar empty (it is drawn in its own layer), so this shows the list alone.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func navigatorList(appearance: WindowSnapshot.Appearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        let session = PresentationSession(data: document.data, info: document.info, page: 2, layoutStore: InMemoryPresenterLayoutStore())
+        let view = NavigationStack {
+            SlideNavigator(session: session, closesOnSelection: false)
+        }
+        let window = WindowSnapshot.makeWindow(view, size: CGSize(width: 240, height: 650), appearance: appearance)
+        defer { window.close() }
+        try await Task.sleep(for: .seconds(2))
+        try await WindowSnapshot.record(window, name: "navigator-list-\(appearance.rawValue)")
+    }
 }
 
 private extension View {
