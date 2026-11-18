@@ -7,6 +7,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "%@, arrêté" } }
       }
     },
+    "Black Screen" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Schwarzer Bildschirm" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran noir" } }
+      }
+    },
     "Cancel" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Abbrechen" } },
@@ -36,6 +42,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbunden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connecté" } }
+      }
+    },
+    "Cover the presentation with a black screen" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Präsentation mit einem schwarzen Bildschirm verdecken" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couvrir la présentation d'un écran noir" } }
+      }
+    },
+    "Cover the presentation with a white screen" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Präsentation mit einem weißen Bildschirm verdecken" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couvrir la présentation d'un écran blanc" } }
       }
     },
     "Current slide, %lld of %lld" : {
@@ -227,6 +245,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réinitialiser le temps" } }
       }
     },
+    "Screen is hidden" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bildschirm ist verdeckt" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "L'écran est couvert" } }
+      }
+    },
     "Seconds" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Sekunden" } },
@@ -381,6 +405,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Zwei Folien" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Deux diapositives" } }
+      }
+    },
+    "White Screen" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Weißer Bildschirm" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran blanc" } }
       }
     }
   },
