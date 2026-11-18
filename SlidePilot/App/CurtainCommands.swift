@@ -13,9 +13,9 @@ struct CurtainMenuItems: View {
     var body: some View {
         let session = timer == nil ? nil : session
         CurtainToggle(curtain: .black, session: session)
-            .keyboardShortcut("b", modifiers: [])
+            .plainKeyShortcut("b")
         CurtainToggle(curtain: .white, session: session)
-            .keyboardShortcut("w", modifiers: [])
+            .plainKeyShortcut("w")
     }
 }
 

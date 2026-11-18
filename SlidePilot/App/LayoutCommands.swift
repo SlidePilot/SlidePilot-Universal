@@ -24,11 +24,11 @@ private struct LayoutMenuItems: View {
         ArrangementPicker(layout: layout)
             .pickerStyle(.menu)
         SlotToggle(layout: layout, slot: .current)
-            .keyboardShortcut("a", modifiers: [])
+            .plainKeyShortcut("a")
         SlotToggle(layout: layout, slot: .next)
-            .keyboardShortcut("p", modifiers: [])
+            .plainKeyShortcut("p")
         SlotToggle(layout: layout, slot: .notes)
-            .keyboardShortcut("n", modifiers: [])
+            .plainKeyShortcut("n")
     }
 }
 

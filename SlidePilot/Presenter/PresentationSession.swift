@@ -23,6 +23,9 @@ final class PresentationSession: Identifiable {
     let layout: PresenterLayoutModel
     /// Per-document settings and, later, notes in the companion file (NOTES-10, SET-02).
     let companion: DocumentCompanion
+    /// Whether the slide navigator sidebar is shown (LAY-06); hidden when a document opens,
+    /// unless the document's settings say otherwise (SET-02).
+    var isNavigatorDisplayed = false
 
     init(
         data: Data,
@@ -49,7 +52,8 @@ final class PresentationSession: Identifiable {
         position.showPrevious()
     }
 
-    /// Jumps to `index` (e.g. an internal link, NAV-05). Counts for Go Back; never starts the timer.
+    /// Jumps to `index`, clamped to the deck (navigator LAY-06, internal links NAV-05).
+    /// Counts for Go Back; never starts the timer.
     func showPage(_ index: Int) {
         position.show(index)
     }
