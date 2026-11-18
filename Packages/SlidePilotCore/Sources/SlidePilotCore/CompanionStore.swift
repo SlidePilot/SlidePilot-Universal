@@ -84,7 +84,13 @@ public actor CompanionStore {
             return Opening(entry: entry, isStored: true, orphan: orphan)
         }
 
-        guard let bookmark = try? locator.bookmark(for: url) else { return nil }
+        let bookmark: Data
+        do {
+            bookmark = try locator.bookmark(for: url)
+        } catch {
+            companionLog.error("No bookmark for the opened PDF, its data is not stored: \(error.localizedDescription, privacy: .public)")
+            return nil
+        }
         let entry = CompanionEntry(
             pdf: PDFReference(bookmark: bookmark, fileName: url.lastPathComponent, pageCount: pageCount, documentIdentifier: documentIdentifier),
             lastOpened: now()
@@ -185,6 +191,7 @@ public actor CompanionStore {
             try CompanionFileFormat.encode(entry).write(to: fileURL(of: entry.id), options: .atomic)
         } catch {
             // The entry stays in memory for this run; the next save tries again.
+            companionLog.error("Writing a companion entry failed: \(error.localizedDescription, privacy: .public)")
         }
     }
 

@@ -1,4 +1,8 @@
 import Foundation
+import os
+
+/// Problems with the companion file; they never reach the user, so they are logged.
+let companionLog = Logger(subsystem: "SlidePilot", category: "CompanionFile")
 
 /// A bookmark resolved to the file it points to now.
 public struct ResolvedBookmark: Sendable, Equatable {
@@ -32,7 +36,9 @@ public struct FileBookmarkLocator: PDFLocator {
     public init() {}
 
     #if os(macOS)
-    private static let creationOptions: URL.BookmarkCreationOptions = [.withSecurityScope]
+    // The app opens PDFs read-only (user-selected files: read-only); without
+    // `securityScopeAllowOnlyReadAccess` the sandbox refuses a security-scoped bookmark.
+    private static let creationOptions: URL.BookmarkCreationOptions = [.withSecurityScope, .securityScopeAllowOnlyReadAccess]
     private static let resolutionOptions: URL.BookmarkResolutionOptions = [.withSecurityScope, .withoutUI, .withoutMounting]
     #else
     private static let creationOptions: URL.BookmarkCreationOptions = []
@@ -41,13 +47,22 @@ public struct FileBookmarkLocator: PDFLocator {
 
     public func bookmark(for url: URL) throws -> Data {
         try withAccess(to: url) {
-            try url.bookmarkData(options: Self.creationOptions, includingResourceValuesForKeys: nil, relativeTo: nil)
+            do {
+                return try url.bookmarkData(options: Self.creationOptions, includingResourceValuesForKeys: nil, relativeTo: nil)
+            } catch {
+                // A plain bookmark still finds the file again for matching; only reading
+                // through it later would need the scope.
+                companionLog.error("Security-scoped bookmark failed: \(error.localizedDescription, privacy: .public)")
+                return try url.bookmarkData(options: [], includingResourceValuesForKeys: nil, relativeTo: nil)
+            }
         }
     }
 
     public func resolve(_ bookmark: Data) -> ResolvedBookmark? {
         var isStale = false
-        guard let url = try? URL(resolvingBookmarkData: bookmark, options: Self.resolutionOptions, relativeTo: nil, bookmarkDataIsStale: &isStale)
+        // Plain bookmarks from the fallback in `bookmark(for:)` resolve without the scope option.
+        guard let url = (try? URL(resolvingBookmarkData: bookmark, options: Self.resolutionOptions, relativeTo: nil, bookmarkDataIsStale: &isStale))
+            ?? (try? URL(resolvingBookmarkData: bookmark, options: [.withoutUI, .withoutMounting], relativeTo: nil, bookmarkDataIsStale: &isStale))
         else { return nil }
         // A bookmark can resolve to the last known path of a file that is gone.
         let exists = withAccess(to: url) { (try? url.checkResourceIsReachable()) ?? false }
