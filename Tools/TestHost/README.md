@@ -11,7 +11,7 @@ Tools/TestHost/build.sh
 ```
 
 1. Move `build/TestHost/SlidePilot Test Host.app` to `~/Applications` (replace the old one).
-2. Open it. A camera icon appears in the menu bar, and macOS asks for **Screen Recording** and **Accessibility**. Allow both in System Settings > Privacy & Security, only for "SlidePilot Test Host".
+2. Open it. A camera icon appears in the menu bar, and macOS asks for **Screen Recording** and **Accessibility** (called **Device Control and Data Access** since macOS 27). Allow both in System Settings > Privacy & Security, only for "SlidePilot Test Host".
 3. Quit and reopen the host once, so it picks up the grants. Its menu shows both as "allowed".
 
 Optional: add it to System Settings > General > Login Items so it is always running.
