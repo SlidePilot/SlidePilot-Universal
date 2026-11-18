@@ -3,9 +3,8 @@ import SwiftUI
 
 /// The General pane (SET-05): Keep awake and Crossfade slides.
 ///
-/// The behavior behind both toggles comes with #23; Save drawings comes with the drawing
-/// issue (DRAW-06). The pane only provides form sections; `SettingsView` puts it into a
-/// form on each platform.
+/// Save drawings comes with the drawing issue (DRAW-06). The pane only provides form
+/// sections; `SettingsView` puts it into a form on each platform.
 struct GeneralSettingsView: View {
     @Environment(AppSettings.self) private var settings
 

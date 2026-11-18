@@ -6,29 +6,32 @@ struct SlidePilotApp: App {
     #if os(iOS)
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     private var registry: SessionRegistry { appDelegate.registry }
+    private var settings: AppSettings { appDelegate.settings }
+    private var remote: RemoteService { appDelegate.remote }
     #else
     @NSApplicationDelegateAdaptor(MacAppDelegate.self) private var appDelegate
     @State private var registry = SessionRegistry()
     @State private var presentationWindows = MacPresentationWindows()
-    #endif
     /// The app-wide settings (SET-01), shared by all windows.
     @State private var settings: AppSettings
+    /// Keeps the display awake while the app runs, if the setting is on (SET-04).
+    @State private var displayAwakeKeeper: DisplayAwakeKeeper
     /// Advertises this instance and keeps pairing state (REM-02); one per app.
     @State private var remote: RemoteService
 
     init() {
-        #if os(macOS)
+        let settings = AppSettings(store: UserDefaults.standard)
+        _settings = State(initialValue: settings)
+        _displayAwakeKeeper = State(initialValue: DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker()))
+        _remote = State(initialValue: RemoteService.live(settings: settings))
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
         CompanionStore.cleanUpAtLaunch()
         #if DEBUG
         TestHostAppearance.apply()
         #endif
-        #endif
-        let settings = AppSettings(store: UserDefaults.standard)
-        _settings = State(initialValue: settings)
-        _remote = State(initialValue: RemoteService.live(settings: settings))
     }
+    #endif
 
     var body: some Scene {
         // One window per PDF (DOC-01/02). The system provides the open panel at launch,
@@ -45,6 +48,7 @@ struct SlidePilotApp: App {
             PresentationCommands()
             LayoutCommands()
             ModeratorCommands()
+            NotesFormatCommands()
         }
 
         // The presentation window of each document (DOC-04 to DOC-06). It is opened by the
@@ -53,6 +57,7 @@ struct SlidePilotApp: App {
             PresentationWindowContent(id: id)
                 .environment(registry)
                 .environment(presentationWindows)
+                .environment(settings)
         }
         .windowStyle(.hiddenTitleBar)
         .restorationBehavior(.disabled)
@@ -84,6 +89,7 @@ struct SlidePilotApp: App {
         }
         .commands {
             LayoutCommands()
+            NotesFormatCommands()
         }
 
         #endif

@@ -9,6 +9,12 @@ import UIKit
 final class AppDelegate: NSObject, UIApplicationDelegate {
     let registry = SessionRegistry()
     let externalDisplays = ExternalDisplayStatus()
+    /// The app-wide settings (SET-01), here so the external display can read them too.
+    let settings = AppSettings(store: UserDefaults.standard)
+    /// Keeps the display awake while the app runs, if the setting is on (SET-04).
+    private lazy var displayAwakeKeeper = DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker())
+    /// Advertises this instance and keeps pairing state (REM-02); one per app.
+    private(set) lazy var remote = RemoteService.live(settings: settings)
     private lazy var windows = AppWindowTracker(registry: registry)
 
     /// The only global path to the app-owned registry: UIKit creates scene delegates by
@@ -26,6 +32,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         // Lives as long as the app; the app delegate is never released.
         windows.start()
+        _ = displayAwakeKeeper
+        _ = remote
         // Fails only if called twice; without it the external-display tip stays hidden.
         try? Tips.configure()
         CompanionStore.cleanUpAtLaunch()
@@ -72,7 +80,7 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
         }
         #endif
         let window = UIWindow(windowScene: windowScene)
-        let host = UIHostingController(rootView: ExternalDisplayView(appWindow: appWindow).environment(registry))
+        let host = UIHostingController(rootView: ExternalDisplayView(appWindow: appWindow).environment(registry).environment(app.settings))
         host.view.backgroundColor = .black
         window.rootViewController = host
         window.isHidden = false
