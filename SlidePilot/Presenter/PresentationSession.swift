@@ -40,6 +40,11 @@ final class PresentationSession: Identifiable {
         position.showPrevious()
     }
 
+    /// Jumps to `index` (e.g. an internal link, NAV-05). Counts for Go Back; never starts the timer.
+    func showPage(_ index: Int) {
+        position.show(index)
+    }
+
     var canGoBack: Bool { position.canGoBack }
 
     /// Shows the previously viewed page (NAV-03).

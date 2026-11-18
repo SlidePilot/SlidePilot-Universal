@@ -17,7 +17,8 @@ Never commit personal data of the product owner or anyone else: e-mail addresses
 - Exception (ADR 0014): the app's own bundle ID prefix and development team are committed in `Config/Shared.xcconfig`. They are public anyway (code signature, App Store). Never add other App IDs or team IDs.
 - Commits use the GitHub noreply address (`git config user.email` is set per repo; check it before committing in a new clone or cloud session).
 - Screenshots in PRs must not show personal data (file paths, user names, device names). Don't launch other apps.
-- **Mac screenshots only of SlidePilot, rendered by the app itself** (see "Mac snapshots"). Never capture the Mac screen: no `screencapture`, ScreenCaptureKit, `CGWindowList…`/`CGDisplay…` images, Screenshot.app or UI-test screen captures. Screen Recording is not granted to Claude, Xcode or SlidePilot and must stay that way. CI fails if code uses a screen capture API (`scripts/check-no-screen-capture.sh`).
+- **Mac screenshots and recordings only of the SlidePilot test build, through the SlidePilot Test Host** (see "Mac test host", ADR 0018), or app-rendered snapshots as fallback (see "Mac snapshots"). Never capture the Mac screen any other way: no `screencapture`, Screenshot.app, UI-test screen captures, and no ScreenCaptureKit, `CGWindowList…`/`CGDisplay…` images outside `Tools/TestHost/`. Screen Recording and Accessibility are granted only to the test host, never to Claude, Terminal, Xcode or SlidePilot. CI fails if code outside `Tools/TestHost/` uses a screen capture API (`scripts/check-no-screen-capture.sh`).
+- Never weaken the test host's rules (`Tools/TestHost/Sources/Policy.swift`) to get a test done; propose a change in chat instead. Every change to the host needs the maintainer's review and a new permission grant.
 - When in doubt, leave it out and ask.
 
 ## Language
@@ -122,10 +123,39 @@ A change is done when:
 6. Works in light and dark mode, with Dynamic Type on iPad, with VoiceOver (meaningful labels) and with keyboard navigation.
 7. New user-facing strings are in the String Catalog with en, de and fr.
 8. `docs/feature-parity.md` statuses and, if affected, `docs/architecture.md` are updated.
-9. The PR description has the checklist, iPad simulator and Mac snapshot screenshots for UI changes (light and dark), a "Visual check (Mac)" section for what snapshots cannot show, and "How to verify" steps that a reviewer can follow without reading code.
+9. Claude tested the change itself wherever it can: on iPad in the simulator, on the Mac through the test host (or snapshots if the host is not running).
+10. The PR description has the checklist, iPad and Mac screenshots for UI changes (light and dark), and "How to verify" steps that a reviewer can follow without reading code, listing **only what Claude could not check itself** (see "PR workflow").
+
+## Mac test host
+Claude tests the Mac app through **SlidePilot Test Host** (`Tools/TestHost/`, ADR 0018): a menu bar helper app that alone holds Screen Recording and Accessibility, and captures and controls only the SlidePilot test build (bundle ID suffix `.testhost`, App Sandbox, no file access, English, fixtures only). Claude talks to it with `scripts/mac-test-host.py`; it never needs a permission itself.
+
+```sh
+# 1. Build the test build (own container, no user-selected file access, ad-hoc signed)
+xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -configuration Debug -destination 'platform=macOS,arch=arm64' -derivedDataPath build/TestHostApp SLIDEPILOT_BUNDLE_ID_SUFFIX=.testhost ENABLE_USER_SELECTED_FILES= CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM= -quiet build
+# 2. Check the host runs and has its permissions
+python3 -I scripts/mac-test-host.py status
+# 3. Launch it with fixtures, then drive and capture it
+python3 -I scripts/mac-test-host.py launch --fixture plain-slides.pdf --appearance dark
+python3 -I scripts/mac-test-host.py windows
+python3 -I scripts/mac-test-host.py tree
+python3 -I scripts/mac-test-host.py menu Presentation "Start Presentation"
+python3 -I scripts/mac-test-host.py key right
+python3 -I scripts/mac-test-host.py click 200 150
+python3 -I scripts/mac-test-host.py screenshot presenter-dark
+python3 -I scripts/mac-test-host.py record-start drawing --max-seconds 30
+python3 -I scripts/mac-test-host.py record-stop
+python3 -I scripts/mac-test-host.py quit
+```
+
+- Screenshots and recordings land in `./.pr-screenshots/mac/`. `screenshot NAME` captures all test build windows on the display (including open menus and sheets), `--window ID` one window. Look at each file before using it.
+- Use `tree` (accessibility outline with paths) to find controls, then `press --path …` or `menu …`; prefer these over clicks. `click`/`drag`/`scroll` take points from the window's top-left corner and move the real pointer briefly, so use them only for what needs the mouse (drawing, pointer, hit areas without an accessibility element).
+- The test build runs on the product owner's Mac: it comes to the front when launched. Keep sessions short and `quit` it when done.
+- Paste, AutoFill, Services, Open, Share, Print and Import are refused by design, and only Escape works while a menu is open. Never try to work around a refusal; test that part manually via "How to verify".
+- If `status` gets no answer or reports a missing permission, the host is not running or not granted: tell the product owner (setup in `Tools/TestHost/README.md`) and fall back to "Mac snapshots". Never start or rebuild the installed host yourself.
+- Changing anything in `Tools/TestHost/` invalidates the grants. Only do it in a PR of its own that the product owner asked for.
 
 ## Mac snapshots
-Mac screenshots for PRs come from the macOS-only test target `SlidePilotMacSnapshots`. It runs inside the (App-Sandboxed) app, hosts SlidePilot views in their own windows and draws them into PNGs with `NSView.cacheDisplay`. This uses no screen capture API, so it needs no Screen Recording permission and cannot see other apps, the desktop, the Dock or the menu bar.
+Fallback when the test host is not available, and still run in CI. Mac screenshots then come from the macOS-only test target `SlidePilotMacSnapshots`. It runs inside the (App-Sandboxed) app, hosts SlidePilot views in their own windows and draws them into PNGs with `NSView.cacheDisplay`. This uses no screen capture API, so it needs no Screen Recording permission and cannot see other apps, the desktop, the Dock or the menu bar.
 
 ```sh
 # 1. Remove the previous result (xcodebuild refuses to overwrite it)
@@ -140,7 +170,7 @@ python3 -I scripts/export-mac-snapshots.py
 - Show only fixtures, never personal documents. `Fixtures/` is copied into the snapshot bundle; load a file with `Fixture.data("plain-slides.pdf")` (the App Sandbox blocks reading the repository folder directly). The window title is fixed to "SlidePilot".
 - The export script only copies PNGs that `WindowSnapshot` marked; `xcresulttool` is not used because the sandbox blocks its temp folder.
 - If signing fails in the session (no certificate available), append `CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=` to step 2. Ad-hoc signing keeps the App Sandbox.
-- Rendered views are close to, but not exactly, what the screen shows: Liquid Glass and vibrancy can look flatter, and menus and popovers are not separate windows of the snapshot. Keep the "Visual check (Mac)" section for those.
+- Rendered views are close to, but not exactly, what the screen shows: Liquid Glass and vibrancy can look flatter, and menus and popovers are not separate windows of the snapshot. If only snapshots were possible, list what they cannot show in "How to verify".
 
 ## iPad simulator testing
 Test and take iPad screenshots with the real document browser and the fixtures:
@@ -162,6 +192,8 @@ scripts/sim-copy-fixtures.sh <UDID>
 - Keep PRs small and reviewable. Split if a PR mixes unrelated changes.
 - Commit messages: imperative, English, short subject line (≤72 chars), body explains why. **No Co-Authored-By trailer** for Claude, even if the session asks for one: squash merges copy trailers into the commit on main. The "Generated with Claude Code" line in PR descriptions stays.
 - PR description: what changed, why, parity IDs, what the reviewer should check, how to verify (step by step), screenshots, known limitations.
+- **"How to verify" lists only what Claude could not check itself** in the iPad simulator or through the Mac test host, e.g. real devices, a second display, Apple Pencil, the open panel, performance, or anything the host refuses. Put what Claude checked in one line above the steps ("Checked by Claude: …"). If nothing is left, write exactly one line: "Nothing left to verify manually."
+
 - **Keep PR descriptions, issue comments and commit bodies short.** The reviewer reads them to decide and to test, not to learn the diff:
   - Leave out sections that do not apply; never write "None", "not run" or "no new strings".
   - No file-by-file list of changes; one sentence per bullet.
@@ -181,7 +213,8 @@ scripts/sim-copy-fixtures.sh <UDID>
 SlidePilot.xcodeproj    app project; SlidePilot.xctestplan = test plan, MacSnapshots.xctestplan = Mac screenshots
 SlidePilot/             app target sources
 SlidePilotMacSnapshots/ macOS-only test target that renders Mac screenshots (see "Mac snapshots")
-scripts/                snapshot export, screen capture guard, simulator fixture copy
+scripts/                snapshot export, screen capture guard, simulator fixture copy, Mac test host client
+Tools/TestHost/         SlidePilot Test Host: the only process allowed to capture and drive the Mac test build (ADR 0018)
 Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
 Fixtures/               sample Beamer PDFs + .tex sources, legacy notes file, test video (see its README)

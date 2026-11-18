@@ -130,6 +130,9 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             test
           python3 -I scripts/export-mac-snapshots.py
+      # Keeps the Mac test host compiling (ADR 0018). It is not run in CI.
+      - name: Mac test host
+        run: sh Tools/TestHost/build.sh
 
   ipados:
     name: iPadOS simulator (build + test)

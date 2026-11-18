@@ -13,14 +13,15 @@ Docs, config and CI PRs: Summary, What to check and, if useful, How to verify ar
 <!-- Decisions, deviations from the old app, justified custom UI, open questions. -->
 
 ## How to verify
-<!-- Numbered click-by-click steps on Mac and iPad with expected results. No code reading required. -->
+<!-- One line "Checked by Claude: …", then numbered click-by-click steps with expected results
+     only for what Claude could not check itself (iPad simulator, Mac test host).
+     If nothing is left: "Nothing left to verify manually." No code reading required. -->
+Checked by Claude: 
+
 1. 
 
 ## Screenshots
-<!-- UI changes only: iPad simulator and Mac snapshots, light and dark. No personal data visible. -->
-
-### Visual check (Mac)
-<!-- What the Mac snapshots cannot show (menus, popovers, Liquid Glass, window behavior) and the expected result. -->
+<!-- UI changes only: iPad simulator and Mac test host, light and dark. No personal data visible. -->
 
 ## Reviews
 <!-- One line per agent that ran: parity-reviewer, design-reviewer, concurrency-reviewer. -->

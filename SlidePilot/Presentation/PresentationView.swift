@@ -13,7 +13,8 @@ struct PresentationView: View {
     var body: some View {
         ZStack {
             Color.black
-            SlideSurface(cache: session.cache, page: session.currentPage, role: .presentation)
+            SlideSurface(cache: session.cache, page: session.currentPage, role: .presentation, pageLinkAction: session.showPage)
+            // Opaque, so it also blocks clicks on the slide's links while shown.
             CurtainCover(curtain: session.curtain)
         }
         .ignoresSafeArea()

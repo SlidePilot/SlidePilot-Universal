@@ -18,10 +18,26 @@ struct SlideSurface: View {
     let page: Int
     var region: PageRegion = .full
     var role: Role = .current
+    /// Follows internal links (NAV-05); `nil` turns all links off, also URL links.
+    var pageLinkAction: ((Int) -> Void)?
 
     @Environment(\.displayScale) private var displayScale
+    @Environment(\.openURL) private var openURL
     @State private var slide: RenderedSlide?
     @State private var box: PixelSize?
+    @State private var pageLinks: PageLinks?
+
+    private struct LinkRequest: Equatable {
+        let cache: ObjectIdentifier
+        let page: Int
+    }
+
+    /// The links of one page of one cache, so a page change never shows stale links.
+    private struct PageLinks {
+        let cache: ObjectIdentifier
+        let page: Int
+        let links: [SlideLink]
+    }
 
     private struct Request: Equatable {
         /// A reloaded PDF comes with a new cache (DOC-08); the old image stays until the
@@ -45,6 +61,9 @@ struct SlideSurface: View {
                         .aspectRatio(contentMode: .fit)
                 }
             }
+            .overlay {
+                SlideLinkLayer(links: links, region: region, follow: follow)
+            }
             .onGeometryChange(for: PixelSize.self) { proxy in
                 PixelSize(
                     width: Int((proxy.size.width * scale).rounded(.up)),
@@ -56,11 +75,41 @@ struct SlideSurface: View {
             .task(id: Request(cache: ObjectIdentifier(cache), page: page, region: region, box: box)) {
                 await load()
             }
+            .task(id: LinkRequest(cache: ObjectIdentifier(cache), page: page)) {
+                await loadLinks()
+            }
             // The presentation shows the slide on black without a frame.
             .slideOutline(role != .presentation)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(accessibilityLabel)
             .accessibilityAddTraits(.isImage)
+            .accessibilityActions {
+                ForEach(Array(links.enumerated()), id: \.offset) { _, link in
+                    Button { follow(link) } label: { link.accessibilityActionName }
+                }
+            }
+    }
+
+    /// The links of the shown page and region, empty while links are off.
+    private var links: [SlideLink] {
+        guard pageLinkAction != nil, let pageLinks,
+              pageLinks.cache == ObjectIdentifier(cache), pageLinks.page == page
+        else { return [] }
+        return pageLinks.links.filter { $0.unitRect(in: region) != nil }
+    }
+
+    private func follow(_ link: SlideLink) {
+        switch link.target {
+        case .page(let index): pageLinkAction?(index)
+        case .url(let url): openURL(url)
+        }
+    }
+
+    private func loadLinks() async {
+        guard pageLinkAction != nil else { return }
+        let links = await cache.links(page: page)
+        guard !Task.isCancelled else { return }
+        pageLinks = PageLinks(cache: ObjectIdentifier(cache), page: page, links: links)
     }
 
     private var regionSize: CGSize {
