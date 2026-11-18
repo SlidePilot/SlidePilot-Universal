@@ -9,11 +9,19 @@ typealias SessionRegistry = PresentationRegistry<PresentationSession>
 /// the curtain and the pointer above it, like in the old app.
 struct PresentationView: View {
     let session: PresentationSession
+    @Environment(AppSettings.self) private var settings
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ZStack {
             Color.black
-            SlideSurface(cache: session.cache, page: session.currentPage, role: .presentation, pageLinkAction: session.showPage)
+            SlideSurface(
+                cache: session.cache,
+                page: session.currentPage,
+                role: .presentation,
+                pageLinkAction: session.showPage,
+                crossfades: SlideCrossfade.isActive(setting: settings.crossfadesSlides, reduceMotion: reduceMotion)
+            )
             // Opaque, so it also blocks clicks on the slide's links while shown.
             CurtainCover(curtain: session.curtain)
         }
