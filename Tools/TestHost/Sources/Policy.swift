@@ -163,9 +163,17 @@ enum Policy {
         return blockedMenuIdentifierParts.contains { lowered.contains($0) }
     }
 
-    /// ⌘V (and variants) pastes, ⌘O opens files: both are refused as keystrokes.
+    /// Refused keystrokes: ⌘V (and variants) pastes and ⌘O opens files.
+    /// The Apple menu's shortcuts act on the whole Mac (⇧⌘Q log out, ⌃⌘Q lock,
+    /// ⌥⌘⎋ force quit), and Control with a function key moves keyboard focus
+    /// to the menu bar, Dock or status menus, from where the Apple menu opens.
     static func isBlockedShortcut(key: String, modifiers: CGEventFlags) -> Bool {
-        guard modifiers.contains(.maskCommand) else { return false }
-        return ["v", "o"].contains(key.lowercased())
+        let key = key.lowercased()
+        let command = modifiers.contains(.maskCommand)
+        if command && ["v", "o"].contains(key) { return true }
+        if command && key == "q" && (modifiers.contains(.maskShift) || modifiers.contains(.maskControl)) { return true }
+        if command && modifiers.contains(.maskAlternate) && ["escape", "esc"].contains(key) { return true }
+        if modifiers.contains(.maskControl) && key.hasPrefix("f") && key.count > 1 { return true }
+        return false
     }
 }

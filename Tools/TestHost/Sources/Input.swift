@@ -4,6 +4,9 @@ import ApplicationServices
 // Reads and drives the test build's user interface. Accessibility calls start
 // at AXUIElementCreateApplication(target pid) and events go to that pid with
 // CGEvent.postToPid, so no other app can be read or receive input.
+// The Apple menu lives in every app's menu bar but shows the user's data
+// (recent apps and documents), so it is left out of the tree, cannot be
+// pressed, and the host refuses captures while it is open.
 
 @MainActor
 final class Input {
@@ -92,7 +95,7 @@ final class Input {
             }
         }
         if Policy.isBlockedShortcut(key: keyName, modifiers: flags) {
-            throw PolicyError.refused("\(combo) is blocked for the test host (paste/open)")
+            throw PolicyError.refused("\(combo) is blocked for the test host")
         }
         // In an open menu, Return would choose the highlighted item, which
         // bypasses the menu title check. Only Escape is allowed then.
@@ -124,9 +127,23 @@ final class Input {
     // MARK: Mouse
 
     // AppKit ignores mouse events posted to a process, so mouse events go
-    // through the system event stream. Before each event the host checks that
-    // the frontmost window at that point is a normal window of the test build;
-    // otherwise it stops. The pointer is moved back afterwards.
+    // through the system event stream. Before each event the host asks the
+    // accessibility hit test which app would get a click at that point (it
+    // honors click-through overlays and z-order) and stops unless it is the
+    // test build. Only the owner's pid of the hit element is used. The pointer
+    // is moved back afterwards.
+
+    /// Brings the test build and the given window to the front. Accessibility
+    /// works where NSRunningApplication.activate() is ignored for a background app.
+    func bringToFront(target: VerifiedTarget, window: WindowInfo?) {
+        let app = AXUIElementCreateApplication(target.pid)
+        AXUIElementSetAttributeValue(app, kAXFrontmostAttribute as CFString, kCFBooleanTrue)
+        guard let window else { return }
+        let axWindows: [AXUIElement] = attribute(app, kAXWindowsAttribute) ?? []
+        if let match = axWindows.first(where: { frame(of: $0) == window.frame }) {
+            AXUIElementPerformAction(match, kAXRaiseAction as CFString)
+        }
+    }
 
     enum Button: String { case left, right }
 
@@ -206,24 +223,18 @@ final class Input {
         CGEvent(mouseEventSource: nil, mouseType: type, mouseCursorPosition: location, mouseButton: button)?.post(tap: .cghidEventTap)
     }
 
-    /// The frontmost visible window at `location` (in z-order, including the
-    /// menu bar, Dock, notifications and other apps) must be a test build
-    /// window below menu level. Anything else in front stops the event.
+    /// The app that would receive a click at `location` (other apps, the menu
+    /// bar, Dock and notifications included) must be the test build.
     private func checkFrontmost(at location: CGPoint, target: VerifiedTarget) throws {
-        let options: CGWindowListOption = [.optionOnScreenOnly, .excludeDesktopElements]
-        let windows = CGWindowListCopyWindowInfo(options, kCGNullWindowID) as? [[String: Any]] ?? []
-        for info in windows {
-            guard let boundsInfo = info[kCGWindowBounds as String] as? NSDictionary,
-                  let bounds = CGRect(dictionaryRepresentation: boundsInfo), bounds.contains(location) else { continue }
-            if let alpha = info[kCGWindowAlpha as String] as? Double, alpha <= 0 { continue }
-            let pid = info[kCGWindowOwnerPID as String] as? Int32
-            let layer = info[kCGWindowLayer as String] as? Int ?? 0
-            guard pid == target.pid, layer < Int(CGWindowLevelForKey(.popUpMenuWindow)) else {
-                throw PolicyError.refused("another window is in front of the test build at \(location); nothing was clicked")
-            }
-            return
+        var element: AXUIElement?
+        let result = AXUIElementCopyElementAtPosition(AXUIElementCreateSystemWide(), Float(location.x), Float(location.y), &element)
+        var pid: pid_t = 0
+        guard result == .success, let element, AXUIElementGetPid(element, &pid) == .success else {
+            throw PolicyError.refused("cannot tell which app is at \(location) (\(result.rawValue)); nothing was clicked")
         }
-        throw PolicyError.refused("no test build window at \(location)")
+        guard pid == target.pid else {
+            throw PolicyError.refused("another app or system window is in front of the test build at \(location); nothing was clicked")
+        }
     }
 
     private func pointerLocation() -> CGPoint {
@@ -241,7 +252,8 @@ final class Input {
     /// elements has a size; closed menus report an empty frame.
     func isMenuOpen(target: VerifiedTarget) -> Bool {
         var open = false
-        walk(root: AXUIElementCreateApplication(target.pid), maxDepth: 12, maxNodes: 8000) { node in
+        // Includes the Apple menu, so an open Apple menu also counts.
+        walk(root: AXUIElementCreateApplication(target.pid), maxDepth: 12, maxNodes: 8000, includeAppleMenu: true) { node in
             if role(of: node.element) == kAXMenuRole, let frame = frame(of: node.element), frame.width > 0, frame.height > 0 {
                 open = true
                 return false
@@ -249,6 +261,30 @@ final class Input {
             return true
         }
         return open
+    }
+
+    /// True while the Apple menu (or one of its submenus) is open.
+    func isAppleMenuOpen(target: VerifiedTarget) -> Bool {
+        guard let menuBar = attribute(AXUIElementCreateApplication(target.pid), kAXMenuBarAttribute) as AXUIElement?,
+              let appleItem = children(of: menuBar).first else { return false }
+        var open = false
+        walk(root: appleItem, maxDepth: 6, maxNodes: 2000, includeAppleMenu: true) { node in
+            if role(of: node.element) == kAXMenuRole, let frame = frame(of: node.element), frame.width > 0, frame.height > 0 {
+                open = true
+                return false
+            }
+            return true
+        }
+        return open
+    }
+
+    /// The first menu bar item is always the system's Apple menu.
+    private func isAppleMenuItem(_ element: AXUIElement) -> Bool {
+        guard role(of: element) == kAXMenuBarItemRole,
+              let parent = attribute(element, kAXParentAttribute) as AXUIElement?,
+              role(of: parent) == kAXMenuBarRole,
+              let first = children(of: parent).first else { return false }
+        return CFEqual(first, element)
     }
 
     // MARK: Helpers
@@ -279,6 +315,9 @@ final class Input {
         var current: AXUIElement? = element
         var depth = 0
         while let item = current, depth < 12 {
+            if isAppleMenuItem(item) {
+                throw PolicyError.refused("the Apple menu is blocked for the test host")
+            }
             let itemRole = role(of: item)
             if itemRole == kAXMenuItemRole || itemRole == kAXMenuBarItemRole {
                 let title = attribute(item, kAXTitleAttribute) as String? ?? ""
@@ -298,7 +337,9 @@ final class Input {
         }
     }
 
-    private func walk(root: AXUIElement, maxDepth: Int, maxNodes: Int, visit: (Node) -> Bool) {
+    /// Depth-first walk. Unless `includeAppleMenu`, the Apple menu (first child
+    /// of a menu bar) is skipped; paths keep their indices.
+    private func walk(root: AXUIElement, maxDepth: Int, maxNodes: Int, includeAppleMenu: Bool = false, visit: (Node) -> Bool) {
         var stack: [Node] = [Node(path: "0", element: root, depth: 0)]
         var count = 0
         while let node = stack.popLast(), count < maxNodes {
@@ -306,7 +347,8 @@ final class Input {
             guard visit(node) else { return }
             guard node.depth < maxDepth else { continue }
             let kids = children(of: node.element)
-            for (index, child) in kids.enumerated().reversed() {
+            let skipFirst = !includeAppleMenu && role(of: node.element) == kAXMenuBarRole
+            for (index, child) in kids.enumerated().reversed() where !(skipFirst && index == 0) {
                 stack.append(Node(path: "\(node.path).\(index)", element: child, depth: node.depth + 1))
             }
         }

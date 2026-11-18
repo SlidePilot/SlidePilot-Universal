@@ -158,7 +158,7 @@ final class Host {
 
         case "activate":
             let target = try Policy.currentTarget()
-            target.app.activate()
+            input.bringToFront(target: target, window: nil)
             return "activated"
 
         case "quit":
@@ -178,6 +178,7 @@ final class Host {
             let target = try Policy.currentTarget()
             let name = try Policy.checkedFileName(args["name"] as? String ?? "", extensions: ["png"])
             let windowID = (args["window"] as? Int).map { CGWindowID($0) }
+            try refuseIfAppleMenuOpen(target)
             let size = try await capture.screenshot(of: target, windowID: windowID, to: out.appendingPathComponent(name))
             return ["file": name, "width": Int(size.width), "height": Int(size.height)]
 
@@ -185,6 +186,7 @@ final class Host {
             let target = try Policy.currentTarget()
             let name = try Policy.checkedFileName(args["name"] as? String ?? "", extensions: ["mov"])
             let seconds = min(max(args["maxSeconds"] as? Int ?? 60, 1), 300)
+            try refuseIfAppleMenuOpen(target)
             try await capture.startRecording(of: target, to: out.appendingPathComponent(name), maxSeconds: seconds) { [weak self] in
                 Task {
                     guard let self else { return }
@@ -235,6 +237,10 @@ final class Host {
             let target = try Policy.currentTarget()
             let window = try await window(args, target: target)
             let menuOpen = input.isMenuOpen(target: target)
+            if !menuOpen {
+                input.bringToFront(target: target, window: window)
+                try await Task.sleep(for: .milliseconds(300))
+            }
             switch command {
             case "click":
                 let button = Input.Button(rawValue: args["button"] as? String ?? "left") ?? .left
@@ -250,6 +256,13 @@ final class Host {
 
         default:
             throw PolicyError.refused("unknown command \(command)")
+        }
+    }
+
+    /// The Apple menu shows recent apps and documents of the user.
+    private func refuseIfAppleMenuOpen(_ target: VerifiedTarget) throws {
+        if input.isAppleMenuOpen(target: target) {
+            throw PolicyError.refused("the Apple menu is open; close it with escape first")
         }
     }
 
