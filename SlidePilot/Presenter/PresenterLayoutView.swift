@@ -87,10 +87,10 @@ private struct PresenterSlotView: View {
     var body: some View {
         switch kind {
         case .current:
-            SlideSurface(cache: session.cache, page: session.currentPage, role: .current)
+            SlideSurface(cache: session.cache, page: session.currentPage, role: .current, pageLinkAction: session.showPage)
                 .slideNavigationForVoiceOver(session)
         case .next:
-            NextSlidePreview(cache: session.cache, currentPage: session.currentPage)
+            NextSlidePreview(cache: session.cache, currentPage: session.currentPage, pageLinkAction: session.showPage)
                 .slideNavigationForVoiceOver(session)
         case .notes:
             // Until the notes editor (#27) and split notes (#28).

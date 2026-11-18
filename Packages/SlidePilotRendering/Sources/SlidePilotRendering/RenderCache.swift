@@ -61,6 +61,8 @@ public actor RenderCache {
     private var thumbnailJobs: [SlideKey: Job] = [:]
     private var nextJobID: UInt64 = 0
     private var focus: Focus?
+    /// Links per page; tiny, kept for the session.
+    private var pageLinks: [Int: [SlideLink]] = [:]
 
     /// - Parameters:
     ///   - data: The PDF. Every worker opens its own `PDFDocument` from it (DEF-02).
@@ -156,6 +158,17 @@ public actor RenderCache {
         thumbnails.insert(slide, for: key)
         thumbnails.evict(toFit: configuration.thumbnailBudgetBytes, protected: [], preferred: [])
         return slide
+    }
+
+    // MARK: - Links
+
+    /// The links on `page` (NAV-05). Read once per page on a background worker, so a
+    /// running render of the current slide does not delay them.
+    public func links(page: Int) async -> [SlideLink] {
+        if let cached = pageLinks[page] { return cached }
+        let links = await nextBackgroundRasterizer().links(page: page)
+        pageLinks[page] = links
+        return links
     }
 
     // MARK: - Inspection for tests
