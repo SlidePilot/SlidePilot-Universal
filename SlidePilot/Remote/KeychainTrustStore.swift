@@ -43,14 +43,19 @@ nonisolated struct KeychainTrustStore: TrustStore {
 
     func trust(_ device: TrustedDevice, key: PairingKey) throws {
         let data = try JSONEncoder().encode(StoredEntry(device: device, key: key.rawRepresentation))
-        try removeTrust(for: device.instanceID)
-        var item = baseQuery(account: device.instanceID)
-        item[kSecValueData as String] = data
-        item[kSecAttrLabel as String] = "SlidePilot Remote: \(device.deviceName)"
-        #if os(iOS)
-        item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
-        #endif
-        let status = SecItemAdd(item as CFDictionary, nil)
+        let attributes: [String: Any] = [
+            kSecValueData as String: data,
+            kSecAttrLabel as String: "SlidePilot Remote: \(device.deviceName)",
+        ]
+        // Update in place, so a concurrent pairing of the same device never sees it missing.
+        var status = SecItemUpdate(baseQuery(account: device.instanceID) as CFDictionary, attributes as CFDictionary)
+        if status == errSecItemNotFound {
+            var item = baseQuery(account: device.instanceID).merging(attributes) { _, new in new }
+            #if os(iOS)
+            item[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+            #endif
+            status = SecItemAdd(item as CFDictionary, nil)
+        }
         guard status == errSecSuccess else { throw KeychainError(status: status) }
     }
 

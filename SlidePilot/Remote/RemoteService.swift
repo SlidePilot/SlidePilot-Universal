@@ -84,6 +84,7 @@ final class RemoteService {
     /// open, so nobody can start pairing with a device whose user is not expecting it.
     private var openPanes = 0
     @ObservationIgnored private var listenerTask: Task<Void, Never>?
+    @ObservationIgnored private var stoppingListenerTask: Task<Void, Never>?
 
     init(settings: AppSettings, identity: LocalIdentity, trustStore: any TrustStore) {
         self.settings = settings
@@ -187,7 +188,10 @@ final class RemoteService {
     private func updateHosting() {
         if settings.allowsRemoteControl {
             guard listenerTask == nil else { return }
+            let previous = stoppingListenerTask
             listenerTask = Task { [weak self, identity] in
+                // Never advertise twice: wait until the previous listener is gone.
+                await previous?.value
                 while !Task.isCancelled {
                     try? await RemoteNetwork.listen(as: identity) { @MainActor connection in
                         await self?.serveController(over: connection)
@@ -200,6 +204,7 @@ final class RemoteService {
         } else {
             // Cancelling the listener ends every host session with it.
             listenerTask?.cancel()
+            stoppingListenerTask = listenerTask
             listenerTask = nil
         }
     }

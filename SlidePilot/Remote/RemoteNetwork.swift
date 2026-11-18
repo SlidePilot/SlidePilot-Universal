@@ -8,6 +8,12 @@ nonisolated enum RemoteNetwork {
     /// Gives up on a peer that does not answer, instead of waiting forever.
     private static let connectionTimeoutSeconds: UInt32 = 10
 
+    /// TCP with keepalive, so a peer that left the network without closing (sleep, Wi-Fi
+    /// off) ends its session within about half a minute instead of never.
+    private static func tcp() -> TCP {
+        TCP().keepalive(idleTimeInSeconds: 15, count: 3, intervalInSeconds: 5)
+    }
+
     /// Advertises this instance as a host and hands every incoming connection to `handler`.
     /// Runs until the calling task is cancelled or the listener fails. A connection is
     /// closed when its handler returns.
@@ -19,7 +25,7 @@ nonisolated enum RemoteNetwork {
         let listener = try NetworkListener(
             for: .bonjour(name: identity.deviceName, type: RemoteDiscovery.bonjourServiceType, txtRecord: txtRecord)
         ) {
-            TCP()
+            tcp()
         }
         try await listener.run { connection in
             await handler(connection)
@@ -42,7 +48,7 @@ nonisolated enum RemoteNetwork {
     /// A new connection to a host; it starts when the session first sends.
     static func connection(to host: NearbyHost) -> NetworkConnection<TCP> {
         NetworkConnection(to: host.endpoint) {
-            TCP().connectionTimeout(connectionTimeoutSeconds)
+            tcp().connectionTimeout(connectionTimeoutSeconds)
         }
     }
 }

@@ -38,6 +38,8 @@ struct SettingsView: View {
                 }
             }
         }
+        // Here, so the pairing code shows on every page of the sheet (REM-02).
+        .remoteAlerts()
         #endif
     }
 }

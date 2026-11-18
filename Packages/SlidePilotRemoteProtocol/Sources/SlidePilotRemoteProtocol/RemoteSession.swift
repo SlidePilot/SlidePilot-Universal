@@ -51,8 +51,7 @@ public actor RemoteSession<Outgoing: RemoteWireMessage, Incoming: RemoteWireMess
         case received(Data)
         case peerClosed
         case transportFailed(any Error)
-        case close
-        /// The writer sent everything queued before `close`.
+        /// The writer sent everything queued before `close()`.
         case writesFlushed
     }
 
@@ -113,7 +112,11 @@ public actor RemoteSession<Outgoing: RemoteWireMessage, Incoming: RemoteWireMess
                     inputs.yield(.transportFailed(error))
                 }
             }
-            defer { group.cancelAll() }
+            defer {
+                // The UI must not wait for the reader to notice the cancellation.
+                eventContinuation.finish()
+                group.cancelAll()
+            }
             try await process()
         }
     }
@@ -128,10 +131,6 @@ public actor RemoteSession<Outgoing: RemoteWireMessage, Incoming: RemoteWireMess
                 let output = try connection.receive(bytes)
                 enqueue(output.bytes)
                 if try handle(output.events) == .end { close() }
-            case .close:
-                // Stop producing; end once the writer sent what is queued.
-                hasEnded = true
-                writeContinuation.finish()
             case .writesFlushed, .peerClosed:
                 return
             case .transportFailed(let error):
@@ -144,6 +143,7 @@ public actor RemoteSession<Outgoing: RemoteWireMessage, Incoming: RemoteWireMess
 
     /// The local user confirmed that both devices show the same code.
     public func confirmPairingCode() throws {
+        guard !hasEnded else { throw RemoteProtocolError.connectionClosed }
         do {
             let output = try connection.confirmPairingCode()
             enqueue(output.bytes)
@@ -158,12 +158,14 @@ public actor RemoteSession<Outgoing: RemoteWireMessage, Incoming: RemoteWireMess
     /// The local user rejected the code, or this instance does not accept pairing now.
     /// Ends the session.
     public func rejectPairingCode() {
+        guard !hasEnded else { return }
         enqueue(connection.rejectPairingCode().bytes)
         close()
     }
 
     /// Controller: pairs again after `.pairingRequiredByPeer`, when the user asks for it.
     public func startPairing() throws {
+        guard !hasEnded else { throw RemoteProtocolError.connectionClosed }
         do {
             enqueue(try connection.startPairing().bytes)
         } catch {
@@ -178,9 +180,11 @@ public actor RemoteSession<Outgoing: RemoteWireMessage, Incoming: RemoteWireMess
         enqueue(try connection.send(message))
     }
 
-    /// Ends the session after the queued writes.
+    /// Ends the session after the queued writes. Takes effect right away: frames received
+    /// afterwards are ignored and nothing more is sent.
     public func close() {
-        inputContinuation.yield(.close)
+        hasEnded = true
+        writeContinuation.finish()
     }
 
     // MARK: - Internals
@@ -234,12 +238,12 @@ extension RemoteSession where Outgoing == HostMessage {
     /// Host: forgets the controller and ends the session (REM-03). A verified controller is
     /// told first, so it deletes its key and stops reconnecting.
     public func removeTrustAndClose() throws {
+        defer { close() }
         if let peer {
             try trustStore.removeTrust(for: peer.instanceID)
         }
         if connection.isVerified {
             try? send(.trustRemoved)
         }
-        close()
     }
 }

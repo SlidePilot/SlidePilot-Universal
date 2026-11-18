@@ -264,7 +264,7 @@ struct SessionTests {
         #expect(pair.controllerStore.key(for: mac.instanceID) != nil)
     }
 
-    @Test("Sending after the session ended fails")
+    @Test("Nothing is sent or confirmed after the session ended")
     func sendAfterEnd() async {
         let pair = await pairedStores()
         let session = ControllerSession(
@@ -275,6 +275,8 @@ struct SessionTests {
         await session.close()
         try? await session.run()
         await #expect(throws: RemoteProtocolError.connectionClosed) { try await session.send(.nextSlide) }
+        await #expect(throws: RemoteProtocolError.connectionClosed) { try await session.confirmPairingCode() }
+        await #expect(throws: RemoteProtocolError.connectionClosed) { try await session.startPairing() }
     }
 }
 
