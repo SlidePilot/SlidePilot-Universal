@@ -98,6 +98,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle, %1$lld sur %2$lld" } }
       }
     },
+    "Don’t Import" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht importieren" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas importer" } }
+      }
+    },
     "Don’t Use" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verwenden" } },
@@ -152,10 +158,13 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Garder l’écran allumé" } }
       }
     },
-    "Not Now" : {
+    "NotesFileNameSuffix" : {
+      "comment" : "Suffix of the suggested notes file name: <pdf>-Notes.rtf",
+      "extractionState" : "manual",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht jetzt" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus tard" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Notes" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Notes" } }
       }
     },
     "Replace Notes" : {
@@ -188,10 +197,10 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot n’a pas pu convertir les notes en RTF." } }
       }
     },
-    "SlidePilot found the notes file “%@” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder." : {
+    "SlidePilot found the notes file “%@” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder. Import Notes… in the File menu stays available." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot hat neben diesem PDF die Notizdatei „%@“ gefunden. Erlaube SlidePilot, den Ordner des PDFs zu lesen, um sie zu importieren. Das ist nur einmal pro Ordner nötig." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a trouvé le fichier de notes « %@ » à côté de ce PDF. Pour l’importer, autorisez SlidePilot à lire le dossier du PDF. Cela n’est nécessaire qu’une fois par dossier." } }
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot hat neben diesem PDF die Notizdatei „%@“ gefunden. Erlaube SlidePilot, den Ordner des PDFs zu lesen, um sie zu importieren. Das ist nur einmal pro Ordner nötig. „Notizen importieren …“ im Menü „Ablage“ bleibt verfügbar." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a trouvé le fichier de notes « %@ » à côté de ce PDF. Pour l’importer, autorisez SlidePilot à lire le dossier du PDF. Cela n’est nécessaire qu’une fois par dossier. « Importer des notes… » reste disponible dans le menu Fichier." } }
       }
     },
     "Slides fade into each other on the presentation screen." : {

@@ -26,10 +26,9 @@ import Testing
         #expect(LegacyNotesAutoLoad.action(notesFile: file, hasNotes: false, declined: true, grantedFolder: nil) == .none)
     }
 
-    // A grant given later (e.g. for another PDF in the folder) still loads.
-    @Test func loadsAfterADeclineOnceGranted() {
-        #expect(LegacyNotesAutoLoad.action(notesFile: file, hasNotes: false, declined: true, grantedFolder: folder)
-            == .load(file: file, folder: folder))
+    // A declined or failed file is skipped even with a grant, so it never asks or fails on every open.
+    @Test func skipsADeclinedFileEvenWithAGrant() {
+        #expect(LegacyNotesAutoLoad.action(notesFile: file, hasNotes: false, declined: true, grantedFolder: folder) == .none)
     }
 
     // NOTES-10: notes in the companion file are never replaced by the old file.

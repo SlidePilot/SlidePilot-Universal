@@ -29,8 +29,8 @@ public struct DocumentSettings: Sendable, Equatable {
     public var layout: PresenterLayout?
     /// Whether the slide navigator sidebar is shown (LAY-06).
     public var isNavigatorDisplayed: Bool?
-    /// The user did not allow access to the folder of a legacy notes file found next to the
-    /// PDF (NOTES-08), so the app does not ask again for this PDF.
+    /// The legacy notes file next to the PDF is not loaded automatically any more (NOTES-08):
+    /// the user chose Don't Import, or the file failed to load.
     public var declinedLegacyNotes: Bool?
 
     public init(layout: PresenterLayout? = nil, isNavigatorDisplayed: Bool? = nil, declinedLegacyNotes: Bool? = nil) {

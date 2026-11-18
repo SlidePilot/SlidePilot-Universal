@@ -107,6 +107,18 @@ private struct NotesFileTransferModifier: ViewModifier {
                 importNotes: { pick(.notesFile) },
                 exportNotes: { Task { await export() } }
             ) : nil)
+            #if os(iOS)
+            // The iPad menu bar is hidden until it is pulled down, so the commands are also
+            // in the toolbar's overflow menu.
+            .toolbar {
+                ToolbarItemGroup(placement: .secondaryAction) {
+                    Button("Import Notes…", systemImage: "square.and.arrow.down") { pick(.notesFile) }
+                    Button("Export Notes…", systemImage: "square.and.arrow.up") { Task { await export() } }
+                }
+            }
+            #endif
+            // The unstructured tasks below are short and stay on the main actor; a result that
+            // arrives after the window closed is dropped by the checks in `importNotes`.
             // One importer for both cases: two importers on the same view would not both work.
             .fileImporter(
                 isPresented: $isPicking,
@@ -150,13 +162,13 @@ private struct NotesFileTransferModifier: ViewModifier {
                 Button("Allow Access…") {
                     pick(.folder(of: notesFile))
                 }
-                Button("Not Now", role: .cancel) {
+                Button("Don’t Import", role: .cancel) {
                     companion.updateSettings { $0.declinedLegacyNotes = true }
                 }
             } message: { notesFile in
-                Text("SlidePilot found the notes file “\(notesFile.lastPathComponent)” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder.")
+                Text("SlidePilot found the notes file “\(notesFile.lastPathComponent)” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder. Import Notes… in the File menu stays available.")
             }
-            .confirmationDialog(
+            .alert(
                 Text("Replace the Notes of This PDF?"),
                 isPresented: Binding(get: { pendingImport != nil }, set: { if !$0 { pendingImport = nil } }),
                 presenting: pendingImport
@@ -226,7 +238,7 @@ private struct NotesFileTransferModifier: ViewModifier {
         case .none:
             break
         case .load(let file, let folder):
-            await importNotes(from: file, accessing: folder)
+            await importNotes(from: file, accessing: folder, isAutoLoad: true)
         case .askForFolder(let file):
             legacyNotesFile = file
         }
@@ -247,29 +259,43 @@ private struct NotesFileTransferModifier: ViewModifier {
         }
         // Without a bookmark the access still lasts until the app quits.
         try? FolderAccessStore.app.addGrant(for: folder)
-        await importNotes(from: notesFile, accessing: folder)
+        await importNotes(from: notesFile, accessing: folder, isAutoLoad: true)
     }
 
     /// Reads a legacy notes file. Notes that are not empty are only replaced after the user
     /// confirms; on failure the current notes stay (DEF-11).
-    private func importNotes(from file: URL, accessing scope: URL) async {
+    /// A file that fails to load on open is not tried again for this PDF, so the error shows
+    /// once and not on every open; Import Notes… stays available.
+    private func importNotes(from file: URL, accessing scope: URL, isAutoLoad: Bool = false) async {
+        let entryID = companion.entry?.id
         do {
             let notes = try await Self.readNotes(from: file, accessing: scope, pageCount: pageCount)
+            // The window may have closed, or another entry's data been taken over (NOTES-12),
+            // while the file was read.
+            guard !Task.isCancelled, companion.entry?.id == entryID, session.notes.isAvailable else { return }
             if companion.notes?.isEmpty ?? true {
                 apply(notes)
             } else {
                 pendingImport = PendingImport(notes: notes)
             }
-        } catch {
+        } catch is LegacyNotesRTFError {
+            if isAutoLoad {
+                companion.updateSettings { $0.declinedLegacyNotes = true }
+            }
             failure = Failure(
                 title: "The Notes Couldn’t Be Imported",
                 message: Text("“\(file.lastPathComponent)” is not a SlidePilot notes file in RTF format.")
             )
+        } catch {
+            // Reading failed (no access, a download that failed): the format is not the cause.
+            // Not marked as declined: the next open may succeed.
+            failure = Failure(title: "The Notes Couldn’t Be Imported", message: Text(error.localizedDescription))
         }
     }
 
     /// Shows the imported notes, like the old app did after loading a notes file (NOTES-08).
     private func apply(_ notes: CompanionNotes) {
+        guard session.notes.isAvailable else { return }
         session.notes.finishEditing()
         companion.setNotes(notes)
         session.layout.setVisible(.notes, true)
@@ -304,7 +330,11 @@ private struct NotesFileTransferModifier: ViewModifier {
     private var exportName: String {
         LegacyNotesFileName.exportName(
             forPDFBaseName: fileURL?.deletingPathExtension().lastPathComponent,
-            localizedNotes: String(localized: "Notes", comment: "Suffix of the suggested notes file name: <pdf>-Notes.rtf")
+            localizedNotes: String(
+                localized: "NotesFileNameSuffix",
+                defaultValue: "Notes",
+                comment: "Suffix of the suggested notes file name: <pdf>-Notes.rtf"
+            )
         )
     }
 

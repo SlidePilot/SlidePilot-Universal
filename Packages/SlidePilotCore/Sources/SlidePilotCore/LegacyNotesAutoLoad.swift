@@ -12,8 +12,9 @@ public enum LegacyNotesAutoLoad: Equatable, Sendable {
     /// Decides what to do for an opened PDF.
     ///
     /// Notes stored in the companion file win: a legacy file is only loaded while the PDF
-    /// has no notes yet, so later edits are never replaced by the old file. A PDF whose
-    /// folder grant the user declined is not asked about again.
+    /// has no notes yet, so later edits are never replaced by the old file. A legacy file
+    /// the user declined, or that failed to load, is skipped from then on, even with a
+    /// folder grant, so the app never asks or fails again on every open.
     /// - Parameters:
     ///   - notesFile: The first existing legacy notes file (`LegacyNotesFileName`), if any.
     ///   - grantedFolder: The granted folder that contains `notesFile`, if any.
@@ -23,10 +24,10 @@ public enum LegacyNotesAutoLoad: Equatable, Sendable {
         declined: Bool,
         grantedFolder: URL?
     ) -> LegacyNotesAutoLoad {
-        guard let notesFile, !hasNotes else { return .none }
+        guard let notesFile, !hasNotes, !declined else { return .none }
         if let grantedFolder {
             return .load(file: notesFile, folder: grantedFolder)
         }
-        return declined ? .none : .askForFolder(file: notesFile)
+        return .askForFolder(file: notesFile)
     }
 }
