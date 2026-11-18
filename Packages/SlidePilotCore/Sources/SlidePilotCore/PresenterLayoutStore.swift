@@ -3,8 +3,8 @@ import Observation
 
 /// Where the presenter layout is kept between launches (LAY-05).
 ///
-/// Phase 2 stores only the global "last used" layout. The per-document layout (#25) adds
-/// its own lookup in front of it: a document without a saved layout opens with this one.
+/// This store keeps the global "last used" layout. The per-document layout lives in the
+/// companion file (`DocumentSettings.layout`); a document without one opens with this one.
 public protocol PresenterLayoutStore: AnyObject {
     /// The layout saved by the last change in any document, or `nil` before the first one.
     func lastUsedLayout() -> PresenterLayout?
@@ -52,23 +52,36 @@ public final class InMemoryPresenterLayoutStore: PresenterLayoutStore {
 }
 
 /// The presenter layout of one document window. Every change is saved as the last-used
-/// layout, so the next document opens with it (LAY-05).
+/// layout, so the next document opens with it, and reported to `onChange`, which saves it
+/// for this document (LAY-05).
 @MainActor
 @Observable
 public final class PresenterLayoutModel {
     public private(set) var layout: PresenterLayout {
         didSet {
-            if layout != oldValue {
+            if layout != oldValue, !isApplyingStoredLayout {
                 store.saveLastUsedLayout(layout)
+                onChange?(layout)
             }
         }
     }
 
+    /// Called after every change by the user, not for `applyStoredLayout(_:)`.
+    @ObservationIgnored public var onChange: ((PresenterLayout) -> Void)?
     @ObservationIgnored private let store: any PresenterLayoutStore
+    @ObservationIgnored private var isApplyingStoredLayout = false
 
     public init(store: any PresenterLayoutStore) {
         self.store = store
         layout = store.lastUsedLayout() ?? .default
+    }
+
+    /// Shows the layout saved for this document when it opens (LAY-05). Loading is not a
+    /// change, so the last-used layout stays as it is.
+    public func applyStoredLayout(_ stored: PresenterLayout) {
+        isApplyingStoredLayout = true
+        layout = stored
+        isApplyingStoredLayout = false
     }
 
     public var arrangement: PresenterArrangement { layout.arrangement }

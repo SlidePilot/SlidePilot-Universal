@@ -7,6 +7,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "%@, arrêté" } }
       }
     },
+    "A PDF named “%@” with the same number of pages can no longer be found. You can use its stored data for this PDF." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ein PDF namens „%@“ mit derselben Seitenzahl wird nicht mehr gefunden. Du kannst seine gespeicherten Daten für dieses PDF verwenden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un PDF nommé « %@ » avec le même nombre de pages est introuvable. Vous pouvez utiliser ses données enregistrées pour ce PDF." } }
+      }
+    },
     "Black Screen" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Schwarzer Bildschirm" } },
@@ -60,6 +66,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie, %1$lld von %2$lld" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle, %1$lld sur %2$lld" } }
+      }
+    },
+    "Don’t Use" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verwenden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas utiliser" } }
       }
     },
     "End of presentation" : {
@@ -435,6 +447,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Zwei Folien" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Deux diapositives" } }
+      }
+    },
+    "Use Data" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten verwenden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Utiliser les données" } }
+      }
+    },
+    "Use Data from a Missing PDF?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten eines fehlenden PDFs verwenden?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Utiliser les données d’un PDF introuvable ?" } }
       }
     },
     "White Screen" : {

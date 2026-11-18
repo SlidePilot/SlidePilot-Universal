@@ -28,6 +28,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         windows.start()
         // Fails only if called twice; without it the external-display tip stays hidden.
         try? Tips.configure()
+        CompanionStore.cleanUpAtLaunch()
         return true
     }
 

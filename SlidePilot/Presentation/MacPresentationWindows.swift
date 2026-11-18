@@ -320,7 +320,7 @@ extension View {
 }
 
 /// Hands the hosting `NSWindow` to a closure once the view is in a window.
-private struct WindowBridge: NSViewRepresentable {
+struct WindowBridge: NSViewRepresentable {
     let onAttach: (NSWindow) -> Void
 
     func makeNSView(context: Context) -> BridgeView {

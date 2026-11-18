@@ -70,7 +70,7 @@ public enum LegacyNotesRTF {
         }
     }
 
-    private static func platformAttributedString(
+    static func platformAttributedString(
         _ attributed: NSAttributedString
     ) throws(LegacyNotesRTFError) -> AttributedString {
         do {
