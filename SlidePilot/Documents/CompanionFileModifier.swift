@@ -96,8 +96,10 @@ private struct CompanionFileModifier: ViewModifier {
             }
             .onAppear { openCompanions?.add(companion) }
             .onDisappear {
-                openCompanions?.remove(companion)
-                saveInBackground(companion)
+                // Removed only after the save, so quitting right after closing still waits for it.
+                saveInBackground(companion) { [openCompanions] in
+                    openCompanions?.remove(companion)
+                }
             }
             #if os(macOS)
             // The presenter window shows the system's edited dot in its close button (DOC-09).
@@ -113,16 +115,24 @@ private struct CompanionFileModifier: ViewModifier {
 
     /// Saves pending changes. On iPadOS the system keeps the app running until the write
     /// finished, also when it moves to the background.
-    private func saveInBackground(_ companion: DocumentCompanion) {
+    private func saveInBackground(_ companion: DocumentCompanion, then completion: @escaping @MainActor () -> Void = {}) {
         #if os(iOS)
         let application = UIApplication.shared
-        let backgroundTask = application.beginBackgroundTask(withName: "Save document data")
+        let backgroundTask = BackgroundTask()
+        backgroundTask.id = application.beginBackgroundTask(withName: "Save document data") {
+            // Out of time: end the task, so the system suspends the app instead of ending it.
+            backgroundTask.end()
+        }
         Task {
             await companion.flush()
-            application.endBackgroundTask(backgroundTask)
+            completion()
+            backgroundTask.end()
         }
         #else
-        Task { await companion.flush() }
+        Task {
+            await companion.flush()
+            completion()
+        }
         #endif
     }
 
@@ -132,3 +142,16 @@ private struct CompanionFileModifier: ViewModifier {
         }
     }
 }
+
+#if os(iOS)
+/// The identifier of a background task, shared by the save and the expiration handler.
+private final class BackgroundTask {
+    var id = UIBackgroundTaskIdentifier.invalid
+
+    func end() {
+        guard id != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(id)
+        id = .invalid
+    }
+}
+#endif
