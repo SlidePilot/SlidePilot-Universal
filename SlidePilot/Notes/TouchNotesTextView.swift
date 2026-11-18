@@ -20,7 +20,7 @@ struct NotesTextView: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> UITextView {
-        let textView = UITextView()
+        let textView = NotesUITextView()
         textView.allowsEditingTextAttributes = true
         textView.backgroundColor = .secondarySystemBackground
         textView.textColor = .label
@@ -55,6 +55,14 @@ struct NotesTextView: UIViewRepresentable {
         textView.undoManager?.removeAllActions()
         coordinator.dismantle()
     }
+}
+
+/// A text view with its own undo history. The responder chain's undo manager belongs to
+/// the PDF document: text edits registered there would mark the PDF edited.
+private final class NotesUITextView: UITextView {
+    private let notesUndoManager = UndoManager()
+
+    override var undoManager: UndoManager? { notesUndoManager }
 }
 
 final class NotesTextCoordinator: NSObject, UITextViewDelegate, NSTextStorageDelegate {

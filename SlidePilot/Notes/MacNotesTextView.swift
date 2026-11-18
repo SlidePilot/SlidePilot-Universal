@@ -111,6 +111,10 @@ final class NotesTextCoordinator: NSObject, NSTextViewDelegate, NSTextStorageDel
     private(set) var page: Int?
     private(set) var loadedNotes: CompanionNotes?
     private var isLoading = false
+    /// The notes' own undo history. The window's undo manager belongs to the PDF document:
+    /// text edits registered there would mark the PDF edited, and macOS would ask to save
+    /// or duplicate the PDF.
+    private let undoManager = UndoManager()
 
     init(model: NotesModel) {
         self.model = model
@@ -142,6 +146,10 @@ final class NotesTextCoordinator: NSObject, NSTextViewDelegate, NSTextStorageDel
     func dismantle(_ textView: NSTextView?) {
         textView?.undoManager?.removeAllActions()
         model.finishEditing()
+    }
+
+    func undoManager(for view: NSTextView) -> UndoManager? {
+        undoManager
     }
 
     func textDidChange(_ notification: Notification) {
