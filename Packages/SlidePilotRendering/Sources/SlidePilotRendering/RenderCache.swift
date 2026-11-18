@@ -61,8 +61,8 @@ public actor RenderCache {
     private var thumbnailJobs: [SlideKey: Job] = [:]
     private var nextJobID: UInt64 = 0
     private var focus: Focus?
-    /// Links per page; tiny, kept for the session.
-    private var pageLinks: [Int: [SlideLink]] = [:]
+    /// Links per page, running or done; tiny, kept for the session.
+    private var pageLinks: [Int: Task<[SlideLink], Never>] = [:]
 
     /// - Parameters:
     ///   - data: The PDF. Every worker opens its own `PDFDocument` from it (DEF-02).
@@ -163,12 +163,14 @@ public actor RenderCache {
     // MARK: - Links
 
     /// The links on `page` (NAV-05). Read once per page on a background worker, so a
-    /// running render of the current slide does not delay them.
+    /// running render of the current slide does not delay them. The presenter and the
+    /// presentation ask at the same time; they share one read.
     public func links(page: Int) async -> [SlideLink] {
-        if let cached = pageLinks[page] { return cached }
-        let links = await nextBackgroundRasterizer().links(page: page)
-        pageLinks[page] = links
-        return links
+        if let read = pageLinks[page] { return await read.value }
+        let rasterizer = nextBackgroundRasterizer()
+        let read = Task { await rasterizer.links(page: page) }
+        pageLinks[page] = read
+        return await read.value
     }
 
     // MARK: - Inspection for tests

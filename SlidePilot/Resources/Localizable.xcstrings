@@ -137,7 +137,7 @@
       }
     },
     "Open link %@" : {
-      "comment" : "VoiceOver action of a web or mail link on a slide; the argument is the URL",
+      "comment" : "VoiceOver action of a web or mail link on a slide; the argument is the web host or the mail address",
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Link %@ öffnen" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir le lien %@" } }

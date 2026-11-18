@@ -35,8 +35,17 @@ extension SlideLink {
     var accessibilityActionName: Text {
         switch target {
         case .page(let index): Text("Go to slide \(index + 1)")
-        case .url(let url): Text("Open link \(url.absoluteString)")
+        case .url(let url): Text("Open link \(Self.spokenName(of: url))")
         }
+    }
+
+    /// Long tracking URLs make long VoiceOver actions: web links are named by their host,
+    /// mail links by their address.
+    private static func spokenName(of url: URL) -> String {
+        if url.scheme == "mailto", !url.absoluteString.dropFirst("mailto:".count).isEmpty {
+            return String(url.absoluteString.dropFirst("mailto:".count))
+        }
+        return url.host() ?? url.absoluteString
     }
 }
 
