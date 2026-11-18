@@ -29,10 +29,14 @@ public struct DocumentSettings: Sendable, Equatable {
     public var layout: PresenterLayout?
     /// Whether the slide navigator sidebar is shown (LAY-06).
     public var isNavigatorDisplayed: Bool?
+    /// The user did not allow access to the folder of a legacy notes file found next to the
+    /// PDF (NOTES-08), so the app does not ask again for this PDF.
+    public var declinedLegacyNotes: Bool?
 
-    public init(layout: PresenterLayout? = nil, isNavigatorDisplayed: Bool? = nil) {
+    public init(layout: PresenterLayout? = nil, isNavigatorDisplayed: Bool? = nil, declinedLegacyNotes: Bool? = nil) {
         self.layout = layout
         self.isNavigatorDisplayed = isNavigatorDisplayed
+        self.declinedLegacyNotes = declinedLegacyNotes
     }
 
     public var isEmpty: Bool { self == DocumentSettings() }
@@ -40,7 +44,7 @@ public struct DocumentSettings: Sendable, Equatable {
 
 extension DocumentSettings: Codable {
     private enum CodingKeys: String, CodingKey {
-        case layout, isNavigatorDisplayed
+        case layout, isNavigatorDisplayed, declinedLegacyNotes
     }
 
     /// A damaged or unknown field falls back to "not saved" instead of failing the entry.
@@ -48,12 +52,14 @@ extension DocumentSettings: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         layout = try? container.decodeIfPresent(PresenterLayout.self, forKey: .layout)
         isNavigatorDisplayed = try? container.decodeIfPresent(Bool.self, forKey: .isNavigatorDisplayed)
+        declinedLegacyNotes = try? container.decodeIfPresent(Bool.self, forKey: .declinedLegacyNotes)
     }
 
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(layout, forKey: .layout)
         try container.encodeIfPresent(isNavigatorDisplayed, forKey: .isNavigatorDisplayed)
+        try container.encodeIfPresent(declinedLegacyNotes, forKey: .declinedLegacyNotes)
     }
 }
 

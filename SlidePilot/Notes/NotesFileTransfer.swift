@@ -1,0 +1,328 @@
+import SlidePilotCore
+import SlidePilotRendering
+import SwiftUI
+import UniformTypeIdentifiers
+
+extension FolderAccess {
+    /// The folders the user allowed the app to read (ADR 0012), shared by all windows.
+    static let app = FolderAccess(store: UserDefaults.standard)
+}
+
+/// Import Notes… and Export Notes… of the focused presenter window (NOTES-06).
+struct FocusedNotesFile {
+    let importNotes: () -> Void
+    let exportNotes: () -> Void
+}
+
+extension FocusedValues {
+    @Entry var notesFile: FocusedNotesFile?
+}
+
+/// File ▸ Import Notes… (⇧⌘O) and Export Notes… (⌘S), the old Open and Save Notes
+/// (NOTES-06). Notes are saved automatically, so Save became an RTF export.
+struct NotesFileCommands: Commands {
+    var body: some Commands {
+        CommandGroup(after: .importExport) {
+            NotesFileMenuItems()
+        }
+    }
+}
+
+private struct NotesFileMenuItems: View {
+    @FocusedValue(\.notesFile) private var notesFile
+
+    var body: some View {
+        Button("Import Notes…") { notesFile?.importNotes() }
+            .keyboardShortcut("o", modifiers: [.command, .shift])
+            .disabled(notesFile == nil)
+        Button("Export Notes…") { notesFile?.exportNotes() }
+            .keyboardShortcut("s", modifiers: .command)
+            .disabled(notesFile == nil)
+    }
+}
+
+extension View {
+    /// Imports and exports the notes as legacy RTF files (NOTES-06, NOTES-09) and loads a
+    /// legacy notes file next to the PDF when it opens (NOTES-08).
+    func notesFileTransfer(_ session: PresentationSession, fileURL: URL?) -> some View {
+        modifier(NotesFileTransferModifier(session: session, fileURL: fileURL))
+    }
+}
+
+/// An RTF notes file for the export panel.
+private struct RTFNotesFile: FileDocument {
+    static let readableContentTypes: [UTType] = [.rtf]
+    let data: Data
+
+    init(data: Data) {
+        self.data = data
+    }
+
+    init(configuration: ReadConfiguration) throws {
+        data = configuration.file.regularFileContents ?? Data()
+    }
+
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        FileWrapper(regularFileWithContents: data)
+    }
+}
+
+private struct NotesFileTransferModifier: ViewModifier {
+    let session: PresentationSession
+    let fileURL: URL?
+
+    /// What the open panel picks: a notes file, or the folder of a legacy notes file.
+    private enum Picking: Equatable {
+        case notesFile
+        case folder(of: URL)
+    }
+
+    private struct Failure {
+        let title: LocalizedStringKey
+        let message: Text
+    }
+
+    /// Imported notes waiting for the user to confirm that they replace the current ones.
+    private struct PendingImport: Identifiable {
+        let id = UUID()
+        let notes: CompanionNotes
+    }
+
+    @State private var picking: Picking?
+    @State private var exportFile: RTFNotesFile?
+    @State private var legacyNotesFile: URL?
+    @State private var pendingImport: PendingImport?
+    @State private var failure: Failure?
+
+    private var companion: DocumentCompanion { session.companion }
+    private var pageCount: Int { session.cache.info.pageCount }
+
+    func body(content: Content) -> some View {
+        content
+            .focusedSceneValue(\.notesFile, session.notes.isAvailable ? FocusedNotesFile(
+                importNotes: { picking = .notesFile },
+                exportNotes: { Task { await export() } }
+            ) : nil)
+            // One importer for both cases: two importers on the same view would not both work.
+            .fileImporter(
+                isPresented: Binding(get: { picking != nil }, set: { if !$0 { picking = nil } }),
+                allowedContentTypes: picking == .notesFile ? [.rtf] : [.folder]
+            ) { result in
+                let picked = picking
+                picking = nil
+                guard case .success(let url) = result, let picked else { return }
+                switch picked {
+                case .notesFile:
+                    Task { await importNotes(from: url, accessing: url) }
+                case .folder(let notesFile):
+                    Task { await grantFolder(url, for: notesFile) }
+                }
+            }
+            .fileDialogDefaultDirectory(defaultDirectory)
+            #if os(macOS)
+            .fileDialogMessage(dialogMessage)
+            #endif
+            .fileDialogConfirmationLabel(dialogConfirmationLabel)
+            .fileExporter(
+                isPresented: Binding(get: { exportFile != nil }, set: { if !$0 { exportFile = nil } }),
+                document: exportFile,
+                contentType: .rtf,
+                defaultFilename: exportName
+            ) { result in
+                if case .failure(let error) = result, !error.isUserCancellation {
+                    failure = Failure(
+                        title: "The Notes Couldn’t Be Exported",
+                        message: Text(error.localizedDescription)
+                    )
+                }
+            }
+            // NOTES-08: offer a legacy notes file found next to the PDF once its entry is loaded.
+            .task(id: companion.entry?.id) {
+                await loadLegacyNotes()
+            }
+            .alert(
+                Text("Import Notes for This PDF?"),
+                isPresented: Binding(get: { legacyNotesFile != nil }, set: { if !$0 { legacyNotesFile = nil } }),
+                presenting: legacyNotesFile
+            ) { notesFile in
+                Button("Allow Access…") {
+                    picking = .folder(of: notesFile)
+                }
+                Button("Not Now", role: .cancel) {
+                    companion.updateSettings { $0.declinedLegacyNotes = true }
+                }
+            } message: { notesFile in
+                Text("SlidePilot found the notes file “\(notesFile.lastPathComponent)” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder.")
+            }
+            .confirmationDialog(
+                Text("Replace the Notes of This PDF?"),
+                isPresented: Binding(get: { pendingImport != nil }, set: { if !$0 { pendingImport = nil } }),
+                presenting: pendingImport
+            ) { pending in
+                Button("Replace Notes", role: .destructive) {
+                    apply(pending.notes)
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: { _ in
+                Text("The imported notes replace the current notes of every slide.")
+            }
+            .alert(
+                failure.map { Text($0.title) } ?? Text(verbatim: ""),
+                isPresented: Binding(get: { failure != nil }, set: { if !$0 { failure = nil } }),
+                presenting: failure
+            ) { _ in
+                Button("OK") {}
+            } message: { failure in
+                failure.message
+            }
+    }
+
+    // MARK: - Open panel
+
+    private var defaultDirectory: URL? {
+        if case .folder(let notesFile) = picking {
+            return notesFile.deletingLastPathComponent()
+        }
+        return fileURL?.deletingLastPathComponent()
+    }
+
+    private var dialogMessage: Text {
+        if case .folder(let notesFile) = picking {
+            return Text("Allow SlidePilot to read the folder that contains “\(notesFile.lastPathComponent)”.")
+        }
+        return Text("Choose a SlidePilot notes file in RTF format.")
+    }
+
+    private var dialogConfirmationLabel: Text {
+        if case .folder = picking {
+            return Text("Allow Access")
+        }
+        return Text("Import")
+    }
+
+    // MARK: - Import
+
+    /// Loads the legacy notes file next to the PDF if the PDF has no notes yet (NOTES-08).
+    /// The app sees the file on macOS; on iPadOS only after a folder grant.
+    private func loadLegacyNotes() async {
+        guard let fileURL, companion.entry != nil else { return }
+        let notesFile = LegacyNotesFileName.firstExisting(forPDFAt: fileURL) {
+            FileManager.default.fileExists(atPath: $0.path(percentEncoded: false))
+        }
+        let action = LegacyNotesAutoLoad.action(
+            notesFile: notesFile,
+            hasNotes: !(companion.notes?.isEmpty ?? true),
+            declined: companion.settings.declinedLegacyNotes == true,
+            grantedFolder: notesFile.flatMap { FolderAccess.app.grantedFolder(containing: $0) }
+        )
+        switch action {
+        case .none:
+            break
+        case .load(let file, let folder):
+            await importNotes(from: file, accessing: folder)
+        case .askForFolder(let file):
+            legacyNotesFile = file
+        }
+    }
+
+    /// Stores the folder grant the user gave in the open panel and loads the notes file.
+    private func grantFolder(_ folder: URL, for notesFile: URL) async {
+        let isAccessing = folder.startAccessingSecurityScopedResource()
+        defer {
+            if isAccessing { folder.stopAccessingSecurityScopedResource() }
+        }
+        guard FileFolderBookmarks().folder(folder, contains: notesFile) else {
+            failure = Failure(
+                title: "The Notes Couldn’t Be Imported",
+                message: Text("Choose the folder that contains “\(notesFile.lastPathComponent)”.")
+            )
+            return
+        }
+        FolderAccess.app.addGrant(for: folder)
+        await importNotes(from: notesFile, accessing: folder)
+    }
+
+    /// Reads a legacy notes file. Notes that are not empty are only replaced after the user
+    /// confirms; on failure the current notes stay (DEF-11).
+    private func importNotes(from file: URL, accessing scope: URL) async {
+        do {
+            let notes = try await Self.readNotes(from: file, accessing: scope, pageCount: pageCount)
+            if companion.notes?.isEmpty ?? true {
+                apply(notes)
+            } else {
+                pendingImport = PendingImport(notes: notes)
+            }
+        } catch {
+            failure = Failure(
+                title: "The Notes Couldn’t Be Imported",
+                message: Text("“\(file.lastPathComponent)” is not a SlidePilot notes file in RTF format.")
+            )
+        }
+    }
+
+    /// Shows the imported notes, like the old app did after loading a notes file (NOTES-08).
+    private func apply(_ notes: CompanionNotes) {
+        session.notes.finishEditing()
+        companion.setNotes(notes)
+        session.layout.setVisible(.notes, true)
+    }
+
+    /// Reads and parses off the main actor: large RTF files take a noticeable time.
+    @concurrent
+    private static func readNotes(from file: URL, accessing scope: URL, pageCount: Int) async throws -> CompanionNotes {
+        let isAccessing = scope.startAccessingSecurityScopedResource()
+        defer {
+            if isAccessing { scope.stopAccessingSecurityScopedResource() }
+        }
+        let data = try readCoordinated(file)
+        return try LegacyNotesTransfer.notes(fromLegacyRTF: data, pageCount: pageCount)
+    }
+
+    /// Coordinated, so a file in iCloud Drive is downloaded first.
+    nonisolated private static func readCoordinated(_ file: URL) throws -> Data {
+        var coordinationError: NSError?
+        var result: Result<Data, any Error> = .failure(CocoaError(.fileReadUnknown))
+        NSFileCoordinator().coordinate(readingItemAt: file, options: .withoutChanges, error: &coordinationError) { url in
+            result = Result { try Data(contentsOf: url) }
+        }
+        if let coordinationError {
+            throw coordinationError
+        }
+        return try result.get()
+    }
+
+    // MARK: - Export
+
+    private var exportName: String {
+        LegacyNotesFileName.exportName(
+            forPDFBaseName: fileURL?.deletingPathExtension().lastPathComponent,
+            localizedNotes: String(localized: "Notes", comment: "Suffix of the suggested notes file name: <pdf>-Notes.rtf")
+        )
+    }
+
+    /// Writes the notes as a legacy RTF file, one page per slide (NOTES-06).
+    private func export() async {
+        session.notes.finishEditing()
+        let notes = companion.notes
+        let pageCount = pageCount
+        do {
+            exportFile = RTFNotesFile(data: try await Self.rtf(from: notes, pageCount: pageCount))
+        } catch {
+            failure = Failure(
+                title: "The Notes Couldn’t Be Exported",
+                message: Text("SlidePilot couldn’t convert the notes to RTF.")
+            )
+        }
+    }
+
+    @concurrent
+    private static func rtf(from notes: CompanionNotes?, pageCount: Int) async throws -> Data {
+        try LegacyNotesTransfer.legacyRTF(from: notes, pageCount: pageCount)
+    }
+}
+
+private extension Error {
+    var isUserCancellation: Bool {
+        (self as? CocoaError)?.code == .userCancelled
+    }
+}

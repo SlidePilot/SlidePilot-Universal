@@ -13,6 +13,24 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un PDF nommé « %@ » avec le même nombre de pages est introuvable. Vous pouvez utiliser ses données enregistrées pour ce PDF." } }
       }
     },
+    "Allow Access" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff erlauben" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès" } }
+      }
+    },
+    "Allow Access…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff erlauben …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès…" } }
+      }
+    },
+    "Allow SlidePilot to read the folder that contains “%@”." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erlaube SlidePilot, den Ordner mit „%@“ zu lesen." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autorisez SlidePilot à lire le dossier qui contient « %@ »." } }
+      }
+    },
     "Black Screen" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Schwarzer Bildschirm" } },
@@ -23,6 +41,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Abbrechen" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Annuler" } }
+      }
+    },
+    "Choose a SlidePilot notes file in RTF format." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle eine SlidePilot-Notizdatei im RTF-Format." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez un fichier de notes SlidePilot au format RTF." } }
+      }
+    },
+    "Choose the folder that contains “%@”." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle den Ordner, der „%@“ enthält." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez le dossier qui contient « %@ »." } }
       }
     },
     "Clock" : {
@@ -86,16 +116,58 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fondu entre les diapositives" } }
       }
     },
+    "Export Notes…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen exportieren …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Exporter les notes…" } }
+      }
+    },
     "General" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Allgemein" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Général" } }
       }
     },
+    "Import" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Importieren" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer" } }
+      }
+    },
+    "Import Notes for This PDF?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen für dieses PDF importieren?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer les notes de ce PDF ?" } }
+      }
+    },
+    "Import Notes…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen importieren …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer des notes…" } }
+      }
+    },
     "Keep display awake" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Bildschirm wach halten" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Garder l’écran allumé" } }
+      }
+    },
+    "Not Now" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht jetzt" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus tard" } }
+      }
+    },
+    "Replace Notes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen ersetzen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remplacer les notes" } }
+      }
+    },
+    "Replace the Notes of This PDF?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen dieses PDFs ersetzen?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remplacer les notes de ce PDF ?" } }
       }
     },
     "Settings" : {
@@ -108,6 +180,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen …" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages…" } }
+      }
+    },
+    "SlidePilot couldn’t convert the notes to RTF." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot konnte die Notizen nicht in RTF umwandeln." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot n’a pas pu convertir les notes en RTF." } }
+      }
+    },
+    "SlidePilot found the notes file “%@” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot hat neben diesem PDF die Notizdatei „%@“ gefunden. Erlaube SlidePilot, den Ordner des PDFs zu lesen, um sie zu importieren. Das ist nur einmal pro Ordner nötig." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a trouvé le fichier de notes « %@ » à côté de ce PDF. Pour l’importer, autorisez SlidePilot à lire le dossier du PDF. Cela n’est nécessaire qu’une fois par dossier." } }
       }
     },
     "Slides fade into each other on the presentation screen." : {
@@ -289,6 +373,24 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Text" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Texte" } }
+      }
+    },
+    "The imported notes replace the current notes of every slide." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die importierten Notizen ersetzen die aktuellen Notizen aller Folien." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les notes importées remplacent les notes actuelles de toutes les diapositives." } }
+      }
+    },
+    "The Notes Couldn’t Be Exported" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Notizen konnten nicht exportiert werden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible d’exporter les notes" } }
+      }
+    },
+    "The Notes Couldn’t Be Imported" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Notizen konnten nicht importiert werden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible d’importer les notes" } }
       }
     },
     "These notes were saved by a newer version of SlidePilot." : {
@@ -783,6 +885,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ wird auch aus den vertrauenswürdigen Geräten entfernt und muss erneut gekoppelt werden." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » est aussi retiré des appareils de confiance et doit être de nouveau jumelé." } }
+      }
+    },
+    "“%@” is not a SlidePilot notes file in RTF format." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ ist keine SlidePilot-Notizdatei im RTF-Format." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » n’est pas un fichier de notes SlidePilot au format RTF." } }
       }
     }
   },
