@@ -135,6 +135,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aller à la diapositive %lld" } }
       }
     },
+    "Hide Navigator" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Navigator ausblenden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Masquer le navigateur" } }
+      }
+    },
     "Hours" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Stunden" } },
@@ -181,6 +187,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Notizen" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune note" } }
+      }
+    },
+    "Page Number" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Seitenzahl" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Numéro de page" } }
       }
     },
     "Overtime %@" : {
@@ -287,6 +299,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher la diapositive courante" } }
       }
     },
+    "Show Navigator" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Navigator anzeigen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher le navigateur" } }
+      }
+    },
     "Show Notes" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen anzeigen" } },
@@ -303,6 +321,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Eine Folie" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Une diapositive" } }
+      }
+    },
+    "Slide %lld" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folie %lld" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive %lld" } }
+      }
+    },
+    "Slide Navigator" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien-Navigator" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Navigateur de diapositives" } }
       }
     },
     "Slides" : {

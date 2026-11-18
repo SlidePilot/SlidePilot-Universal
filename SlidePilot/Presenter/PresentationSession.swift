@@ -21,6 +21,8 @@ final class PresentationSession: Identifiable {
     @ObservationIgnored private(set) var data: Data
     /// The presenter's arrangement and slots (LAY-01 to LAY-05).
     let layout: PresenterLayoutModel
+    /// Whether the slide navigator sidebar is shown (LAY-06); hidden when a document opens.
+    var isNavigatorDisplayed = false
 
     init(data: Data, info: PDFDocumentInfo, page: Int = 0, layoutStore: any PresenterLayoutStore = UserDefaultsPresenterLayoutStore.app) {
         self.data = data
@@ -40,7 +42,8 @@ final class PresentationSession: Identifiable {
         position.showPrevious()
     }
 
-    /// Jumps to `index` (e.g. an internal link, NAV-05). Counts for Go Back; never starts the timer.
+    /// Jumps to `index`, clamped to the deck (navigator LAY-06, internal links NAV-05).
+    /// Counts for Go Back; never starts the timer.
     func showPage(_ index: Int) {
         position.show(index)
     }

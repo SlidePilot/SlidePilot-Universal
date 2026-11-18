@@ -16,20 +16,21 @@ struct DocumentView: View {
     }
 
     var body: some View {
-        PresenterLayoutView(session: session)
-            .presenterLayoutControls(session.layout)
+        // The navigator sidebar (LAY-06) next to the slides.
+        SlideNavigatorSplitView(
+            session: session,
+            slidesChrome: PresenterClock(session: session),
+            chrome: PresenterChrome(session: session)
+        ) {
+            PresenterLayoutView(session: session)
+        }
             .shrinksOnMemoryWarning(session)
-            .presenterTimer(session)
             // The presentation surfaces find the session in the registry (DOC-04).
             .onAppear { registry.register(session) }
             .onDisappear { registry.unregister(session.id) }
             #if os(iOS)
             // The iPad external display shows the document of the active window.
             .onAppWindowChange { registry.register(session, inWindow: $0) }
-            // How to present on a second screen (#82); the Mac needs no hint.
-            .externalDisplayHint()
-            // The Mac has the Settings window instead (SET-01).
-            .settingsSheet()
             #endif
             #if os(macOS)
             .presenterWindow(for: session)
@@ -44,8 +45,38 @@ struct DocumentView: View {
             }
             // Slide change with keys, menu, toolbar and swipes (NAV-01 to NAV-03).
             .slideNavigationKeys(session)
+            .navigatorEscapeKey(session)
+            // The "." key must wrap the view that holds the keyboard (CUR-01).
+            .blackCurtainKey(session)
+    }
+}
+
+/// The clock above the slides.
+private struct PresenterClock: ViewModifier {
+    let session: PresentationSession
+
+    func body(content: Content) -> some View {
+        content.presenterTimeDisplay(session)
+    }
+}
+
+/// The presenter's toolbar items, menu commands and swipes. `SlideNavigatorSplitView` puts
+/// them on the slides column (Mac) or on the document's bar (iPad).
+private struct PresenterChrome: ViewModifier {
+    let session: PresentationSession
+
+    func body(content: Content) -> some View {
+        content
+            .presenterLayoutControls(session.layout)
+            .presenterTimerControls(session)
             .presenterNavigation(session)
-            // Black and white curtain, its warning and the "." key (CUR-01, CUR-02).
+            // Black and white curtain and its warning (CUR-01, CUR-02).
             .presenterCurtain(session)
+            #if os(iOS)
+            // How to present on a second screen (#82); the Mac needs no hint.
+            .externalDisplayHint()
+            // The Mac has the Settings window instead (SET-01).
+            .settingsSheet()
+            #endif
     }
 }

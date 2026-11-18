@@ -5,6 +5,8 @@ import SwiftUI
 struct ModeratorCommands: Commands {
     var body: some Commands {
         CommandMenu("Moderator") {
+            NavigatorMenuItems()
+            Divider()
             TimerMenuItems()
         }
     }
@@ -25,19 +27,19 @@ private struct TimerMenuItems: View {
         Button("Set Timer…") {
             timer?.showSetTimer?()
         }
-        .keyboardShortcut("t", modifiers: [])
+        .plainKeyShortcut("t")
         .disabled(timer?.showSetTimer == nil || timer?.session.timer.mode != .timer)
 
         Button("Start/Stop Time") {
             timer?.session.timer.toggle()
         }
-        .keyboardShortcut("s", modifiers: [])
+        .plainKeyShortcut("s")
         .disabled(timer == nil)
 
         Button("Reset Time") {
             timer?.session.timer.reset()
         }
-        .keyboardShortcut("r", modifiers: [])
+        .plainKeyShortcut("r")
         .disabled(timer == nil)
     }
 }
