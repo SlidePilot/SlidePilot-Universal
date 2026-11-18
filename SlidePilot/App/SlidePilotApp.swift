@@ -6,12 +6,20 @@ struct SlidePilotApp: App {
     #if os(iOS)
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     private var registry: SessionRegistry { appDelegate.registry }
+    private var settings: AppSettings { appDelegate.settings }
     #else
     @NSApplicationDelegateAdaptor(MacAppDelegate.self) private var appDelegate
     @State private var registry = SessionRegistry()
     @State private var presentationWindows = MacPresentationWindows()
+    /// The app-wide settings (SET-01), shared by all windows.
+    @State private var settings: AppSettings
+    /// Keeps the display awake while the app runs, if the setting is on (SET-04).
+    @State private var displayAwakeKeeper: DisplayAwakeKeeper
 
     init() {
+        let settings = AppSettings(store: UserDefaults.standard)
+        _settings = State(initialValue: settings)
+        _displayAwakeKeeper = State(initialValue: DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker()))
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
         CompanionStore.cleanUpAtLaunch()
@@ -20,8 +28,6 @@ struct SlidePilotApp: App {
         #endif
     }
     #endif
-    /// The app-wide settings (SET-01), shared by all windows.
-    @State private var settings = AppSettings(store: UserDefaults.standard)
 
     var body: some Scene {
         // One window per PDF (DOC-01/02). The system provides the open panel at launch,
@@ -46,6 +52,7 @@ struct SlidePilotApp: App {
             PresentationWindowContent(id: id)
                 .environment(registry)
                 .environment(presentationWindows)
+                .environment(settings)
         }
         .windowStyle(.hiddenTitleBar)
         .restorationBehavior(.disabled)

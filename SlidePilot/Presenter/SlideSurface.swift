@@ -1,3 +1,4 @@
+import SlidePilotCore
 import SlidePilotRendering
 import SwiftUI
 
@@ -20,12 +21,18 @@ struct SlideSurface: View {
     var role: Role = .current
     /// Follows internal links (NAV-05); `nil` turns all links off, also URL links.
     var pageLinkAction: ((Int) -> Void)?
+    /// Fades a new slide in over the previous one (LAY-07); only for the presentation.
+    var crossfades = false
 
     @Environment(\.displayScale) private var displayScale
     @Environment(\.openURL) private var openURL
     @State private var slide: RenderedSlide?
     @State private var box: PixelSize?
     @State private var pageLinks: PageLinks?
+    /// Counts crossfaded slide changes, so the new slide is a new view on top of the old one.
+    @State private var generation = 0
+    /// The cache the shown image came from; a reloaded PDF fades in too, like the old app.
+    @State private var slideCache: ObjectIdentifier?
 
     private struct LinkRequest: Equatable {
         let cache: ObjectIdentifier
@@ -54,11 +61,21 @@ struct SlideSurface: View {
         Color.white
             .aspectRatio(regionSize, contentMode: .fit)
             .overlay {
-                if let slide {
-                    Image(decorative: slide.image, scale: scale)
-                        .resizable()
-                        .interpolation(.high)
-                        .aspectRatio(contentMode: .fit)
+                ZStack {
+                    if let slide {
+                        Image(decorative: slide.image, scale: scale)
+                            .resizable()
+                            .interpolation(.high)
+                            .aspectRatio(contentMode: .fit)
+                            .id(generation)
+                            .zIndex(Double(generation))
+                            // The new slide fades in; the old one stays opaque below it
+                            // until the fade ends, like the old app's layer transition.
+                            .transition(.asymmetric(
+                                insertion: .opacity,
+                                removal: .opacity.animation(.linear(duration: 0).delay(SlideCrossfade.duration))
+                            ))
+                    }
                 }
             }
             .overlay {
@@ -142,7 +159,20 @@ struct SlideSurface: View {
         guard let rendered = try? await cache.image(page: page, region: region, fitting: box),
               !Task.isCancelled
         else { return }
-        slide = rendered
+        let renderedCache = ObjectIdentifier(cache)
+        let isNewSlide = slide.map {
+            $0.pageIndex != rendered.pageIndex || $0.region != rendered.region || slideCache != renderedCache
+        } ?? false
+        slideCache = renderedCache
+        guard crossfades, isNewSlide else {
+            // The same view shows the new image at once: no transition runs.
+            slide = rendered
+            return
+        }
+        withAnimation(.easeInOut(duration: SlideCrossfade.duration)) {
+            generation += 1
+            slide = rendered
+        }
     }
 }
 
