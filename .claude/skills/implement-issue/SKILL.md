@@ -40,7 +40,10 @@ Follow these steps in order. Talk to the user in German; everything written to t
 ## 6. Build and test
 - Local session: run every command from "Build and test" in `CLAUDE.md` (macOS with all package tests, iPad simulator), each as a single command without pipes. Zero warnings, all tests green.
 - Cloud session (no toolchain): push the branch, open a **draft** PR, and iterate with `gh pr checks <PR> --watch` and `gh run view <run-id> --log-failed` until `ci-success` is green.
-- Manually run the app on macOS and in an iPad simulator and walk through every acceptance criterion. Check light and dark mode, Dynamic Type on iPad (Xcode Environment Overrides or `xcrun simctl ui <device> content_size extra-extra-large`), VoiceOver labels (Accessibility Inspector), and keyboard-only use.
+- Walk through every acceptance criterion yourself, on both platforms:
+  - iPad: in the simulator with the iOS Simulator tools (see "iPad simulator testing" in `CLAUDE.md`), including Dynamic Type (`xcrun simctl ui <device> content_size extra-extra-large`).
+  - Mac: build the test build and drive it through the test host with `python3 -I scripts/mac-test-host.py` (see "Mac test host" in `CLAUDE.md`): menus, clicks, keys, drawing, light and dark (`launch --appearance dark`), VoiceOver labels and keyboard paths via `tree`. Look at the screenshots you take. If `status` fails, tell the user the host is not running and use "Mac snapshots" instead.
+  - Keep a short list of what you checked and what you could not check (real devices, second display, Apple Pencil, open panel, anything the host refuses). It becomes "How to verify".
 
 ## 7. Reviews
 Run the review agents on the branch diff and fix what they find. Repeat until each one reports `PASS` or only notes you can explain.
@@ -52,7 +55,7 @@ Then update `docs/feature-parity.md` (status `done` for fully matched items, not
 
 ## 8. Screenshots
 - iPad simulator: copy the fixtures with `scripts/sim-copy-fixtures.sh <UDID>` and open one from the document browser (see "iPad simulator testing" in `CLAUDE.md`), then `xcrun simctl io <device> screenshot ./.pr-screenshots/<file>.png`. Take light and dark (`xcrun simctl ui <device> appearance dark`).
-- macOS: **only app-rendered snapshots** (see "Mac snapshots" in `CLAUDE.md`). Add a test per changed view or window to `SlidePilotMacSnapshots/MacSnapshots.swift` (light and dark, fixtures only, loaded with `Fixture.data("<file>.pdf")`), run the `SlidePilotMacSnapshots` scheme and export with `python3 -I scripts/export-mac-snapshots.py` into `./.pr-screenshots/mac/`. Never capture the Mac screen itself (`screencapture`, ScreenCaptureKit, Screenshot.app, UI-test screen captures). Look at every exported PNG before attaching it. Still add a "Visual check (Mac)" section for what snapshots cannot show (menus, popovers, Liquid Glass, real window behavior).
+- macOS: **only through the test host** (`python3 -I scripts/mac-test-host.py screenshot <name>`, light and dark, fixtures only; see "Mac test host" in `CLAUDE.md`). Menus and sheets can be captured while open. For behavior that a still image cannot show (animations, drawing), a short `record-start`/`record-stop` video may be attached instead. If the host is not available, fall back to app-rendered snapshots (see "Mac snapshots") and list what they cannot show in "How to verify". Never capture the Mac screen any other way (`screencapture`, Screenshot.app, UI-test screen captures, own ScreenCaptureKit code). Look at every PNG before attaching it.
 - Save screenshots in the git-ignored `./.pr-screenshots/` folder (never committed) and check that no personal data is visible (file paths, user or device names). Absolute, `~` and `../` paths are denied for screenshots and attachments.
 - Upload with `gh pr create --attach ./.pr-screenshots/<file>.png` / `gh pr edit <PR> --attach ./.pr-screenshots/<file>.png`. Reference them in the body as `![iPad dark](./.pr-screenshots/ipad-dark.png)`; gh rewrites the path to the uploaded URL. Use `--attach './.pr-screenshots/<file>.png#Alt text'` for alt text. Uploaded files of a public repo are publicly reachable.
 - Pass the PR body inline with `--body '…'` and without backticks (they keep gh in the sandbox, where it fails); `--body-file`, `-F` and `--template` are denied.
@@ -63,8 +66,8 @@ Then update `docs/feature-parity.md` (status `done` for fully matched items, not
 - `gh pr create --attach …` (or mark the draft ready and `gh pr edit --attach …`) with `Closes #<N>`, the issue's milestone, and the body from `.github/pull_request_template.md`:
   - Summary (2-4 sentences) and parity IDs
   - What the reviewer should check (decisions, deviations, justified custom UI)
-  - **How to verify**: numbered click-by-click steps on Mac and iPad that need no code reading, with expected results
-  - iPad screenshots (light/dark) and the "Visual check (Mac)" section
+  - **How to verify**: first one line "Checked by Claude: …" (what you verified yourself in the simulator and through the Mac test host), then numbered click-by-click steps with expected results **only for what you could not check yourself**. Never repeat steps you already checked. If nothing is left, the section is the single line "Nothing left to verify manually."
+  - iPad and Mac screenshots (light/dark)
   - Review results (one line per agent)
   - Known limitations and follow-ups
 - Keep it short (see "PR workflow" in `CLAUDE.md`): leave out sections that do not apply, no file-by-file list, one sentence per bullet, background goes into docs or an ADR.

@@ -46,6 +46,8 @@ struct DocumentView: View {
             // Slide change with keys, menu, toolbar and swipes (NAV-01 to NAV-03).
             .slideNavigationKeys(session)
             .navigatorEscapeKey(session)
+            // The "." key must wrap the view that holds the keyboard (CUR-01).
+            .blackCurtainKey(session)
     }
 }
 
@@ -68,9 +70,13 @@ private struct PresenterChrome: ViewModifier {
             .presenterLayoutControls(session.layout)
             .presenterTimerControls(session)
             .presenterNavigation(session)
+            // Black and white curtain and its warning (CUR-01, CUR-02).
+            .presenterCurtain(session)
             #if os(iOS)
             // How to present on a second screen (#82); the Mac needs no hint.
             .externalDisplayHint()
+            // The Mac has the Settings window instead (SET-01).
+            .settingsSheet()
             #endif
     }
 }

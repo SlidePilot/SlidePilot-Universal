@@ -19,6 +19,7 @@
 | [0015](0015-iphone-and-remote-mode.md) | iPhone support and remote as a mode of the app, both in 2.0 | Accepted |
 | [0016](0016-drawing-engine.md) | Drawing: shared relative model, PencilKit input on iPad, own toolbar | Accepted |
 | [0017](0017-remote-wire-format-and-pairing.md) | Remote wire format, versioning, pairing and encryption | Accepted |
+| [0018](0018-mac-test-host.md) | Mac test host: capture and drive only the SlidePilot test build | Accepted |
 
 ## Process
 1. Propose the decision in chat with the product owner (context, options, recommendation).
