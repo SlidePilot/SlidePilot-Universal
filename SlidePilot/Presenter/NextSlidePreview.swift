@@ -6,11 +6,13 @@ struct NextSlidePreview: View {
     let cache: RenderCache
     let currentPage: Int
     var region: PageRegion = .full
+    /// Links on the next slide work like on the current one, as in the old app (NAV-05).
+    var pageLinkAction: ((Int) -> Void)?
 
     var body: some View {
         let next = currentPage + 1
         if next < cache.info.pageCount {
-            SlideSurface(cache: cache, page: next, region: region, role: .next)
+            SlideSurface(cache: cache, page: next, region: region, role: .next, pageLinkAction: pageLinkAction)
         } else {
             EndOfDeckView(aspectRatio: endPageSize)
         }
