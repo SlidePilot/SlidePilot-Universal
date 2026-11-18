@@ -21,8 +21,10 @@ final class PresentationSession: Identifiable {
     @ObservationIgnored private(set) var data: Data
     /// The presenter's arrangement and slots (LAY-01 to LAY-05).
     let layout: PresenterLayoutModel
-    /// Per-document settings and, later, notes in the companion file (NOTES-10, SET-02).
+    /// Per-document settings and notes in the companion file (NOTES-10, SET-02).
     let companion: DocumentCompanion
+    /// The text notes and whether they are being edited (NOTES-04, NOTES-05).
+    let notes: NotesModel
     /// Whether the slide navigator sidebar is shown (LAY-06); hidden when a document opens,
     /// unless the document's settings say otherwise (SET-02).
     var isNavigatorDisplayed = false
@@ -37,6 +39,7 @@ final class PresentationSession: Identifiable {
         self.data = data
         layout = PresenterLayoutModel(store: layoutStore)
         companion = DocumentCompanion(store: companionStore)
+        notes = NotesModel(companion: companion)
         // Cheap to create: the cache opens the PDF on its first render.
         cache = RenderCache(data: data, info: info)
         position = DeckPosition(page: page, pageCount: info.pageCount)

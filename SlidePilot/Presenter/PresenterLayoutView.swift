@@ -45,6 +45,8 @@ struct PresenterLayoutView: View {
         PresenterSlotView(session: session, kind: kind)
             .padding(padding)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // The Mac columns host their own views, outside the window's tap area.
+            .finishesNotesEditingOnTap(session.notes)
     }
 
     /// Two slots on top of each other, each half the height (LAY-03).
@@ -54,10 +56,12 @@ struct PresenterLayoutView: View {
                 .padding([.horizontal, .top], padding)
                 .padding(.bottom, padding / 2)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .finishesNotesEditingOnTap(session.notes)
             PresenterSlotView(session: session, kind: bottom)
                 .padding([.horizontal, .bottom], padding)
                 .padding(.top, padding / 2)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .finishesNotesEditingOnTap(session.notes)
         }
     }
 
@@ -89,17 +93,29 @@ private struct PresenterSlotView: View {
         case .current:
             SlideSurface(cache: session.cache, page: session.currentPage, role: .current, pageLinkAction: session.showPage)
                 .slideNavigationForVoiceOver(session)
+                .finishesNotesEditing(session)
         case .next:
             NextSlidePreview(cache: session.cache, currentPage: session.currentPage, pageLinkAction: session.showPage)
                 .slideNavigationForVoiceOver(session)
+                .finishesNotesEditing(session)
         case .notes:
-            // Until the notes editor (#27) and split notes (#28).
-            ContentUnavailableView("No Notes", systemImage: "note.text")
+            // Text notes; split notes follow with #28.
+            NotesEditor(session: session)
         }
     }
 }
 
 private extension View {
+    /// A click or tap on a slide finishes editing the notes (NOTES-04); links still work.
+    /// Only while editing: otherwise the gesture would keep a Mac click from giving the
+    /// keyboard to the slides.
+    func finishesNotesEditing(_ session: PresentationSession) -> some View {
+        simultaneousGesture(
+            TapGesture().onEnded { session.notes.finishEditing() },
+            isEnabled: session.notes.isEditing
+        )
+    }
+
     /// VoiceOver users without a keyboard swipe up or down on a slide to change slides.
     func slideNavigationForVoiceOver(_ session: PresentationSession) -> some View {
         accessibilityAdjustableAction { direction in

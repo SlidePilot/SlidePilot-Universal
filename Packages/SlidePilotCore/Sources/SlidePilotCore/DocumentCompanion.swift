@@ -20,6 +20,9 @@ public final class DocumentCompanion {
     /// Whether user content (notes) changed and is not saved yet (DOC-09). Settings
     /// changes do not count, like in the old app.
     public private(set) var isEdited = false
+    /// `true` while the orphaned entry's data is taken over (NOTES-12); notes must not be
+    /// edited meanwhile, because the takeover replaces them.
+    public private(set) var isTakingOver = false
 
     @ObservationIgnored private let store: CompanionStore?
     @ObservationIgnored private let saveDelay: Duration
@@ -122,6 +125,8 @@ public final class DocumentCompanion {
         // Cleared before the first suspension, so the alert closes at once.
         self.orphan = nil
         guard let store, entry != nil else { return nil }
+        isTakingOver = true
+        defer { isTakingOver = false }
         await flush()
         guard let current = entry, let merged = await store.takeOver(orphan.id, for: current) else { return nil }
         entry = merged
@@ -177,13 +182,15 @@ public final class DocumentCompanion {
     @discardableResult
     private func enqueueSave(after wait: Task<Void, Never>?) -> Task<Void, Never> {
         let previous = saveChain
-        let link = Task { [weak self] in
+        // Holds the companion until the save ran, so an edit made while its window
+        // closes is still written after the window released it.
+        let link = Task { [self] in
             await previous?.value
             if let wait {
                 await wait.value
                 if wait.isCancelled { return }
             }
-            await self?.save()
+            await save()
         }
         saveChain = link
         return link
