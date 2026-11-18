@@ -11,8 +11,10 @@ import SlidePilotRemoteProtocol
 /// Pairing starts from Settings ▸ Remote on either device and creates trust in both
 /// directions (ADR 0015). Which device controls which is picked later in remote mode (#38).
 ///
-/// The protocol and socket I/O run in `RemoteSession` actors; this class only keeps the
-/// state the UI shows. Content and commands for verified sessions come with #116.
+/// Verified controllers get the open presentations and their slides and may control them
+/// (REM-04, REM-05); `RemoteHostState` decides what to send and which commands to apply.
+/// The protocol and socket I/O run in `RemoteSession` actors; this class keeps the state
+/// the UI shows and carries out the host state's actions.
 @MainActor
 @Observable
 final class RemoteService {
@@ -64,9 +66,18 @@ final class RemoteService {
 
     fileprivate typealias SessionToken = UUID
 
+    /// What goes to one controller, in order.
+    private enum Delivery {
+        case message(HostMessage)
+        /// `sequence` tells a request from an equal one queued later.
+        case images(SlideImageRequest, sequence: Int)
+    }
+
     let identity: LocalIdentity
     private let settings: AppSettings
     private let trustStore: any TrustStore
+    /// The open documents, which verified controllers see and control.
+    private let registry: SessionRegistry
 
     private(set) var trustedDevices: [TrustedDevice] = []
     private(set) var pairingRequests: [PairingRequest] = []
@@ -85,16 +96,34 @@ final class RemoteService {
     private var openPanes = 0
     @ObservationIgnored private var listenerTask: Task<Void, Never>?
     @ObservationIgnored private var stoppingListenerTask: Task<Void, Never>?
+    /// What verified controllers were sent and selected (REM-04 to REM-06).
+    @ObservationIgnored private var hostState = RemoteHostState<SessionToken>()
+    /// The ordered queue of each host session.
+    @ObservationIgnored private var deliveries: [SessionToken: AsyncStream<Delivery>.Continuation] = [:]
+    /// The newest images each controller needs; older requests still queued are skipped.
+    @ObservationIgnored private var latestImages: [SessionToken: Int] = [:]
+    @ObservationIgnored private var nextImageSequence = 0
+    /// Watches the open presentations for changes the controllers need.
+    @ObservationIgnored private var contentTask: Task<Void, Never>?
 
-    init(settings: AppSettings, identity: LocalIdentity, trustStore: any TrustStore) {
+    init(settings: AppSettings, identity: LocalIdentity, trustStore: any TrustStore, registry: SessionRegistry) {
         self.settings = settings
         self.identity = identity
         self.trustStore = trustStore
+        self.registry = registry
         trustedDevices = trustStore.devices()
         updateHosting()
+        contentTask = Task { [weak self, registry] in
+            let presentations = Observations { registry.sessions.map(\.hostedPresentation) }
+            for await presentations in presentations {
+                guard let self else { return }
+                carryOut(hostState.update(presentations))
+            }
+        }
     }
 
     isolated deinit {
+        contentTask?.cancel()
         listenerTask?.cancel()
         pairingTasks.values.forEach { $0.cancel() }
     }
@@ -166,6 +195,8 @@ final class RemoteService {
         pairingTasks[id]?.cancel()
         try? trustStore.removeTrust(for: id)
         for (token, peer) in connectedControllers where peer.instanceID == id {
+            // No more content or commands, also for messages already received (REM-06).
+            endHosting(token)
             if let session = hostSessions[token] {
                 Task { try? await session.removeTrustAndClose() }
             }
@@ -213,13 +244,19 @@ final class RemoteService {
         let token = SessionToken()
         let session = HostSession(local: identity, transport: NetworkTransport(connection: connection), trustStore: trustStore)
         hostSessions[token] = session
+        let (queue, queueContinuation) = AsyncStream<Delivery>.makeStream()
+        deliveries[token] = queueContinuation
         defer {
             hostSessions[token] = nil
             connectedControllers[token] = nil
             pairingRequests.removeAll { $0.session == token }
+            endHosting(token)
+            deliveries[token] = nil
+            queueContinuation.finish()
         }
 
         async let result = Self.run(session)
+        async let delivered: Void = deliver(queue, over: session, token: token)
         var peer: PeerIdentity?
         var hasShownCode = false
         for await event in session.events {
@@ -242,17 +279,69 @@ final class RemoteService {
             case .paired:
                 trustedDevices = trustStore.devices()
             case .verified(let verified):
+                // Trust may have been removed while this event waited (REM-03, REM-06).
+                guard trustStore.key(for: verified.instanceID) != nil else {
+                    await session.close()
+                    continue
+                }
                 connectedControllers[token] = verified
-            case .message:
-                // Commands of verified controllers are handled with #116 (REM-05).
-                break
+                carryOut(hostState.controllerVerified(token))
+            case .message(let message):
+                // The session only passes on messages of a verified controller (REM-06),
+                // and the host state ignores controllers it was not told are verified.
+                carryOut(hostState.receive(message, from: token))
             case .pairingRequiredByPeer, .trustRemovedByPeer:
                 break
             }
         }
+        // Nothing queued is rendered or sent for a closed connection.
+        endHosting(token)
+        queueContinuation.finish()
+        await delivered
         let error = await result
         if hasShownCode, let peer, case .pairingRejectedByPeer? = error as? RemoteProtocolError {
             problem = Problem(deviceName: peer.deviceName, kind: .declined)
+        }
+    }
+
+    /// Queues the host state's messages and applies the controllers' commands.
+    private func carryOut(_ actions: [HostAction<SessionToken>]) {
+        for action in actions {
+            switch action {
+            case .send(let message, to: let token):
+                deliveries[token]?.yield(.message(message))
+            case .sendImages(let request, to: let token):
+                nextImageSequence += 1
+                latestImages[token] = nextImageSequence
+                deliveries[token]?.yield(.images(request, sequence: nextImageSequence))
+            case .perform(let command, on: let id):
+                registry.session(for: id.rawValue)?.perform(command)
+            }
+        }
+    }
+
+    /// Stops content and commands for a controller and hides the pointer it left.
+    private func endHosting(_ token: SessionToken) {
+        latestImages[token] = nil
+        carryOut(hostState.controllerLeft(token))
+    }
+
+    /// Sends one controller's queue in order. Images are rendered here, so a status never
+    /// overtakes the images queued before it; images that a newer request replaced while
+    /// they waited are skipped.
+    private func deliver(_ queue: AsyncStream<Delivery>, over session: HostSession, token: SessionToken) async {
+        for await delivery in queue {
+            switch delivery {
+            case .message(let message):
+                try? await session.send(message)
+            case .images(let request, let sequence):
+                guard latestImages[token] == sequence,
+                      let cache = registry.session(for: request.presentationID.rawValue)?.cache,
+                      let images = await RemoteSlideImages.render(request, from: cache),
+                      latestImages[token] == sequence
+                else { continue }
+                try? await session.send(.slideImages(images))
+            }
         }
     }
 

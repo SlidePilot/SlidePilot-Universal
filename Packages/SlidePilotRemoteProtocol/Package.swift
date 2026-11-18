@@ -24,7 +24,10 @@ let package = Package(
         ),
         .testTarget(
             name: "SlidePilotRemoteProtocolTests",
-            dependencies: ["SlidePilotRemoteProtocol"],
+            dependencies: [
+                "SlidePilotRemoteProtocol",
+                .product(name: "SlidePilotCore", package: "SlidePilotCore"),
+            ],
             swiftSettings: swiftSettings
         ),
     ],

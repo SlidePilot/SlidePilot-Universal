@@ -19,7 +19,10 @@ struct DocumentView: View {
     ) {
         self.fileURL = fileURL
         _session = State(initialValue: PresentationSession(
-            data: document.data, info: document.info, page: page, layoutStore: layoutStore, companionStore: companionStore
+            data: document.data,
+            title: fileURL?.deletingPathExtension().lastPathComponent ?? String(localized: "Untitled"),
+            info: document.info,
+            page: page, layoutStore: layoutStore, companionStore: companionStore
         ))
     }
 
