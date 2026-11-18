@@ -134,29 +134,28 @@ struct PDFFileObserverTests {
 
     // MARK: - File presenter
 
-    // The presenter reports uncoordinated writes about 1 s after the write (#10).
-    @Test(arguments: [false, true])
+    // The presenter reports uncoordinated writes about 1 s after the write (#10). The time
+    // limit only ends a hang; the test waits for the version itself, not for a fixed time.
+    @Test(.timeLimit(.minutes(1)), arguments: [false, true])
     func presenterReportsRewrite(atomically: Bool) async throws {
         let file = try TemporaryPDF(pages: 3)
-        let received = Received()
         let versions = PDFFileObserver.versions(of: file.url, current: file.initialData, timing: .fast)
-        let consumer = Task {
-            for await version in versions {
-                received.append(version)
-            }
-        }
-        defer { consumer.cancel() }
-        // The presenter registers asynchronously, so a single early write may go unseen.
-        // Rewrite until a version arrives.
-        let rewrite = TestPDF.make(pages: 5)
-        var arrived = false
-        for _ in 0..<10 where !arrived {
-            try rewrite.write(to: file.url, options: atomically ? .atomic : [])
-            arrived = await received.wait(for: 1, within: .seconds(2))
-        }
-        #expect(arrived)
-        #expect(received.pageCounts.allSatisfy { $0 == 5 })
+        try waitForPresenterRegistration(at: file.url)
+        try TestPDF.make(pages: 5).write(to: file.url, options: atomically ? .atomic : [])
+        var iterator = versions.makeAsyncIterator()
+        let version = await iterator.next()
+        #expect(version?.info.pageCount == 5)
     }
+}
+
+/// `NSFileCoordinator.addFilePresenter` returns before the file coordination service knows
+/// the presenter, and an uncoordinated write in that gap is never reported. A coordinated
+/// read is granted only after the service has processed the registration (it asks the
+/// presenter to relinquish the file first), so writes after this call are reported.
+private func waitForPresenterRegistration(at url: URL) throws {
+    var coordinationError: NSError?
+    NSFileCoordinator(filePresenter: nil).coordinate(readingItemAt: url, options: [], error: &coordinationError) { _ in }
+    if let coordinationError { throw coordinationError }
 }
 
 // MARK: - Helpers
