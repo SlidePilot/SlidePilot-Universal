@@ -38,6 +38,11 @@
 			</array>
 		</dict>
 	</dict>
+	<!-- Remote (ADR 0017): every instance advertises and browses this service. -->
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_slidepilot._tcp</string>
+	</array>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>UISupportsDocumentBrowser</key>

@@ -10,18 +10,25 @@ struct SlidePilotApp: App {
     @NSApplicationDelegateAdaptor(MacAppDelegate.self) private var appDelegate
     @State private var registry = SessionRegistry()
     @State private var presentationWindows = MacPresentationWindows()
+    #endif
+    /// The app-wide settings (SET-01), shared by all windows.
+    @State private var settings: AppSettings
+    /// Advertises this instance and keeps pairing state (REM-02); one per app.
+    @State private var remote: RemoteService
 
     init() {
+        #if os(macOS)
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
         CompanionStore.cleanUpAtLaunch()
         #if DEBUG
         TestHostAppearance.apply()
         #endif
+        #endif
+        let settings = AppSettings(store: UserDefaults.standard)
+        _settings = State(initialValue: settings)
+        _remote = State(initialValue: RemoteService.live(settings: settings))
     }
-    #endif
-    /// The app-wide settings (SET-01), shared by all windows.
-    @State private var settings = AppSettings(store: UserDefaults.standard)
 
     var body: some Scene {
         // One window per PDF (DOC-01/02). The system provides the open panel at launch,
@@ -57,6 +64,7 @@ struct SlidePilotApp: App {
         Settings {
             SettingsView()
                 .environment(settings)
+                .environment(remote)
         }
         #else
         // The external display: a UIKit scene (ExternalDisplayScene.swift), offered by the
@@ -67,6 +75,7 @@ struct SlidePilotApp: App {
                 .environment(registry)
                 .environment(appDelegate.externalDisplays)
                 .environment(settings)
+                .environment(remote)
         }
         .commands {
             PresentationCommands()
