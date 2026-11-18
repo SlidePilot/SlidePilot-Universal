@@ -1,0 +1,61 @@
+import Foundation
+import SlidePilotCore
+import Testing
+
+@MainActor
+@Suite
+struct AppSettingsTests {
+    // SET-04, LAY-07: both settings are off without a stored value, like the old app.
+    @Test func defaultsAreOff() {
+        let settings = AppSettings(store: InMemorySettingsStore())
+        #expect(!settings.keepsDisplayAwake)
+        #expect(!settings.crossfadesSlides)
+    }
+
+    // The old app's keys keep their meaning.
+    @Test func usesTheOldKeys() {
+        #expect(AppSettings.Key.keepsDisplayAwake == "isSleepDisabled")
+        #expect(AppSettings.Key.crossfadesSlides == "crossfadeSlides")
+    }
+
+    @Test func readsStoredValues() {
+        let store = InMemorySettingsStore(values: ["isSleepDisabled": true, "crossfadeSlides": true])
+        let settings = AppSettings(store: store)
+        #expect(settings.keepsDisplayAwake)
+        #expect(settings.crossfadesSlides)
+    }
+
+    @Test func changesAreWrittenRightAway() {
+        let store = InMemorySettingsStore()
+        let settings = AppSettings(store: store)
+        settings.keepsDisplayAwake = true
+        #expect(store.values["isSleepDisabled"] as? Bool == true)
+        #expect(store.values["crossfadeSlides"] == nil)
+
+        settings.crossfadesSlides = true
+        settings.keepsDisplayAwake = false
+        #expect(store.values["isSleepDisabled"] as? Bool == false)
+        #expect(store.values["crossfadeSlides"] as? Bool == true)
+
+        let reloaded = AppSettings(store: store)
+        #expect(!reloaded.keepsDisplayAwake)
+        #expect(reloaded.crossfadesSlides)
+    }
+
+    // A value of the wrong type (e.g. written by hand) falls back to the default.
+    @Test func ignoresValuesOfTheWrongType() {
+        let store = InMemorySettingsStore(values: ["isSleepDisabled": "yes"])
+        #expect(!AppSettings(store: store).keepsDisplayAwake)
+    }
+
+    @Test func userDefaultsRoundTrip() throws {
+        let suite = "AppSettingsTests-\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let settings = AppSettings(store: defaults)
+        #expect(!settings.crossfadesSlides)
+        settings.crossfadesSlides = true
+        #expect(defaults.bool(forKey: "crossfadeSlides"))
+        #expect(AppSettings(store: defaults).crossfadesSlides)
+    }
+}

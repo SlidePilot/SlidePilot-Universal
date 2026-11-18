@@ -74,6 +74,18 @@ struct MacSnapshots {
         try await WindowSnapshot.record(view, name: "presentation", size: CGSize(width: 960, height: 600), appearance: appearance)
     }
 
+    // CUR-01, CUR-02: the presenter with a white curtain (toggled button and "Screen is
+    // hidden" in the title bar) and the presentation covered in white.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func curtain(appearance: WindowSnapshot.Appearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        let session = PresentationSession(data: document.data, info: document.info, page: 1, layoutStore: InMemoryPresenterLayoutStore())
+        session.curtain = .white
+        let presenter = PresenterLayoutView(session: session).presenterCurtain(session)
+        try await WindowSnapshot.record(presenter, name: "curtain-presenter", size: CGSize(width: 1200, height: 700), appearance: appearance)
+        try await WindowSnapshot.record(PresentationView(session: session), name: "curtain-presentation", size: CGSize(width: 960, height: 600), appearance: appearance)
+    }
+
     // TIME-01 to TIME-03, TIME-06: clock with a running stopwatch (normal size) and a timer
     // in overtime (small size).
     @Test(arguments: WindowSnapshot.Appearance.allCases)
@@ -132,6 +144,15 @@ extension MacSnapshots {
             let view = DocumentView(document: document, page: 1, layoutStore: store).snapshotScene()
             try await WindowSnapshot.record(view, name: name, size: CGSize(width: 1200, height: 700), appearance: appearance)
         }
+    }
+
+    // SET-01, SET-05: the General pane of the Settings window, Keep awake on. Only the pane:
+    // the window's tab bar is not drawn outside a Settings scene.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func settingsGeneral(appearance: WindowSnapshot.Appearance) async throws {
+        let settings = AppSettings(store: InMemorySettingsStore(values: [AppSettings.Key.keepsDisplayAwake: true]))
+        let view = SettingsPane { GeneralSettingsView() }.environment(settings)
+        try await WindowSnapshot.record(view, name: "settings-general", size: CGSize(width: 500, height: 160), appearance: appearance)
     }
 }
 

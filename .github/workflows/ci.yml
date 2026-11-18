@@ -130,6 +130,9 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             test
           python3 -I scripts/export-mac-snapshots.py
+      # Keeps the Mac test host compiling (ADR 0018). It is not run in CI.
+      - name: Mac test host
+        run: sh Tools/TestHost/build.sh
 
   ipados:
     name: iPadOS simulator (build + test)
@@ -141,9 +144,24 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      # Build before booting the simulator: a freshly booted simulator keeps
+      # the runner's few cores busy for minutes, which made the build about
+      # four times slower. The build needs no device, only the SDK. Index
+      # store and code coverage are off because CI uses neither.
+      - name: Build for testing
+        run: |
+          set -euo pipefail
+          xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/DerivedData \
+            -enableCodeCoverage NO \
+            ARCHS=arm64 \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build-for-testing
       # On some runners the simulator runtimes are not loaded yet when the job
       # starts, and xcodebuild then finds no iPad at all. Wait for the runtime,
-      # create the device if the image lacks it, and boot it before building.
+      # create the device if the image lacks it, and boot it before testing.
       - name: Prepare iPad simulator
         id: simulator
         run: |
@@ -180,15 +198,16 @@ jobs:
           echo "Using ${IPAD_NAME} (${udid}) on ${runtime}"
           xcrun simctl bootstatus "${udid}" -b
           echo "udid=${udid}" >> "${GITHUB_OUTPUT}"
-      - name: Build and test
+      - name: Test
         env:
           IPAD_UDID: ${{ steps.simulator.outputs.udid }}
         run: |
           set -euo pipefail
           xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
             -destination "platform=iOS Simulator,id=${IPAD_UDID}" \
-            CODE_SIGNING_ALLOWED=NO \
-            build test
+            -derivedDataPath build/DerivedData \
+            -enableCodeCoverage NO \
+            test-without-building
 
   no-screen-capture:
     name: No screen capture APIs

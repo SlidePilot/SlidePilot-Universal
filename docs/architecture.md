@@ -78,7 +78,7 @@ Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standar
 |---|---|
 | Notes, drawings, per-document settings | One **companion file** per PDF (format defined in Core, versioned) in the **app container**, matched to the PDF by bookmark (ADR 0012). Entries that hold only settings expire 12 months after last open (SET-03); entries with notes or drawings do not expire |
 | Legacy notes `<pdf>-notes.rtf` | Imported on open (macOS, after a folder grant) or with Import Notes… (iPad); RTF export stays available |
-| Global preferences (layout, pointer, awake, crossfade, save drawings, time size) | `UserDefaults` through one typed settings store |
+| Global preferences (layout, pointer, awake, crossfade, save drawings, time size) | `UserDefaults` through one typed settings store: `AppSettings` (Core, `@MainActor @Observable`) with an injectable `SettingsStore`; one instance per app, passed to the scenes through the environment |
 | Access to PDFs and neighbouring files | Security-scoped bookmarks. Folder access is requested only when needed (videos, `run:` links, legacy notes on macOS) and stored as a bookmark (ADR 0012) |
 | Trusted remote devices (2.0) | Keychain |
 
@@ -92,4 +92,4 @@ Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standar
 - Swift Testing (`import Testing`) in every package and for app logic.
 - Packages are tested with `swift test` and as part of the app's test plan.
 - Shared sample documents live in `Fixtures/` (see its README). The compiled PDFs are committed because CI has no LaTeX. They are not part of the app bundle. Package tests run unhosted on the Mac and in the simulator, so they read fixtures from the source tree through `#filePath` (see `LegacyNotesRTFTests`).
-- UI behavior is verified manually with the "How to verify" steps in each PR. UI tests are added only where they pay off.
+- UI behavior is checked by Claude in the iPad simulator and, on the Mac, through the SlidePilot Test Host, which captures and drives only the test build (ADR 0018). The "How to verify" steps in each PR cover only what that cannot reach. UI tests are added only where they pay off.

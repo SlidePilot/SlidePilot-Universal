@@ -36,6 +36,12 @@ actor SlideRasterizer {
         self.data = data
     }
 
+    /// The links on page `index` (NAV-05); empty if the page does not exist.
+    func links(page index: Int) -> [SlideLink] {
+        guard let document, let page = document.page(at: index) else { return [] }
+        return LinkExtractor.links(on: page, in: document)
+    }
+
     /// Renders `region` of page `index`, aspect-fitted into `box`, on a white background.
     func render(page index: Int, region: PageRegion, fitting box: PixelSize) throws -> RenderedSlide {
         // Queued jobs for pages the presenter has left are cancelled before they start.

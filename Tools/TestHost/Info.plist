@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleExecutable</key>
+	<string>SlidePilotTestHost</string>
+	<!-- Local tool only, never distributed or registered as an App ID. -->
+	<key>CFBundleIdentifier</key>
+	<string>local.slidepilot.testhost</string>
+	<key>CFBundleName</key>
+	<string>SlidePilot Test Host</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>26.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<!-- Filled in by build.sh from Config/*.xcconfig. The code signature seals this file. -->
+	<key>SPTargetBundleIdentifier</key>
+	<string>__TARGET_BUNDLE_ID__</string>
+</dict>
+</plist>
