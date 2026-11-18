@@ -1,5 +1,8 @@
 import SlidePilotCore
 import SwiftUI
+#if os(iOS)
+import UIKit
+#endif
 
 extension CompanionStore {
     /// The app's companion entries in Application Support (ADR 0012). `nil` if the folder
@@ -10,6 +13,27 @@ extension CompanionStore {
     static func cleanUpAtLaunch() {
         guard let app else { return }
         Task { await app.removeExpiredEntries() }
+    }
+}
+
+/// The companions of the open documents, so the Mac can save them before the app quits.
+@MainActor
+@Observable
+final class OpenCompanions {
+    @ObservationIgnored private var companions: [ObjectIdentifier: DocumentCompanion] = [:]
+
+    func add(_ companion: DocumentCompanion) {
+        companions[ObjectIdentifier(companion)] = companion
+    }
+
+    func remove(_ companion: DocumentCompanion) {
+        companions[ObjectIdentifier(companion)] = nil
+    }
+
+    func flushAll() async {
+        for companion in companions.values {
+            await companion.flush()
+        }
     }
 }
 
@@ -25,6 +49,8 @@ private struct CompanionFileModifier: ViewModifier {
     let session: PresentationSession
     let fileURL: URL?
     @Environment(\.scenePhase) private var scenePhase
+    /// Provided on the Mac only; iPadOS saves when the app leaves the foreground.
+    @Environment(OpenCompanions.self) private var openCompanions: OpenCompanions?
     #if os(macOS)
     @State private var window: NSWindow?
     #endif
@@ -33,13 +59,16 @@ private struct CompanionFileModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            // Settings are applied at the end of opening (SET-02).
+            // Settings are applied at the end of opening (SET-02). Layout changes made while
+            // the entry loads are kept and win over the stored layout.
             .task(id: fileURL) {
                 guard let fileURL else { return }
-                let settings = await companion.open(pdfAt: fileURL, pageCount: session.cache.info.pageCount)
-                apply(settings)
                 session.layout.onChange = { [companion] layout in
                     companion.updateSettings { $0.layout = layout }
+                }
+                let settings = await companion.open(pdfAt: fileURL, pageCount: session.cache.info.pageCount)
+                if let settings, !Task.isCancelled {
+                    apply(settings)
                 }
             }
             .alert(
@@ -58,15 +87,17 @@ private struct CompanionFileModifier: ViewModifier {
                     Task { await companion.declineOrphan() }
                 }
             } message: { orphan in
-                Text("SlidePilot has stored data for a PDF named “\(orphan.pdf.fileName)” with the same number of pages that can no longer be found. You can use it for this PDF.")
+                Text("A PDF named “\(orphan.pdf.fileName)” with the same number of pages can no longer be found. You can use its stored data for this PDF.")
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase != .active {
-                    Task { await companion.flush() }
+                    saveInBackground(companion)
                 }
             }
+            .onAppear { openCompanions?.add(companion) }
             .onDisappear {
-                Task { [companion] in await companion.flush() }
+                openCompanions?.remove(companion)
+                saveInBackground(companion)
             }
             #if os(macOS)
             // The presenter window shows the system's edited dot in its close button (DOC-09).
@@ -78,6 +109,21 @@ private struct CompanionFileModifier: ViewModifier {
                 window?.isDocumentEdited = isEdited
             }
             #endif
+    }
+
+    /// Saves pending changes. On iPadOS the system keeps the app running until the write
+    /// finished, also when it moves to the background.
+    private func saveInBackground(_ companion: DocumentCompanion) {
+        #if os(iOS)
+        let application = UIApplication.shared
+        let backgroundTask = application.beginBackgroundTask(withName: "Save document data")
+        Task {
+            await companion.flush()
+            application.endBackgroundTask(backgroundTask)
+        }
+        #else
+        Task { await companion.flush() }
+        #endif
     }
 
     private func apply(_ settings: DocumentSettings) {

@@ -7,6 +7,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "%@, arrêté" } }
       }
     },
+    "A PDF named “%@” with the same number of pages can no longer be found. You can use its stored data for this PDF." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ein PDF namens „%@“ mit derselben Seitenzahl wird nicht mehr gefunden. Du kannst seine gespeicherten Daten für dieses PDF verwenden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un PDF nommé « %@ » avec le même nombre de pages est introuvable. Vous pouvez utiliser ses données enregistrées pour ce PDF." } }
+      }
+    },
     "Cancel" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Abbrechen" } },
@@ -231,12 +237,6 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Une diapositive" } }
       }
     },
-    "SlidePilot has stored data for a PDF named “%@” with the same number of pages that can no longer be found. You can use it for this PDF." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot hat Daten zu einem PDF namens „%@“ mit derselben Seitenzahl gespeichert, das nicht mehr gefunden wird. Du kannst sie für dieses PDF verwenden." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a enregistré des données pour un PDF nommé « %@ » avec le même nombre de pages, qui est introuvable. Vous pouvez les utiliser pour ce PDF." } }
-      }
-    },
     "Slides" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien" } },
@@ -348,7 +348,7 @@
     "Use Data from a Missing PDF?" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten eines fehlenden PDFs verwenden?" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Utiliser les données d’un PDF introuvable ?" } }
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Utiliser les données d’un PDF introuvable ?" } }
       }
     }
   },

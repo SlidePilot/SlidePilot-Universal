@@ -1,5 +1,6 @@
 import Foundation
 import SlidePilotCore
+import Synchronization
 import Testing
 
 @Suite
@@ -77,15 +78,28 @@ struct CompanionFileFormatTests {
 }
 
 /// A file system in memory: bookmarks are file IDs, files can be renamed, replaced and deleted.
-final class FakeLocator: PDFLocator, @unchecked Sendable {
-    // @unchecked: tests mutate it only between store calls, never concurrently.
+final class FakeLocator: PDFLocator {
     struct File {
         var url: URL
         var isStale = false
     }
 
-    var files: [String: File] = [:]
-    var documentIdentifiers: [URL: Int] = [:]
+    private struct State {
+        var files: [String: File] = [:]
+        var documentIdentifiers: [URL: Int] = [:]
+    }
+
+    private let state = Mutex(State())
+
+    var files: [String: File] {
+        get { state.withLock { $0.files } }
+        set { state.withLock { $0.files = newValue } }
+    }
+
+    var documentIdentifiers: [URL: Int] {
+        get { state.withLock { $0.documentIdentifiers } }
+        set { state.withLock { $0.documentIdentifiers = newValue } }
+    }
 
     @discardableResult
     func add(_ name: String, id: String? = nil) -> URL {
@@ -95,9 +109,11 @@ final class FakeLocator: PDFLocator, @unchecked Sendable {
     }
 
     func bookmark(for url: URL) throws -> Data {
-        guard let id = files.first(where: { $0.value.url == url })?.key else { throw CocoaError(.fileNoSuchFile) }
-        files[id]?.isStale = false
-        return Data(id.utf8)
+        try state.withLock { state in
+            guard let id = state.files.first(where: { $0.value.url == url })?.key else { throw CocoaError(.fileNoSuchFile) }
+            state.files[id]?.isStale = false
+            return Data(id.utf8)
+        }
     }
 
     func resolve(_ bookmark: Data) -> ResolvedBookmark? {
@@ -372,7 +388,7 @@ struct DocumentCompanionTests {
         #expect(!companion.isEdited)
         await companion.flush()
         let settings = await makeCompanion().open(pdfAt: url, pageCount: 3)
-        #expect(settings.layout?.arrangement == .single)
+        #expect(settings?.layout?.arrangement == .single)
     }
 
     // DOC-09: an edit marks the document edited until it is saved.
@@ -386,21 +402,54 @@ struct DocumentCompanionTests {
     }
 
     // The delayed save also runs without a flush.
-    @Test func savesAfterTheDelay() async throws {
+    @Test func savesAfterTheDelay() async {
         let url = locator.add("talk.pdf")
         let companion = makeCompanion()
         await companion.open(pdfAt: url, pageCount: 3)
         companion.markEdited()
-        for _ in 0..<200 where companion.isEdited {
-            try await Task.sleep(for: .milliseconds(10))
-        }
+        await companion.waitUntilSaved()
         #expect(!companion.isEdited)
+    }
+
+    // Closing a PDF without stored data writes nothing.
+    @Test func flushWithoutDataWritesNothing() async {
+        let companion = makeCompanion()
+        await companion.open(pdfAt: locator.add("talk.pdf"), pageCount: 3)
+        await companion.flush()
+        let files = (try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)) ?? []
+        #expect(files.isEmpty)
+    }
+
+    // LAY-05: a change made while the entry loads is kept and saved.
+    @Test func changeBeforeLoadIsKept() async {
+        let url = locator.add("talk.pdf")
+        let companion = makeCompanion()
+        companion.updateSettings { $0.layout = PresenterLayout(arrangement: .single) }
+        let settings = await companion.open(pdfAt: url, pageCount: 3)
+        #expect(settings?.layout?.arrangement == .single)
+        await companion.flush()
+        #expect(await makeCompanion().open(pdfAt: url, pageCount: 3)?.layout?.arrangement == .single)
+    }
+
+    // A rename while the document is open re-opens it: unsaved changes are kept.
+    @Test func reopenAfterRenameKeepsUnsavedChanges() async {
+        let url = locator.add("talk.pdf")
+        let companion = DocumentCompanion(store: CompanionStore(directory: directory, locator: locator), saveDelay: .seconds(60))
+        await companion.open(pdfAt: url, pageCount: 3)
+        companion.updateSettings { $0.layout = PresenterLayout(arrangement: .single) }
+        let renamed = URL(filePath: "/decks/renamed.pdf")
+        locator.files["talk.pdf"]?.url = renamed
+        #expect(await companion.open(pdfAt: renamed, pageCount: 3) == nil)
+        #expect(companion.settings.layout?.arrangement == .single)
+        #expect(companion.entry?.pdf.fileName == "renamed.pdf")
+        await companion.flush()
+        #expect(await makeCompanion().open(pdfAt: renamed, pageCount: 3)?.layout?.arrangement == .single)
     }
 
     @Test func withoutStoreNothingIsLoaded() async {
         let companion = DocumentCompanion(store: nil)
         let settings = await companion.open(pdfAt: URL(filePath: "/x.pdf"), pageCount: 1)
-        #expect(settings.isEmpty)
+        #expect(settings == nil)
         companion.updateSettings { $0.layout = .default }
         #expect(companion.entry == nil)
     }

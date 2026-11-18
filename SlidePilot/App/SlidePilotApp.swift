@@ -7,6 +7,7 @@ struct SlidePilotApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     private var registry: SessionRegistry { appDelegate.registry }
     #else
+    @NSApplicationDelegateAdaptor(MacAppDelegate.self) private var appDelegate
     @State private var registry = SessionRegistry()
     @State private var presentationWindows = MacPresentationWindows()
 
@@ -26,6 +27,7 @@ struct SlidePilotApp: App {
             DocumentView(document: file.document, fileURL: file.fileURL)
                 .environment(registry)
                 .environment(presentationWindows)
+                .environment(appDelegate.companions)
         }
         .commands {
             PresentationCommands()
