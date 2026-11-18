@@ -91,4 +91,4 @@ Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standar
 - Swift Testing (`import Testing`) in every package and for app logic.
 - Packages are tested with `swift test` and as part of the app's test plan.
 - Shared sample documents live in `Fixtures/` (see its README). The compiled PDFs are committed because CI has no LaTeX. They are not part of the app bundle. Package tests run unhosted on the Mac and in the simulator, so they read fixtures from the source tree through `#filePath` (see `LegacyNotesRTFTests`).
-- UI behavior is verified manually with the "How to verify" steps in each PR. UI tests are added only where they pay off.
+- UI behavior is checked by Claude in the iPad simulator and, on the Mac, through the SlidePilot Test Host, which captures and drives only the test build (ADR 0018). The "How to verify" steps in each PR cover only what that cannot reach. UI tests are added only where they pay off.
