@@ -74,6 +74,18 @@ struct MacSnapshots {
         try await WindowSnapshot.record(view, name: "presentation", size: CGSize(width: 960, height: 600), appearance: appearance)
     }
 
+    // CUR-01, CUR-02: the presenter with a white curtain (toggled button and "Screen is
+    // hidden" in the title bar) and the presentation covered in white.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func curtain(appearance: WindowSnapshot.Appearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        let session = PresentationSession(data: document.data, info: document.info, page: 1, layoutStore: InMemoryPresenterLayoutStore())
+        session.curtain = .white
+        let presenter = PresenterLayoutView(session: session).presenterCurtain(session)
+        try await WindowSnapshot.record(presenter, name: "curtain-presenter", size: CGSize(width: 1200, height: 700), appearance: appearance)
+        try await WindowSnapshot.record(PresentationView(session: session), name: "curtain-presentation", size: CGSize(width: 960, height: 600), appearance: appearance)
+    }
+
     // TIME-01 to TIME-03, TIME-06: clock with a running stopwatch (normal size) and a timer
     // in overtime (small size).
     @Test(arguments: WindowSnapshot.Appearance.allCases)

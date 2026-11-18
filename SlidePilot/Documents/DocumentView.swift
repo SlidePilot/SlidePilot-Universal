@@ -43,5 +43,7 @@ struct DocumentView: View {
             // Slide change with keys, menu, toolbar and swipes (NAV-01 to NAV-03).
             .slideNavigationKeys(session)
             .presenterNavigation(session)
+            // Black and white curtain, its warning and the "." key (CUR-01, CUR-02).
+            .presenterCurtain(session)
     }
 }

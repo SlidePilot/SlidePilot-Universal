@@ -5,7 +5,7 @@ import SlidePilotRendering
 
 /// State of one open document: the slides and the current page. The presenter and the
 /// presentation observe the same session (DOC-04).
-/// Later issues add layout, notes, drawing, pointer, curtain and timer state.
+/// Later issues add notes, drawing and pointer state.
 @Observable
 final class PresentationSession: Identifiable {
     /// Identifies the session's presentation window (macOS) and its registry entry.
@@ -15,6 +15,8 @@ final class PresentationSession: Identifiable {
     private(set) var position: DeckPosition
     /// Stopwatch/timer of this document; starts in stopwatch mode (TIME-02 to TIME-05).
     var timer = PresentationTimer()
+    /// Black or white cover on the presentation (CUR-01); never persisted (CUR-03).
+    var curtain = Curtain.none
     /// The bytes on screen; the file observer compares changes with them.
     @ObservationIgnored private(set) var data: Data
     /// The presenter's arrangement and slots (LAY-01 to LAY-05).
