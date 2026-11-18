@@ -59,16 +59,18 @@ private struct CompanionFileModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            // Settings are applied at the end of opening (SET-02). Layout changes made while
-            // the entry loads are kept and win over the stored layout.
+            // Settings are applied at the end of opening (SET-02). Layout changes are stored
+            // only from then on: while the window builds up, the Mac split view reports its
+            // separator position, which would save the last-used layout over the stored one.
             .task(id: fileURL) {
                 guard let fileURL else { return }
+                let settings = await companion.open(pdfAt: fileURL, pageCount: session.cache.info.pageCount)
+                guard !Task.isCancelled else { return }
+                if let settings {
+                    apply(settings)
+                }
                 session.layout.onChange = { [companion] layout in
                     companion.updateSettings { $0.layout = layout }
-                }
-                let settings = await companion.open(pdfAt: fileURL, pageCount: session.cache.info.pageCount)
-                if let settings, !Task.isCancelled {
-                    apply(settings)
                 }
             }
             // The navigator is a per-document setting like in the old app (SET-02, LAY-06).
