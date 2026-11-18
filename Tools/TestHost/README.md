@@ -16,7 +16,14 @@ Tools/TestHost/build.sh
 
 Optional: add it to System Settings > General > Login Items so it is always running.
 
-The app is signed ad hoc, so macOS binds both grants to this exact binary. After any change to the host, the new build has no grants, and macOS asks again. Remove the old entries from both lists when you replace it.
+The app is signed ad hoc, so macOS binds both grants to this exact binary. After any change to the host, the new build has no grants. System Settings still shows the old switches as on, but they belong to the old binary. So before you open a new build, quit the old one and reset both grants:
+
+```sh
+tccutil reset ScreenCapture local.slidepilot.testhost
+tccutil reset Accessibility local.slidepilot.testhost
+```
+
+Then continue with step 2.
 
 ## What it does and does not do
 
