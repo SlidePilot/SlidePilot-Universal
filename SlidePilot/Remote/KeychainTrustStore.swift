@@ -31,13 +31,17 @@ nonisolated struct KeychainTrustStore: TrustStore {
     }
 
     func devices() -> [TrustedDevice] {
+        // The file-based Keychain on macOS refuses to return data for several items at once
+        // (errSecParam), so list the accounts first and read each item on its own.
         var query = baseQuery()
         query[kSecMatchLimit as String] = kSecMatchLimitAll
-        query[kSecReturnData as String] = true
+        query[kSecReturnAttributes as String] = true
         var result: CFTypeRef?
         guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
-              let items = result as? [Data] else { return [] }
-        return items.compactMap { try? JSONDecoder().decode(StoredEntry.self, from: $0).device }
+              let items = result as? [[String: Any]] else { return [] }
+        return items
+            .compactMap { ($0[kSecAttrAccount as String] as? String).flatMap(InstanceID.init(string:)) }
+            .compactMap { entry(for: $0)?.device }
             .sorted { $0.deviceName.localizedStandardCompare($1.deviceName) == .orderedAscending }
     }
 
