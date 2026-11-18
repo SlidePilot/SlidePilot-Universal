@@ -201,9 +201,15 @@ struct SlideNavigator: View {
             session.isNavigatorDisplayed = false
         })
         #if os(macOS)
-        // The list takes the keyboard on open; on iPad no field is focused, so the
-        // on-screen keyboard stays down.
-        .onAppear { isListFocused = true }
+        // The page field takes the keyboard whenever the navigator opens, like in the old
+        // app, so a page number can be typed right after O. Not on iPad, where it would
+        // bring up the on-screen keyboard.
+        .task(id: session.isNavigatorDisplayed) {
+            guard session.isNavigatorDisplayed else { return }
+            // Focus can only move once the field is in the window.
+            await Task.yield()
+            isPageFieldFocused = true
+        }
         #endif
         .focusedSceneValue(\.isEditingText, isPageFieldFocused)
         .accessibilityElement(children: .contain)
