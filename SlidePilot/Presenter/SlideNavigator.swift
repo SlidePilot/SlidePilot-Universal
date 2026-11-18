@@ -133,8 +133,8 @@ struct NavigatorMenuItems: View {
     }
 }
 
-/// Thumbnails of all slides with a page-number field (LAY-06). The current slide is the
-/// list's selection; choosing a thumbnail shows that slide. A number typed in the field
+/// Thumbnails of all slides with a page-number field (LAY-06). The current slide has a
+/// frame; choosing a thumbnail shows that slide. A number typed in the field
 /// highlights a thumbnail and Return jumps to it.
 struct SlideNavigator: View {
     let session: PresentationSession
@@ -150,15 +150,24 @@ struct SlideNavigator: View {
     var body: some View {
         let highlighted = NavigatorPageField.page(for: pageNumber, pageCount: pageCount)
         ScrollViewReader { proxy in
-            List(selection: selection) {
+            // No list selection: its highlight has a fixed corner radius that looks odd around
+            // small thumbnails. The current slide gets a frame around its thumbnail instead,
+            // and the arrow keys reach the presenter, which changes the slide.
+            List {
                 ForEach(0..<pageCount, id: \.self) { page in
-                    ThumbnailRow(
-                        cache: session.cache,
-                        page: page,
-                        pageCount: pageCount,
-                        isHighlighted: page == highlighted && page != session.currentPage
-                    )
-                    .tag(page)
+                    Button {
+                        choose(page)
+                    } label: {
+                        ThumbnailRow(
+                            cache: session.cache,
+                            page: page,
+                            pageCount: pageCount,
+                            isCurrent: page == session.currentPage,
+                            isHighlighted: page == highlighted && page != session.currentPage
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .listRowSeparator(.hidden)
                 }
             }
             .focused($isListFocused)
@@ -201,15 +210,6 @@ struct SlideNavigator: View {
         .accessibilityLabel(Text("Slide Navigator"))
     }
 
-    private var selection: Binding<Int?> {
-        Binding {
-            session.currentPage
-        } set: { page in
-            guard let page else { return }
-            choose(page)
-        }
-    }
-
     private func choose(_ page: Int) {
         session.showPage(page)
         if closesOnSelection {
@@ -228,27 +228,32 @@ private struct PageNumberField: ViewModifier {
     let onEscape: () -> Void
 
     func body(content: Content) -> some View {
-        content
-            // A bar: the system blurs the thumbnails that scroll under it.
-            .safeAreaBar(edge: .top) {
-                TextField(text: $text, prompt: Text("Page Number")) {
-                    Text("Page Number")
-                }
-                .textFieldStyle(.roundedBorder)
-                #if os(iOS)
-                // Digits with a Return key.
-                .keyboardType(.numbersAndPunctuation)
-                .submitLabel(.go)
-                #endif
-                .focused(isFocused)
-                .onSubmit(onSubmit)
-                // Esc closes the navigator also while typing, like in the old app.
-                .onKeyPress(.escape) {
-                    onEscape()
-                    return .handled
-                }
-                .padding()
+        // Above the list, not over it: the thumbnails never scroll under the field.
+        VStack(spacing: 0) {
+            // A capsule of Liquid Glass like the system's search fields in bars; a search
+            // field itself is not used (see above).
+            TextField(text: $text, prompt: Text("Page Number")) {
+                Text("Page Number")
             }
+            .textFieldStyle(.plain)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .glassEffect(.regular.interactive(), in: .capsule)
+            #if os(iOS)
+            // Digits with a Return key.
+            .keyboardType(.numbersAndPunctuation)
+            .submitLabel(.go)
+            #endif
+            .focused(isFocused)
+            .onSubmit(onSubmit)
+            // Esc closes the navigator also while typing, like in the old app.
+            .onKeyPress(.escape) {
+                onEscape()
+                return .handled
+            }
+            .padding()
+            content
+        }
     }
 }
 
@@ -257,6 +262,9 @@ private struct ThumbnailRow: View {
     let cache: RenderCache
     let page: Int
     let pageCount: Int
+    /// The slide on screen: a frame in the accent color around the thumbnail.
+    let isCurrent: Bool
+    /// The page typed in the page field, before Return jumps to it: a lighter frame.
     let isHighlighted: Bool
 
     var body: some View {
@@ -271,18 +279,22 @@ private struct ThumbnailRow: View {
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
             SlideThumbnail(cache: cache, page: page)
+                // The frame sits just outside the thumbnail, so it grows with it.
+                .padding(3)
                 .overlay {
-                    // The page typed in the page field, before Return jumps to it.
-                    if isHighlighted {
-                        Rectangle().strokeBorder(.tint, lineWidth: 3)
+                    if isCurrent {
+                        RoundedRectangle(cornerRadius: 4).strokeBorder(.tint, lineWidth: 3)
+                    } else if isHighlighted {
+                        RoundedRectangle(cornerRadius: 4).strokeBorder(.tint.secondary, lineWidth: 3)
                     }
                 }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 2)
+        .contentShape(.rect)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Slide \(page + 1)"))
-        // The page typed in the page field; Return shows it.
-        .accessibilityAddTraits(isHighlighted ? .isSelected : [])
+        // The slide on screen, or the page typed in the page field that Return shows.
+        .accessibilityAddTraits(isCurrent || isHighlighted ? .isSelected : [])
     }
 }
 
