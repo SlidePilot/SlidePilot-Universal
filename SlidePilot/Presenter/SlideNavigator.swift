@@ -30,9 +30,6 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
     var body: some View {
         #if os(macOS)
         splitView(detail: detail.modifier(slidesChrome).modifier(chrome))
-            // Esc reaches the window as "cancel", also from the page field.
-            // Only while the navigator is shown, so other views still get Esc.
-            .onExitCommand(perform: exitCommand)
         #else
         splitView(detail: detail.modifier(slidesChrome).toolbar(.hidden, for: .navigationBar))
             .modifier(chrome)
@@ -40,11 +37,6 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
                 ToolbarItem(placement: .topBarLeading) {
                     NavigatorToggle(session: session)
                 }
-            }
-            .onKeyPress(.escape) {
-                guard session.isNavigatorDisplayed else { return .ignored }
-                closeNavigator()
-                return .handled
             }
         #endif
     }
@@ -73,17 +65,6 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
         #endif
     }
 
-    #if os(macOS)
-    private var exitCommand: (() -> Void)? {
-        guard session.isNavigatorDisplayed else { return nil }
-        return { session.isNavigatorDisplayed = false }
-    }
-    #endif
-
-    private func closeNavigator() {
-        session.isNavigatorDisplayed = false
-    }
-
     private var visibility: Binding<NavigationSplitViewVisibility> {
         Binding {
             session.isNavigatorDisplayed ? .all : .detailOnly
@@ -97,6 +78,18 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
             session.isNavigatorDisplayed ? .sidebar : .detail
         } set: {
             session.isNavigatorDisplayed = $0 == .sidebar
+        }
+    }
+}
+
+extension View {
+    /// Esc closes the navigator (LAY-06). Apply it outside the view that takes the keyboard
+    /// in the presenter, so Esc arrives wherever the focus is.
+    func navigatorEscapeKey(_ session: PresentationSession) -> some View {
+        onKeyPress(.escape) {
+            guard session.isNavigatorDisplayed else { return .ignored }
+            session.isNavigatorDisplayed = false
+            return .handled
         }
     }
 }
@@ -195,6 +188,8 @@ struct SlideNavigator: View {
             choose(highlighted)
             // The old app selected the number so the next one replaces it.
             pageNumber = ""
+        } onEscape: {
+            session.isNavigatorDisplayed = false
         })
         #if os(macOS)
         // The list takes the keyboard on open; on iPad no field is focused, so the
@@ -223,20 +218,16 @@ struct SlideNavigator: View {
     }
 }
 
-/// The page-number field: the sidebar's search field on the Mac, a text field above the
-/// thumbnails on iPad (the column bar that would hold a search field is hidden there).
+/// The page-number field above the thumbnails. A plain text field on both platforms: the
+/// Mac sidebar's search field selects its text on Return instead of submitting it, and the
+/// iPad column bar that would hold a search field is hidden.
 private struct PageNumberField: ViewModifier {
     @Binding var text: String
     var isFocused: FocusState<Bool>.Binding
     let onSubmit: () -> Void
+    let onEscape: () -> Void
 
     func body(content: Content) -> some View {
-        #if os(macOS)
-        content
-            .searchable(text: $text, placement: .sidebar, prompt: Text("Page Number"))
-            .searchFocused(isFocused)
-            .onSubmit(of: .search, onSubmit)
-        #else
         content
             // A bar: the system blurs the thumbnails that scroll under it.
             .safeAreaBar(edge: .top) {
@@ -244,14 +235,20 @@ private struct PageNumberField: ViewModifier {
                     Text("Page Number")
                 }
                 .textFieldStyle(.roundedBorder)
+                #if os(iOS)
                 // Digits with a Return key.
                 .keyboardType(.numbersAndPunctuation)
                 .submitLabel(.go)
+                #endif
                 .focused(isFocused)
                 .onSubmit(onSubmit)
+                // Esc closes the navigator also while typing, like in the old app.
+                .onKeyPress(.escape) {
+                    onEscape()
+                    return .handled
+                }
                 .padding()
             }
-        #endif
     }
 }
 
