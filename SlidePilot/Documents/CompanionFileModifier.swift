@@ -78,6 +78,13 @@ private struct CompanionFileModifier: ViewModifier {
             .onChange(of: session.isNavigatorDisplayed) { _, isDisplayed in
                 companion.updateSettings { $0.isNavigatorDisplayed = isDisplayed }
             }
+            // Stored only once changed, so the PDF's keywords keep applying until then (NOTES-03).
+            .onChange(of: session.notesDisplay) { _, display in
+                companion.updateSettings {
+                    $0.notesMode = display.mode
+                    $0.notesPosition = display.position
+                }
+            }
             .alert(
                 Text("Use Data from a Missing PDF?"),
                 isPresented: Binding(get: { companion.orphan != nil }, set: { _ in }),
@@ -150,6 +157,7 @@ private struct CompanionFileModifier: ViewModifier {
         if let isNavigatorDisplayed = settings.isNavigatorDisplayed {
             session.isNavigatorDisplayed = isNavigatorDisplayed
         }
+        session.applyStoredNotesDisplay(mode: settings.notesMode, position: settings.notesPosition)
     }
 }
 

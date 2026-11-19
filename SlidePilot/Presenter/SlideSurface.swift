@@ -13,6 +13,8 @@ struct SlideSurface: View {
         case next
         /// The audience's slide on the presentation window or external display.
         case presentation
+        /// The notes half of a split-notes page (NOTES-02).
+        case notes
     }
 
     let cache: RenderCache
@@ -133,7 +135,7 @@ struct SlideSurface: View {
 
     /// The videos of the shown page. The next-slide preview shows only the PDF's poster.
     private var movies: [SlideMovie] {
-        guard role != .next, let pageMovies,
+        guard role != .next, role != .notes, let pageMovies,
               pageMovies.cache == ObjectIdentifier(cache), pageMovies.page == page
         else { return [] }
         return pageMovies.movies
@@ -148,7 +150,7 @@ struct SlideSurface: View {
     }
 
     private func loadMovies() async {
-        guard role != .next, linkedFiles != nil else { return }
+        guard role != .next, role != .notes, linkedFiles != nil else { return }
         let movies = await cache.movies(page: page)
         guard !Task.isCancelled else { return }
         pageMovies = PageMovies(cache: ObjectIdentifier(cache), page: page, movies: movies)
@@ -174,6 +176,7 @@ struct SlideSurface: View {
         case .current: Text("Current slide, \(number) of \(count)")
         case .next: Text("Next slide, \(number) of \(count)")
         case .presentation: Text("Presentation, slide \(number) of \(count)")
+        case .notes: Text("Notes slide, \(number) of \(count)")
         }
     }
 

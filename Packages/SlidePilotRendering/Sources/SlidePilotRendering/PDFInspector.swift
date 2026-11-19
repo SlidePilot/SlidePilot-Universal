@@ -7,10 +7,14 @@ public struct PDFDocumentInfo: Sendable, Equatable {
     /// Lets views lay out slides before they are rendered.
     public let pageSizes: [CGSize]
 
+    /// The document's Keywords entry, e.g. `SP-Right` for split notes (NOTES-03).
+    public let keywords: [String]
+
     public var pageCount: Int { pageSizes.count }
 
-    public init(pageSizes: [CGSize]) {
+    public init(pageSizes: [CGSize], keywords: [String] = []) {
         self.pageSizes = pageSizes
+        self.keywords = keywords
     }
 }
 
@@ -37,6 +41,12 @@ public enum PDFInspector {
         let sizes = (0..<document.pageCount).map { index in
             document.page(at: index).map(PageGeometry.displayedSize) ?? .zero
         }
-        return PDFDocumentInfo(pageSizes: sizes)
+        return PDFDocumentInfo(pageSizes: sizes, keywords: keywords(of: document))
+    }
+
+    /// PDFKit returns the Keywords as an array of strings, like the old app read them.
+    private static func keywords(of document: PDFDocument) -> [String] {
+        let keywords = document.documentAttributes?[PDFDocumentAttribute.keywordsAttribute] as? [Any]
+        return keywords?.compactMap { $0 as? String } ?? []
     }
 }

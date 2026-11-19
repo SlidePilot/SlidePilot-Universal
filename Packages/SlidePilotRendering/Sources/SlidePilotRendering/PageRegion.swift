@@ -1,4 +1,5 @@
 import CoreGraphics
+import SlidePilotCore
 
 /// The part of a PDF page that a slide surface shows.
 ///
@@ -54,5 +55,30 @@ public struct PixelSize: Sendable, Hashable {
             width: max(1, Int((contentSize.width * scale).rounded())),
             height: max(1, Int((contentSize.height * scale).rounded()))
         )
+    }
+}
+
+extension PageRegion {
+    /// The half the audience sees: the one opposite the notes (NOTES-02). Current slide,
+    /// next slide, presentation, thumbnails and drawings all use it.
+    public static func audience(_ position: NotesPosition) -> PageRegion {
+        switch position {
+        case .none: .full
+        case .right: .leftHalf
+        case .left: .rightHalf
+        case .bottom: .topHalf
+        case .top: .bottomHalf
+        }
+    }
+
+    /// The half with the notes, shown in the notes slot in Split mode (NOTES-02).
+    public static func notes(_ position: NotesPosition) -> PageRegion {
+        switch position {
+        case .none: .full
+        case .right: .rightHalf
+        case .left: .leftHalf
+        case .bottom: .bottomHalf
+        case .top: .topHalf
+        }
     }
 }

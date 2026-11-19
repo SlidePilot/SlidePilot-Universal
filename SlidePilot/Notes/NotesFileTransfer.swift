@@ -299,6 +299,8 @@ private struct NotesFileTransferModifier: ViewModifier {
         session.notes.finishEditing()
         companion.setNotes(notes)
         session.layout.setVisible(.notes, true)
+        // The old app switched to text notes after loading a notes file (NOTES-01).
+        session.setNotesMode(.text)
     }
 
     /// Reads and parses off the main actor: large RTF files take a noticeable time.
