@@ -36,6 +36,7 @@ extension SlideLink {
         switch target {
         case .page(let index): Text("Go to slide \(index + 1)")
         case .url(let url): Text("Open link \(Self.spokenName(of: url))")
+        case .file(let reference): Text("Open file \(URL(filePath: reference).lastPathComponent)")
         }
     }
 

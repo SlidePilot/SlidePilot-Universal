@@ -2,13 +2,16 @@ import CoreGraphics
 import Foundation
 import PDFKit
 
-/// A clickable link on a PDF page (NAV-05): an internal jump or a URL.
+/// A clickable link on a PDF page: an internal jump or a URL (NAV-05), or a file (NAV-06).
 public struct SlideLink: Sendable, Hashable {
     public enum Target: Sendable, Hashable {
         /// Zero-based index of the page an internal link (`PDFActionGoTo`) jumps to.
         case page(Int)
         /// A URL link (`PDFActionURL`), opened in the default app.
         case url(URL)
+        /// A `\href{run:…}` link (`/Launch` action): the file as written in the PDF, usually
+        /// relative to the PDF (see `LinkedFile` in Core).
+        case file(String)
     }
 
     /// The link area as a fraction of the displayed page (`/Rotate` applied), origin top left.
@@ -37,13 +40,13 @@ public struct SlideLink: Sendable, Hashable {
 
 /// Reads the link annotations of a page.
 enum LinkExtractor {
-    /// The internal and URL links of `page`. Other annotations, links without a usable
-    /// target and links whose target page is not in `document` are skipped, like the old
-    /// app did on click (`PDFPageView.mouseDown`).
+    /// The internal, URL and `run:` links of `page`. Other annotations, links without a
+    /// usable target and links whose target page is not in `document` are skipped, like the
+    /// old app did on click (`PDFPageView.mouseDown`).
     static func links(on page: PDFPage, in document: PDFDocument) -> [SlideLink] {
         let mediaBox = page.bounds(for: .mediaBox)
         guard mediaBox.width > 0, mediaBox.height > 0 else { return [] }
-        return page.annotations.compactMap { annotation in
+        let pdfKitLinks: [SlideLink] = page.annotations.compactMap { annotation in
             // `type` is the subtype without the slash; only links get the pointing hand.
             guard annotation.type == "Link" else { return nil }
             let target: SlideLink.Target
@@ -53,8 +56,11 @@ enum LinkExtractor {
                 guard index >= 0, index < document.pageCount else { return nil }
                 target = .page(index)
             } else if let urlAction = annotation.action as? PDFActionURL {
-                guard let url = urlAction.url else { return nil }
-                target = .url(url)
+                // PDFKit reports `/Launch` as a URL action, resolved against the document's
+                // URL, which a PDF opened from data does not have. Read below instead.
+                guard urlAction.type != "Launch", let url = urlAction.url else { return nil }
+                // A `file:` link goes through the same checks as a `run:` link (NAV-06).
+                target = url.isFileURL ? .file(url.path(percentEncoded: false)) : .url(url)
             } else {
                 return nil
             }
@@ -62,6 +68,14 @@ enum LinkExtractor {
             guard rect.width > 0, rect.height > 0 else { return nil }
             return SlideLink(unitRect: rect, target: target)
         }
+        guard let pageRef = page.pageRef else { return pdfKitLinks }
+        let runLinks: [SlideLink] = RawAnnotationReader.entries(of: pageRef).compactMap { entry in
+            guard case .launch(let reference) = entry.kind else { return nil }
+            let rect = displayedUnitRect(of: entry.bounds, mediaBox: mediaBox, rotation: page.rotation)
+            guard rect.width > 0, rect.height > 0 else { return nil }
+            return SlideLink(unitRect: rect, target: .file(reference))
+        }
+        return pdfKitLinks + runLinks
     }
 
     /// Maps a rectangle in page space (unrotated, origin bottom left of the media box) to

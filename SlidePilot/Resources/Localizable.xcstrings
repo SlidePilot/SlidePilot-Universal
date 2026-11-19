@@ -19,6 +19,24 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Noir" } }
       }
     },
+    "Allow Access" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff erlauben" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès" } }
+      }
+    },
+    "Allow Access…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff erlauben …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès…" } }
+      }
+    },
+    "Allow SlidePilot to read the folder that contains “%@”." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erlaube SlidePilot, den Ordner mit „%@“ zu lesen." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autorisez SlidePilot à lire le dossier qui contient « %@ »." } }
+      }
+    },
     "Black Screen" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Schwarzer Bildschirm" } },
@@ -53,6 +71,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen löschen" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Effacer les dessins" } }
+      }
+    },
+    "Choose a SlidePilot notes file in RTF format." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle eine SlidePilot-Notizdatei im RTF-Format." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez un fichier de notes SlidePilot au format RTF." } }
+      }
+    },
+    "Choose the folder that contains “%@”." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle den Ordner, der „%@“ enthält." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez le dossier qui contient « %@ »." } }
       }
     },
     "Clock" : {
@@ -110,6 +140,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couleur personnalisée" } }
       }
     },
+    "Don’t Import" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht importieren" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas importer" } }
+      }
+    },
     "Don’t Use" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verwenden" } },
@@ -152,6 +188,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fondu entre les diapositives" } }
       }
     },
+    "Export Notes…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen exportieren …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Exporter les notes…" } }
+      }
+    },
     "General" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Allgemein" } },
@@ -162,6 +204,24 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Grün" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vert" } }
+      }
+    },
+    "Import" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Importieren" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer" } }
+      }
+    },
+    "Import Notes for This PDF?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen für dieses PDF importieren?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer les notes de ce PDF ?" } }
+      }
+    },
+    "Import Notes…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen importieren …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer des notes…" } }
       }
     },
     "Keep display awake" : {
@@ -188,6 +248,27 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer tous les traits de la diapositive" } }
       }
     },
+    "NotesFileNameSuffix" : {
+      "comment" : "Suffix of the suggested notes file name: <pdf>-Notes.rtf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Notes" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Notes" } }
+      }
+    },
+    "Replace Notes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen ersetzen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remplacer les notes" } }
+      }
+    },
+    "Replace the Notes of This PDF?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen dieses PDFs ersetzen?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remplacer les notes de ce PDF ?" } }
+      }
+    },
     "Settings" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen" } },
@@ -198,6 +279,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen …" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages…" } }
+      }
+    },
+    "SlidePilot couldn’t convert the notes to RTF." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot konnte die Notizen nicht in RTF umwandeln." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot n’a pas pu convertir les notes en RTF." } }
+      }
+    },
+    "SlidePilot found the notes file “%@” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder. Import Notes… in the File menu stays available." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot hat neben diesem PDF die Notizdatei „%@“ gefunden. Erlaube SlidePilot, den Ordner des PDFs zu lesen, um sie zu importieren. Das ist nur einmal pro Ordner nötig. „Notizen importieren …“ im Menü „Ablage“ bleibt verfügbar." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a trouvé le fichier de notes « %@ » à côté de ce PDF. Pour l’importer, autorisez SlidePilot à lire le dossier du PDF. Cela n’est nécessaire qu’une fois par dossier. « Importer des notes… » reste disponible dans le menu Fichier." } }
       }
     },
     "Slides fade into each other on the presentation screen." : {
@@ -385,6 +478,24 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Text" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Texte" } }
+      }
+    },
+    "The imported notes replace the current notes of every slide." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die importierten Notizen ersetzen die aktuellen Notizen aller Folien." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les notes importées remplacent les notes actuelles de toutes les diapositives." } }
+      }
+    },
+    "The Notes Couldn’t Be Exported" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Notizen konnten nicht exportiert werden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible d’exporter les notes" } }
+      }
+    },
+    "The Notes Couldn’t Be Imported" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Notizen konnten nicht importiert werden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible d’importer les notes" } }
       }
     },
     "These notes were saved by a newer version of SlidePilot." : {
@@ -695,12 +806,6 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "OK" } }
       }
     },
-    "Done" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fertig" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Terminé" } }
-      }
-    },
     "Code: %@\n\nPair only if “%@” shows the same code." : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Code: %1$@\n\nKopple nur, wenn „%2$@“ denselben Code zeigt." } },
@@ -747,6 +852,13 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Das Koppeln wurde abgebrochen. Öffne zum Koppeln auf beiden Geräten Einstellungen ▸ Remote und bestätige den Code auf beiden." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le jumelage a été annulé. Pour jumeler, ouvrez Réglages ▸ Remote sur les deux appareils et confirmez le code sur chacun." } }
+      }
+    },
+    "Untitled" : {
+      "comment" : "Name of a document without a file name, e.g. in the remote's list of presentations.",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ohne Titel" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sans titre" } }
       }
     },
     "Update SlidePilot on “%@” to the latest version." : {
@@ -891,6 +1003,103 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ wird auch aus den vertrauenswürdigen Geräten entfernt und muss erneut gekoppelt werden." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » est aussi retiré des appareils de confiance et doit être de nouveau jumelé." } }
+      }
+    },
+    "“%@” is not a SlidePilot notes file in RTF format." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ ist keine SlidePilot-Notizdatei im RTF-Format." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » n’est pas un fichier de notes SlidePilot au format RTF." } }
+      }
+    },
+    "Allow Access to Play Video…" : {
+      "comment" : "Button over a video on the current slide when the PDF's folder is not accessible",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff zum Abspielen erlauben …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès pour lire la vidéo…" } }
+      }
+    },
+    "Allow Access to the Folder?" : {
+      "comment" : "Title of the alert that asks for access to the PDF's folder (videos and run: links)",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff auf den Ordner erlauben?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès au dossier ?" } }
+      }
+    },
+    "Check that the file is in the place the PDF expects, relative to the PDF." : {
+      "comment" : "Message when a run: link target is missing",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Prüfe, ob die Datei dort liegt, wo das PDF sie erwartet (relativ zum PDF)." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vérifiez que le fichier se trouve à l’emplacement attendu par le PDF, relativement au PDF." } }
+      }
+    },
+    "Choose the folder that contains the PDF and its videos." : {
+      "comment" : "Message of the folder picker for the PDF's folder",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle den Ordner, der das PDF und seine Videos enthält." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez le dossier qui contient le PDF et ses vidéos." } }
+      }
+    },
+    "Links in a PDF can open documents and videos, but not programs or scripts." : {
+      "comment" : "Message when a run: link points to a program or script",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Links in einem PDF können Dokumente und Videos öffnen, aber keine Programme oder Skripte." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les liens d’un PDF peuvent ouvrir des documents et des vidéos, mais pas des programmes ni des scripts." } }
+      }
+    },
+    "Not Now" : {
+      "comment" : "Alert button that declines folder access for now",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht jetzt" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus tard" } }
+      }
+    },
+    "Open file %@" : {
+      "comment" : "VoiceOver action of a run: link on a slide; the argument is the file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Datei %@ öffnen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir le fichier %@" } }
+      }
+    },
+    "SlidePilot does not open “%@”." : {
+      "comment" : "Alert title when a run: link points to a program or script; the argument is the file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot öffnet „%@“ nicht." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot n’ouvre pas « %@ »." } }
+      }
+    },
+    "SlidePilot needs access to the folder of this PDF to play “%@”." : {
+      "comment" : "Help tag of the button over a video; the argument is the video's file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot benötigt Zugriff auf den Ordner dieses PDFs, um „%@“ abzuspielen." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a besoin d’accéder au dossier de ce PDF pour lire « %@ »." } }
+      }
+    },
+    "The file “%@” could not be found." : {
+      "comment" : "Alert title when a run: link target is missing; the argument is the file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Datei „%@“ wurde nicht gefunden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le fichier « %@ » est introuvable." } }
+      }
+    },
+    "This PDF contains videos or links to files next to it. To play and open them, choose the folder that contains the PDF. SlidePilot remembers it for all PDFs in that folder." : {
+      "comment" : "Message of the alert that asks for access to the PDF's folder",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Dieses PDF enthält Videos oder Links auf Dateien neben dem PDF. Wähle den Ordner mit dem PDF, damit SlidePilot sie abspielen und öffnen kann. SlidePilot merkt sich den Ordner für alle PDFs darin." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ce PDF contient des vidéos ou des liens vers des fichiers situés à côté. Pour les lire et les ouvrir, choisissez le dossier qui contient le PDF. SlidePilot s’en souvient pour tous les PDF de ce dossier." } }
+      }
+    },
+    "Video %@" : {
+      "comment" : "VoiceOver label of a video player on a slide; the argument is the file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Video %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vidéo %@" } }
+      }
+    },
+    "Video “%@” not found" : {
+      "comment" : "Shown over a video on the current slide when its file is missing; the argument is the file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Video „%@“ nicht gefunden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vidéo « %@ » introuvable" } }
       }
     }
   },

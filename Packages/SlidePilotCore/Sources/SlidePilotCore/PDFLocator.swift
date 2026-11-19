@@ -36,8 +36,8 @@ public struct FileBookmarkLocator: PDFLocator {
     public init() {}
 
     #if os(macOS)
-    // The app opens PDFs read-only (user-selected files: read-only); without
-    // `securityScopeAllowOnlyReadAccess` the sandbox refuses a security-scoped bookmark.
+    // The app only reads PDFs (viewer documents), so a read-only scope is enough; a PDF opened
+    // read-only gets no security-scoped bookmark without `securityScopeAllowOnlyReadAccess`.
     private static let creationOptions: URL.BookmarkCreationOptions = [.withSecurityScope, .securityScopeAllowOnlyReadAccess]
     private static let resolutionOptions: URL.BookmarkResolutionOptions = [.withSecurityScope, .withoutUI, .withoutMounting]
     #else

@@ -29,6 +29,8 @@ struct SlideSurface: View {
     @State private var slide: RenderedSlide?
     @State private var box: PixelSize?
     @State private var pageLinks: PageLinks?
+    @State private var pageMovies: PageMovies?
+    @Environment(LinkedFiles.self) private var linkedFiles: LinkedFiles?
     /// Counts crossfaded slide changes, so the new slide is a new view on top of the old one.
     @State private var generation = 0
     /// The cache the shown image came from; a reloaded PDF fades in too, like the old app.
@@ -44,6 +46,13 @@ struct SlideSurface: View {
         let cache: ObjectIdentifier
         let page: Int
         let links: [SlideLink]
+    }
+
+    /// The videos of one page of one cache (NAV-07).
+    private struct PageMovies {
+        let cache: ObjectIdentifier
+        let page: Int
+        let movies: [SlideMovie]
     }
 
     private struct Request: Equatable {
@@ -95,6 +104,9 @@ struct SlideSurface: View {
             .task(id: LinkRequest(cache: ObjectIdentifier(cache), page: page)) {
                 await loadLinks()
             }
+            .task(id: LinkRequest(cache: ObjectIdentifier(cache), page: page)) {
+                await loadMovies()
+            }
             // The presentation shows the slide on black without a frame.
             .slideOutline(role != .presentation)
             .accessibilityElement(children: .ignore)
@@ -104,6 +116,10 @@ struct SlideSurface: View {
                 ForEach(Array(links.enumerated()), id: \.offset) { _, link in
                     Button { follow(link) } label: { link.accessibilityActionName }
                 }
+            }
+            // After the slide's own accessibility element, so VoiceOver reaches the players.
+            .overlay {
+                SlideMovieLayer(movies: movies, region: region, page: page, isPresenter: role == .current)
             }
     }
 
@@ -115,11 +131,27 @@ struct SlideSurface: View {
         return pageLinks.links.filter { $0.unitRect(in: region) != nil }
     }
 
+    /// The videos of the shown page. The next-slide preview shows only the PDF's poster.
+    private var movies: [SlideMovie] {
+        guard role != .next, let pageMovies,
+              pageMovies.cache == ObjectIdentifier(cache), pageMovies.page == page
+        else { return [] }
+        return pageMovies.movies
+    }
+
     private func follow(_ link: SlideLink) {
         switch link.target {
         case .page(let index): pageLinkAction?(index)
         case .url(let url): openURL(url)
+        case .file(let reference): linkedFiles?.open(reference)
         }
+    }
+
+    private func loadMovies() async {
+        guard role != .next, linkedFiles != nil else { return }
+        let movies = await cache.movies(page: page)
+        guard !Task.isCancelled else { return }
+        pageMovies = PageMovies(cache: ObjectIdentifier(cache), page: page, movies: movies)
     }
 
     private func loadLinks() async {

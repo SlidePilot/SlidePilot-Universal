@@ -161,6 +161,32 @@ extension MacSnapshots {
         try await WindowSnapshot.record(window, name: "navigator-list-\(appearance.rawValue)")
     }
 
+    // NAV-07: slide 2 of media.pdf with its video in the system player, and the same slide
+    // without the video file (the presenter says so over the PDF's poster).
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func embeddedVideo(appearance: WindowSnapshot.Appearance) async throws {
+        let data = try Fixture.data("media.pdf")
+        for withVideo in [true, false] {
+            let folder = FileManager.default.temporaryDirectory.appending(path: "media-\(UUID().uuidString)")
+            try FileManager.default.createDirectory(at: folder.appending(path: "media"), withIntermediateDirectories: true)
+            defer { try? FileManager.default.removeItem(at: folder) }
+            let url = folder.appending(path: "media.pdf")
+            try data.write(to: url)
+            if withVideo {
+                try Fixture.data("media/test-pattern.mp4").write(to: folder.appending(path: "media/test-pattern.mp4"))
+            }
+            let view = DocumentView(
+                document: try PDFFileDocument(data: data), fileURL: url, page: 1,
+                layoutStore: InMemoryPresenterLayoutStore(), companionStore: nil, folderAccessStore: nil
+            ).snapshotScene()
+            let window = WindowSnapshot.makeWindow(view, appearance: appearance)
+            defer { window.close() }
+            // The player needs a moment to show the first frame.
+            try await Task.sleep(for: .seconds(3))
+            try await WindowSnapshot.record(window, name: "video-\(withVideo ? "player" : "missing")-\(appearance.rawValue)")
+        }
+    }
+
     // SET-01, SET-05: the General pane of the Settings window, Keep awake on. Only the pane:
     // the window's tab bar is not drawn outside a Settings scene.
     @Test(arguments: WindowSnapshot.Appearance.allCases)

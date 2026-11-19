@@ -10,6 +10,8 @@ import UIKit
 public enum LegacyNotesRTFError: Error, Equatable, Sendable {
     /// The data is not a readable RTF document.
     case unreadable
+    /// The RTF document has no page separators, so it is not a SlidePilot notes file.
+    case noPages
     /// The notes could not be written as RTF.
     case unwritable
 }

@@ -29,6 +29,8 @@ struct PresentationView: View {
             CurtainCover(curtain: session.curtain)
         }
         .ignoresSafeArea()
+        // The same players as the presenter, so the videos play mirrored (NAV-07).
+        .environment(session.linkedFiles)
         #if os(macOS)
         // A click makes the presentation window key; the keys keep working there (NAV-01).
         .slideNavigationKeys(session)

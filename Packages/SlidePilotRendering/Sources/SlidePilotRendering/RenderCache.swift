@@ -63,6 +63,9 @@ public actor RenderCache {
     private var focus: Focus?
     /// Links per page, running or done; tiny, kept for the session.
     private var pageLinks: [Int: Task<[SlideLink], Never>] = [:]
+    /// Movies per page, like the links.
+    private var pageMovies: [Int: Task<[SlideMovie], Never>] = [:]
+    private var linkedFiles: Task<[String], Never>?
 
     /// - Parameters:
     ///   - data: The PDF. Every worker opens its own `PDFDocument` from it (DEF-02).
@@ -170,6 +173,27 @@ public actor RenderCache {
         let rasterizer = nextBackgroundRasterizer()
         let read = Task { await rasterizer.links(page: page) }
         pageLinks[page] = read
+        return await read.value
+    }
+
+    // MARK: - Movies and linked files
+
+    /// The movies on `page` (NAV-07), read once per page like the links.
+    public func movies(page: Int) async -> [SlideMovie] {
+        if let read = pageMovies[page] { return await read.value }
+        let rasterizer = nextBackgroundRasterizer()
+        let read = Task { await rasterizer.movies(page: page) }
+        pageMovies[page] = read
+        return await read.value
+    }
+
+    /// Every file the PDF refers to with `\movie` or a `run:` link, as written in the PDF,
+    /// without duplicates. The app asks for folder access when this is not empty (ADR 0012).
+    public func linkedFileReferences() async -> [String] {
+        if let linkedFiles { return await linkedFiles.value }
+        let rasterizer = nextBackgroundRasterizer()
+        let read = Task { await rasterizer.linkedFileReferences() }
+        linkedFiles = read
         return await read.value
     }
 
