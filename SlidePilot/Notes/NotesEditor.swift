@@ -90,10 +90,10 @@ private struct NotesFormatMenuItems: View {
             // All pages of the document, also while not editing (NOTES-05).
             Button("Bigger") { changeFontSize(by: 1) }
                 .keyboardShortcut("+")
-                .disabled(session?.notes.isAvailable != true)
+                .disabled(!canChangeFontSize)
             Button("Smaller") { changeFontSize(by: -1) }
                 .keyboardShortcut("-")
-                .disabled(session?.notes.isAvailable != true)
+                .disabled(!canChangeFontSize)
         }
         #if os(macOS)
         Menu("Text") {
@@ -111,6 +111,11 @@ private struct NotesFormatMenuItems: View {
         }
         .disabled(actions == nil)
         #endif
+    }
+
+    /// Also off in draw mode, which disables the notes commands (DRAW-05).
+    private var canChangeFontSize: Bool {
+        session?.notes.isAvailable == true && session?.drawing.isActive != true
     }
 
     private func changeFontSize(by delta: CGFloat) {

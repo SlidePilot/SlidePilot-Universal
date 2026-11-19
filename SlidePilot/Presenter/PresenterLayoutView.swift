@@ -15,6 +15,10 @@ struct PresenterLayoutView: View {
         let slots = layout.layout.visibleSlots
         let arrangement = layout.arrangement
         Group {
+            if session.drawing.isActive {
+                // Draw mode replaces the arrangement with the current slide (LAY-08).
+                drawingSlot
+            } else {
             switch arrangement {
             case .single:
                 slot(slots[0])
@@ -37,8 +41,20 @@ struct PresenterLayoutView: View {
                     slot(slots[2])
                 }
             }
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    /// The current slide with the editable drawing on top (DRAW-01). Links are off, the
+    /// canvas covers them anyway.
+    private var drawingSlot: some View {
+        SlideSurface(cache: session.cache, page: session.currentPage, role: .current)
+            .overlay {
+                EditableDrawingLayer(model: session.drawing, page: session.currentPage)
+            }
+            .padding(padding)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func slot(_ kind: PresenterSlot) -> some View {
@@ -92,10 +108,14 @@ private struct PresenterSlotView: View {
         switch kind {
         case .current:
             SlideSurface(cache: session.cache, page: session.currentPage, role: .current, pageLinkAction: session.showPage)
+                .drawingOverlay(session.drawing.drawings, page: session.currentPage)
                 .slideNavigationForVoiceOver(session)
                 .finishesNotesEditing(session)
         case .next:
-            NextSlidePreview(cache: session.cache, currentPage: session.currentPage, pageLinkAction: session.showPage)
+            NextSlidePreview(
+                cache: session.cache, currentPage: session.currentPage, pageLinkAction: session.showPage,
+                drawings: session.drawing.drawings
+            )
                 .slideNavigationForVoiceOver(session)
                 .finishesNotesEditing(session)
         case .notes:
