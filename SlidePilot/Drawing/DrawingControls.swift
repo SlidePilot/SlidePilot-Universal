@@ -119,7 +119,7 @@ private struct DrawingToolbar: ToolbarContent {
                 .help(Text("Remove all strokes from the slide"))
                 // One toggle instead of a segmented picker: on iPad a segmented control
                 // looks like a second toolbar inside the toolbar.
-                Toggle("White Canvas", systemImage: "doc", isOn: isWhiteCanvas)
+                Toggle("White Canvas", systemImage: "square.dashed", isOn: isWhiteCanvas)
                     .help(Text("White Canvas"))
             }
         }
@@ -200,6 +200,7 @@ private struct ColorPalette: View {
     @ScaledMetric(relativeTo: .body) private var rowHeight = 50.0
     #endif
     @ScaledMetric(relativeTo: .body) private var width = 200.0
+    @ScaledMetric(relativeTo: .body) private var swatchSize = 18.0
 
     var body: some View {
         List(selection: selection) {
@@ -207,13 +208,9 @@ private struct ColorPalette: View {
                 Label {
                     color.name
                 } icon: {
-                    Image(systemName: "circle.fill")
-                        .foregroundStyle(color.swatch)
-                        // White and black stay visible on any popover background.
-                        .overlay {
-                            Image(systemName: "circle")
-                                .foregroundStyle(.separator)
-                        }
+                    // The same ring swatch as the toolbar's color button.
+                    ColorSwatch(color: color)
+                        .frame(width: swatchSize, height: swatchSize)
                 }
                 .tag(color)
                 #if os(iOS)
