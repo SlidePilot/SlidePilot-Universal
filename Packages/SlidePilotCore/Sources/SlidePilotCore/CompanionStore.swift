@@ -144,6 +144,19 @@ public actor CompanionStore {
         storedEntries().map(\.entry)
     }
 
+    /// The entries with the size of their files, for the stored data overview (SET-07).
+    func entriesWithFileSizes() -> [(entry: CompanionEntry, byteCount: Int64)] {
+        storedEntries().map { stored in
+            let size = (try? FileManager.default.attributesOfItem(atPath: fileURL(of: stored.entry.id).path(percentEncoded: false))[.size] as? NSNumber)?.int64Value
+            return (stored.entry, size ?? 0)
+        }
+    }
+
+    /// Whether the entry's bookmark still finds its PDF.
+    func isPDFFound(_ entry: CompanionEntry) -> Bool {
+        locator.resolve(entry.pdf.bookmark) != nil
+    }
+
     public func delete(_ id: UUID) {
         _ = storedEntries()
         cache?[id] = nil

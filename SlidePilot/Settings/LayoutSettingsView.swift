@@ -37,6 +37,9 @@ enum SettingsTab: String, Hashable {
     case general
     case layout
     case remote
+    /// The stored data overview (SET-07); a page of the iPad sheet, a sheet of the General
+    /// tab on the Mac.
+    case storedData
 
     /// The Mac Settings window's selected tab, so Edit Layout… can switch to Layout while
     /// the window is open.

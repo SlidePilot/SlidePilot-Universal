@@ -154,6 +154,29 @@ public final class DocumentCompanion {
         entry?.pdf = updated.pdf
     }
 
+    /// Deletes the stored entry of this document from the stored data overview (SET-07).
+    ///
+    /// The document continues with empty notes and settings that are not stored, so a later
+    /// save does not write the deleted data back; new changes are stored as a new entry.
+    /// The settings already applied in the window stay on screen until they change.
+    public func deleteStoredData() async {
+        guard let store, let current = entry else { return }
+        delayedSave?.cancel()
+        delayedSave = nil
+        entry = CompanionEntry(pdf: current.pdf, lastOpened: current.lastOpened)
+        isStored = false
+        editCount += 1
+        isEdited = false
+        // In the save chain, so a save that is already writing finishes before the delete.
+        let previous = saveChain
+        let link = Task {
+            await previous?.value
+            await store.delete(current.id)
+        }
+        saveChain = link
+        await link.value
+    }
+
     /// Writes pending changes now, e.g. when the window closes or the app quits or goes to
     /// the background. Returns when they are on disk.
     public func flush() async {
@@ -202,7 +225,10 @@ public final class DocumentCompanion {
         // A PDF without any stored data gets no file, e.g. when its window just closes.
         if entry.hasStoredData || isStored {
             await store.save(entry)
-            isStored = true
+            // Not when the stored data was deleted during the write (SET-07).
+            if self.entry?.id == entry.id {
+                isStored = true
+            }
         }
         if editCount == savedEdits {
             isEdited = false
