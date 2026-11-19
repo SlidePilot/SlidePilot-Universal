@@ -37,6 +37,7 @@ struct DocumentView: View {
         }
             .shrinksOnMemoryWarning(session)
             .companionFile(session, fileURL: fileURL)
+            .notesFileTransfer(session, fileURL: fileURL)
             // The presentation surfaces find the session in the registry (DOC-04).
             .onAppear { registry.register(session) }
             .onDisappear { registry.unregister(session.id) }
