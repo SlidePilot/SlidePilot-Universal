@@ -96,7 +96,9 @@ private struct SlotContentPicker: View {
                         .tag(slot)
                 }
             } label: {
+                // The subtitle shows the slot's slide without opening the submenu.
                 Text(place.title)
+                Text(layout.layout.slots[index].contentTitle)
             }
         }
     }

@@ -46,7 +46,7 @@
     "Arrangement" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Anordnung" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Disposition" } }
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Agencement" } }
       }
     },
     "Connect a display, or start Screen Mirroring in Control Center." : {
@@ -152,16 +152,31 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gauche" } }
       }
     },
-    "None" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kein" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucun" } }
-      }
-    },
     "Normal" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } }
+      }
+    },
+    "Padding.None" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "None" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kein" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune" } }
+      }
+    },
+    "Padding.Normal" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normale" } }
+      }
+    },
+    "Padding.Small" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Small" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Klein" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Petite" } }
       }
     },
     "Right" : {
@@ -182,10 +197,10 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages…" } }
       }
     },
-    "Size of the clock and the stopwatch or timer above the slides." : {
+    "Size of the clock and timer above the slides." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Größe der Uhr und der Stoppuhr oder des Timers über den Folien." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Taille de l’horloge et du chronomètre ou minuteur au-dessus des diapositives." } }
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Größe von Uhr und Timer über den Folien." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Taille de l’horloge et du minuteur au-dessus des diapositives." } }
       }
     },
     "Slide" : {

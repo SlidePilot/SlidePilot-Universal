@@ -26,7 +26,7 @@ struct LayoutSettingsView: View {
                 }
             } label: {
                 Text("Time display")
-                Text("Size of the clock and the stopwatch or timer above the slides.")
+                Text("Size of the clock and timer above the slides.")
             }
         }
     }
@@ -44,11 +44,12 @@ enum SettingsTab: String, Hashable {
 }
 
 private extension LayoutPadding {
-    var title: LocalizedStringKey {
+    /// Own keys, because French needs other forms here than for the time display sizes.
+    var title: LocalizedStringResource {
         switch self {
-        case .none: "None"
-        case .small: "Small"
-        case .normal: "Normal"
+        case .none: LocalizedStringResource("Padding.None", defaultValue: "None")
+        case .small: LocalizedStringResource("Padding.Small", defaultValue: "Small")
+        case .normal: LocalizedStringResource("Padding.Normal", defaultValue: "Normal")
         }
     }
 }

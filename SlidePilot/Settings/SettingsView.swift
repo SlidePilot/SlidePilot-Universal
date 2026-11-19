@@ -11,9 +11,11 @@ struct SettingsView: View {
     #else
     /// The pages pushed on the sheet's stack; Edit Layout… opens the sheet on Layout.
     @State private var path: [SettingsTab]
+    private let request: SettingsTabRequest
 
-    init(initialTab: SettingsTab? = nil) {
-        _path = State(initialValue: initialTab.map { $0 == .general ? [] : [$0] } ?? [])
+    init(request: SettingsTabRequest = SettingsTabRequest(tab: nil)) {
+        self.request = request
+        _path = State(initialValue: request.path)
     }
     #endif
 
@@ -64,6 +66,8 @@ struct SettingsView: View {
                 }
             }
         }
+        // Edit Layout… while the sheet is open on another page.
+        .onChange(of: request) { path = request.path }
         // Here, so the pairing code shows on every page of the sheet (REM-02).
         .remoteAlerts()
         #endif

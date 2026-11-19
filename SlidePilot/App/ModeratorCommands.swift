@@ -6,6 +6,7 @@ struct ModeratorCommands: Commands {
     var body: some Commands {
         CommandMenu("Moderator") {
             EditLayoutMenuItem()
+            Divider()
             NavigatorMenuItems()
             Divider()
             TimerMenuItems()

@@ -15,6 +15,22 @@ extension FocusedValues {
     @Entry var showSettings: ShowSettingsAction?
 }
 
+/// One request to show the settings sheet on a page. Each request is new, so asking for
+/// the same page again still switches back to it.
+struct SettingsTabRequest: Equatable {
+    let tab: SettingsTab?
+    private let id = UUID()
+
+    init(tab: SettingsTab?) {
+        self.tab = tab
+    }
+
+    /// The sheet's navigation path for this request; General is the root page.
+    var path: [SettingsTab] {
+        tab.map { $0 == .general ? [] : [$0] } ?? []
+    }
+}
+
 /// Settings… (⌘,) in the app menu of the iPad menu bar, where the Mac has it too.
 struct SettingsCommands: Commands {
     var body: some Commands {
@@ -45,7 +61,7 @@ extension View {
 
 private struct SettingsSheetModifier: ViewModifier {
     @State private var isShowingSettings = false
-    @State private var initialTab: SettingsTab?
+    @State private var request = SettingsTabRequest(tab: nil)
 
     func body(content: Content) -> some View {
         content
@@ -54,16 +70,17 @@ private struct SettingsSheetModifier: ViewModifier {
                 // menu when space is short.
                 ToolbarItem(placement: .secondaryAction) {
                     Button("Settings", systemImage: "gearshape") {
-                        initialTab = nil
+                        request = SettingsTabRequest(tab: nil)
                         isShowingSettings = true
                     }
                 }
             }
             .sheet(isPresented: $isShowingSettings) {
-                SettingsView(initialTab: initialTab)
+                SettingsView(request: request)
             }
             .focusedSceneValue(\.showSettings, ShowSettingsAction { tab in
-                initialTab = tab
+                // A new request also switches the page while the sheet is open.
+                request = SettingsTabRequest(tab: tab)
                 isShowingSettings = true
             })
     }
