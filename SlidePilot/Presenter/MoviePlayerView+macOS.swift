@@ -42,7 +42,9 @@ struct MoviePlayerView: NSViewRepresentable {
 final class SlideMoviePlayerView: AVPlayerView {
     /// The PDF sets the player's size, which can be too small for the control bar: then
     /// only the system's minimal play button is shown, so no control is cut off.
-    private static let fullControlsSize = CGSize(width: 320, height: 140)
+    /// On macOS 26 the bar drops items as the player shrinks; at about 160 pt wide its
+    /// outer buttons are cut off.
+    private static let fullControlsSize = CGSize(width: 180, height: 60)
 
     var showsControls = true {
         didSet { updateControlsStyle() }
