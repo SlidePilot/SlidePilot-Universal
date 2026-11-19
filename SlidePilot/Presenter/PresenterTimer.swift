@@ -57,7 +57,7 @@ private struct PresenterTimerModifier: ViewModifier {
             }
             .sheet(isPresented: $isSettingTimer) {
                 SetTimerSheet(duration: session.timer.timerDuration) { seconds in
-                    session.timer.setTimerDuration(seconds)
+                    session.timer.setTimer(seconds: seconds)
                 }
             }
             // While the sheet is open, the plain-letter shortcuts must not fire from its
@@ -69,47 +69,54 @@ private struct PresenterTimerModifier: ViewModifier {
     }
 }
 
-/// Mode, Set Timer, Start/Stop and Reset in the presenter's toolbar (TIME-02 to TIME-04).
+/// Timer toggle, Start/Stop and Reset in the presenter's toolbar (TIME-02 to TIME-04).
 private struct TimerToolbar: ToolbarContent {
     let session: PresentationSession
     @Binding var isSettingTimer: Bool
 
     var body: some ToolbarContent {
-        ToolbarItem {
-            TimeModePicker(session: session)
-                #if os(macOS)
-                .pickerStyle(.segmented)
-                #else
-                // A segmented control in the iPad toolbar looks like a second toolbar
-                // inside it; a menu button fits the bar.
-                .pickerStyle(.menu)
-                #endif
-                // Only as wide as its labels; the iPad toolbar would stretch it.
-                .fixedSize()
-        }
         ToolbarItemGroup {
-            Button("Set Timer…", systemImage: "timer") {
-                isSettingTimer = true
-            }
-            .disabled(session.timer.mode != .timer)
+            TimerToggle(session: session, isSettingTimer: $isSettingTimer)
             StartStopTimeButton(session: session)
             ResetTimeButton(session: session)
         }
     }
 }
 
-/// Stopwatch / Timer (TIME-04). Used in the toolbar and the Moderator menu.
-struct TimeModePicker: View {
+/// Shows whether the timer is on (TIME-04, changed). Switching it on asks for the time;
+/// the timer is on once a time above zero is set. Switching it off goes back to the stopwatch.
+/// Moderator > Set Timer… (T) changes a running timer without switching it off; toolbar
+/// items get no context menu (a right click or long press shows the toolbar's own menu or
+/// acts as a tap).
+private struct TimerToggle: View {
+    let session: PresentationSession
+    @Binding var isSettingTimer: Bool
+
+    var body: some View {
+        let isOn = session.timer.mode == .timer
+        Toggle("Timer", systemImage: "timer", isOn: Binding(
+            get: { isOn },
+            set: { turnOn in
+                if turnOn {
+                    isSettingTimer = true
+                } else {
+                    session.timer.turnOffTimer()
+                }
+            }
+        ))
+        .help(isOn ? Text("Turn Off Timer") : Text("Set Timer…"))
+    }
+}
+
+/// Back to the stopwatch (TIME-04, changed), in the Moderator menu.
+struct TurnOffTimerButton: View {
     let session: PresentationSession
 
     var body: some View {
-        Picker("Mode", selection: Binding(
-            get: { session.timer.mode },
-            set: { session.timer.setMode($0) }
-        )) {
-            Text("Stopwatch").tag(TimeMode.stopwatch)
-            Text("Timer").tag(TimeMode.timer)
+        Button("Turn Off Timer") {
+            session.timer.turnOffTimer()
         }
+        .disabled(session.timer.mode != .timer)
     }
 }
 
