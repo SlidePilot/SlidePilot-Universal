@@ -6,10 +6,14 @@ extension View {
     /// The drawing of `page`, read-only, over a slide surface (DRAW-01): presentation, current
     /// slide outside draw mode, next-slide preview and thumbnails. Apply it to the
     /// `SlideSurface` itself, so it has the slide's frame. Later layers (e.g. the pointer)
-    /// stack as further overlays on top.
-    func drawingOverlay(_ drawings: DocumentDrawings, page: Int, region: PageRegion = .full) -> some View {
+    /// stack as further overlays on top. `isOutlined` keeps the slide's hairline visible over
+    /// a white canvas; the presentation has none.
+    func drawingOverlay(
+        _ drawings: DocumentDrawings, page: Int, region: PageRegion = .full, isOutlined: Bool = true
+    ) -> some View {
         overlay {
             ReadOnlyDrawingLayer(drawings: drawings, page: page, region: region)
+                .slideOutline(isOutlined && drawings.drawing(onPage: page).background == .white)
         }
     }
 }

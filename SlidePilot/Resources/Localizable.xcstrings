@@ -393,12 +393,6 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ces notes ont été enregistrées avec une version plus récente de SlidePilot." } }
       }
     },
-    "Transparent Canvas" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Transparente Zeichenfläche" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Canevas transparent" } }
-      }
-    },
     "Underline" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Unterstrichen" } },

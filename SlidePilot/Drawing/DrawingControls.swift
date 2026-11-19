@@ -94,60 +94,51 @@ private struct DrawingControlsModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .toolbar {
-                if session.drawing.isActive {
-                    DrawingToolbar(session: session)
-                } else {
-                    ToolbarItem {
-                        Button("Draw", systemImage: "pencil.tip.crop.circle") {
-                            session.startDrawing()
-                        }
-                        .help(Text("Draw on the current slide"))
-                    }
-                }
+                DrawingToolbar(session: session)
             }
     }
 }
 
-/// Color, Clear, canvas background and Done (DRAW-03, DRAW-04). Standard toolbar items:
-/// the current color is visible and the presets are one click away (ADR 0016).
+/// Draw, and in draw mode color, Clear and the white canvas (DRAW-03, DRAW-04). Draw is a
+/// toggle that stays in place and ends draw mode too, so the tools need no Done button,
+/// which the full iPad toolbar would push into its overflow menu.
 private struct DrawingToolbar: ToolbarContent {
     let session: PresentationSession
 
     private var model: DrawingModel { session.drawing }
 
     var body: some ToolbarContent {
-        ToolbarItem {
-            ColorButton(model: model)
-        }
-        ToolbarItem {
-            Button("Clear Drawings", systemImage: "eraser") {
-                model.clear(page: session.currentPage)
+        ToolbarItemGroup {
+            Toggle("Draw", systemImage: "pencil.tip.crop.circle", isOn: isDrawing)
+                .help(model.isActive ? Text("Stop drawing") : Text("Draw on the current slide"))
+            if model.isActive {
+                ColorButton(model: model)
+                Button("Clear Drawings", systemImage: "eraser") {
+                    model.clear(page: session.currentPage)
+                }
+                .help(Text("Remove all strokes from the slide"))
+                // One toggle instead of a segmented picker: on iPad a segmented control
+                // looks like a second toolbar inside the toolbar.
+                Toggle("White Canvas", systemImage: "doc", isOn: isWhiteCanvas)
+                    .help(Text("White Canvas"))
             }
-            .help(Text("Remove all strokes from the slide"))
-        }
-        ToolbarItem {
-            Picker("Canvas Background", selection: background) {
-                Label("Transparent Canvas", systemImage: "square.dashed")
-                    .tag(CanvasBackground.transparent)
-                Label("White Canvas", systemImage: "square")
-                    .tag(CanvasBackground.white)
-            }
-            .pickerStyle(.segmented)
-            .help(Text("Canvas Background"))
-        }
-        ToolbarItem(placement: .confirmationAction) {
-            Button("Done") {
-                session.stopDrawing()
-            }
-            .help(Text("Stop drawing"))
         }
     }
 
-    private var background: Binding<CanvasBackground> {
+    private var isDrawing: Binding<Bool> {
         Binding {
-            model.drawings.drawing(onPage: session.currentPage).background
+            model.isActive
+        } set: { isOn in
+            guard isOn != model.isActive else { return }
+            session.toggleDrawing()
+        }
+    }
+
+    private var isWhiteCanvas: Binding<Bool> {
+        Binding {
+            model.drawings.drawing(onPage: session.currentPage).background == .white
         } set: {
-            model.setBackground($0, onPage: session.currentPage)
+            model.setBackground($0 ? .white : .transparent, onPage: session.currentPage)
         }
     }
 }
@@ -164,11 +155,8 @@ private struct ColorButton: View {
             model.isColorPaletteShown.toggle()
         } label: {
             // A shape, not a symbol: toolbars tint symbol images, which would hide the
-            // color, and show the title of a label whose icon is not a symbol. Outlined, so
-            // white and black stay visible on any bar.
-            Circle()
-                .fill(model.drawings.color.swatch)
-                .strokeBorder(.secondary, lineWidth: 1)
+            // color, and show the title of a label whose icon is not a symbol.
+            ColorSwatch(color: model.drawings.color)
                 .frame(width: swatchSize, height: swatchSize)
         }
         .help(Text("Color"))
@@ -181,47 +169,83 @@ private struct ColorButton: View {
     }
 }
 
-/// The preset colors as a standard picker; choosing one closes the popover.
-private struct ColorPalette: View {
-    let model: DrawingModel
-    #if os(iOS)
-    /// A form in a popover has no height of its own; six rows, growing with Dynamic Type.
-    @ScaledMetric(relativeTo: .body) private var height = 340.0
-    #endif
+/// The current color: a dot inside a ring of the same color. The hairline keeps white
+/// visible on a light bar and black on a dark one.
+private struct ColorSwatch: View {
+    let color: StrokeColor
 
     var body: some View {
-        Form {
-            Picker("Color", selection: selection) {
-                ForEach(StrokeColor.presets, id: \.self) { color in
-                    Label {
-                        color.name
-                    } icon: {
-                        Image(systemName: "circle.fill")
-                            .foregroundStyle(color.swatch)
-                            // White and black stay visible on any popover background.
-                            .overlay {
-                                Image(systemName: "circle")
-                                    .foregroundStyle(.separator)
-                            }
-                    }
-                    .tag(color)
+        ZStack {
+            Circle()
+                .strokeBorder(color.swatch, lineWidth: 2)
+            Circle()
+                .fill(color.swatch)
+                .scaleEffect(0.6)
+        }
+        .overlay {
+            Circle().strokeBorder(.separator, lineWidth: 0.5)
+        }
+    }
+}
+
+/// The preset colors as a list; the current color has the list's selection. Choosing one
+/// closes the popover.
+private struct ColorPalette: View {
+    let model: DrawingModel
+    /// A list in a popover has no size of its own: the height of one row, growing with
+    /// Dynamic Type, times the six presets.
+    #if os(macOS)
+    @ScaledMetric(relativeTo: .body) private var rowHeight = 32.0
+    #else
+    @ScaledMetric(relativeTo: .body) private var rowHeight = 50.0
+    #endif
+    @ScaledMetric(relativeTo: .body) private var width = 200.0
+
+    var body: some View {
+        List(selection: selection) {
+            ForEach(StrokeColor.presets, id: \.self) { color in
+                Label {
+                    color.name
+                } icon: {
+                    Image(systemName: "circle.fill")
+                        .foregroundStyle(color.swatch)
+                        // White and black stay visible on any popover background.
+                        .overlay {
+                            Image(systemName: "circle")
+                                .foregroundStyle(.separator)
+                        }
                 }
+                .tag(color)
+                #if os(iOS)
+                // Rows on the popover's own background, not a list inside the popover; the
+                // current color in a bubble, like the selection of a Mac list.
+                .listRowBackground(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(color == model.drawings.color ? AnyShapeStyle(.fill.secondary) : AnyShapeStyle(.clear))
+                        .padding(.horizontal, 8)
+                )
+                .listRowSeparator(.hidden)
+                .accessibilityAddTraits(color == model.drawings.color ? .isSelected : [])
+                #endif
             }
-            .pickerStyle(.inline)
-            .labelsHidden()
         }
         #if os(macOS)
-        .padding()
+        .listStyle(.sidebar)
         #else
-        .frame(idealWidth: 240, idealHeight: height)
+        .listStyle(.plain)
         #endif
+        .scrollContentBackground(.hidden)
+        // Scrolls only when the largest text sizes need more than the estimated height.
+        .scrollBounceBehavior(.basedOnSize)
+        .frame(idealWidth: width, minHeight: rowHeight * 3, idealHeight: rowHeight * Double(StrokeColor.presets.count) + 24)
     }
 
-    private var selection: Binding<StrokeColor> {
+    private var selection: Binding<StrokeColor?> {
         Binding {
             model.drawings.color
         } set: {
-            model.drawings.selectColor($0)
+            guard let color = $0 else { return }
+            model.drawings.selectColor(color)
             model.isColorPaletteShown = false
         }
     }

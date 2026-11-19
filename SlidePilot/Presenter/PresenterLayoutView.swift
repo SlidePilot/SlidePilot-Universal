@@ -52,6 +52,8 @@ struct PresenterLayoutView: View {
         SlideSurface(cache: session.cache, page: session.currentPage, role: .current)
             .overlay {
                 EditableDrawingLayer(model: session.drawing, page: session.currentPage, onEscape: session.stopDrawing)
+                    // The white canvas would hide the slide's hairline.
+                    .slideOutline(session.drawing.drawings.drawing(onPage: session.currentPage).background == .white)
             }
             .padding(padding)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

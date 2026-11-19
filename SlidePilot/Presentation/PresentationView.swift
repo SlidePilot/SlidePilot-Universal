@@ -23,7 +23,7 @@ struct PresentationView: View {
                 crossfades: SlideCrossfade.isActive(setting: settings.crossfadesSlides, reduceMotion: reduceMotion)
             )
             // Read-only and live while it is drawn (DRAW-01).
-            .drawingOverlay(session.drawing.drawings, page: session.currentPage)
+            .drawingOverlay(session.drawing.drawings, page: session.currentPage, isOutlined: false)
             // Opaque, so it also hides the drawing (DRAW-09) and blocks clicks on the
             // slide's links while shown.
             CurtainCover(curtain: session.curtain)

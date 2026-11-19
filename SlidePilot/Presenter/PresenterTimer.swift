@@ -74,7 +74,13 @@ private struct TimerToolbar: ToolbarContent {
     var body: some ToolbarContent {
         ToolbarItem {
             TimeModePicker(session: session)
+                #if os(macOS)
                 .pickerStyle(.segmented)
+                #else
+                // A segmented control in the iPad toolbar looks like a second toolbar
+                // inside it; a menu button fits the bar.
+                .pickerStyle(.menu)
+                #endif
                 // Only as wide as its labels; the iPad toolbar would stretch it.
                 .fixedSize()
         }
