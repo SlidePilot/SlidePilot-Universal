@@ -19,6 +19,18 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran noir" } }
       }
     },
+    "Bottom Left" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unten links" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En bas à gauche" } }
+      }
+    },
+    "Bottom Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unten rechts" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En bas à droite" } }
+      }
+    },
     "Cancel" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Abbrechen" } },
@@ -60,6 +72,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Präsentation mit einem weißen Bildschirm verdecken" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couvrir la présentation d'un écran blanc" } }
+      }
+    },
+    "Current Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle" } }
       }
     },
     "Current slide, %lld of %lld" : {
@@ -110,10 +128,28 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Garder l’écran allumé" } }
       }
     },
+    "Large Left" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Groß links" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Grande à gauche" } }
+      }
+    },
+    "Large Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Groß rechts" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Grande à droite" } }
+      }
+    },
     "Layout" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Layout" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Disposition" } }
+      }
+    },
+    "Left" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Links" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gauche" } }
       }
     },
     "None" : {
@@ -126,6 +162,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } }
+      }
+    },
+    "Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Rechts" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Droite" } }
       }
     },
     "Settings" : {
@@ -144,6 +186,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Größe der Uhr und der Stoppuhr oder des Timers über den Folien." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Taille de l’horloge et du chronomètre ou minuteur au-dessus des diapositives." } }
+      }
+    },
+    "Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive" } }
       }
     },
     "Slide padding" : {
@@ -355,6 +403,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeitanzeige" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Affichage de l’heure" } }
+      }
+    },
+    "Top Left" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Oben links" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En haut à gauche" } }
+      }
+    },
+    "Top Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Oben rechts" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En haut à droite" } }
       }
     },
     "Underline" : {

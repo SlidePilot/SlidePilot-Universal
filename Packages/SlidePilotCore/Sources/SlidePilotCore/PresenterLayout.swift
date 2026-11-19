@@ -28,6 +28,34 @@ public enum PresenterArrangement: String, Codable, Sendable, CaseIterable {
     /// Whether a separator splits the window into a leading and a trailing column (LAY-03).
     public var hasSeparator: Bool { self != .single }
 
+    /// The slot indices from leading to trailing and top to bottom, as the slots appear in
+    /// the window: in `tripleLeft` the large slot 3 comes first (LAY-04).
+    public var slotIndicesInVisualOrder: [Int] {
+        switch self {
+        case .single: [0]
+        case .double: [0, 1]
+        case .tripleLeft: [2, 0, 1]
+        case .tripleRight: [0, 1, 2]
+        }
+    }
+
+    /// Where the slot at `index` appears in the window, to name it in the slot pickers
+    /// (LAY-04). `nil` for a hidden slot.
+    public func place(ofSlotAt index: Int) -> PresenterSlotPlace? {
+        switch (self, index) {
+        case (.single, 0): .whole
+        case (.double, 0): .left
+        case (.double, 1): .right
+        case (.tripleLeft, 0): .topRight
+        case (.tripleLeft, 1): .bottomRight
+        case (.tripleLeft, 2): .largeLeft
+        case (.tripleRight, 0): .topLeft
+        case (.tripleRight, 1): .bottomLeft
+        case (.tripleRight, 2): .largeRight
+        default: nil
+        }
+    }
+
     /// The share of the width the leading column gets before the separator is moved.
     /// The large slot gets 60 %, like the old app's double layout.
     var defaultLeadingFraction: Double {
@@ -36,6 +64,14 @@ public enum PresenterArrangement: String, Codable, Sendable, CaseIterable {
         case .tripleRight: 0.4
         }
     }
+}
+
+/// Where a visible slot appears in the window (LAY-04).
+public enum PresenterSlotPlace: Sendable, CaseIterable {
+    case whole
+    case left, right
+    case largeLeft, topRight, bottomRight
+    case topLeft, bottomLeft, largeRight
 }
 
 /// The presenter layout: arrangement, slot order and separator positions (LAY-01 to LAY-03).

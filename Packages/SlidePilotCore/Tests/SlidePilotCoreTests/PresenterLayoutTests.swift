@@ -124,6 +124,24 @@ struct PresenterLayoutTests {
         #expect(single.visibleSlots == [.notes])
     }
 
+    // LAY-04: the slot pickers list the visible slots as they appear, large slot first in
+    // tripleLeft, and name each by its place.
+    @Test func slotPlacesInVisualOrder() {
+        let places = PresenterArrangement.allCases.map { arrangement in
+            arrangement.slotIndicesInVisualOrder.map { arrangement.place(ofSlotAt: $0) }
+        }
+        #expect(places == [
+            [.whole],
+            [.left, .right],
+            [.largeLeft, .topRight, .bottomRight],
+            [.topLeft, .bottomLeft, .largeRight],
+        ])
+        #expect(PresenterArrangement.double.place(ofSlotAt: 2) == nil)
+        for arrangement in PresenterArrangement.allCases {
+            #expect(arrangement.slotIndicesInVisualOrder.sorted() == Array(0..<arrangement.slotCount))
+        }
+    }
+
     @Test func setSlotIgnoresSameSlotAndInvalidPosition() {
         var layout = PresenterLayout(arrangement: .tripleRight, slots: [.next, .notes, .current])
         layout.setSlot(.notes, at: 1)
