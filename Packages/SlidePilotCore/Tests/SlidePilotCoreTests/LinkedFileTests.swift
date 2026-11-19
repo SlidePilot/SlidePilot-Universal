@@ -44,7 +44,7 @@ import UniformTypeIdentifiers
         #expect(RunLinkPolicy.allowsOpening(UTType(filenameExtension: fileExtension), fileExtension: fileExtension))
     }
 
-    @Test(arguments: ["app", "command", "sh", "scpt", "pkg", "workflow", "exe", "py"])
+    @Test(arguments: ["app", "command", "sh", "scpt", "pkg", "workflow", "exe", "py", "fileloc", "webloc"])
     func refusesProgramsAndScripts(_ fileExtension: String) {
         #expect(!RunLinkPolicy.allowsOpening(UTType(filenameExtension: fileExtension), fileExtension: fileExtension))
     }

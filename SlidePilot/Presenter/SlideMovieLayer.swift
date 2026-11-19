@@ -76,22 +76,40 @@ private struct SlideMovieView: View {
     }
 
     /// Over the poster: grant the folder, or say that the file is not there.
+    /// The PDF decides the size of the area, so with large text only the symbol may fit;
+    /// VoiceOver still reads the full title.
     @ViewBuilder
     private var missingFile: some View {
         if linkedFiles.needsFolderAccess {
-            Button {
-                linkedFiles.requestFolderAccess()
-            } label: {
-                Label("Allow Access to Play Video…", systemImage: "folder.badge.questionmark")
+            let reason = Text("SlidePilot needs access to the folder of this PDF to play “\(url.lastPathComponent)”.")
+            ViewThatFits {
+                accessButton.labelStyle(.titleAndIcon)
+                accessButton.labelStyle(.iconOnly)
             }
             .buttonStyle(.borderedProminent)
-            .controlSize(.small)
-            .help(Text("SlidePilot needs access to the folder of this PDF to play “\(url.lastPathComponent)”."))
+            .help(reason)
+            .accessibilityHint(reason)
         } else {
-            Label("Video “\(url.lastPathComponent)” not found", systemImage: "exclamationmark.triangle")
-                .font(.caption)
-                .padding(6)
-                .background(.regularMaterial, in: .rect(cornerRadius: 6))
+            ViewThatFits {
+                notFoundLabel.labelStyle(.titleAndIcon)
+                notFoundLabel.labelStyle(.iconOnly)
+            }
+            .font(.callout)
+            .foregroundStyle(.secondary)
+            // Drawn on the PDF's white paper, also in dark mode.
+            .environment(\.colorScheme, .light)
         }
+    }
+
+    private var accessButton: some View {
+        Button {
+            linkedFiles.requestFolderAccess()
+        } label: {
+            Label("Allow Access to Play Video…", systemImage: "folder.badge.questionmark")
+        }
+    }
+
+    private var notFoundLabel: some View {
+        Label("Video “\(url.lastPathComponent)” not found", systemImage: "exclamationmark.triangle")
     }
 }

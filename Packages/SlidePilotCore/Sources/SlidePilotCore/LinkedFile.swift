@@ -45,6 +45,8 @@ public enum RunLinkPolicy {
     private static let blockedExtensions: Set<String> = [
         "app", "command", "tool", "workflow", "action", "terminal", "jar", "pkg", "mpkg",
         "prefpane", "kext", "scpt", "scptd", "applescript", "sh", "zsh", "bash", "csh", "py", "pl", "rb",
+        // Location files open whatever they point to.
+        "fileloc", "webloc", "inetloc", "url",
     ]
 
     private static let blockedTypes: [UTType] = [

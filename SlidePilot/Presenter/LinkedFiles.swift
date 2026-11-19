@@ -45,6 +45,8 @@ final class LinkedFiles {
     @ObservationIgnored private var players: [URL: AVPlayer] = [:]
     @ObservationIgnored private var activePage: Int?
     @ObservationIgnored private var hasAsked = false
+    /// The local files the PDF refers to, checked again after a grant.
+    @ObservationIgnored private var referencedFiles: [URL] = []
     /// Changes whenever access was granted, so views check their files again.
     private(set) var accessGeneration = 0
 
@@ -62,13 +64,16 @@ final class LinkedFiles {
     /// Reads which files the PDF refers to and asks for folder access once per opened
     /// document when one of them is next to the PDF but not readable.
     func prepare(documentURL: URL?, cache: RenderCache) async {
+        // A moved document no longer needs the old folder.
+        if documentURL != self.documentURL { stopAccessingFolders() }
         self.documentURL = documentURL
         guard let documentURL else { return }
         let references = await cache.linkedFileReferences()
         guard !Task.isCancelled else { return }
         let files = references.compactMap { LinkedFile.resolve($0, relativeTo: documentURL) }.filter(\.isFileURL)
+        referencedFiles = files
         startAccessingGrantedFolders(for: files + [documentURL])
-        needsFolderAccess = files.contains { !Self.isReadable($0) && LinkedFileSystem.mayExist($0) }
+        updateNeedsFolderAccess()
         if needsFolderAccess, !hasAsked {
             hasAsked = true
             isAskingForFolderAccess = true
@@ -99,7 +104,9 @@ final class LinkedFiles {
                 accessedFolders.append(folder)
             }
         }
-        needsFolderAccess = false
+        // A folder that does not hold the files leaves the request in place.
+        startAccessingGrantedFolders(for: referencedFiles)
+        updateNeedsFolderAccess()
         accessGeneration += 1
     }
 
@@ -161,7 +168,9 @@ final class LinkedFiles {
             }
             return
         }
-        guard RunLinkPolicy.allowsOpening(Self.contentType(of: url), fileExtension: url.pathExtension) else {
+        // A symbolic link or alias must not smuggle a program past the policy.
+        let target = ((try? URL(resolvingAliasFileAt: url)) ?? url).resolvingSymlinksInPath()
+        guard RunLinkPolicy.allowsOpening(Self.contentType(of: target), fileExtension: target.pathExtension) else {
             problem = .refused(url.lastPathComponent)
             return
         }
@@ -169,6 +178,10 @@ final class LinkedFiles {
     }
 
     // MARK: - Private
+
+    private func updateNeedsFolderAccess() {
+        needsFolderAccess = referencedFiles.contains { !Self.isReadable($0) && LinkedFileSystem.mayExist($0) }
+    }
 
     private func startAccessingGrantedFolders(for files: [URL]) {
         guard let folderStore else { return }

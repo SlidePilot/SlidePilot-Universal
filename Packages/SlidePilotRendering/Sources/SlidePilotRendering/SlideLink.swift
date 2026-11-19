@@ -59,7 +59,8 @@ enum LinkExtractor {
                 // PDFKit reports `/Launch` as a URL action, resolved against the document's
                 // URL, which a PDF opened from data does not have. Read below instead.
                 guard urlAction.type != "Launch", let url = urlAction.url else { return nil }
-                target = .url(url)
+                // A `file:` link goes through the same checks as a `run:` link (NAV-06).
+                target = url.isFileURL ? .file(url.path(percentEncoded: false)) : .url(url)
             } else {
                 return nil
             }
