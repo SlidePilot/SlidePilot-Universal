@@ -33,13 +33,32 @@ struct MoviePlayerView: NSViewRepresentable {
 
     private func update(_ view: SlideMoviePlayerView) {
         if view.player !== player { view.player = player }
-        view.controlsStyle = showsControls ? .default : .none
+        view.showsControls = showsControls
     }
 }
 
 /// An `AVPlayerView` that leaves the keyboard to the slide navigation (NAV-08). Its
 /// controls still work with the mouse.
 final class SlideMoviePlayerView: AVPlayerView {
+    /// The PDF sets the player's size, which can be too small for the control bar: then
+    /// only the system's minimal play button is shown, so no control is cut off.
+    private static let fullControlsSize = CGSize(width: 320, height: 140)
+
+    var showsControls = true {
+        didSet { updateControlsStyle() }
+    }
+
     override var acceptsFirstResponder: Bool { false }
+
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        updateControlsStyle()
+    }
+
+    private func updateControlsStyle() {
+        let fits = bounds.width >= Self.fullControlsSize.width && bounds.height >= Self.fullControlsSize.height
+        let style: AVPlayerViewControlsStyle = showsControls ? (fits ? .default : .minimal) : .none
+        if controlsStyle != style { controlsStyle = style }
+    }
 }
 #endif
