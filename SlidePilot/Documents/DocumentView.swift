@@ -15,14 +15,16 @@ struct DocumentView: View {
         fileURL: URL? = nil,
         page: Int = 0,
         layoutStore: any PresenterLayoutStore = UserDefaultsPresenterLayoutStore.app,
-        companionStore: CompanionStore? = .app
+        companionStore: CompanionStore? = .app,
+        folderAccessStore: FolderAccessStore? = .app
     ) {
         self.fileURL = fileURL
         _session = State(initialValue: PresentationSession(
             data: document.data,
             title: fileURL?.deletingPathExtension().lastPathComponent ?? String(localized: "Untitled"),
             info: document.info,
-            page: page, layoutStore: layoutStore, companionStore: companionStore
+            page: page, layoutStore: layoutStore, companionStore: companionStore,
+            folderAccessStore: folderAccessStore
         ))
     }
 
@@ -38,6 +40,8 @@ struct DocumentView: View {
             .shrinksOnMemoryWarning(session)
             .companionFile(session, fileURL: fileURL)
             .notesFileTransfer(session, fileURL: fileURL)
+            // Videos and run: links next to the PDF (NAV-06, NAV-07).
+            .linkedFiles(session, fileURL: fileURL)
             // The presentation surfaces find the session in the registry (DOC-04).
             .onAppear { registry.register(session) }
             .onDisappear { registry.unregister(session.id) }

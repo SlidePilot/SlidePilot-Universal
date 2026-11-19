@@ -42,6 +42,28 @@ actor SlideRasterizer {
         return LinkExtractor.links(on: page, in: document)
     }
 
+    /// The movies on page `index` (NAV-07); empty if the page does not exist.
+    func movies(page index: Int) -> [SlideMovie] {
+        guard let page = document?.page(at: index) else { return [] }
+        return MovieExtractor.movies(on: page)
+    }
+
+    /// The files of all `\movie` annotations and `run:` links, in page order, each once.
+    func linkedFileReferences() -> [String] {
+        guard let document else { return [] }
+        var references: [String] = []
+        for index in 0..<document.pageCount {
+            guard let pageRef = document.page(at: index)?.pageRef else { continue }
+            for entry in RawAnnotationReader.entries(of: pageRef) {
+                let reference = switch entry.kind {
+                case .movie(let file), .launch(let file): file
+                }
+                if !references.contains(reference) { references.append(reference) }
+            }
+        }
+        return references
+    }
+
     /// Renders `region` of page `index`, aspect-fitted into `box`, on a white background.
     func render(page index: Int, region: PageRegion, fitting box: PixelSize) throws -> RenderedSlide {
         // Queued jobs for pages the presenter has left are cancelled before they start.

@@ -76,6 +76,13 @@ import Testing
         ])
     }
 
+    /// `file:` links go through the run: link checks (NAV-06), not straight to `openURL`.
+    @Test func readsFileURLLinksAsFiles() async throws {
+        let data = try Self.linkedPDF([.url(CGRect(x: 10, y: 20, width: 100, height: 30), "file:///talks/demo%20video.mp4")])
+        let links = try await Self.cache(data).links(page: 0)
+        #expect(links.map(\.target) == [.file("/talks/demo video.mp4")])
+    }
+
     @Test func skipsAnnotationsThatAreNotLinks() async throws {
         let data = try Self.linkedPDF([
             .text(CGRect(x: 10, y: 20, width: 20, height: 20)),
