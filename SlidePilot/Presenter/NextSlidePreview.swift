@@ -1,3 +1,4 @@
+import SlidePilotCore
 import SlidePilotRendering
 import SwiftUI
 
@@ -8,11 +9,18 @@ struct NextSlidePreview: View {
     var region: PageRegion = .full
     /// Links on the next slide work like on the current one, as in the old app (NAV-05).
     var pageLinkAction: ((Int) -> Void)?
+    /// The next slide's drawing, read-only (DRAW-01).
+    var drawings: DocumentDrawings?
 
     var body: some View {
         let next = currentPage + 1
         if next < cache.info.pageCount {
-            SlideSurface(cache: cache, page: next, region: region, role: .next, pageLinkAction: pageLinkAction)
+            let surface = SlideSurface(cache: cache, page: next, region: region, role: .next, pageLinkAction: pageLinkAction)
+            if let drawings {
+                surface.drawingOverlay(drawings, page: next, region: region)
+            } else {
+                surface
+            }
         } else {
             EndOfDeckView(aspectRatio: endPageSize)
         }

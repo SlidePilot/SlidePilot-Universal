@@ -5,8 +5,8 @@ import SwiftUI
 typealias SessionRegistry = PresentationRegistry<PresentationSession>
 
 /// What the audience sees: the current slide on black (DOC-04). Shown by the Mac
-/// presentation window and the iPad external display. Later issues add the drawing below
-/// the curtain and the pointer above it, like in the old app.
+/// presentation window and the iPad external display. The drawing lies below the curtain;
+/// the pointer (#29) follows above it, like in the old app.
 struct PresentationView: View {
     let session: PresentationSession
     @Environment(AppSettings.self) private var settings
@@ -22,7 +22,10 @@ struct PresentationView: View {
                 pageLinkAction: session.showPage,
                 crossfades: SlideCrossfade.isActive(setting: settings.crossfadesSlides, reduceMotion: reduceMotion)
             )
-            // Opaque, so it also blocks clicks on the slide's links while shown.
+            // Read-only and live while it is drawn (DRAW-01).
+            .drawingOverlay(session.drawing.drawings, page: session.currentPage, isOutlined: false)
+            // Opaque, so it also hides the drawing (DRAW-09) and blocks clicks on the
+            // slide's links while shown.
             CurtainCover(curtain: session.curtain)
         }
         .ignoresSafeArea()

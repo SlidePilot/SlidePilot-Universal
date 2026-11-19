@@ -38,6 +38,8 @@ final class PresentationSession: Identifiable {
     /// Whether the slide navigator sidebar is shown (LAY-06); hidden when a document opens,
     /// unless the document's settings say otherwise (SET-02).
     var isNavigatorDisplayed = false
+    /// Draw mode and the drawings of all pages (DRAW-01 to DRAW-08).
+    let drawing = DrawingModel()
 
     init(
         data: Data,
@@ -61,24 +63,32 @@ final class PresentationSession: Identifiable {
 
     var currentPage: Int { position.page }
 
+    /// Every slide change goes through the methods below; none of them changes the slide
+    /// while draw mode blocks it (NAV-04), also for links, swipes and the remote.
+    var allowsPageSwitching: Bool { drawing.drawings.allowsPageSwitching }
+
     func showNextPage() {
+        guard allowsPageSwitching else { return }
         position.showNext()
     }
 
     func showPreviousPage() {
+        guard allowsPageSwitching else { return }
         position.showPrevious()
     }
 
     /// Jumps to `index`, clamped to the deck (navigator LAY-06, internal links NAV-05).
     /// Counts for Go Back; never starts the timer.
     func showPage(_ index: Int) {
+        guard allowsPageSwitching else { return }
         position.show(index)
     }
 
-    var canGoBack: Bool { position.canGoBack }
+    var canGoBack: Bool { allowsPageSwitching && position.canGoBack }
 
     /// Shows the previously viewed page (NAV-03).
     func goBack() {
+        guard allowsPageSwitching else { return }
         position.goBack()
     }
 
@@ -89,5 +99,6 @@ final class PresentationSession: Identifiable {
         cache = RenderCache(data: version.data, info: version.info)
         contentVersion += 1
         position.changePageCount(to: version.info.pageCount)
+        drawing.drawings.pageCountChanged(to: version.info.pageCount)
     }
 }

@@ -64,6 +64,7 @@ struct DocumentView: View {
             // Slide change with keys, menu, toolbar and swipes (NAV-01 to NAV-03).
             .slideNavigationKeys(session)
             .navigatorEscapeKey(session)
+            .drawingEscapeKey(session)
             // The "." key must wrap the view that holds the keyboard (CUR-01).
             .blackCurtainKey(session)
     }
@@ -87,7 +88,9 @@ private struct PresenterChrome: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .presenterLayoutControls(session.layout)
+            // Layout changes are locked in draw mode (DRAW-05).
+            .presenterLayoutControls(session.layout, isLocked: session.drawing.isActive)
+            .drawingControls(session)
             .presenterTimerControls(session)
             .presenterNavigation(session)
             .notesEditingControls(session.notes)
