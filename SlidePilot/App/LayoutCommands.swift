@@ -36,7 +36,9 @@ private struct LayoutMenuItems: View {
     }
 }
 
-/// The layout controls in the presenter's toolbar (LAY-01, LAY-02).
+/// The Arrangement menu in the presenter's toolbar (LAY-01, LAY-04). The slot toggles stay
+/// in the View menu only, since next to this menu they made the toolbar confusing
+/// (product-owner decision 2026-11-19); the menu still reaches every layout.
 struct PresenterLayoutToolbar: ToolbarContent {
     let layout: PresenterLayoutModel
 
@@ -48,16 +50,6 @@ struct PresenterLayoutToolbar: ToolbarContent {
                 Label("Arrangement", systemImage: layout.arrangement.systemImage)
             }
             .help(Text("Arrangement"))
-        }
-        ToolbarItem {
-            ControlGroup {
-                ForEach(PresenterSlot.allCases, id: \.self) { slot in
-                    SlotToggle(layout: layout, slot: slot)
-                        .help(slot.title)
-                }
-            } label: {
-                Label("Slides", systemImage: "rectangle.on.rectangle")
-            }
         }
     }
 }

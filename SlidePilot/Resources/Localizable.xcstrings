@@ -584,12 +584,6 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Navigateur de diapositives" } }
       }
     },
-    "Slides" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositives" } }
-      }
-    },
     "Start Presentation" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation starten" } },
