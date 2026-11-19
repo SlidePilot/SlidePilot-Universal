@@ -54,6 +54,13 @@ final class NotesModel {
         try? textNotes?.page(page)
     }
 
+    /// The stored RTF of a page, for the remote (REM-04); `nil` if the page has no notes or
+    /// they cannot be shown.
+    func rtf(forPage page: Int) -> Data? {
+        guard let notes = textNotes?.notes, notes.pages.indices.contains(page), !notes.pages[page].isEmpty else { return nil }
+        return notes.pages[page]
+    }
+
     /// Stores the edited notes of a page.
     func setText(_ text: NSAttributedString, forPage page: Int) {
         guard var notes = textNotes else { return }

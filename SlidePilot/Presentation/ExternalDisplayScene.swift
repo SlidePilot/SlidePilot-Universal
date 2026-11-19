@@ -14,7 +14,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     /// Keeps the display awake while the app runs, if the setting is on (SET-04).
     private lazy var displayAwakeKeeper = DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker())
     /// Advertises this instance and keeps pairing state (REM-02); one per app.
-    private(set) lazy var remote = RemoteService.live(settings: settings)
+    private(set) lazy var remote = RemoteService.live(settings: settings, registry: registry)
     private lazy var windows = AppWindowTracker(registry: registry)
 
     /// The only global path to the app-owned registry: UIKit creates scene delegates by

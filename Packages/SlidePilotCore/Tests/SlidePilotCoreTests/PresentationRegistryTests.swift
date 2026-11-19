@@ -23,6 +23,18 @@ struct PresentationRegistryTests {
         #expect(registry.session(for: UUID()) == nil)
     }
 
+    @Test func listsSessionsInOpeningOrderOnce() {
+        let registry = PresentationRegistry<Session>()
+        let first = Session()
+        let second = Session()
+        registry.register(first)
+        registry.register(second)
+        registry.register(first, inWindow: "window")
+        #expect(registry.sessions.map(\.id) == [first.id, second.id])
+        registry.unregister(first.id)
+        #expect(registry.sessions.map(\.id) == [second.id])
+    }
+
     @Test func withoutWindowsNewestSessionIsActive() {
         let registry = PresentationRegistry<Session>()
         let first = Session()

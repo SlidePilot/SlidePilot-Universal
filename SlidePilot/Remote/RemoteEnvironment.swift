@@ -6,10 +6,10 @@ import UIKit
 #endif
 
 extension RemoteService {
-    /// The service of the running app: its stored instance ID, the device name and the
-    /// Keychain trust store.
-    static func live(settings: AppSettings) -> RemoteService {
-        RemoteService(settings: settings, identity: liveIdentity(), trustStore: liveTrustStore())
+    /// The service of the running app: its stored instance ID, the device name, the
+    /// Keychain trust store and the open documents.
+    static func live(settings: AppSettings, registry: SessionRegistry) -> RemoteService {
+        RemoteService(settings: settings, identity: liveIdentity(), trustStore: liveTrustStore(), registry: registry)
     }
 
     /// Not a secret (it is in the Bonjour TXT record), so user defaults are fine.

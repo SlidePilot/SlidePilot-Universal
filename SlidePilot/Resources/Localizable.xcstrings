@@ -746,6 +746,13 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le jumelage a été annulé. Pour jumeler, ouvrez Réglages ▸ Remote sur les deux appareils et confirmez le code sur chacun." } }
       }
     },
+    "Untitled" : {
+      "comment" : "Name of a document without a file name, e.g. in the remote's list of presentations.",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ohne Titel" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sans titre" } }
+      }
+    },
     "Update SlidePilot on “%@” to the latest version." : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktualisiere SlidePilot auf „%@“ auf die neueste Version." } },

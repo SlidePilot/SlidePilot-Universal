@@ -26,6 +26,12 @@ public final class PresentationRegistry<Session: AnyObject & Identifiable> {
         if let activeWindow { session(inWindow: activeWindow) } else { entries.last?.session }
     }
 
+    /// All open documents' sessions in the order they were opened, e.g. for the remote
+    /// host's list of presentations (REM-04).
+    public var sessions: [Session] {
+        entries.map(\.session)
+    }
+
     public func session(for id: Session.ID) -> Session? {
         entries.first { $0.session.id == id }?.session
     }
