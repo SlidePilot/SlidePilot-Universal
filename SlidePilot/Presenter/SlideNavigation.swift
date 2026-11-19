@@ -75,6 +75,12 @@ private struct SlideNavigationKeys: ViewModifier {
                     hasKeyboardFocus = true
                 }
             }
+            // So does leaving draw mode, whose canvas had the keyboard (DRAW-01).
+            .onChange(of: session.drawing.isActive) { _, isDrawing in
+                if !isDrawing {
+                    hasKeyboardFocus = true
+                }
+            }
             // SwiftUI offers key presses to this view before an AppKit/UIKit text view
             // inside it, so they are passed on while the notes are edited (NOTES-04).
             .onKeyPress(keys: Self.previousKeys) { _ in

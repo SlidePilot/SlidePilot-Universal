@@ -82,25 +82,102 @@ private struct MacDrawingLayer: View {
     var body: some View {
         let drawings = model.drawings
         let live = drawings.liveStroke.flatMap { $0.page == page ? $0.stroke : nil }
-        GeometryReader { proxy in
-            let mapping = CanvasMapping(section: section, canvasWidth: proxy.size.width, canvasHeight: proxy.size.height)
-            DrawingCanvas(drawing: drawings.drawing(onPage: page), liveStroke: live, section: section)
-                .contentShape(.rect)
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { value in
-                            guard mapping.isValid else { return }
-                            let point = mapping.relative(x: value.location.x, y: value.location.y)
-                            if drawings.liveStroke == nil {
-                                drawings.beginLiveStroke(onPage: page, at: [point])
-                            } else {
-                                drawings.extendLiveStroke(with: [point])
-                            }
-                        }
-                        .onEnded { _ in
-                            model.commitLiveStroke()
-                        }
-                )
+        DrawingCanvas(drawing: drawings.drawing(onPage: page), liveStroke: live, section: section)
+            .overlay {
+                MacDrawingInput(model: model, page: page, section: section)
+            }
+    }
+}
+
+/// Takes the mouse and, as first responder in draw mode, gives the Edit menu the drawing's
+/// undo manager (DRAW-08). AppKit only for that: a SwiftUI view cannot provide one.
+private struct MacDrawingInput: NSViewRepresentable {
+    let model: DrawingModel
+    let page: Int
+    let section: RelativeRect
+
+    func makeNSView(context: Context) -> DrawingInputView {
+        DrawingInputView(model: model)
+    }
+
+    func updateNSView(_ view: DrawingInputView, context: Context) {
+        view.page = page
+        view.section = section
+    }
+}
+
+private final class DrawingInputView: NSView {
+    let model: DrawingModel
+    var page = 0
+    var section = RelativeRect.fullPage
+
+    init(model: DrawingModel) {
+        self.model = model
+        super.init(frame: .zero)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is not used")
+    }
+
+    override var isFlipped: Bool { true }
+    override var acceptsFirstResponder: Bool { true }
+    override var undoManager: UndoManager? { model.undoManager }
+
+    // A click into an inactive window draws right away, like the old canvas.
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        window?.makeFirstResponder(self)
+    }
+
+    // Edit ▸ Undo and Redo reach the first responder; the window itself would use the
+    // document's undo manager.
+    @objc func undo(_ sender: Any?) {
+        model.undoManager.undo()
+    }
+
+    @objc func redo(_ sender: Any?) {
+        model.undoManager.redo()
+    }
+
+    override func mouseDown(with event: NSEvent) {
+        window?.makeFirstResponder(self)
+        guard let point = relativePoint(of: event) else { return }
+        model.drawings.beginLiveStroke(onPage: page, at: [point])
+    }
+
+    override func mouseDragged(with event: NSEvent) {
+        guard let point = relativePoint(of: event) else { return }
+        model.drawings.extendLiveStroke(with: [point])
+    }
+
+    override func mouseUp(with event: NSEvent) {
+        model.commitLiveStroke()
+    }
+
+    private func relativePoint(of event: NSEvent) -> RelativePoint? {
+        let mapping = CanvasMapping(section: section, canvasWidth: bounds.width, canvasHeight: bounds.height)
+        guard mapping.isValid else { return nil }
+        let location = convert(event.locationInWindow, from: nil)
+        return mapping.relative(x: location.x, y: location.y)
+    }
+}
+
+extension DrawingInputView: NSMenuItemValidation {
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        let undoManager = model.undoManager
+        switch menuItem.action {
+        case #selector(undo(_:)):
+            menuItem.title = undoManager.undoMenuItemTitle
+            return undoManager.canUndo
+        case #selector(redo(_:)):
+            menuItem.title = undoManager.redoMenuItemTitle
+            return undoManager.canRedo
+        default:
+            return true
         }
     }
 }

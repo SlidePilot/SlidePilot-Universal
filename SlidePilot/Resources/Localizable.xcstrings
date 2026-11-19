@@ -13,16 +13,46 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un PDF nommé « %@ » avec le même nombre de pages est introuvable. Vous pouvez utiliser ses données enregistrées pour ce PDF." } }
       }
     },
+    "Black" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Schwarz" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Noir" } }
+      }
+    },
     "Black Screen" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Schwarzer Bildschirm" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran noir" } }
       }
     },
+    "Blue" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Blau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Bleu" } }
+      }
+    },
     "Cancel" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Abbrechen" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Annuler" } }
+      }
+    },
+    "Canvas Background" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hintergrund der Zeichenfläche" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fond du canevas" } }
+      }
+    },
+    "Clear Canvas" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichenfläche leeren" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Effacer le canevas" } }
+      }
+    },
+    "Clear Drawings" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen löschen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Effacer les dessins" } }
       }
     },
     "Clock" : {
@@ -35,6 +65,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Anordnung" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Disposition" } }
+      }
+    },
+    "Color" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Farbe" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couleur" } }
       }
     },
     "Connect a display, or start Screen Mirroring in Control Center." : {
@@ -68,10 +104,40 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle, %1$lld sur %2$lld" } }
       }
     },
+    "Custom Color" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Eigene Farbe" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couleur personnalisée" } }
+      }
+    },
     "Don’t Use" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verwenden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas utiliser" } }
+      }
+    },
+    "Draw" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dessiner" } }
+      }
+    },
+    "Draw on the current slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Auf der aktuellen Folie zeichnen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dessiner sur la diapositive actuelle" } }
+      }
+    },
+    "Drawing" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnung" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dessin" } }
+      }
+    },
+    "Drawing Canvas" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichenfläche" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Canevas de dessin" } }
       }
     },
     "End of presentation" : {
@@ -92,10 +158,34 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Général" } }
       }
     },
+    "Green" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Grün" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vert" } }
+      }
+    },
     "Keep display awake" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Bildschirm wach halten" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Garder l’écran allumé" } }
+      }
+    },
+    "Magenta" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Magenta" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Magenta" } }
+      }
+    },
+    "Orange" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Orange" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Orange" } }
+      }
+    },
+    "Remove all strokes from the slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Alle Striche von der Folie entfernen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer tous les traits de la diapositive" } }
       }
     },
     "Settings" : {
@@ -114,6 +204,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Folien gehen auf dem Präsentationsbildschirm ineinander über." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les diapositives se fondent les unes dans les autres sur l’écran de présentation." } }
+      }
+    },
+    "Stop drawing" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnen beenden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Arrêter de dessiner" } }
       }
     },
     "The display does not dim or sleep while SlidePilot is open." : {
@@ -295,6 +391,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Diese Notizen wurden mit einer neueren Version von SlidePilot gesichert." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ces notes ont été enregistrées avec une version plus récente de SlidePilot." } }
+      }
+    },
+    "Transparent Canvas" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Transparente Zeichenfläche" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Canevas transparent" } }
       }
     },
     "Underline" : {
@@ -561,6 +663,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten eines fehlenden PDFs verwenden?" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Utiliser les données d’un PDF introuvable ?" } }
+      }
+    },
+    "White" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Weiß" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Blanc" } }
+      }
+    },
+    "White Canvas" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Weiße Zeichenfläche" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Canevas blanc" } }
       }
     },
     "White Screen" : {

@@ -73,8 +73,7 @@ struct DrawingMenuItems: View {
 }
 
 extension View {
-    /// The Draw button, and in draw mode the drawing tools in the window's toolbar
-    /// (DRAW-03), Esc to leave draw mode, and the window's undo manager for drawing undo.
+    /// The Draw button, and in draw mode the drawing tools in the window's toolbar (DRAW-03).
     func drawingControls(_ session: PresentationSession) -> some View {
         modifier(DrawingControlsModifier(session: session))
     }
@@ -91,7 +90,6 @@ extension View {
 
 private struct DrawingControlsModifier: ViewModifier {
     let session: PresentationSession
-    @Environment(\.undoManager) private var undoManager
 
     func body(content: Content) -> some View {
         content
@@ -106,9 +104,6 @@ private struct DrawingControlsModifier: ViewModifier {
                         .help(Text("Draw on the current slide"))
                     }
                 }
-            }
-            .onChange(of: undoManager.map(ObjectIdentifier.init), initial: true) {
-                session.drawing.undoManager = undoManager
             }
     }
 }
@@ -131,14 +126,14 @@ private struct DrawingToolbar: ToolbarContent {
             .help(Text("Remove all strokes from the slide"))
         }
         ToolbarItem {
-            Picker("Canvas", selection: background) {
+            Picker("Canvas Background", selection: background) {
                 Label("Transparent Canvas", systemImage: "square.dashed")
                     .tag(CanvasBackground.transparent)
                 Label("White Canvas", systemImage: "square.fill")
                     .tag(CanvasBackground.white)
             }
             .pickerStyle(.segmented)
-            .help(Text("Canvas background"))
+            .help(Text("Canvas Background"))
         }
         ToolbarItem(placement: .confirmationAction) {
             Button("Done") {

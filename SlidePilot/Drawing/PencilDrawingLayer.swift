@@ -43,13 +43,11 @@ private struct PencilCanvas: UIViewRepresentable {
         Coordinator(model: model)
     }
 
-    func makeUIView(context: Context) -> PKCanvasView {
+    func makeUIView(context: Context) -> DrawingInputContainer {
         let canvas = UndoFreeCanvasView()
         canvas.backgroundColor = .clear
         canvas.isOpaque = false
         canvas.isScrollEnabled = false
-        // Follows the system's "Only Draw with Apple Pencil" setting.
-        canvas.drawingPolicy = .default
         // PencilKit adapts ink to dark mode (black would show as white); slides are light.
         canvas.overrideUserInterfaceStyle = .light
         canvas.delegate = context.coordinator
@@ -67,11 +65,15 @@ private struct PencilCanvas: UIViewRepresentable {
         // Apple Pencil double-tap and squeeze (DRAW-11).
         let pencil = UIPencilInteraction(delegate: context.coordinator)
         canvas.addInteraction(pencil)
-        return canvas
+        return DrawingInputContainer(canvas: canvas, undoManager: model.undoManager)
     }
 
-    func updateUIView(_ canvas: PKCanvasView, context: Context) {
+    func updateUIView(_ container: DrawingInputContainer, context: Context) {
+        let canvas = container.canvas
         let coordinator = context.coordinator
+        // Follows the system's "Only Draw with Apple Pencil" setting. `.default` would follow
+        // a tool picker, which this canvas does not have (ADR 0016).
+        canvas.drawingPolicy = UIPencilInteraction.prefersPencilOnlyDrawing ? .pencilOnly : .anyInput
         coordinator.page = page
         coordinator.mapping = mapping
         if coordinator.color != color {
@@ -197,7 +199,38 @@ private struct PencilCanvas: UIViewRepresentable {
     }
 }
 
-/// A canvas that keeps PencilKit's own undo actions out of the window's undo manager. Undo
+/// Holds the canvas and, as first responder in draw mode, gives ⌘Z, the Edit menu and the
+/// undo gestures the drawing's undo manager (DRAW-08).
+final class DrawingInputContainer: UIView {
+    let canvas: PKCanvasView
+    private let drawingUndoManager: UndoManager
+
+    init(canvas: PKCanvasView, undoManager: UndoManager) {
+        self.canvas = canvas
+        drawingUndoManager = undoManager
+        super.init(frame: .zero)
+        canvas.frame = bounds
+        canvas.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        addSubview(canvas)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) is not used")
+    }
+
+    override var canBecomeFirstResponder: Bool { true }
+    override var undoManager: UndoManager? { drawingUndoManager }
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window != nil {
+            becomeFirstResponder()
+        }
+    }
+}
+
+/// A canvas that keeps PencilKit's own undo actions out of the drawing's undo manager. Undo
 /// goes through the model, one history per page (DRAW-08, ADR 0016).
 private final class UndoFreeCanvasView: PKCanvasView {
     private let ownUndoManager = UndoManager()
