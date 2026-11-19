@@ -1,6 +1,6 @@
 import Foundation
 
-/// What the presenter's time display counts (TIME-04).
+/// What the presenter's time display counts (TIME-04). The timer is on while a time is set.
 public enum TimeMode: String, Sendable, CaseIterable {
     /// Counts up from 00:00:00 (TIME-02).
     case stopwatch
@@ -14,9 +14,11 @@ public enum TimeMode: String, Sendable, CaseIterable {
 /// drift (TIME-07; the old app counted 1-second ticks, DEF-08). Every method takes the
 /// current time, so tests can drive it without waiting.
 public struct PresentationTimer: Sendable, Equatable {
-    /// The app starts in stopwatch mode; the mode is not saved (TIME-04).
-    public private(set) var mode: TimeMode
-    /// The time the timer counts down from, in whole seconds (TIME-03).
+    /// The app starts in stopwatch mode; the mode is not saved (TIME-04). Setting a timer
+    /// switches to timer mode, turning it off goes back to the stopwatch.
+    public private(set) var mode: TimeMode = .stopwatch
+    /// The time the timer counts down from, in whole seconds (TIME-03). Kept while the timer
+    /// is off, so Set Timer offers it again (the old app cleared it, DEF-08).
     public private(set) var timerDuration: Int = 0
     /// Whether the first "next slide" from the keyboard or menu still starts the time (TIME-05).
     public private(set) var startsOnNextSlide = true
@@ -26,9 +28,7 @@ public struct PresentationTimer: Sendable, Equatable {
     /// Start of the current run; `nil` while stopped.
     private var runningSince: Date?
 
-    public init(mode: TimeMode = .stopwatch) {
-        self.mode = mode
-    }
+    public init() {}
 
     public var isRunning: Bool { runningSince != nil }
 
@@ -89,18 +89,24 @@ public struct PresentationTimer: Sendable, Equatable {
         accumulated = 0
     }
 
-    /// Switches between stopwatch and timer. Like the old app this stops and resets the time,
-    /// also when the current mode is chosen again, but the set timer duration is kept (DEF-08).
-    public mutating func setMode(_ newMode: TimeMode) {
-        mode = newMode
+    /// Set Timer (TIME-03): a time above zero switches to timer mode and shows that time,
+    /// stopped, also when the timer was already on. Zero turns the timer off.
+    public mutating func setTimer(seconds: Int) {
+        guard seconds > 0 else {
+            turnOffTimer()
+            return
+        }
+        timerDuration = seconds
+        mode = .timer
         reset()
     }
 
-    /// Set Timer (TIME-03): only in timer mode. Like the old app the timer stops and shows
-    /// the new time. Negative values count as zero.
-    public mutating func setTimerDuration(_ seconds: Int) {
+    /// Turn Off Timer (TIME-04): goes back to the stopwatch at zero. Like the old mode switch
+    /// this stops and resets the time; the set duration is kept. Does nothing in stopwatch mode,
+    /// so a running stopwatch keeps running.
+    public mutating func turnOffTimer() {
         guard mode == .timer else { return }
-        timerDuration = max(0, seconds)
+        mode = .stopwatch
         reset()
     }
 
