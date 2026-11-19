@@ -26,20 +26,22 @@ struct WindowKeyboardAnchor: NSViewRepresentable {
         view.handle = handle
     }
 
+    /// AppKit may release the view without moving it out of its window first.
+    static func dismantleNSView(_ view: AnchorView, coordinator: ()) {
+        view.removeMonitor()
+    }
+
     final class AnchorView: NSView {
         var handle: ((WindowKey) -> Bool)?
         private var monitor: Any?
 
         override func viewDidMoveToWindow() {
             super.viewDidMoveToWindow()
-            if let monitor {
-                NSEvent.removeMonitor(monitor)
-                self.monitor = nil
-            }
+            removeMonitor()
             guard window != nil else { return }
             monitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
                 // Safe: local monitors run on the main thread, before AppKit dispatches the
-                // event, so the event never leaves the main thread.
+                // event, so the event never leaves it; assumeIsolated traps otherwise.
                 nonisolated(unsafe) let mainEvent = event
                 let used = MainActor.assumeIsolated { self?.handled(mainEvent) == true }
                 return used ? nil : event
@@ -51,18 +53,30 @@ struct WindowKeyboardAnchor: NSViewRepresentable {
             nil
         }
 
+        func removeMonitor() {
+            if let monitor {
+                NSEvent.removeMonitor(monitor)
+                self.monitor = nil
+            }
+        }
+
         private func handled(_ event: NSEvent) -> Bool {
             guard let window, event.window === window, window.firstResponder === window,
-                  event.modifierFlags.isDisjoint(with: [.command, .control, .option]),
+                  // ⌘ and ⌃ combinations stay with the menus (e.g. ⌃⌘→).
+                  event.modifierFlags.isDisjoint(with: [.command, .control]),
                   let key = Self.key(for: event) else { return false }
             return handle?(key) == true
         }
 
+        /// Arrows with ⇧ or ⌥ count too, like the SwiftUI key handlers; "." only plain,
+        /// like `blackCurtainKey(_:)`.
         private static func key(for event: NSEvent) -> WindowKey? {
             switch event.specialKey {
             case .leftArrow?, .upArrow?, .pageUp?: .previous
             case .rightArrow?, .downArrow?, .pageDown?: .next
-            default: event.charactersIgnoringModifiers == "." && !event.modifierFlags.contains(.shift) ? .period : nil
+            default:
+                event.charactersIgnoringModifiers == "."
+                    && event.modifierFlags.isDisjoint(with: [.shift, .option]) ? .period : nil
             }
         }
     }
