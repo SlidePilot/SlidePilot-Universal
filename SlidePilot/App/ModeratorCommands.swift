@@ -14,23 +14,24 @@ struct ModeratorCommands: Commands {
     }
 }
 
-/// Mode, Set Timer, Start/Stop Time and Reset Time with the old app's plain-letter
-/// shortcuts (TIME-02 to TIME-04).
+/// Set Timer, Turn Off Timer, Start/Stop Time and Reset Time with the old app's
+/// plain-letter shortcuts (TIME-02 to TIME-04). Set Timer also changes a running timer.
 private struct TimerMenuItems: View {
     @FocusedValue(\.presenterTimer) private var timer
 
     var body: some View {
-        if let timer {
-            TimeModePicker(session: timer.session)
-        } else {
-            Picker("Mode", selection: .constant(0)) {}
-                .disabled(true)
-        }
         Button("Set Timer…") {
             timer?.showSetTimer?()
         }
         .plainKeyShortcut("t")
-        .disabled(timer?.showSetTimer == nil || timer?.session.timer.mode != .timer)
+        .disabled(timer?.showSetTimer == nil)
+
+        if let timer {
+            TurnOffTimerButton(session: timer.session)
+        } else {
+            Button("Turn Off Timer") {}
+                .disabled(true)
+        }
 
         Button("Start/Stop Time") {
             timer?.session.timer.toggle()

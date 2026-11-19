@@ -354,12 +354,6 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Minutes" } }
       }
     },
-    "Mode" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Modus" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Mode" } }
-      }
-    },
     "Moderator" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Moderator" } },
@@ -750,6 +744,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Drei Folien, groß rechts" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Trois diapositives, grande à droite" } }
+      }
+    },
+    "Turn Off Timer" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Timer ausschalten" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactiver le minuteur" } }
       }
     },
     "Two Slides" : {
