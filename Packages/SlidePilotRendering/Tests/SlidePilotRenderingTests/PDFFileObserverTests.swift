@@ -227,7 +227,10 @@ private struct Harness {
 
     var pageCounts: [Int] { received.pageCounts }
 
-    func waitForVersions(_ count: Int, within limit: Duration = .seconds(3)) async -> Bool {
+    /// The default only ends a hang: a busy CI simulator took over 3 s for the coordinated
+    /// read while the whole test plan ran in parallel. Checks that nothing arrives pass
+    /// their own short limit.
+    func waitForVersions(_ count: Int, within limit: Duration = .seconds(15)) async -> Bool {
         await received.wait(for: count, within: limit)
     }
 
