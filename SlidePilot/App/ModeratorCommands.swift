@@ -5,12 +5,40 @@ import SwiftUI
 struct ModeratorCommands: Commands {
     var body: some Commands {
         CommandMenu("Moderator") {
+            EditLayoutMenuItem()
+            Divider()
             NavigatorMenuItems()
             Divider()
             DrawingMenuItems()
             Divider()
             TimerMenuItems()
         }
+    }
+}
+
+/// Opens the Layout settings (LAY-04), with the old app's shortcut ⌃⌥L.
+private struct EditLayoutMenuItem: View {
+    #if os(macOS)
+    @Environment(\.openSettings) private var openSettings
+    @AppStorage(SettingsTab.storageKey) private var settingsTab = SettingsTab.general
+    #else
+    @FocusedValue(\.showSettings) private var showSettings
+    #endif
+
+    var body: some View {
+        #if os(macOS)
+        Button("Edit Layout…") {
+            settingsTab = .layout
+            openSettings()
+        }
+        .keyboardShortcut("l", modifiers: [.control, .option])
+        #else
+        Button("Edit Layout…") {
+            showSettings?(.layout)
+        }
+        .keyboardShortcut("l", modifiers: [.control, .option])
+        .disabled(showSettings == nil)
+        #endif
     }
 }
 

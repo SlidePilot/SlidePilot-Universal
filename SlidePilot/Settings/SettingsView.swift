@@ -4,31 +4,59 @@ import SwiftUI
 /// iPad settings sheet.
 ///
 /// Each pane lives in its own file and provides form sections. Later issues add their pane
-/// here: Layout (#16) and Pointer.
+/// here: Pointer.
 struct SettingsView: View {
+    #if os(macOS)
+    @AppStorage(SettingsTab.storageKey) private var selection = SettingsTab.general
+    #else
+    /// The pages pushed on the sheet's stack; Edit Layout… opens the sheet on Layout.
+    @State private var path: [SettingsTab]
+    private let request: SettingsTabRequest
+
+    init(request: SettingsTabRequest = SettingsTabRequest(tab: nil)) {
+        self.request = request
+        _path = State(initialValue: request.path)
+    }
+    #endif
+
     var body: some View {
         #if os(macOS)
-        TabView {
-            Tab("General", systemImage: "gearshape") {
+        TabView(selection: $selection) {
+            Tab("General", systemImage: "gearshape", value: .general) {
                 SettingsPane { GeneralSettingsView() }
             }
-            Tab("Remote", systemImage: "antenna.radiowaves.left.and.right") {
+            Tab("Layout", systemImage: "rectangle.split.2x1", value: .layout) {
+                SettingsPane { LayoutSettingsView() }
+            }
+            Tab("Remote", systemImage: "antenna.radiowaves.left.and.right", value: .remote) {
                 RemoteSettingsPane()
             }
         }
         #else
-        NavigationStack {
+        NavigationStack(path: $path) {
             Form {
                 GeneralSettingsView()
                 Section {
-                    NavigationLink {
-                        RemoteSettingsPane()
-                    } label: {
+                    NavigationLink(value: SettingsTab.layout) {
+                        Label("Layout", systemImage: "rectangle.split.2x1")
+                    }
+                    NavigationLink(value: SettingsTab.remote) {
                         Label("Remote", systemImage: "antenna.radiowaves.left.and.right")
                     }
                 }
             }
             .navigationTitle("Settings")
+            .navigationDestination(for: SettingsTab.self) { tab in
+                switch tab {
+                case .layout:
+                    Form { LayoutSettingsView() }
+                        .navigationTitle("Layout")
+                case .remote:
+                    RemoteSettingsPane()
+                case .general:
+                    EmptyView()
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
             // The document's navigation would otherwise add a back button to the sheet.
             .navigationBarBackButtonHidden()
@@ -38,6 +66,8 @@ struct SettingsView: View {
                 }
             }
         }
+        // Edit Layout… while the sheet is open on another page.
+        .onChange(of: request) { path = request.path }
         // Here, so the pairing code shows on every page of the sheet (REM-02).
         .remoteAlerts()
         #endif

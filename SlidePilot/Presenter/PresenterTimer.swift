@@ -27,8 +27,11 @@ extension View {
 
 private struct PresenterTimeDisplayModifier: ViewModifier {
     let session: PresentationSession
-    // TIME-06: global, the layout editor and settings of later issues change it.
-    @AppStorage(TimeDisplaySize.defaultsKey) private var size = TimeDisplaySize.default
+    // TIME-06: global, set in the Layout settings (LAY-04). Optional, so snapshots and
+    // previews without settings use the default.
+    @Environment(AppSettings.self) private var settings: AppSettings?
+
+    private var size: TimeDisplaySize { settings?.timeDisplaySize ?? .default }
 
     func body(content: Content) -> some View {
         content

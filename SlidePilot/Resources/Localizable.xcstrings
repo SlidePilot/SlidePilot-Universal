@@ -43,6 +43,18 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran noir" } }
       }
     },
+    "Bottom Left" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unten links" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En bas à gauche" } }
+      }
+    },
+    "Bottom Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unten rechts" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En bas à droite" } }
+      }
+    },
     "Blue" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Blau" } },
@@ -94,7 +106,7 @@
     "Arrangement" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Anordnung" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Disposition" } }
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Agencement" } }
       }
     },
     "Color" : {
@@ -128,6 +140,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couvrir la présentation d'un écran blanc" } }
       }
     },
+    "Current Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle" } }
+      }
+    },
     "Current slide, %lld of %lld" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie, %1$lld von %2$lld" } },
@@ -150,6 +168,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verwenden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas utiliser" } }
+      }
+    },
+    "Edit Layout…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Layout bearbeiten …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Modifier la disposition…" } }
       }
     },
     "Draw" : {
@@ -200,6 +224,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Général" } }
       }
     },
+    "Hidden" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ausgeblendet" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Masqué" } }
+      }
+    },
     "Green" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Grün" } },
@@ -228,6 +258,63 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Bildschirm wach halten" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Garder l’écran allumé" } }
+      }
+    },
+    "Large Left" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Groß links" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Grande à gauche" } }
+      }
+    },
+    "Large Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Groß rechts" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Grande à droite" } }
+      }
+    },
+    "Layout" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Layout" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Disposition" } }
+      }
+    },
+    "Left" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Links" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gauche" } }
+      }
+    },
+    "Normal" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } }
+      }
+    },
+    "Padding.None" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "None" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kein" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune" } }
+      }
+    },
+    "Padding.Normal" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normale" } }
+      }
+    },
+    "Padding.Small" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Small" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Klein" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Petite" } }
+      }
+    },
+    "Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Rechts" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Droite" } }
       }
     },
     "Magenta" : {
@@ -281,6 +368,24 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages…" } }
       }
     },
+    "Size of the clock and timer above the slides." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Größe von Uhr und Timer über den Folien." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Taille de l’horloge et du minuteur au-dessus des diapositives." } }
+      }
+    },
+    "Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive" } }
+      }
+    },
+    "Slide padding" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folienabstand" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Marge des diapositives" } }
+      }
+    },
     "SlidePilot couldn’t convert the notes to RTF." : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot konnte die Notizen nicht in RTF umwandeln." } },
@@ -297,6 +402,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Folien gehen auf dem Präsentationsbildschirm ineinander über." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les diapositives se fondent les unes dans les autres sur l’écran de présentation." } }
+      }
+    },
+    "Small" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Klein" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Petit" } }
+      }
+    },
+    "Space around each slide in the presenter view." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Abstand um jede Folie in der Moderatoransicht." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Espace autour de chaque diapositive dans la vue présentateur." } }
       }
     },
     "Stop drawing" : {
@@ -498,6 +615,24 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ces notes ont été enregistrées avec une version plus récente de SlidePilot." } }
       }
     },
+    "Time display" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeitanzeige" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Affichage de l’heure" } }
+      }
+    },
+    "Top Left" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Oben links" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En haut à gauche" } }
+      }
+    },
+    "Top Right" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Oben rechts" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En haut à droite" } }
+      }
+    },
     "Underline" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Unterstrichen" } },
@@ -648,12 +783,6 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien-Navigator" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Navigateur de diapositives" } }
-      }
-    },
-    "Slides" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositives" } }
       }
     },
     "Start Presentation" : {

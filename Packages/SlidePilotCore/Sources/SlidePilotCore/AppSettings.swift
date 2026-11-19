@@ -31,7 +31,7 @@ public final class InMemorySettingsStore: SettingsStore {
 /// The app-wide settings shown in the Settings window (Mac) and the settings sheet (iPad).
 ///
 /// One instance per app. Every change is written to the store right away. Later issues add
-/// their settings here (layout, pointer, remote).
+/// their settings here (pointer).
 @MainActor
 @Observable
 public final class AppSettings {
@@ -40,6 +40,8 @@ public final class AppSettings {
         public static let keepsDisplayAwake = "isSleepDisabled"
         public static let crossfadesSlides = "crossfadeSlides"
         public static let allowsRemoteControl = "allowsRemoteControl"
+        public static let layoutPadding = "layoutPadding"
+        public static let timeDisplaySize = TimeDisplaySize.defaultsKey
     }
 
     /// Keep the display awake while the app runs (SET-04, SET-05). Default off.
@@ -58,6 +60,16 @@ public final class AppSettings {
         didSet { store.set(allowsRemoteControl, forKey: Key.allowsRemoteControl) }
     }
 
+    /// Space around the presenter's slots (LAY-04). Default 30 pt.
+    public var layoutPadding: LayoutPadding {
+        didSet { store.set(layoutPadding.rawValue, forKey: Key.layoutPadding) }
+    }
+
+    /// Size of the clock and stopwatch/timer in the presenter (TIME-06). Default normal.
+    public var timeDisplaySize: TimeDisplaySize {
+        didSet { store.set(timeDisplaySize.rawValue, forKey: Key.timeDisplaySize) }
+    }
+
     @ObservationIgnored private let store: any SettingsStore
 
     public init(store: any SettingsStore) {
@@ -65,5 +77,9 @@ public final class AppSettings {
         keepsDisplayAwake = store.object(forKey: Key.keepsDisplayAwake) as? Bool ?? false
         crossfadesSlides = store.object(forKey: Key.crossfadesSlides) as? Bool ?? false
         allowsRemoteControl = store.object(forKey: Key.allowsRemoteControl) as? Bool ?? true
+        layoutPadding = (store.object(forKey: Key.layoutPadding) as? Int)
+            .flatMap(LayoutPadding.init(rawValue:)) ?? .default
+        timeDisplaySize = (store.object(forKey: Key.timeDisplaySize) as? Int)
+            .flatMap(TimeDisplaySize.init(rawValue:)) ?? .default
     }
 }

@@ -6,7 +6,7 @@ extension FocusedValues {
     @Entry var presenterLayout: PresenterLayoutModel?
 }
 
-/// Arrangement and slot toggles in the View menu (LAY-01, LAY-02). The old app had them in
+/// Arrangement, slot contents and slot toggles in the View menu (LAY-01, LAY-02, LAY-04). The old app had them in
 /// the Moderator and Notes menus; the plain-key shortcuts A, P and N are the same.
 struct LayoutCommands: Commands {
     var body: some Commands {
@@ -21,8 +21,12 @@ private struct LayoutMenuItems: View {
     @FocusedValue(\.presenterLayout) private var layout
 
     var body: some View {
-        ArrangementPicker(layout: layout)
-            .pickerStyle(.menu)
+        Menu {
+            ArrangementMenuContent(layout: layout)
+        } label: {
+            Label("Arrangement", systemImage: (layout?.arrangement ?? .double).systemImage)
+        }
+        .disabled(layout == nil)
         SlotToggle(layout: layout, slot: .current)
             .plainKeyShortcut("a")
         SlotToggle(layout: layout, slot: .next)
@@ -32,29 +36,70 @@ private struct LayoutMenuItems: View {
     }
 }
 
-/// The layout controls in the presenter's toolbar (LAY-01, LAY-02).
+/// The Arrangement menu in the presenter's toolbar (LAY-01, LAY-04). The slot toggles stay
+/// in the View menu only, since next to this menu they made the toolbar confusing
+/// (product-owner decision 2026-11-19); the menu still reaches every layout.
 struct PresenterLayoutToolbar: ToolbarContent {
     let layout: PresenterLayoutModel
 
     var body: some ToolbarContent {
         ToolbarItem {
             Menu {
-                ArrangementPicker(layout: layout)
-                    .pickerStyle(.inline)
+                ArrangementMenuContent(layout: layout)
             } label: {
                 Label("Arrangement", systemImage: layout.arrangement.systemImage)
             }
             .help(Text("Arrangement"))
         }
-        ToolbarItem {
-            ControlGroup {
+    }
+}
+
+/// The arrangement and, for each visible slot, which slide it shows (LAY-01, LAY-04): in
+/// View ▸ Arrangement and in the toolbar's Arrangement menu. The slot pickers replace the
+/// old layout editor's drag and drop (product-owner decision 2026-11-18).
+private struct ArrangementMenuContent: View {
+    let layout: PresenterLayoutModel?
+
+    var body: some View {
+        ArrangementPicker(layout: layout)
+            .pickerStyle(.inline)
+        if let layout {
+            Divider()
+            ForEach(layout.arrangement.slotIndicesInVisualOrder, id: \.self) { index in
+                SlotContentPicker(layout: layout, index: index)
+                    .pickerStyle(.menu)
+            }
+        }
+    }
+}
+
+/// Chooses the slide shown in one slot. Choosing a slide shown elsewhere swaps the two;
+/// choosing a hidden one hides the slide that was there, like dropping a slide symbol on a
+/// slot in the old layout editor (LAY-04).
+private struct SlotContentPicker: View {
+    let layout: PresenterLayoutModel
+    let index: Int
+
+    var body: some View {
+        if let place = layout.arrangement.place(ofSlotAt: index) {
+            Picker(selection: selection) {
                 ForEach(PresenterSlot.allCases, id: \.self) { slot in
-                    SlotToggle(layout: layout, slot: slot)
-                        .help(slot.title)
+                    Label(slot.contentTitle, systemImage: slot.systemImage)
+                        .tag(slot)
                 }
             } label: {
-                Label("Slides", systemImage: "rectangle.on.rectangle")
+                // The subtitle shows the slot's slide without opening the submenu.
+                Text(place.title)
+                Text(layout.layout.slots[index].contentTitle)
             }
+        }
+    }
+
+    private var selection: Binding<PresenterSlot> {
+        Binding {
+            layout.layout.slots[index]
+        } set: {
+            layout.setSlot($0, at: index)
         }
     }
 }
@@ -136,11 +181,37 @@ extension PresenterSlot {
         }
     }
 
+    /// What the slot shows, for the slot pickers (LAY-04).
+    var contentTitle: LocalizedStringKey {
+        switch self {
+        case .current: "Current Slide"
+        case .next: "Next Slide"
+        case .notes: "Notes"
+        }
+    }
+
     var systemImage: String {
         switch self {
         case .current: "rectangle.inset.filled"
         case .next: "rectangle.righthalf.inset.filled.arrow.right"
         case .notes: "note.text"
+        }
+    }
+}
+
+extension PresenterSlotPlace {
+    /// The slot's place in the window, as the slot picker's title (LAY-04).
+    var title: LocalizedStringKey {
+        switch self {
+        case .whole: "Slide"
+        case .left: "Left"
+        case .right: "Right"
+        case .largeLeft: "Large Left"
+        case .topRight: "Top Right"
+        case .bottomRight: "Bottom Right"
+        case .topLeft: "Top Left"
+        case .bottomLeft: "Bottom Left"
+        case .largeRight: "Large Right"
         }
     }
 }
@@ -151,8 +222,8 @@ extension UserDefaultsPresenterLayoutStore {
 }
 
 extension View {
-    /// Adds the layout controls to the toolbar and the menu commands of this window. While
-    /// `isLocked` (draw mode, DRAW-05) the toolbar items are hidden and the menu items off.
+    /// Adds the Arrangement menu to the toolbar and the layout menu commands of this window.
+    /// While `isLocked` (draw mode, DRAW-05) the toolbar item is hidden and the menu items off.
     func presenterLayoutControls(_ layout: PresenterLayoutModel, isLocked: Bool = false) -> some View {
         toolbar {
             if !isLocked {
