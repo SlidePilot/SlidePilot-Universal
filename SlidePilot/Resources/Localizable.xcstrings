@@ -13,6 +13,34 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un PDF nommé « %@ » avec le même nombre de pages est introuvable. Vous pouvez utiliser ses données enregistrées pour ce PDF." } }
       }
     },
+    "Allow Access" : {
+      "comment" : "Confirm button of the folder picker that grants access to the PDF's folder",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff erlauben" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès" } }
+      }
+    },
+    "Allow Access to Play Video…" : {
+      "comment" : "Button over a video on the current slide when the PDF's folder is not accessible",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff zum Abspielen erlauben …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès pour lire la vidéo…" } }
+      }
+    },
+    "Allow Access to the Folder?" : {
+      "comment" : "Title of the alert that asks for access to the PDF's folder (videos and run: links)",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff auf den Ordner erlauben?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès au dossier ?" } }
+      }
+    },
+    "Allow Access…" : {
+      "comment" : "Alert button that opens the folder picker for the PDF's folder",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff erlauben …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès…" } }
+      }
+    },
     "Black Screen" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Schwarzer Bildschirm" } },
@@ -23,6 +51,20 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Abbrechen" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Annuler" } }
+      }
+    },
+    "Check that the file is in the place the PDF expects, relative to the PDF." : {
+      "comment" : "Message when a run: link target is missing",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Prüfe, ob die Datei dort liegt, wo das PDF sie erwartet (relativ zum PDF)." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vérifiez que le fichier se trouve à l’emplacement attendu par le PDF, relativement au PDF." } }
+      }
+    },
+    "Choose the folder that contains the PDF and its videos." : {
+      "comment" : "Message of the folder picker for the PDF's folder",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle den Ordner, der das PDF und seine Videos enthält." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez le dossier qui contient le PDF et ses vidéos." } }
       }
     },
     "Clock" : {
@@ -98,6 +140,27 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Garder l’écran allumé" } }
       }
     },
+    "Links in a PDF can open documents and videos, but not programs or scripts." : {
+      "comment" : "Message when a run: link points to a program or script",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Links in einem PDF können Dokumente und Videos öffnen, aber keine Programme oder Skripte." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les liens d’un PDF peuvent ouvrir des documents et des vidéos, mais pas des programmes ni des scripts." } }
+      }
+    },
+    "Not Now" : {
+      "comment" : "Alert button that declines folder access for now",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht jetzt" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus tard" } }
+      }
+    },
+    "Open file %@" : {
+      "comment" : "VoiceOver action of a run: link on a slide; the argument is the file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Datei %@ öffnen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir le fichier %@" } }
+      }
+    },
     "Settings" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen" } },
@@ -108,6 +171,20 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen …" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages…" } }
+      }
+    },
+    "SlidePilot does not open “%@”." : {
+      "comment" : "Alert title when a run: link points to a program or script; the argument is the file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot öffnet „%@“ nicht." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot n’ouvre pas « %@ »." } }
+      }
+    },
+    "SlidePilot needs access to the folder of this PDF to play “%@”." : {
+      "comment" : "Help tag of the button over a video; the argument is the video's file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot benötigt Zugriff auf den Ordner dieses PDFs, um „%@“ abzuspielen." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a besoin d’accéder au dossier de ce PDF pour lire « %@ »." } }
       }
     },
     "Slides fade into each other on the presentation screen." : {
@@ -291,10 +368,24 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Texte" } }
       }
     },
+    "The file “%@” could not be found." : {
+      "comment" : "Alert title when a run: link target is missing; the argument is the file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Datei „%@“ wurde nicht gefunden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le fichier « %@ » est introuvable." } }
+      }
+    },
     "These notes were saved by a newer version of SlidePilot." : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Diese Notizen wurden mit einer neueren Version von SlidePilot gesichert." } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ces notes ont été enregistrées avec une version plus récente de SlidePilot." } }
+      }
+    },
+    "This PDF contains videos or links to files next to it. To play and open them, choose the folder that contains the PDF. SlidePilot remembers it for all PDFs in that folder." : {
+      "comment" : "Message of the alert that asks for access to the PDF's folder",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Dieses PDF enthält Videos oder Links auf Dateien neben dem PDF. Wähle den Ordner mit dem PDF, damit SlidePilot sie abspielen und öffnen kann. SlidePilot merkt sich den Ordner für alle PDFs darin." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ce PDF contient des vidéos ou des liens vers des fichiers situés à côté. Pour les lire et les ouvrir, choisissez le dossier qui contient le PDF. SlidePilot s’en souvient pour tous les PDF de ce dossier." } }
       }
     },
     "Underline" : {
@@ -561,6 +652,20 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten eines fehlenden PDFs verwenden?" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Utiliser les données d’un PDF introuvable ?" } }
+      }
+    },
+    "Video %@" : {
+      "comment" : "VoiceOver label of a video player on a slide; the argument is the file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Video %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vidéo %@" } }
+      }
+    },
+    "Video “%@” not found" : {
+      "comment" : "Shown over a video on the current slide when its file is missing; the argument is the file name",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Video „%@“ nicht gefunden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vidéo « %@ » introuvable" } }
       }
     },
     "White Screen" : {

@@ -25,6 +25,8 @@ final class PresentationSession: Identifiable {
     let companion: DocumentCompanion
     /// The text notes and whether they are being edited (NOTES-04, NOTES-05).
     let notes: NotesModel
+    /// Videos and `run:` link targets next to the PDF (NAV-06, NAV-07).
+    let linkedFiles: LinkedFiles
     /// Whether the slide navigator sidebar is shown (LAY-06); hidden when a document opens,
     /// unless the document's settings say otherwise (SET-02).
     var isNavigatorDisplayed = false
@@ -34,9 +36,11 @@ final class PresentationSession: Identifiable {
         info: PDFDocumentInfo,
         page: Int = 0,
         layoutStore: any PresenterLayoutStore = UserDefaultsPresenterLayoutStore.app,
-        companionStore: CompanionStore? = .app
+        companionStore: CompanionStore? = .app,
+        folderAccessStore: FolderAccessStore? = nil
     ) {
         self.data = data
+        linkedFiles = LinkedFiles(folderStore: folderAccessStore)
         layout = PresenterLayoutModel(store: layoutStore)
         companion = DocumentCompanion(store: companionStore)
         notes = NotesModel(companion: companion)
