@@ -72,8 +72,8 @@ struct PresentationTimerTests {
     // TIME-03: the timer counts down from the set time and goes negative.
     @Test func timerCountsDownIntoOvertime() {
         var timer = PresentationTimer()
-        timer.setMode(.timer)
-        timer.setTimerDuration(90)
+        timer.setTimer(seconds: 90)
+        #expect(timer.mode == .timer)
         #expect(timer.displayedSeconds(at: at(0)) == 90)
         timer.toggle(at: at(0))
         #expect(timer.displayedSeconds(at: at(0.5)) == 90)
@@ -86,64 +86,85 @@ struct PresentationTimerTests {
 
     // TIME-03: Reset goes back to the set time.
     @Test func timerResetGoesBackToSetTime() {
-        var timer = PresentationTimer(mode: .timer)
-        timer.setTimerDuration(300)
+        var timer = PresentationTimer()
+        timer.setTimer(seconds: 300)
         timer.toggle(at: at(0))
         timer.reset()
+        #expect(timer.mode == .timer)
         #expect(timer.displayedSeconds(at: at(100)) == 300)
     }
 
-    // TIME-03: setting the time stops the timer and shows the new time.
-    @Test func setTimerStopsAndShowsNewTime() {
-        var timer = PresentationTimer(mode: .timer)
-        timer.setTimerDuration(300)
+    // TIME-04 (changed): setting a time switches a running stopwatch to a stopped timer.
+    @Test func settingTimerSwitchesFromStopwatch() {
+        var timer = PresentationTimer()
         timer.toggle(at: at(0))
-        timer.setTimerDuration(600)
+        timer.setTimer(seconds: 120)
+        #expect(timer.mode == .timer)
+        #expect(!timer.isRunning)
+        #expect(timer.displayedSeconds(at: at(50)) == 120)
+    }
+
+    // TIME-03: setting the time while the timer is on stops it and shows the new time.
+    @Test func changingTimerStopsAndShowsNewTime() {
+        var timer = PresentationTimer()
+        timer.setTimer(seconds: 300)
+        timer.toggle(at: at(0))
+        timer.setTimer(seconds: 600)
+        #expect(timer.mode == .timer)
         #expect(!timer.isRunning)
         #expect(timer.timerDuration == 600)
         #expect(timer.displayedSeconds(at: at(100)) == 600)
     }
 
-    // TIME-03: Set Timer is only available in timer mode.
-    @Test func setTimerIsIgnoredInStopwatchMode() {
+    // TIME-04 (changed): setting zero turns the timer off.
+    @Test func settingZeroTurnsTimerOff() {
         var timer = PresentationTimer()
-        timer.setTimerDuration(300)
-        #expect(timer.timerDuration == 0)
+        timer.setTimer(seconds: 300)
+        timer.toggle(at: at(0))
+        timer.setTimer(seconds: 0)
+        #expect(timer.mode == .stopwatch)
+        #expect(!timer.isRunning)
+        #expect(timer.displayedSeconds(at: at(10)) == 0)
+        #expect(timer.timerDuration == 300)
     }
 
-    @Test func negativeDurationCountsAsZero() {
-        var timer = PresentationTimer(mode: .timer)
-        timer.setTimerDuration(-5)
-        #expect(timer.timerDuration == 0)
-    }
-
-    // TIME-04: switching the mode stops and resets the time.
-    @Test func switchingModeStopsAndResets() {
+    // Setting zero or less in stopwatch mode changes nothing, a running stopwatch keeps running.
+    @Test func settingZeroInStopwatchModeChangesNothing() {
         var timer = PresentationTimer()
         timer.toggle(at: at(0))
-        timer.setMode(.timer)
-        #expect(timer.mode == .timer)
+        timer.setTimer(seconds: -5)
+        #expect(timer.mode == .stopwatch)
+        #expect(timer.isRunning)
+        #expect(timer.timerDuration == 0)
+        #expect(timer.displayedSeconds(at: at(10)) == 10)
+    }
+
+    // TIME-04 (changed): turning the timer off stops and goes back to the stopwatch at zero.
+    @Test func turningTimerOffStopsAndResets() {
+        var timer = PresentationTimer()
+        timer.setTimer(seconds: 300)
+        timer.toggle(at: at(0))
+        timer.turnOffTimer()
+        #expect(timer.mode == .stopwatch)
         #expect(!timer.isRunning)
         #expect(timer.displayedSeconds(at: at(50)) == 0)
     }
 
-    // DEF-08: the old app cleared the set timer value when the mode changed.
-    @Test func switchingModeKeepsTimerDuration() {
-        var timer = PresentationTimer(mode: .timer)
-        timer.setTimerDuration(300)
-        timer.setMode(.stopwatch)
-        timer.setMode(.timer)
-        #expect(timer.timerDuration == 300)
-        #expect(timer.displayedSeconds(at: at(0)) == 300)
-    }
-
-    // Like the old app, choosing the current mode again also stops and resets.
-    @Test func choosingTheSameModeResets() {
+    @Test func turningTimerOffInStopwatchModeChangesNothing() {
         var timer = PresentationTimer()
         timer.toggle(at: at(0))
-        timer.setMode(.stopwatch)
-        #expect(!timer.isRunning)
-        #expect(timer.displayedSeconds(at: at(10)) == 0)
+        timer.turnOffTimer()
+        #expect(timer.isRunning)
+        #expect(timer.displayedSeconds(at: at(10)) == 10)
+    }
+
+    // DEF-08: the old app cleared the set timer value when the mode changed. The set time
+    // is kept, so Set Timer offers it again.
+    @Test func turningTimerOffKeepsDuration() {
+        var timer = PresentationTimer()
+        timer.setTimer(seconds: 300)
+        timer.turnOffTimer()
+        #expect(timer.timerDuration == 300)
     }
 
     // TIME-05, NAV-09: the first "next slide" starts the time, later ones do nothing.
@@ -172,7 +193,9 @@ struct PresentationTimerTests {
     @Test func resetAndModeChangeKeepAutoStart() {
         var timer = PresentationTimer()
         timer.reset()
-        timer.setMode(.timer)
+        timer.setTimer(seconds: 60)
+        timer.turnOffTimer()
+        timer.setTimer(seconds: 60)
         #expect(timer.startsOnNextSlide)
         timer.nextSlideCommandWasUsed(at: at(0))
         #expect(timer.isRunning)

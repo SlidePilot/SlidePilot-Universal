@@ -92,8 +92,8 @@ struct MacSnapshots {
     func timeDisplay(appearance: WindowSnapshot.Appearance) async throws {
         var stopwatch = PresentationTimer()
         stopwatch.toggle(at: .now.addingTimeInterval(-754))
-        var timer = PresentationTimer(mode: .timer)
-        timer.setTimerDuration(60)
+        var timer = PresentationTimer()
+        timer.setTimer(seconds: 60)
         timer.toggle(at: .now.addingTimeInterval(-125))
         let view = VStack(alignment: .leading, spacing: 20) {
             TimeDisplay(timer: stopwatch, size: .normal)
