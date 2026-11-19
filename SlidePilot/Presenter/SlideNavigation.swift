@@ -15,10 +15,11 @@ struct SlideNavigationMenuItems: View {
     var body: some View {
         Button("Previous Slide") { session?.showPreviousPage() }
             .keyboardShortcut(.leftArrow, modifiers: [.control, .command])
-            .disabled(session == nil)
+            // Off while draw mode blocks slide changes (NAV-04).
+            .disabled(session?.allowsPageSwitching != true)
         Button("Next Slide") { session?.nextSlideCommand() }
             .keyboardShortcut(.rightArrow, modifiers: [.control, .command])
-            .disabled(session == nil)
+            .disabled(session?.allowsPageSwitching != true)
         Button("Go Back") { session?.goBack() }
             .keyboardShortcut("g", modifiers: .control)
             .disabled(session?.canGoBack != true)
@@ -30,6 +31,8 @@ extension PresentationSession {
     /// timer on the first use (NAV-09, TIME-05). Swipes, VoiceOver, links and the remote
     /// call `showNextPage()` directly.
     func nextSlideCommand() {
+        // A blocked slide change does not start the timer either (NAV-04).
+        guard allowsPageSwitching else { return }
         showNextPage()
         timer.nextSlideCommandWasUsed()
     }
@@ -66,9 +69,28 @@ private struct SlideNavigationKeys: ViewModifier {
             .focusEffectDisabled()
             .focused($hasKeyboardFocus)
             .onAppear { hasKeyboardFocus = true }
+            #if os(macOS)
+            // While nothing in the window has the keyboard, e.g. right after it opens,
+            // the window takes these keys and the "." itself (#120).
+            .background(WindowKeyboardAnchor { key in
+                guard !session.notes.isEditing else { return false }
+                switch key {
+                case .previous: session.showPreviousPage()
+                case .next: session.nextSlideCommand()
+                case .period: session.curtain.toggle(.black)
+                }
+                return true
+            })
+            #endif
             // Finishing the notes (Done, ⌘↩) gives the keys back to the slides (NOTES-04).
             .onChange(of: session.notes.isEditing) { _, isEditing in
                 if !isEditing {
+                    hasKeyboardFocus = true
+                }
+            }
+            // So does leaving draw mode, whose canvas had the keyboard (DRAW-01).
+            .onChange(of: session.drawing.isActive) { _, isDrawing in
+                if !isDrawing {
                     hasKeyboardFocus = true
                 }
             }
@@ -104,7 +126,8 @@ private struct PresenterNavigation: ViewModifier {
             #if os(iOS)
             .contentShape(.rect)
             // Off while the notes are edited, so dragging in the text never changes slides.
-            .gesture(swipe, isEnabled: !session.notes.isEditing)
+            // Off in draw mode too, where a finger draws (DRAW-01).
+            .gesture(swipe, isEnabled: !session.notes.isEditing && !session.drawing.isActive)
             #endif
     }
 

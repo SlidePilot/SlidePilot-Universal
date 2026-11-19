@@ -10,7 +10,7 @@ struct SlidePilotApp: App {
     private var remote: RemoteService { appDelegate.remote }
     #else
     @NSApplicationDelegateAdaptor(MacAppDelegate.self) private var appDelegate
-    @State private var registry = SessionRegistry()
+    @State private var registry: SessionRegistry
     @State private var presentationWindows = MacPresentationWindows()
     /// The app-wide settings (SET-01), shared by all windows.
     @State private var settings: AppSettings
@@ -21,9 +21,11 @@ struct SlidePilotApp: App {
 
     init() {
         let settings = AppSettings(store: UserDefaults.standard)
+        let registry = SessionRegistry()
+        _registry = State(initialValue: registry)
         _settings = State(initialValue: settings)
         _displayAwakeKeeper = State(initialValue: DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker()))
-        _remote = State(initialValue: RemoteService.live(settings: settings))
+        _remote = State(initialValue: RemoteService.live(settings: settings, registry: registry))
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
         CompanionStore.cleanUpAtLaunch()
@@ -51,6 +53,7 @@ struct SlidePilotApp: App {
             LayoutCommands()
             ModeratorCommands()
             NotesFormatCommands()
+            NotesFileCommands()
         }
 
         // The presentation window of each document (DOC-04 to DOC-06). It is opened by the
@@ -92,6 +95,7 @@ struct SlidePilotApp: App {
         .commands {
             LayoutCommands()
             NotesFormatCommands()
+            NotesFileCommands()
         }
 
         #endif

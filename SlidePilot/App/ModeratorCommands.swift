@@ -9,6 +9,8 @@ struct ModeratorCommands: Commands {
             Divider()
             NavigatorMenuItems()
             Divider()
+            DrawingMenuItems()
+            Divider()
             TimerMenuItems()
         }
     }

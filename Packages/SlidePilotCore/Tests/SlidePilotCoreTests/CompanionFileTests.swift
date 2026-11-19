@@ -40,6 +40,14 @@ struct CompanionFileFormatTests {
         #expect(!DocumentSettings(isNavigatorDisplayed: false).isEmpty)
     }
 
+    // NOTES-08: a declined legacy notes import round-trips and is optional.
+    @Test func declinedLegacyNotesIsOptional() throws {
+        var item = entry()
+        item.settings.declinedLegacyNotes = true
+        #expect(try CompanionFileFormat.decode(CompanionFileFormat.encode(item)).entry.settings.declinedLegacyNotes == true)
+        #expect(try CompanionFileFormat.decode(CompanionFileFormat.encode(entry())).entry.settings.declinedLegacyNotes == nil)
+    }
+
     // A file from a later app version is read, flagged and keeps working with unknown fields.
     @Test func readsNewerVersionsWithUnknownFields() throws {
         var json = try #require(try JSONSerialization.jsonObject(with: CompanionFileFormat.encode(entry())) as? [String: Any])

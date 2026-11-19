@@ -10,11 +10,19 @@ import SlidePilotRendering
 final class PresentationSession: Identifiable {
     /// Identifies the session's presentation window (macOS) and its registry entry.
     let id = UUID()
+    /// The document's display name, e.g. for the remote's list of presentations (REM-04).
+    let title: String
     /// Replaced when the PDF is reloaded; views read page sizes from `cache.info`.
     private(set) var cache: RenderCache
     private(set) var position: DeckPosition
     /// Stopwatch/timer of this document; starts in stopwatch mode (TIME-02 to TIME-05).
     var timer = PresentationTimer()
+    /// Counts reloads, so the remote knows the slide images changed (REM-04).
+    private(set) var contentVersion = 0
+    /// Where a remote controller points on the slide, 0…1 with the origin top left; `nil`
+    /// when it does not point (REM-05). The pointer overlay (PTR-01) shows it only while
+    /// the pointer is shown (DEF-14).
+    var remotePointerLocation: CGPoint?
     /// Black or white cover on the presentation (CUR-01); never persisted (CUR-03).
     var curtain = Curtain.none
     /// The bytes on screen; the file observer compares changes with them.
@@ -25,18 +33,26 @@ final class PresentationSession: Identifiable {
     let companion: DocumentCompanion
     /// The text notes and whether they are being edited (NOTES-04, NOTES-05).
     let notes: NotesModel
+    /// Videos and `run:` link targets next to the PDF (NAV-06, NAV-07).
+    let linkedFiles: LinkedFiles
     /// Whether the slide navigator sidebar is shown (LAY-06); hidden when a document opens,
     /// unless the document's settings say otherwise (SET-02).
     var isNavigatorDisplayed = false
+    /// Draw mode and the drawings of all pages (DRAW-01 to DRAW-08).
+    let drawing = DrawingModel()
 
     init(
         data: Data,
+        title: String = String(localized: "Untitled"),
         info: PDFDocumentInfo,
         page: Int = 0,
         layoutStore: any PresenterLayoutStore = UserDefaultsPresenterLayoutStore.app,
-        companionStore: CompanionStore? = .app
+        companionStore: CompanionStore? = .app,
+        folderAccessStore: FolderAccessStore? = nil
     ) {
         self.data = data
+        self.title = title
+        linkedFiles = LinkedFiles(folderStore: folderAccessStore)
         layout = PresenterLayoutModel(store: layoutStore)
         companion = DocumentCompanion(store: companionStore)
         notes = NotesModel(companion: companion)
@@ -47,24 +63,32 @@ final class PresentationSession: Identifiable {
 
     var currentPage: Int { position.page }
 
+    /// Every slide change goes through the methods below; none of them changes the slide
+    /// while draw mode blocks it (NAV-04), also for links, swipes and the remote.
+    var allowsPageSwitching: Bool { drawing.drawings.allowsPageSwitching }
+
     func showNextPage() {
+        guard allowsPageSwitching else { return }
         position.showNext()
     }
 
     func showPreviousPage() {
+        guard allowsPageSwitching else { return }
         position.showPrevious()
     }
 
     /// Jumps to `index`, clamped to the deck (navigator LAY-06, internal links NAV-05).
     /// Counts for Go Back; never starts the timer.
     func showPage(_ index: Int) {
+        guard allowsPageSwitching else { return }
         position.show(index)
     }
 
-    var canGoBack: Bool { position.canGoBack }
+    var canGoBack: Bool { allowsPageSwitching && position.canGoBack }
 
     /// Shows the previously viewed page (NAV-03).
     func goBack() {
+        guard allowsPageSwitching else { return }
         position.goBack()
     }
 
@@ -73,6 +97,8 @@ final class PresentationSession: Identifiable {
     func reload(with version: PDFVersion) {
         data = version.data
         cache = RenderCache(data: version.data, info: version.info)
+        contentVersion += 1
         position.changePageCount(to: version.info.pageCount)
+        drawing.drawings.pageCountChanged(to: version.info.pageCount)
     }
 }

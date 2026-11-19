@@ -30,12 +30,16 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
     var body: some View {
         #if os(macOS)
         splitView(detail: detail.modifier(slidesChrome).modifier(chrome))
+            // Layout changes are locked in draw mode (DRAW-05).
+            .toolbar(removing: session.drawing.isActive ? .sidebarToggle : nil)
         #else
         splitView(detail: detail.modifier(slidesChrome).toolbar(.hidden, for: .navigationBar))
             .modifier(chrome)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     NavigatorToggle(session: session)
+                        // Layout changes are locked in draw mode (DRAW-05).
+                        .disabled(session.drawing.isActive)
                 }
             }
         #endif
@@ -69,6 +73,8 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
         Binding {
             session.isNavigatorDisplayed ? .all : .detailOnly
         } set: {
+            // Layout changes are locked in draw mode (DRAW-05).
+            guard !session.drawing.isActive else { return }
             session.isNavigatorDisplayed = $0 != .detailOnly
         }
     }
@@ -121,7 +127,8 @@ struct NavigatorMenuItems: View {
     var body: some View {
         Toggle("Show Navigator", isOn: isOn)
             .plainKeyShortcut("o")
-            .disabled(session == nil)
+            // Layout changes are locked in draw mode (DRAW-05).
+            .disabled(session == nil || session?.drawing.isActive == true)
     }
 
     private var isOn: Binding<Bool> {
@@ -160,6 +167,7 @@ struct SlideNavigator: View {
                     } label: {
                         ThumbnailRow(
                             cache: session.cache,
+                            drawings: session.drawing.drawings,
                             page: page,
                             pageCount: pageCount,
                             isCurrent: page == session.currentPage,
@@ -267,6 +275,7 @@ private struct PageNumberField: ViewModifier {
 /// One thumbnail with its page number on the leading side, like in the old app.
 private struct ThumbnailRow: View {
     let cache: RenderCache
+    let drawings: DocumentDrawings
     let page: Int
     let pageCount: Int
     /// The slide on screen: a frame in the accent color around the thumbnail.
@@ -286,6 +295,7 @@ private struct ThumbnailRow: View {
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
             SlideThumbnail(cache: cache, page: page)
+                .drawingOverlay(drawings, page: page)
                 // The frame sits just outside the thumbnail, so it grows with it.
                 .padding(3)
                 .overlay {

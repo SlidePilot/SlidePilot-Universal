@@ -222,9 +222,14 @@ extension UserDefaultsPresenterLayoutStore {
 }
 
 extension View {
-    /// Adds the layout controls to the toolbar and the menu commands of this window.
-    func presenterLayoutControls(_ layout: PresenterLayoutModel) -> some View {
-        toolbar { PresenterLayoutToolbar(layout: layout) }
-            .focusedSceneValue(\.presenterLayout, layout)
+    /// Adds the layout controls to the toolbar and the menu commands of this window. While
+    /// `isLocked` (draw mode, DRAW-05) the toolbar items are hidden and the menu items off.
+    func presenterLayoutControls(_ layout: PresenterLayoutModel, isLocked: Bool = false) -> some View {
+        toolbar {
+            if !isLocked {
+                PresenterLayoutToolbar(layout: layout)
+            }
+        }
+        .focusedSceneValue(\.presenterLayout, isLocked ? nil : layout)
     }
 }
