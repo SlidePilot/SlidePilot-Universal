@@ -2,11 +2,6 @@ import QuickLook
 import SlidePilotCore
 import SwiftUI
 
-extension FolderAccessStore {
-    /// The app's folder grants (ADR 0012).
-    static let app = FolderAccessStore(settings: UserDefaults.standard)
-}
-
 extension View {
     /// Videos and `run:` links of the document (NAV-06, NAV-07): asks once for access to the
     /// PDF's folder when the PDF refers to files there, opens `run:` targets and reports

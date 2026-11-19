@@ -1,82 +1,82 @@
 import Foundation
 
-/// The folders the user allowed SlidePilot to read (ADR 0012).
+/// Folders the user allowed the app to read, kept as bookmarks across launches (ADR 0012).
 ///
-/// A sandboxed app reaches only the opened PDF. Videos and `run:` targets next to it
-/// (NAV-06, NAV-07) need one grant for their folder, which is kept as a bookmark and then
-/// covers every PDF in that folder, also after relaunches.
+/// The sandbox only lets the app read the opened PDF. Files next to it, such as legacy
+/// notes (NOTES-08), need a folder grant, which the user gives once per folder in an open
+/// panel; one grant covers every file in that folder and its subfolders.
 @MainActor
 public final class FolderAccessStore {
-    /// The settings key of the stored folder bookmarks.
-    public static let key = "folderAccessBookmarks"
+    public static let settingsKey = "folderAccessBookmarks"
 
     private let settings: any SettingsStore
     private let locator: any PDFLocator
-    private let contains: @Sendable (_ folder: URL, _ item: URL) -> Bool
+    private let contains: (_ folder: URL, _ item: URL) -> Bool
 
-    /// - Parameters:
-    ///   - locator: Creates and resolves the bookmarks; works for folders as well as PDFs.
-    ///   - contains: Whether `item` lies in `folder` or one of its subfolders. Decided by
-    ///     the file system, not by comparing paths (ADR 0012).
+    /// - Parameter contains: Whether `item` is inside `folder` or one of its subfolders.
+    ///   Decided by file system relationship, never by path strings (ADR 0012).
     public init(
         settings: any SettingsStore,
         locator: any PDFLocator = FileBookmarkLocator(),
-        contains: @escaping @Sendable (_ folder: URL, _ item: URL) -> Bool = FolderAccessStore.fileSystemContains
+        contains: @escaping (_ folder: URL, _ item: URL) -> Bool = FolderAccessStore.folderContains
     ) {
         self.settings = settings
         self.locator = locator
         self.contains = contains
     }
 
-    /// A granted folder that holds `item`, resolved from its bookmark. The caller starts
-    /// and stops accessing it as a security-scoped resource. Stale bookmarks are renewed;
-    /// bookmarks of folders that are gone are dropped.
+    private var stored: [Data] {
+        get { settings.object(forKey: Self.settingsKey) as? [Data] ?? [] }
+        set { settings.set(newValue, forKey: Self.settingsKey) }
+    }
+
+    /// The granted folder that contains `item`; `nil` if no grant covers it. The caller
+    /// starts and stops security-scoped access on the returned URL. Grants whose folder is
+    /// gone are removed; stale bookmarks are created again.
     public func grantedFolder(containing item: URL) -> URL? {
-        var bookmarks = storedBookmarks
-        var found: URL?
-        var changed = false
-        for (index, bookmark) in bookmarks.enumerated().reversed() {
-            guard let resolved = locator.resolve(bookmark) else {
-                bookmarks.remove(at: index)
-                changed = true
+        var updated = stored
+        var match: URL?
+        for (index, data) in stored.enumerated().reversed() {
+            guard let resolved = locator.resolve(data) else {
+                updated.remove(at: index)
                 continue
             }
-            if resolved.isStale, let renewed = try? locator.bookmark(for: resolved.url) {
-                bookmarks[index] = renewed
-                changed = true
+            if resolved.isStale, let fresh = try? locator.bookmark(for: resolved.url) {
+                updated[index] = fresh
             }
-            if found == nil, contains(resolved.url, item) {
-                found = resolved.url
+            if match == nil, contains(resolved.url, item) {
+                match = resolved.url
             }
         }
-        if changed { storedBookmarks = bookmarks }
-        return found
+        if updated != stored {
+            stored = updated
+        }
+        return match
     }
 
-    /// Keeps a grant for `folder`, which the user just picked. A grant for the same folder
-    /// replaces the old one; the newest grant is checked first.
+    /// Stores the grant for a folder the user picked; a grant for the same folder is
+    /// replaced. Throws if no bookmark can be created; access then lasts until the app quits.
     public func addGrant(for folder: URL) throws {
-        let bookmark = try locator.bookmark(for: folder)
-        var bookmarks = storedBookmarks.filter { stored in
-            guard let resolved = locator.resolve(stored) else { return false }
-            return !locator.isSameFile(resolved.url, folder)
+        let data = try locator.bookmark(for: folder)
+        let others = stored.filter { existing in
+            guard let resolved = locator.resolve(existing) else { return false }
+            return !(contains(resolved.url, folder) && contains(folder, resolved.url))
         }
-        bookmarks.append(bookmark)
-        storedBookmarks = bookmarks
+        stored = others + [data]
     }
 
-    private var storedBookmarks: [Data] {
-        get { settings.object(forKey: Self.key) as? [Data] ?? [] }
-        set { settings.set(newValue, forKey: Self.key) }
-    }
-
-    /// `FileManager`'s relationship check: the folder is the item itself or contains it.
-    public static let fileSystemContains: @Sendable (URL, URL) -> Bool = { folder, item in
-        var relationship = FileManager.URLRelationship.other
+    /// The default relationship check: `item` is `folder` itself or inside it.
+    public nonisolated static func folderContains(_ folder: URL, _ item: URL) -> Bool {
         let isAccessing = folder.startAccessingSecurityScopedResource()
-        defer { if isAccessing { folder.stopAccessingSecurityScopedResource() } }
-        guard (try? FileManager.default.getRelationship(&relationship, ofDirectoryAt: folder, toItemAt: item)) != nil
-        else { return false }
+        defer {
+            if isAccessing { folder.stopAccessingSecurityScopedResource() }
+        }
+        var relationship = FileManager.URLRelationship.other
+        do {
+            try FileManager.default.getRelationship(&relationship, ofDirectoryAt: folder, toItemAt: item)
+        } catch {
+            return false
+        }
         return relationship == .contains || relationship == .same
     }
 }
