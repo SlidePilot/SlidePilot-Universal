@@ -66,6 +66,15 @@ private struct SlideNavigationKeys: ViewModifier {
             .focusEffectDisabled()
             .focused($hasKeyboardFocus)
             .onAppear { hasKeyboardFocus = true }
+            #if os(macOS)
+            // The focus state can say "focused" while AppKit routes no keys here, e.g.
+            // right after the window opens (#120). Setting it anew hands the keys back.
+            .background(WindowKeyboardAnchor {
+                guard !session.notes.isEditing else { return }
+                hasKeyboardFocus = false
+                hasKeyboardFocus = true
+            })
+            #endif
             // Finishing the notes (Done, ⌘↩) gives the keys back to the slides (NOTES-04).
             .onChange(of: session.notes.isEditing) { _, isEditing in
                 if !isEditing {
