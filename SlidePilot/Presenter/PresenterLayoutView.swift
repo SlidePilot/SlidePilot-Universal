@@ -51,7 +51,7 @@ struct PresenterLayoutView: View {
     private var drawingSlot: some View {
         SlideSurface(cache: session.cache, page: session.currentPage, role: .current)
             .overlay {
-                EditableDrawingLayer(model: session.drawing, page: session.currentPage)
+                EditableDrawingLayer(model: session.drawing, page: session.currentPage, onEscape: session.stopDrawing)
             }
             .padding(padding)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

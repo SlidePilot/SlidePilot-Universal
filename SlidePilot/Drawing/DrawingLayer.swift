@@ -55,13 +55,16 @@ struct EditableDrawingLayer: View {
     let model: DrawingModel
     let page: Int
     var region: PageRegion = .full
+    /// Esc while the canvas has the keyboard leaves draw mode (DRAW-01). The canvas gets
+    /// the key before SwiftUI's key handlers do.
+    var onEscape: () -> Void = {}
 
     var body: some View {
         Group {
             #if os(macOS)
-            MacDrawingLayer(model: model, page: page, section: region.drawingSection)
+            MacDrawingLayer(model: model, page: page, section: region.drawingSection, onEscape: onEscape)
             #else
-            PencilDrawingLayer(model: model, page: page, section: region.drawingSection)
+            PencilDrawingLayer(model: model, page: page, section: region.drawingSection, onEscape: onEscape)
             #endif
         }
         .accessibilityElement()
@@ -78,13 +81,14 @@ private struct MacDrawingLayer: View {
     let model: DrawingModel
     let page: Int
     let section: RelativeRect
+    let onEscape: () -> Void
 
     var body: some View {
         let drawings = model.drawings
         let live = drawings.liveStroke.flatMap { $0.page == page ? $0.stroke : nil }
         DrawingCanvas(drawing: drawings.drawing(onPage: page), liveStroke: live, section: section)
             .overlay {
-                MacDrawingInput(model: model, page: page, section: section)
+                MacDrawingInput(model: model, page: page, section: section, onEscape: onEscape)
             }
     }
 }
@@ -95,6 +99,7 @@ private struct MacDrawingInput: NSViewRepresentable {
     let model: DrawingModel
     let page: Int
     let section: RelativeRect
+    let onEscape: () -> Void
 
     func makeNSView(context: Context) -> DrawingInputView {
         DrawingInputView(model: model)
@@ -103,6 +108,7 @@ private struct MacDrawingInput: NSViewRepresentable {
     func updateNSView(_ view: DrawingInputView, context: Context) {
         view.page = page
         view.section = section
+        view.onEscape = onEscape
     }
 }
 
@@ -110,6 +116,7 @@ private final class DrawingInputView: NSView {
     let model: DrawingModel
     var page = 0
     var section = RelativeRect.fullPage
+    var onEscape: () -> Void = {}
 
     init(model: DrawingModel) {
         self.model = model
@@ -141,6 +148,19 @@ private final class DrawingInputView: NSView {
 
     @objc func redo(_ sender: Any?) {
         model.undoManager.redo()
+    }
+
+    override func cancelOperation(_ sender: Any?) {
+        onEscape()
+    }
+
+    override func keyDown(with event: NSEvent) {
+        // Esc only; other keys go on to the window, e.g. "." for the black screen.
+        if event.keyCode == 53 {
+            onEscape()
+        } else {
+            super.keyDown(with: event)
+        }
     }
 
     override func mouseDown(with event: NSEvent) {

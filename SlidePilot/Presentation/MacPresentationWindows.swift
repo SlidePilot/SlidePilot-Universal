@@ -236,8 +236,9 @@ struct PresentationWindowContent: View {
                 .focusedSceneValue(\.startPresentation, StartPresentationAction {
                     _ = windows.showRunningPresentation(id)
                 })
-                // Like the old app, A, P and N also work while the presentation is key (LAY-02).
-                .focusedSceneValue(\.presenterLayout, session.layout)
+                // Like the old app, A, P and N also work while the presentation is key
+                // (LAY-02), except in draw mode, which locks the layout (DRAW-05).
+                .focusedSceneValue(\.presenterLayout, session.drawing.isActive ? nil : session.layout)
                 // Start/Stop, Reset and Mode also work after a click into the presentation.
                 .focusedSceneValue(\.presenterTimer, FocusedPresenterTimer(session: session, showSetTimer: nil))
         } else {

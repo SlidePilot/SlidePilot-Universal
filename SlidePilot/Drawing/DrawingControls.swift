@@ -129,7 +129,7 @@ private struct DrawingToolbar: ToolbarContent {
             Picker("Canvas Background", selection: background) {
                 Label("Transparent Canvas", systemImage: "square.dashed")
                     .tag(CanvasBackground.transparent)
-                Label("White Canvas", systemImage: "square.fill")
+                Label("White Canvas", systemImage: "square")
                     .tag(CanvasBackground.white)
             }
             .pickerStyle(.segmented)
@@ -156,20 +156,23 @@ private struct DrawingToolbar: ToolbarContent {
 /// opens the same popover (DRAW-11).
 private struct ColorButton: View {
     @Bindable var model: DrawingModel
+    /// About the size of a toolbar symbol, growing with Dynamic Type.
+    @ScaledMetric(relativeTo: .body) private var swatchSize = 20.0
 
     var body: some View {
         Button {
             model.isColorPaletteShown.toggle()
         } label: {
-            Label {
-                Text("Color")
-            } icon: {
-                Image(systemName: "circle.fill")
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(model.drawings.color.swatch)
-            }
+            // A shape, not a symbol: toolbars tint symbol images, which would hide the
+            // color, and show the title of a label whose icon is not a symbol. Outlined, so
+            // white and black stay visible on any bar.
+            Circle()
+                .fill(model.drawings.color.swatch)
+                .strokeBorder(.secondary, lineWidth: 1)
+                .frame(width: swatchSize, height: swatchSize)
         }
         .help(Text("Color"))
+        .accessibilityLabel(Text("Color"))
         .accessibilityValue(model.drawings.color.name)
         .popover(isPresented: $model.isColorPaletteShown) {
             ColorPalette(model: model)
@@ -181,6 +184,10 @@ private struct ColorButton: View {
 /// The preset colors as a standard picker; choosing one closes the popover.
 private struct ColorPalette: View {
     let model: DrawingModel
+    #if os(iOS)
+    /// A form in a popover has no height of its own; six rows, growing with Dynamic Type.
+    @ScaledMetric(relativeTo: .body) private var height = 340.0
+    #endif
 
     var body: some View {
         Form {
@@ -206,7 +213,7 @@ private struct ColorPalette: View {
         #if os(macOS)
         .padding()
         #else
-        .frame(idealWidth: 240, idealHeight: 340)
+        .frame(idealWidth: 240, idealHeight: height)
         #endif
     }
 

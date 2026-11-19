@@ -12,6 +12,7 @@ struct PencilDrawingLayer: View {
     let model: DrawingModel
     let page: Int
     let section: RelativeRect
+    let onEscape: () -> Void
 
     var body: some View {
         // The canvas is transparent; a white canvas is drawn below it (DRAW-04).
@@ -24,7 +25,8 @@ struct PencilDrawingLayer: View {
                         page: page,
                         mapping: CanvasMapping(section: section, canvasWidth: proxy.size.width, canvasHeight: proxy.size.height),
                         color: model.drawings.color,
-                        drawing: model.drawings.drawing(onPage: page)
+                        drawing: model.drawings.drawing(onPage: page),
+                        onEscape: onEscape
                     )
                 }
             }
@@ -38,6 +40,7 @@ private struct PencilCanvas: UIViewRepresentable {
     let color: StrokeColor
     /// Passed in so a change of the model updates the canvas.
     let drawing: PageDrawing
+    let onEscape: () -> Void
 
     func makeCoordinator() -> Coordinator {
         Coordinator(model: model)
@@ -71,6 +74,7 @@ private struct PencilCanvas: UIViewRepresentable {
     func updateUIView(_ container: DrawingInputContainer, context: Context) {
         let canvas = container.canvas
         let coordinator = context.coordinator
+        container.onEscape = onEscape
         // Follows the system's "Only Draw with Apple Pencil" setting. `.default` would follow
         // a tool picker, which this canvas does not have (ADR 0016).
         canvas.drawingPolicy = UIPencilInteraction.prefersPencilOnlyDrawing ? .pencilOnly : .anyInput
@@ -98,6 +102,8 @@ private struct PencilCanvas: UIViewRepresentable {
         private var syncedStrokeCount = 0
         private var isApplying = false
         private var liveGeneration = 0
+        /// Whether the tracked touch draws; a rejected finger's moves are ignored.
+        private var isFollowing = false
 
         init(model: DrawingModel) {
             self.model = model
@@ -120,8 +126,12 @@ private struct PencilCanvas: UIViewRepresentable {
             guard !isApplying else { return }
             let pkStrokes = canvasView.drawing.strokes
             guard pkStrokes.count > syncedStrokeCount else {
-                // Not a new stroke (PencilKit has no eraser here): show the model again.
-                rebuild(canvasView, from: model.drawings.drawing(onPage: page))
+                // Not a new stroke (PencilKit has no eraser here): show the model again,
+                // unless the canvas already shows it.
+                let drawing = model.drawings.drawing(onPage: page)
+                if pkStrokes.count != syncedStrokeCount || drawing != synced {
+                    rebuild(canvasView, from: drawing)
+                }
                 return
             }
             let added = Array(pkStrokes[syncedStrokeCount...])
@@ -147,11 +157,15 @@ private struct PencilCanvas: UIViewRepresentable {
             case .began:
                 // Fingers do not draw when the system setting says Apple Pencil only.
                 guard isPencil || !UIPencilInteraction.prefersPencilOnlyDrawing else { return }
+                isFollowing = true
                 liveGeneration += 1
                 drawings.beginLiveStroke(onPage: page, at: points)
             case .moved:
+                guard isFollowing else { return }
                 drawings.extendLiveStroke(with: points)
             case .ended:
+                guard isFollowing else { return }
+                isFollowing = false
                 // The stroke stays until PencilKit reports it, so the mirror never flashes
                 // empty; dropped if PencilKit adds no stroke.
                 let generation = liveGeneration
@@ -163,6 +177,8 @@ private struct PencilCanvas: UIViewRepresentable {
                     }
                 }
             case .cancelled:
+                guard isFollowing else { return }
+                isFollowing = false
                 drawings.cancelLiveStroke()
             }
         }
@@ -203,6 +219,7 @@ private struct PencilCanvas: UIViewRepresentable {
 /// undo gestures the drawing's undo manager (DRAW-08).
 final class DrawingInputContainer: UIView {
     let canvas: PKCanvasView
+    var onEscape: () -> Void = {}
     private let drawingUndoManager: UndoManager
 
     init(canvas: PKCanvasView, undoManager: UndoManager) {
@@ -226,6 +243,15 @@ final class DrawingInputContainer: UIView {
         super.didMoveToWindow()
         if window != nil {
             becomeFirstResponder()
+        }
+    }
+
+    // Esc on a hardware keyboard leaves draw mode; other keys go on up the chain.
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        if presses.contains(where: { $0.key?.keyCode == .keyboardEscape }) {
+            onEscape()
+        } else {
+            super.pressesBegan(presses, with: event)
         }
     }
 }
