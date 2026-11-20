@@ -13,10 +13,12 @@ extension FocusedValues {
     @Entry var drawingsExport: FocusedDrawingsExport?
 }
 
-/// File ▸ Export Drawings… (⇧⌘S), like the old app (DRAW-10).
+/// File ▸ Export Drawings… (⇧⌘S), like the old app (DRAW-10): after Open Recent, before
+/// Close. The document system's Duplicate also uses ⇧⌘S; AppKit gives a shortcut to the
+/// first matching item, so the export must come before the save items.
 struct DrawingsExportCommands: Commands {
     var body: some Commands {
-        CommandGroup(after: .importExport) {
+        CommandGroup(before: .saveItem) {
             DrawingsExportMenuItem()
         }
     }
@@ -86,9 +88,12 @@ private struct DrawingsExportModifier: ViewModifier {
 
     @State private var exportFile: ExportedPDFFile?
     @State private var failureMessage: String?
+    @State private var isExporting = false
 
     func body(content: Content) -> some View {
         content
+            // A short task on the main actor; a result that arrives after the window closed
+            // only sets state that is gone. A second ⇧⌘S during an export is ignored.
             .focusedSceneValue(\.drawingsExport, FocusedDrawingsExport { Task { await export() } })
             #if os(iOS)
             // The iPad menu bar is hidden until it is pulled down, so the export is also in
@@ -97,7 +102,7 @@ private struct DrawingsExportModifier: ViewModifier {
                 ToolbarItemGroup(placement: .secondaryAction) {
                     ShareLink(
                         item: drawingsPDF,
-                        preview: SharePreview(drawingsPDF.fileName, image: Image(systemName: "doc.richtext"))
+                        preview: SharePreview(drawingsPDF.fileName)
                     ) {
                         Label("Export Drawings…", systemImage: "square.and.arrow.up.on.square")
                     }
@@ -127,7 +132,10 @@ private struct DrawingsExportModifier: ViewModifier {
     }
 
     private var drawingsPDF: DrawingsPDF {
-        DrawingsPDF(
+        // `data` is not observed; reading the reload counter keeps the share item current
+        // after the PDF was recompiled (DOC-08).
+        _ = session.contentVersion
+        return DrawingsPDF(
             pdf: session.data,
             drawings: session.drawing.drawings.pages,
             fileName: DrawingsPDFExporter.exportName(
@@ -143,6 +151,9 @@ private struct DrawingsExportModifier: ViewModifier {
 
     /// Writes the copy off the main actor, then opens the save panel.
     private func export() async {
+        guard !isExporting else { return }
+        isExporting = true
+        defer { isExporting = false }
         let item = drawingsPDF
         do {
             exportFile = ExportedPDFFile(data: try await Self.pdfData(of: item))
