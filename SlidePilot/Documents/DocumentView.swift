@@ -96,6 +96,8 @@ private struct PresenterChrome: ViewModifier {
             .notesEditingControls(session.notes)
             // Black and white curtain and its warning (CUR-01, CUR-02).
             .presenterCurtain(session)
+            // Show Pointer and its appearance (PTR-01, PTR-02).
+            .pointerControls(session)
             #if os(iOS)
             // How to present on a second screen (#82); the Mac needs no hint.
             .externalDisplayHint()

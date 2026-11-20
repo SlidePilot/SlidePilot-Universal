@@ -60,6 +60,8 @@ struct PresenterLayoutView: View {
                     // The white canvas would hide the slide's hairline.
                     .slideOutline(session.drawing.drawings.drawing(onPage: session.currentPage).background == .white)
             }
+            // The audience still sees where the presenter is about to draw (PTR-01).
+            .presenterPointer(session)
             .padding(padding)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -116,6 +118,7 @@ private struct PresenterSlotView: View {
         case .current:
             SlideSurface(cache: session.cache, page: session.currentPage, role: .current, pageLinkAction: session.showPage)
                 .drawingOverlay(session.drawing.drawings, page: session.currentPage)
+                .presenterPointer(session)
                 .slideNavigationForVoiceOver(session)
                 .finishesNotesEditing(session)
         case .next:

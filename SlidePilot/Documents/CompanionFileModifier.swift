@@ -78,6 +78,13 @@ private struct CompanionFileModifier: ViewModifier {
             .onChange(of: session.isNavigatorDisplayed) { _, isDisplayed in
                 companion.updateSettings { $0.isNavigatorDisplayed = isDisplayed }
             }
+            // So are the pointer's display state and appearance (PTR-07).
+            .onChange(of: session.pointer.isShown) { _, isShown in
+                companion.updateSettings { $0.isPointerDisplayed = isShown }
+            }
+            .onChange(of: session.pointer.appearance) { _, appearance in
+                companion.updateSettings { $0.pointerAppearance = appearance }
+            }
             .alert(
                 Text("Use Data from a Missing PDF?"),
                 isPresented: Binding(get: { companion.orphan != nil }, set: { _ in }),
@@ -149,6 +156,12 @@ private struct CompanionFileModifier: ViewModifier {
         }
         if let isNavigatorDisplayed = settings.isNavigatorDisplayed {
             session.isNavigatorDisplayed = isNavigatorDisplayed
+        }
+        if let isPointerDisplayed = settings.isPointerDisplayed {
+            session.pointer.isShown = isPointerDisplayed
+        }
+        if let pointerAppearance = settings.pointerAppearance {
+            session.pointer.appearance = pointerAppearance
         }
     }
 }
