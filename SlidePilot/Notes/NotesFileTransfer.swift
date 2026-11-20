@@ -291,6 +291,9 @@ private struct NotesFileTransferModifier: ViewModifier {
         session.notes.finishEditing()
         companion.setNotes(notes)
         session.layout.setVisible(.notes, true)
+        // Switch to text notes so the imported notes are visible, like the old auto-load.
+        // The old Open Notes… kept the mode (changed, NOTES-01).
+        session.setNotesMode(.text)
     }
 
     /// Reads and parses off the main actor: large RTF files take a noticeable time.

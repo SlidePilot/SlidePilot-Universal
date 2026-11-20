@@ -625,6 +625,48 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Texte" } }
       }
     },
+    "Bottom" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unten" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En bas" } }
+      }
+    },
+    "None" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune" } }
+      }
+    },
+    "Notes Mode" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizmodus" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Mode des notes" } }
+      }
+    },
+    "Notes slide, %lld of %lld" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizfolie, %1$lld von %2$lld" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive de notes, %1$lld sur %2$lld" } }
+      }
+    },
+    "Split" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "PDF spalten" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Scinder le PDF" } }
+      }
+    },
+    "Split Position" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Trennposition" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Position de séparation" } }
+      }
+    },
+    "Top" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Oben" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En haut" } }
+      }
+    },
     "The imported notes replace the current notes of every slide." : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Die importierten Notizen ersetzen die aktuellen Notizen aller Folien." } },

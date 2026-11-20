@@ -91,6 +91,7 @@ private struct PresenterChrome: ViewModifier {
         content
             // Layout changes are locked in draw mode (DRAW-05).
             .presenterLayoutControls(session.layout, isLocked: session.drawing.isActive)
+            .notesModeControls(session)
             .drawingControls(session)
             .presenterTimerControls(session)
             .presenterNavigation(session)

@@ -168,6 +168,7 @@ struct SlideNavigator: View {
                         ThumbnailRow(
                             cache: session.cache,
                             drawings: session.drawing.drawings,
+                            region: session.audienceRegion,
                             page: page,
                             pageCount: pageCount,
                             isCurrent: page == session.currentPage,
@@ -276,6 +277,8 @@ private struct PageNumberField: ViewModifier {
 private struct ThumbnailRow: View {
     let cache: RenderCache
     let drawings: DocumentDrawings
+    /// The audience's half with split notes (NOTES-02).
+    let region: PageRegion
     let page: Int
     let pageCount: Int
     /// The slide on screen: a frame in the accent color around the thumbnail.
@@ -294,8 +297,8 @@ private struct ThumbnailRow: View {
                 .font(.caption)
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
-            SlideThumbnail(cache: cache, page: page)
-                .drawingOverlay(drawings, page: page)
+            SlideThumbnail(cache: cache, page: page, region: region)
+                .drawingOverlay(drawings, page: page, region: region)
                 // The frame sits just outside the thumbnail, so it grows with it.
                 .padding(3)
                 .overlay {
@@ -319,6 +322,7 @@ private struct ThumbnailRow: View {
 private struct SlideThumbnail: View {
     let cache: RenderCache
     let page: Int
+    let region: PageRegion
 
     @Environment(\.displayScale) private var displayScale
     @State private var slide: RenderedSlide?
@@ -327,6 +331,7 @@ private struct SlideThumbnail: View {
     private struct Request: Equatable {
         let cache: ObjectIdentifier
         let page: Int
+        let region: PageRegion
         let box: PixelSize?
     }
 
@@ -336,7 +341,7 @@ private struct SlideThumbnail: View {
         Color.white
             .aspectRatio(pageSize, contentMode: .fit)
             .overlay {
-                if let slide, slide.pageIndex == page {
+                if let slide, slide.pageIndex == page, slide.region == region {
                     Image(decorative: slide.image, scale: scale)
                         .resizable()
                         .interpolation(.high)
@@ -351,7 +356,7 @@ private struct SlideThumbnail: View {
             } action: { newBox in
                 box = newBox
             }
-            .task(id: Request(cache: ObjectIdentifier(cache), page: page, box: box)) {
+            .task(id: Request(cache: ObjectIdentifier(cache), page: page, region: region, box: box)) {
                 await load()
             }
             .slideOutline()
@@ -360,18 +365,18 @@ private struct SlideThumbnail: View {
     private var pageSize: CGSize {
         let sizes = cache.info.pageSizes
         let size = sizes.indices.contains(page) ? sizes[page] : .zero
-        let fitted = PageRegion.full.size(onPageOfSize: size)
+        let fitted = region.size(onPageOfSize: size)
         return fitted.width > 0 && fitted.height > 0 ? fitted : CGSize(width: 4, height: 3)
     }
 
     private func load() async {
         guard let box, box.width > 0, box.height > 0 else { return }
         // Resizing the sidebar changes the size many times a second; wait until it settles.
-        if slide?.pageIndex == page {
+        if slide?.pageIndex == page, slide?.region == region {
             try? await Task.sleep(for: .milliseconds(150))
             if Task.isCancelled { return }
         }
-        guard let rendered = try? await cache.thumbnail(page: page, region: .full, fitting: box),
+        guard let rendered = try? await cache.thumbnail(page: page, region: region, fitting: box),
               !Task.isCancelled
         else { return }
         slide = rendered
