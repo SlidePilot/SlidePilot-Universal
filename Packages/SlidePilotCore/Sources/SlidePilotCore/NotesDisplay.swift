@@ -33,8 +33,9 @@ public enum NotesPosition: String, Codable, Sendable, CaseIterable {
 /// The two depend on each other only while the notes slot is shown, like in the old app
 /// (`AppDelegate.notesModeDidChange`, `notesPositionDidChange`, `displayNotesDidChange`):
 /// choosing Split sets the position Right if it was None, choosing Text sets None, and
-/// choosing None switches to Text. With the notes slot hidden, each can be set on its own;
-/// the position still decides which half the audience sees.
+/// choosing None switches to Text. Choosing a half always switches to Split (changed).
+/// With the notes slot hidden, Text can keep a position, which still decides which half
+/// the audience sees.
 public struct NotesDisplay: Sendable, Equatable {
     public private(set) var mode: NotesMode
     public private(set) var position: NotesPosition
@@ -72,9 +73,14 @@ public struct NotesDisplay: Sendable, Equatable {
         }
     }
 
+    /// Choosing a half always switches to Split, also with the notes hidden (changed: the old app
+    /// kept Text and only cropped the audience's slide). Choosing None switches to Text while the
+    /// notes are shown, like the old app.
     public mutating func setPosition(_ newPosition: NotesPosition, notesShown: Bool) {
         position = newPosition
-        if newPosition == .none, notesShown, mode == .split {
+        if newPosition != .none {
+            mode = .split
+        } else if notesShown, mode == .split {
             mode = .text
         }
     }

@@ -59,13 +59,15 @@ import Testing
         #expect(display == .default)
     }
 
-    @Test func positionKeepsTheMode() {
+    // Changed: choosing a half always switches to Split, also with the notes hidden.
+    @Test(arguments: [true, false])
+    func positionSwitchesToSplit(notesShown: Bool) {
         var display = NotesDisplay(mode: .split, position: .right)
-        display.setPosition(.top, notesShown: true)
+        display.setPosition(.top, notesShown: notesShown)
         #expect(display == NotesDisplay(mode: .split, position: .top))
         var text = NotesDisplay.default
-        text.setPosition(.left, notesShown: true)
-        #expect(text == NotesDisplay(mode: .text, position: .left))
+        text.setPosition(.left, notesShown: notesShown)
+        #expect(text == NotesDisplay(mode: .split, position: .left))
     }
 
     // The old app coupled mode and position only while the notes were displayed.

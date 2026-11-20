@@ -274,7 +274,7 @@ private struct NotesFileTransferModifier: ViewModifier {
             // while the file was read.
             guard !Task.isCancelled, companion.entry?.id == entryID, session.notes.isAvailable else { return }
             if companion.notes?.isEmpty ?? true {
-                apply(notes, isAutoLoad: isAutoLoad)
+                apply(notes)
             } else {
                 pendingImport = PendingImport(notes: notes)
             }
@@ -294,15 +294,14 @@ private struct NotesFileTransferModifier: ViewModifier {
     }
 
     /// Shows the imported notes, like the old app did after loading a notes file (NOTES-08).
-    private func apply(_ notes: CompanionNotes, isAutoLoad: Bool = false) {
+    private func apply(_ notes: CompanionNotes) {
         guard session.notes.isAvailable else { return }
         session.notes.finishEditing()
         companion.setNotes(notes)
         session.layout.setVisible(.notes, true)
-        // The old auto-load switched to text notes; its Open Notes… kept the mode (NOTES-01).
-        if isAutoLoad {
-            session.setNotesMode(.text)
-        }
+        // Switch to text notes so the imported notes are visible, like the old auto-load.
+        // The old Open Notes… kept the mode (changed, NOTES-01).
+        session.setNotesMode(.text)
     }
 
     /// Reads and parses off the main actor: large RTF files take a noticeable time.
