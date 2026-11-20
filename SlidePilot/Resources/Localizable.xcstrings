@@ -73,6 +73,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fond du canevas" } }
       }
     },
+    "Circle" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kreis" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Cercle" } }
+      }
+    },
     "Clear Canvas" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichenfläche leeren" } },
@@ -152,6 +158,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle, %1$lld sur %2$lld" } }
       }
     },
+    "Cursor" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Cursor" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Curseur" } }
+      }
+    },
     "Custom Color" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Eigene Farbe" } },
@@ -168,6 +180,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verwenden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas utiliser" } }
+      }
+    },
+    "Dot" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Punkt" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Point" } }
       }
     },
     "DrawingsFileNameSuffix" : {
@@ -246,6 +264,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Général" } }
       }
     },
+    "Hand" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hand" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Main" } }
+      }
+    },
     "Hidden" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Ausgeblendet" } },
@@ -274,6 +298,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen importieren …" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer des notes…" } }
+      }
+    },
+    "Individual" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Individuell" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Individuel" } }
       }
     },
     "Keep display awake" : {
@@ -312,6 +342,18 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } }
       }
     },
+    "Off" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aus" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactivé" } }
+      }
+    },
+    "On" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "An" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Activé" } }
+      }
+    },
     "Padding.None" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "None" } },
@@ -331,6 +373,18 @@
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Small" } },
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Klein" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Petite" } }
+      }
+    },
+    "Pointer" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeiger" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Pointeur" } }
+      }
+    },
+    "Pointer Appearance" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aussehen des Zeigers" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Apparence du pointeur" } }
       }
     },
     "Right" : {
@@ -388,6 +442,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen …" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages…" } }
+      }
+    },
+    "Show Pointer" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeiger anzeigen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher le pointeur" } }
+      }
+    },
+    "Show the pointer on the presentation and choose its appearance" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeiger auf der Präsentation anzeigen und sein Aussehen wählen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher le pointeur sur la présentation et choisir son apparence" } }
       }
     },
     "Size of the clock and timer above the slides." : {
@@ -478,6 +544,18 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnen beenden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Arrêter de dessiner" } }
+      }
+    },
+    "Target Black" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zielscheibe schwarz" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Cible noire" } }
+      }
+    },
+    "Target Red" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zielscheibe rot" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Cible rouge" } }
       }
     },
     "The Drawings Couldn’t Be Exported" : {
