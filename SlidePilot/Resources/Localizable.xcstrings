@@ -1230,6 +1230,162 @@
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Video „%@“ nicht gefunden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vidéo « %@ » introuvable" } }
       }
+    },
+    "Connecting…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbinden …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connexion…" } }
+      }
+    },
+    "Control Another Device…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Anderes Gerät steuern …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Contrôler un autre appareil…" } }
+      }
+    },
+    "Controls this device." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Steuert dieses Gerät." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Contrôle cet appareil." } }
+      }
+    },
+    "Current Slide and Notes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie und Notizen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle et notes" } }
+      }
+    },
+    "Current and Next Slide" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle und nächste Folie" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle et suivante" } }
+      }
+    },
+    "Curtain" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vorhang" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rideau" } }
+      }
+    },
+    "Disconnected from “%@”" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbindung zu „%@“ getrennt" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Déconnecté de « %@ »" } }
+      }
+    },
+    "Keep SlidePilot open on “%@”." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Lass SlidePilot auf „%@“ geöffnet." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gardez SlidePilot ouvert sur « %@ »." } }
+      }
+    },
+    "No Notes" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Notizen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune note" } }
+      }
+    },
+    "No Open Presentations" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine geöffneten Präsentationen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune présentation ouverte" } }
+      }
+    },
+    "Not paired" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht gekoppelt" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Non jumelé" } }
+      }
+    },
+    "Off" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aus" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactivé" } }
+      }
+    },
+    "Open Presentations" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Geöffnete Präsentationen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présentations ouvertes" } }
+      }
+    },
+    "Open SlidePilot on another device on the same network. “Allow remote control” must be on there." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffne SlidePilot auf einem anderen Gerät im selben Netzwerk. Dort muss „Fernsteuerung erlauben“ eingeschaltet sein." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrez SlidePilot sur un autre appareil du même réseau. « Autoriser le contrôle à distance » doit y être activé." } }
+      }
+    },
+    "Open a presentation on “%@”." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffne eine Präsentation auf „%@“." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrez une présentation sur « %@ »." } }
+      }
+    },
+    "Pairs with this device and controls it." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Koppelt dieses Gerät und steuert es." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumelle cet appareil et le contrôle." } }
+      }
+    },
+    "Reconnecting…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbindung wird wiederhergestellt …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Reconnexion…" } }
+      }
+    },
+    "Remote Control" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fernsteuerung" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Contrôle à distance" } }
+      }
+    },
+    "Searching for Devices" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Suche nach Geräten" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recherche d’appareils" } }
+      }
+    },
+    "Select a device running SlidePilot on the same network. To pair a new device, open Settings ▸ Remote on it first, then check that both devices show the same code." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle ein Gerät im selben Netzwerk, auf dem SlidePilot läuft. Um ein neues Gerät zu koppeln, öffne dort zuerst Einstellungen ▸ Remote und prüfe dann, ob beide Geräte denselben Code zeigen." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez un appareil du même réseau sur lequel SlidePilot est ouvert. Pour jumeler un nouvel appareil, ouvrez d’abord Réglages ▸ Remote sur celui-ci, puis vérifiez que les deux appareils affichent le même code." } }
+      }
+    },
+    "Show Progress" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fortschritt anzeigen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher la progression" } }
+      }
+    },
+    "Slide %lld of %lld" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folie %1$lld von %2$lld" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive %1$lld sur %2$lld" } }
+      }
+    },
+    "^[%lld slide](inflect: true)" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "^[%lld Folie](inflect: true)" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "^[%lld diapositive](inflect: true)" } }
+      }
+    },
+    "“%@” does not trust this device any more. Select it again to pair." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ vertraut diesem Gerät nicht mehr. Wähle es erneut aus, um es zu koppeln." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » ne fait plus confiance à cet appareil. Sélectionnez-le à nouveau pour le jumeler." } }
+      }
+    },
+    "“%@” removed this device from its trusted devices. Pair again to control it." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ hat dieses Gerät aus seinen vertrauenswürdigen Geräten entfernt. Kopple es erneut, um es zu steuern." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » a retiré cet appareil de ses appareils de confiance. Jumelez-le à nouveau pour le contrôler." } }
+      }
+    },
+    "“%@” was closed on “%@”." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%1$@“ wurde auf „%2$@“ geschlossen." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %1$@ » a été fermé sur « %2$@ »." } }
+      }
     }
   },
   "version" : "1.0"

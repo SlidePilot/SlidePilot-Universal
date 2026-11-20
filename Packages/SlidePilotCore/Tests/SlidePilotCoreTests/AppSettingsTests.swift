@@ -85,6 +85,21 @@ struct AppSettingsTests {
         #expect(settings.timeDisplaySize == .normal)
     }
 
+    // REM-07: remote mode remembers its layout and progress display.
+    @Test func remoteControlSettings() {
+        let store = InMemorySettingsStore()
+        let settings = AppSettings(store: store)
+        #expect(settings.remoteControlLayout == .currentAndNext)
+        #expect(settings.remoteShowsProgress)
+        settings.remoteControlLayout = .currentAndNotes
+        settings.remoteShowsProgress = false
+        let reloaded = AppSettings(store: store)
+        #expect(reloaded.remoteControlLayout == .currentAndNotes)
+        #expect(!reloaded.remoteShowsProgress)
+        let unknown = AppSettings(store: InMemorySettingsStore(values: ["remoteControlLayout": "grid"]))
+        #expect(unknown.remoteControlLayout == .currentAndNext)
+    }
+
     @Test func layoutPaddingPoints() {
         #expect(LayoutPadding.allCases.map(\.points) == [0, 15, 30])
     }

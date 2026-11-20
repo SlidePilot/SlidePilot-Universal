@@ -42,6 +42,8 @@ public final class AppSettings {
         public static let allowsRemoteControl = "allowsRemoteControl"
         public static let layoutPadding = "layoutPadding"
         public static let timeDisplaySize = TimeDisplaySize.defaultsKey
+        public static let remoteControlLayout = "remoteControlLayout"
+        public static let remoteShowsProgress = "remoteShowsProgress"
     }
 
     /// Keep the display awake while the app runs (SET-04, SET-05). Default off.
@@ -70,6 +72,17 @@ public final class AppSettings {
         didSet { store.set(timeDisplaySize.rawValue, forKey: Key.timeDisplaySize) }
     }
 
+    /// What remote mode shows of the controlled presentation (REM-07). Default: current and
+    /// next slide.
+    public var remoteControlLayout: RemoteControlLayout {
+        didSet { store.set(remoteControlLayout.rawValue, forKey: Key.remoteControlLayout) }
+    }
+
+    /// Remote mode shows the presentation's progress (REM-07). Default on.
+    public var remoteShowsProgress: Bool {
+        didSet { store.set(remoteShowsProgress, forKey: Key.remoteShowsProgress) }
+    }
+
     @ObservationIgnored private let store: any SettingsStore
 
     public init(store: any SettingsStore) {
@@ -81,5 +94,8 @@ public final class AppSettings {
             .flatMap(LayoutPadding.init(rawValue:)) ?? .default
         timeDisplaySize = (store.object(forKey: Key.timeDisplaySize) as? Int)
             .flatMap(TimeDisplaySize.init(rawValue:)) ?? .default
+        remoteControlLayout = (store.object(forKey: Key.remoteControlLayout) as? String)
+            .flatMap(RemoteControlLayout.init(rawValue:)) ?? .default
+        remoteShowsProgress = store.object(forKey: Key.remoteShowsProgress) as? Bool ?? true
     }
 }
