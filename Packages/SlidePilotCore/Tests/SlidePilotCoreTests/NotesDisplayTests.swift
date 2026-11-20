@@ -92,6 +92,22 @@ import Testing
         #expect(placed.position == .top)
     }
 
+    // SET-02: stored settings are coupled like the old load(configuration:).
+    @Test func storedSettingsCoupleWhileNotesAreShown() {
+        var text = NotesDisplay(pdfKeywords: ["SP-Right"])
+        text.applyStored(mode: .text, position: .left, notesShown: true)
+        #expect(text == .default)
+        var split = NotesDisplay.default
+        split.applyStored(mode: .split, position: NotesPosition.none, notesShown: true)
+        #expect(split == NotesDisplay(mode: .split, position: .right))
+        var hidden = NotesDisplay(pdfKeywords: ["SP-Top"])
+        hidden.applyStored(mode: .text, position: .left, notesShown: false)
+        #expect(hidden == NotesDisplay(mode: .text, position: .left))
+        var nothing = NotesDisplay(pdfKeywords: ["SP-Top"])
+        nothing.applyStored(mode: nil, position: nil, notesShown: true)
+        #expect(nothing == NotesDisplay(mode: .split, position: .top))
+    }
+
     // SET-02: mode and position are stored per document and optional.
     @Test func settingsRoundTrip() throws {
         var settings = DocumentSettings()

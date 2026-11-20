@@ -79,6 +79,13 @@ public struct NotesDisplay: Sendable, Equatable {
         }
     }
 
+    /// Applies stored settings (SET-02) through the setters, position first, like the old
+    /// app's `load(configuration:)`, so they are coupled while the notes are shown.
+    public mutating func applyStored(mode storedMode: NotesMode?, position storedPosition: NotesPosition?, notesShown: Bool) {
+        if let storedPosition { setPosition(storedPosition, notesShown: notesShown) }
+        if let storedMode { setMode(storedMode, notesShown: notesShown) }
+    }
+
     /// Call when the notes slot appears: Split without a position shows the right half.
     public mutating func notesDidShow() {
         if mode == .split, position == .none {

@@ -129,10 +129,10 @@ final class PresentationSession: Identifiable {
         notesDisplay.notesDidShow()
     }
 
-    /// Applies stored per-document settings as they are (SET-02); they win over the keywords.
+    /// Applies stored per-document settings (SET-02); they win over the keywords. Position
+    /// first, then mode, coupled like the old app's `load(configuration:)`.
     func applyStoredNotesDisplay(mode: NotesMode?, position: NotesPosition?) {
-        guard mode != nil || position != nil else { return }
-        notesDisplay = NotesDisplay(mode: mode ?? notesDisplay.mode, position: position ?? notesDisplay.position)
+        notesDisplay.applyStored(mode: mode, position: position, notesShown: areNotesShown)
         if notesDisplay.showsSplitNotes { notes.finishEditing() }
     }
 
