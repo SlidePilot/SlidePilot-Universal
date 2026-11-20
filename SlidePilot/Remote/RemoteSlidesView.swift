@@ -66,7 +66,7 @@ struct RemoteSlidesView: View {
                             .tag(RemoteControlLayout.currentAndNext)
                         Label("Current Slide and Notes", systemImage: "rectangle.and.text.magnifyingglass")
                             .tag(RemoteControlLayout.currentAndNotes)
-                        Label("Current Slide", systemImage: "rectangle")
+                        Label("Current Slide", systemImage: "rectangle.center.inset.filled")
                             .tag(RemoteControlLayout.current)
                     }
                     .pickerStyle(.inline)
@@ -85,6 +85,11 @@ struct RemoteSlidesView: View {
         .focusEffectDisabled()
         .focused($hasKeyboardFocus)
         .onAppear { hasKeyboardFocus = true }
+        // Escape goes back to the presentations, like the back button.
+        .onKeyPress(.escape) {
+            control.navigate(to: [.presentations])
+            return .handled
+        }
         .onKeyPress(keys: Self.previousKeys) { _ in
             control.perform(.previousSlide)
             return .handled
@@ -93,9 +98,9 @@ struct RemoteSlidesView: View {
             control.perform(.nextSlide)
             return .handled
         }
-        .onKeyPress(characters: CharacterSet(charactersIn: "bBwW."), phases: .down) { press in
-            guard press.modifiers.isEmpty || press.modifiers == .shift else { return .ignored }
-            toggleCurtain(press.characters.lowercased() == "w" ? .white : .black)
+        .onKeyPress(characters: CharacterSet(charactersIn: "bw."), phases: .down) { press in
+            guard press.modifiers.isEmpty else { return .ignored }
+            toggleCurtain(press.characters == "w" ? .white : .black)
             return .handled
         }
     }
@@ -113,11 +118,19 @@ struct RemoteSlidesView: View {
                 Label("White Screen", systemImage: "rectangle")
             }
         } label: {
-            Label("Curtain", systemImage: curtain == .white ? "rectangle" : "rectangle.fill")
+            Label("Curtain", systemImage: curtainSymbol)
         } primaryAction: {
             control.perform(.setCurtain(control.state.curtainToggleTarget))
         }
         .accessibilityValue(curtainDescription)
+    }
+
+    private var curtainSymbol: String {
+        switch curtain {
+        case .none: "rectangle.dashed"
+        case .black: "rectangle.fill"
+        case .white: "rectangle"
+        }
     }
 
     private var curtainDescription: Text {
@@ -181,13 +194,18 @@ private struct RemoteSlideArea: View {
     }
 }
 
-/// The current slide: swipe to change slides, pinch to zoom, double tap and drag for the
-/// pointer (REM-07). VoiceOver changes slides with the adjustable action.
+/// The current slide: swipe to change slides, pinch to zoom and drag to pan a zoomed slide,
+/// double tap and drag for the pointer (REM-07). VoiceOver changes slides with the
+/// adjustable action.
 private struct RemoteCurrentSlide: View {
     let control: RemoteControl
     @State private var zoom = 1.0
     @State private var zoomAnchor = UnitPoint.center
     @GestureState private var pinch = 1.0
+    /// How far a zoomed slide is moved, without the running pan.
+    @State private var pan = CGSize.zero
+    @State private var panDrag = CGSize.zero
+    @State private var isPanning = false
     @State private var imageSize = CGSize.zero
     /// Where the controller's pointer is, while it moves.
     @State private var pointer: CGPoint?
@@ -210,9 +228,15 @@ private struct RemoteCurrentSlide: View {
             .gesture(drag)
             .simultaneousGesture(magnify)
             .scaleEffect(zoom * pinch, anchor: zoomAnchor)
+            .offset(clampedPan(CGSize(width: pan.width + panDrag.width, height: pan.height + panDrag.height)))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .clipped()
-            .onChange(of: control.slides?.slideIndex) { zoom = 1 }
+            // Measured outside the zoomed slide, so the slide follows the finger.
+            .simultaneousGesture(panGesture)
+            .onChange(of: control.slides?.slideIndex) {
+                zoom = 1
+                pan = .zero
+            }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text("Current Slide"))
             .accessibilityValue(slideValue)
@@ -253,6 +277,7 @@ private struct RemoteCurrentSlide: View {
     private var drag: some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
+                guard !isPanning else { return }
                 control.touchMoved(start: value.startLocation, location: value.location, time: value.time, slideSize: imageSize)
                 pointer = control.isMovingPointer ? clamped(value.location) : nil
             }
@@ -276,7 +301,44 @@ private struct RemoteCurrentSlide: View {
             }
             .onEnded { value in
                 zoom = min(max(zoom * value.magnification, 1), 5)
+                pan = clampedPan(pan)
             }
+    }
+
+    /// A zoomed slide moves with a drag that does not move the pointer; the drag is then no
+    /// swipe.
+    private var panGesture: some Gesture {
+        DragGesture(minimumDistance: RemoteGestureInterpreter.tapMovement, coordinateSpace: .global)
+            .onChanged { value in
+                guard zoom > 1, !control.isMovingPointer else { return }
+                if !isPanning {
+                    isPanning = true
+                    control.cancelTouch()
+                    pointer = nil
+                }
+                panDrag = value.translation
+            }
+            .onEnded { _ in
+                guard isPanning else { return }
+                pan = clampedPan(CGSize(width: pan.width + panDrag.width, height: pan.height + panDrag.height))
+                panDrag = .zero
+                isPanning = false
+            }
+    }
+
+    /// Keeps the zoomed slide covering its area.
+    private func clampedPan(_ offset: CGSize) -> CGSize {
+        let scale = zoom * pinch
+        guard scale > 1 else { return .zero }
+        func clamp(_ value: CGFloat, length: CGFloat, anchor: CGFloat) -> CGFloat {
+            let lower = length * (1 - scale) * (1 - anchor)
+            let upper = length * (scale - 1) * anchor
+            return min(max(value, lower), upper)
+        }
+        return CGSize(
+            width: clamp(offset.width, length: imageSize.width, anchor: zoomAnchor.x),
+            height: clamp(offset.height, length: imageSize.height, anchor: zoomAnchor.y)
+        )
     }
 
     private func clamped(_ point: CGPoint) -> CGPoint {
@@ -321,6 +383,7 @@ private struct RemoteNotesPane: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .accessibilityElement(children: .contain)
         .accessibilityLabel(Text("Notes"))
     }
 }

@@ -30,7 +30,7 @@ struct RemoteControlCommands: Commands {
 }
 
 /// The content of a remote mode window: device list → presentations → slides, in a
-/// navigation stack so Back (and Escape) leaves each step.
+/// navigation stack so Back leaves each step; Escape does too on the slides.
 struct RemoteControlView: View {
     @Environment(RemoteService.self) private var remote
     @State private var control: RemoteControl?
@@ -46,7 +46,6 @@ struct RemoteControlView: View {
                 control = RemoteControl(remote: remote)
             }
         }
-        .onDisappear { control?.disconnect() }
         // Nearby devices are found while the window is open. It does not accept pairing
         // requests of other devices; Settings ▸ Remote does that (REM-02).
         .task { await remote.browse(acceptsPairingRequests: false) }
@@ -67,6 +66,8 @@ private struct RemoteControlStack: View {
                     }
                 }
         }
+        // Cancelled when the window closes, so the connection never outlives it.
+        .task(id: control.connectionID) { await control.keepConnected() }
         .alert(
             endingTitle,
             isPresented: Binding(get: { control.ending != nil }, set: { if !$0 { control.ending = nil } }),
@@ -97,14 +98,17 @@ private struct RemoteControlStack: View {
 
 private struct RemoteDeviceList: View {
     @Environment(RemoteService.self) private var remote
+    @Environment(AppSettings.self) private var settings
     let control: RemoteControl
+    /// A window connects on its own only once, so going back to the list stays there.
+    @State private var hasTriedLastDevice = false
 
     var body: some View {
         List {
             Section {
                 ForEach(remote.controllableDevices) { device in
                     Button {
-                        control.connect(to: device)
+                        connect(to: device)
                     } label: {
                         LabeledContent {
                             if control.deviceID == device.id {
@@ -140,6 +144,22 @@ private struct RemoteDeviceList: View {
             }
         }
         .navigationTitle("Remote Control")
+        // Connects again to the device controlled last, once it is found nearby and trusted.
+        .onChange(of: remote.controllableDevices, initial: true) { _, devices in
+            guard !hasTriedLastDevice, control.deviceID == nil, let last = settings.remoteLastDeviceID,
+                  let device = devices.first(where: { $0.id.description == last })
+            else { return }
+            hasTriedLastDevice = true
+            if device.status == .trusted {
+                control.connect(to: device)
+            }
+        }
+    }
+
+    private func connect(to device: RemoteService.Device) {
+        hasTriedLastDevice = true
+        settings.remoteLastDeviceID = device.id.description
+        control.connect(to: device)
     }
 }
 

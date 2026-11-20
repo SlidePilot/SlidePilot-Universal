@@ -91,11 +91,14 @@ struct AppSettingsTests {
         let settings = AppSettings(store: store)
         #expect(settings.remoteControlLayout == .currentAndNext)
         #expect(settings.remoteShowsProgress)
+        #expect(settings.remoteLastDeviceID == nil)
         settings.remoteControlLayout = .currentAndNotes
         settings.remoteShowsProgress = false
+        settings.remoteLastDeviceID = "device"
         let reloaded = AppSettings(store: store)
         #expect(reloaded.remoteControlLayout == .currentAndNotes)
         #expect(!reloaded.remoteShowsProgress)
+        #expect(reloaded.remoteLastDeviceID == "device")
         let unknown = AppSettings(store: InMemorySettingsStore(values: ["remoteControlLayout": "grid"]))
         #expect(unknown.remoteControlLayout == .currentAndNext)
     }

@@ -59,7 +59,10 @@ final class RemoteControl {
     var ending: Ending?
 
     @ObservationIgnored private let remote: RemoteService
-    @ObservationIgnored private var task: Task<Void, Never>?
+    /// Changes with every `connect` and `disconnect`; the window restarts `keepConnected()`
+    /// for it, so the connection lives exactly as long as the window and its device choice.
+    private(set) var connectionID = UUID()
+    @ObservationIgnored private var decodeTask: Task<Void, Never>?
     /// The ordered outgoing messages of the running session.
     @ObservationIgnored private var outgoing: AsyncStream<ControllerMessage>.Continuation?
     @ObservationIgnored private var outgoingOwner: UUID?
@@ -72,7 +75,7 @@ final class RemoteControl {
     }
 
     isolated deinit {
-        task?.cancel()
+        decodeTask?.cancel()
         outgoing?.finish()
     }
 
@@ -109,13 +112,13 @@ final class RemoteControl {
         deviceID = device.id
         deviceName = device.name
         connection = .connecting
-        task = Task { await self.keepConnected(to: device.id) }
+        connectionID = UUID()
     }
 
     /// Ends remote mode and goes back to the device list.
     func disconnect() {
-        task?.cancel()
-        task = nil
+        connectionID = UUID()
+        decodeTask?.cancel()
         outgoing?.finish()
         outgoing = nil
         outgoingOwner = nil
@@ -134,7 +137,11 @@ final class RemoteControl {
         case stop
     }
 
-    private func keepConnected(to id: InstanceID) async {
+    /// Connects to the chosen device and keeps the connection until the calling task is
+    /// cancelled. The window runs it with `.task(id: connectionID)`, so closing the window,
+    /// `connect` and `disconnect` end it.
+    func keepConnected() async {
+        guard let id = deviceID else { return }
         var isFirstAttempt = true
         while !Task.isCancelled {
             if let session = remote.controllerSession(to: id) {
@@ -174,6 +181,9 @@ final class RemoteControl {
         var wasVerified = false
         var hasShownCode = false
         for await event in session.events {
+            // Events still buffered when the user went back or picked another device
+            // belong to the old connection.
+            guard !Task.isCancelled else { break }
             switch event {
             case .peerIdentified(let peer):
                 deviceName = peer.deviceName
@@ -181,6 +191,7 @@ final class RemoteControl {
                 if isFirstAttempt {
                     // The user asked to connect, so pair again, as in Settings ▸ Remote.
                     try? await session.startPairing()
+                    guard !Task.isCancelled else { break }
                 } else {
                     ending = .pairingRequired(deviceName: deviceName)
                     end = .stop
@@ -256,22 +267,23 @@ final class RemoteControl {
     private func decode(_ images: SlideImages) {
         imageSequence += 1
         let sequence = imageSequence
-        Task {
+        decodeTask?.cancel()
+        decodeTask = Task {
             let decoded = await Self.decode(images)
             // A newer image or another selection replaced these while they were decoded.
-            guard sequence == imageSequence, state.images?.presentationID == images.presentationID else { return }
+            guard !Task.isCancelled, let decoded, sequence == imageSequence,
+                  state.images?.presentationID == images.presentationID else { return }
             slides = decoded
         }
     }
 
     @concurrent
-    private nonisolated static func decode(_ images: SlideImages) async -> Slides {
-        Slides(
-            slideIndex: images.slideIndex,
-            current: cgImage(images.current),
-            next: images.next.flatMap(cgImage),
-            notes: images.notes.flatMap(cgImage)
-        )
+    private nonisolated static func decode(_ images: SlideImages) async -> Slides? {
+        let current = cgImage(images.current)
+        guard !Task.isCancelled else { return nil }
+        let next = images.next.flatMap(cgImage)
+        guard !Task.isCancelled else { return nil }
+        return Slides(slideIndex: images.slideIndex, current: current, next: next, notes: images.notes.flatMap(cgImage))
     }
 
     private nonisolated static func cgImage(_ image: EncodedImage) -> CGImage? {

@@ -8,7 +8,8 @@ import UIKit
 
 /// Turns the RTF notes a host sends (REM-04) into text SwiftUI shows with its fonts,
 /// underline and strikethrough. Stored notes have no colors (NOTES-04), so the text uses
-/// the system text color in light and dark mode.
+/// the system text color in light and dark mode. Font sizes are the stored ones, as in the
+/// presenter's notes (NOTES-05), so they do not follow Dynamic Type.
 enum RemoteNotesText {
     static func attributedString(from rtf: Data) -> AttributedString? {
         guard !rtf.isEmpty,
