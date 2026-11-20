@@ -54,7 +54,19 @@ struct SlidePilotApp: App {
             ModeratorCommands()
             NotesFormatCommands()
             NotesFileCommands()
+            RemoteControlCommands()
         }
+
+        // Remote mode: controls a presentation on another device (REM-07, ADR 0015).
+        WindowGroup(Text("Remote Control"), id: RemoteControlScene.id) {
+            RemoteControlView()
+                .environment(remote)
+                .environment(settings)
+                .frame(minWidth: 480, minHeight: 360)
+        }
+        .restorationBehavior(.disabled)
+        // Opened with File ▸ Control Another Device…, not File ▸ New.
+        .commandsRemoved()
 
         // The presentation window of each document (DOC-04 to DOC-06). It is opened by the
         // presenter, never restored at launch and has no File ▸ New command.
@@ -96,6 +108,21 @@ struct SlidePilotApp: App {
             LayoutCommands()
             NotesFormatCommands()
             NotesFileCommands()
+            RemoteControlCommands()
+        }
+
+        // The document browser offers remote mode next to opening a presentation (REM-07).
+        DocumentGroupLaunchScene {
+            ControlAnotherDeviceButton()
+        } background: {
+            Rectangle().fill(Color.accentColor.gradient)
+        }
+
+        // Remote mode: controls a presentation on another device (REM-07, ADR 0015).
+        WindowGroup(Text("Remote Control"), id: RemoteControlScene.id) {
+            RemoteControlView()
+                .environment(remote)
+                .environment(settings)
         }
 
         #endif

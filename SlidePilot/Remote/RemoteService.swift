@@ -9,7 +9,8 @@ import SlidePilotRemoteProtocol
 /// Every instance advertises itself while remote control is allowed and accepts
 /// connections from controllers; only paired devices get past the handshake (ADR 0017).
 /// Pairing starts from Settings ▸ Remote on either device and creates trust in both
-/// directions (ADR 0015). Which device controls which is picked later in remote mode (#38).
+/// directions (ADR 0015). Which device controls which is picked in remote mode (REM-07,
+/// `RemoteControl`), which uses the nearby devices and controller sessions of this service.
 ///
 /// Verified controllers get the open presentations and their slides and may control them
 /// (REM-04, REM-05); `RemoteHostState` decides what to send and which commands to apply.
@@ -94,6 +95,8 @@ final class RemoteService {
     /// The visible Settings ▸ Remote panes. Pairing requests are only accepted while one is
     /// open, so nobody can start pairing with a device whose user is not expecting it.
     private var openPanes = 0
+    /// Running `browse()` calls; the nearby hosts are kept while there is one.
+    @ObservationIgnored private var browsers = 0
     @ObservationIgnored private var listenerTask: Task<Void, Never>?
     @ObservationIgnored private var stoppingListenerTask: Task<Void, Never>?
     /// What verified controllers were sent and selected (REM-04 to REM-06).
@@ -156,15 +159,24 @@ final class RemoteService {
 
     // MARK: - Settings pane
 
-    /// Browses for nearby devices while a Settings ▸ Remote pane is visible. Runs until the
-    /// calling task is cancelled.
-    func browse() async {
-        openPanes += 1
+    /// Browses for nearby devices while a Settings ▸ Remote pane or a remote mode window is
+    /// visible. Runs until the calling task is cancelled. Only Settings ▸ Remote panes
+    /// accept pairing requests of other devices (`acceptsPairingRequests`).
+    func browse(acceptsPairingRequests: Bool = true) async {
+        browsers += 1
+        if acceptsPairingRequests {
+            openPanes += 1
+        }
         defer {
-            openPanes -= 1
-            if openPanes == 0 {
+            browsers -= 1
+            if acceptsPairingRequests {
+                openPanes -= 1
+                if openPanes == 0 {
+                    rejectPendingHostRequests()
+                }
+            }
+            if browsers == 0 {
                 nearbyHosts = []
-                rejectPendingHostRequests()
             }
         }
         while !Task.isCancelled {
@@ -352,7 +364,54 @@ final class RemoteService {
         }
     }
 
-    // MARK: - Controller (pairing only)
+    // MARK: - Controller
+
+    /// Nearby devices this instance can control in remote mode (REM-07), sorted by name.
+    /// Never this instance itself.
+    var controllableDevices: [Device] {
+        let nearby = Set(nearbyHosts.map(\.instanceID))
+        return devices.filter { nearby.contains($0.id) }
+    }
+
+    /// A new controller session to a nearby device, or `nil` if it is not nearby. The
+    /// caller runs it.
+    func controllerSession(to id: InstanceID) -> ControllerSession? {
+        guard let host = nearbyHosts.first(where: { $0.instanceID == id }) else { return nil }
+        let connection = RemoteNetwork.connection(to: host)
+        return ControllerSession(local: identity, transport: NetworkTransport(connection: connection), trustStore: trustStore)
+    }
+
+    /// Shows a pairing code of a controller session in remote mode; `owner` removes it again.
+    func showPairingCode(_ code: String, deviceName: String, session: ControllerSession, owner: UUID) {
+        pairingRequests.append(PairingRequest(
+            deviceName: deviceName,
+            code: code,
+            session: owner,
+            confirm: { try await session.confirmPairingCode() },
+            reject: { await session.rejectPairingCode() }
+        ))
+    }
+
+    /// Removes the pairing codes `owner` showed, e.g. when its session ended.
+    func removePairingCodes(of owner: UUID) {
+        pairingRequests.removeAll { $0.session == owner }
+    }
+
+    /// Reads the trusted devices again after a controller session paired or lost trust.
+    func trustDidChange() {
+        trustedDevices = trustStore.devices()
+    }
+
+    /// Shows the alert for an error that ended a connection the user started; returns
+    /// whether there was one to show.
+    @discardableResult
+    func reportProblem(_ error: any Error, deviceName: String) -> Bool {
+        guard let kind = Self.problemKind(for: error) else { return false }
+        problem = Problem(deviceName: deviceName, kind: kind)
+        return true
+    }
+
+    // MARK: - Controller pairing (Settings ▸ Remote)
 
     private func runPairing(with host: NearbyHost) async {
         let token = SessionToken()
@@ -381,7 +440,7 @@ final class RemoteService {
             case .paired:
                 trustedDevices = trustStore.devices()
             case .verified:
-                // Pairing is done; remote mode (#38) connects again when it is used.
+                // Pairing is done; remote mode connects again when it is used (REM-07).
                 isPaired = true
                 await session.close()
             case .message, .trustRemovedByPeer:
