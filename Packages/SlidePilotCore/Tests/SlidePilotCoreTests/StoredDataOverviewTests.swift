@@ -57,6 +57,32 @@ struct StoredDataOverviewTests {
         #expect(items.allSatisfy { $0.byteCount > 0 && $0.isPDFFound })
     }
 
+    // Same-named PDFs show as many folders as tell them apart; a unique name shows none.
+    @Test func sameNamedPDFsShowDistinguishingFolders() async throws {
+        let store = makeStore()
+        try await self.store("2024/week1/slides.pdf", in: store)
+        try await self.store("2025/week1/slides.pdf", in: store)
+        try await self.store("2025/week2/slides.pdf", in: store)
+        try await self.store("2025/handout.pdf", in: store)
+        // A PDF that is not found keeps the folders where it was last seen.
+        locator.files["2024/week1/slides.pdf"] = nil
+
+        let names = await Set(store.storedData().map(\.displayName))
+        #expect(names == ["2024/week1/slides.pdf", "2025/week1/slides.pdf", "week2/slides.pdf", "handout.pdf"])
+    }
+
+    @Test func distinguishingFoldersEdgeCases() {
+        let folders = StoredDataItem.distinguishingFolders(for: [
+            ("a.pdf", ["x", "b"]),
+            ("a.pdf", ["b"]),
+            // Same path twice and no path known: no folder tells them apart.
+            ("c.pdf", ["y"]),
+            ("c.pdf", ["y"]),
+            ("c.pdf", []),
+        ])
+        #expect(folders == [["x", "b"], ["b"], ["y"], ["y"], []])
+    }
+
     @Test func marksEntriesWhosePDFIsNotFound() async throws {
         let store = makeStore()
         try await self.store("gone.pdf", in: store)

@@ -81,10 +81,26 @@ struct StoredDataList: View {
                         deletion = .items(Set(offsets.map { items[$0].id }))
                     }
                 } footer: {
-                    Text("To keep notes, open the PDF and choose File ▸ Export Notes… before deleting its data.")
+                    #if os(iOS)
+                    exportHint
+                    #endif
                 }
             }
         }
+        #if os(macOS)
+        // Below the list: a Mac list cuts its section footers off after one line.
+        .safeAreaInset(edge: .bottom) {
+            if overview?.items?.isEmpty == false {
+                exportHint
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(.bar)
+            }
+        }
+        #endif
         .overlay {
             if overview?.items?.isEmpty == true {
                 ContentUnavailableView(
@@ -159,6 +175,10 @@ struct StoredDataList: View {
         }
     }
 
+    private var exportHint: Text {
+        Text("To keep notes, open the PDF and choose File ▸ Export Notes… before deleting its data.")
+    }
+
     private var deleteNotFoundPlacement: ToolbarItemPlacement {
         #if os(macOS)
         .destructiveAction
@@ -170,7 +190,7 @@ struct StoredDataList: View {
     private var dialogTitle: Text {
         switch deletion {
         case .items(let ids) where ids.count == 1:
-            let name = overview?.items?.first { ids.contains($0.id) }?.fileName ?? ""
+            let name = overview?.items?.first { ids.contains($0.id) }?.displayName ?? ""
             return Text("Delete the Data of “\(name)”?")
         case .items:
             return Text("Delete the Data of the Selected PDFs?")
@@ -201,7 +221,7 @@ private struct StoredDataRow: View {
         LabeledContent {
             Text(item.byteCount, format: .byteCount(style: .file))
         } label: {
-            Text(item.fileName)
+            Text(item.displayName)
             if !item.kinds.isEmpty {
                 Text(item.kinds.map { String(localized: $0.title) }.formatted(.list(type: .and)))
             }

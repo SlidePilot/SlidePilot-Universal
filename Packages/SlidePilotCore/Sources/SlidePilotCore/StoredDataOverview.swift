@@ -28,6 +28,9 @@ public struct StoredDataItem: Sendable, Equatable, Identifiable {
     public var id: UUID
     /// The PDF's file name when it was last opened.
     public var fileName: String
+    /// The last folders of the PDF's path, as many as tell it apart from other entries with
+    /// the same file name (outermost first); empty when the name is unique.
+    public var distinguishingFolders: [String]
     public var kinds: [StoredDataKind]
     public var lastOpened: Date
     /// Size of the entry's file in bytes.
@@ -36,9 +39,10 @@ public struct StoredDataItem: Sendable, Equatable, Identifiable {
     /// that is not mounted or not downloaded, so nothing is deleted automatically.
     public var isPDFFound: Bool
 
-    public init(id: UUID, fileName: String, kinds: [StoredDataKind], lastOpened: Date, byteCount: Int64, isPDFFound: Bool) {
+    public init(id: UUID, fileName: String, distinguishingFolders: [String] = [], kinds: [StoredDataKind], lastOpened: Date, byteCount: Int64, isPDFFound: Bool) {
         self.id = id
         self.fileName = fileName
+        self.distinguishingFolders = distinguishingFolders
         self.kinds = kinds
         self.lastOpened = lastOpened
         self.byteCount = byteCount
@@ -49,18 +53,50 @@ public struct StoredDataItem: Sendable, Equatable, Identifiable {
 extension CompanionStore {
     /// The entries for the stored data overview (SET-07), most recently opened first.
     public func storedData() -> [StoredDataItem] {
-        entriesWithFileSizes()
-            .map { entry, byteCount in
+        let rows = entriesWithFileSizes().map { entry, byteCount in
+            (entry: entry, byteCount: byteCount, location: pdfLocation(of: entry))
+        }
+        let folders = StoredDataItem.distinguishingFolders(
+            for: rows.map { ($0.entry.pdf.fileName, $0.location.url?.deletingLastPathComponent().pathComponents.filter { $0 != "/" } ?? []) }
+        )
+        return zip(rows, folders)
+            .map { row, folders in
                 StoredDataItem(
-                    id: entry.id,
-                    fileName: entry.pdf.fileName,
-                    kinds: entry.storedDataKinds,
-                    lastOpened: entry.lastOpened,
-                    byteCount: byteCount,
-                    isPDFFound: isPDFFound(entry)
+                    id: row.entry.id,
+                    fileName: row.entry.pdf.fileName,
+                    distinguishingFolders: folders,
+                    kinds: row.entry.storedDataKinds,
+                    lastOpened: row.entry.lastOpened,
+                    byteCount: row.byteCount,
+                    isPDFFound: row.location.isFound
                 )
             }
             .sorted { ($0.lastOpened, $0.fileName) > ($1.lastOpened, $1.fileName) }
+    }
+}
+
+extension StoredDataItem {
+    /// For each file (name and folders of its path, outermost first), the fewest last folders
+    /// that tell it apart from every other file with the same name. Unique names get none; a
+    /// file that no folder tells apart (same path, or no path known) gets all of its folders.
+    public static func distinguishingFolders(for files: [(name: String, folders: [String])]) -> [[String]] {
+        files.indices.map { index in
+            let file = files[index]
+            let others = files.indices.filter { $0 != index && files[$0].name == file.name }.map { files[$0].folders }
+            guard !others.isEmpty else { return [] }
+            for count in stride(from: 1, through: file.folders.count, by: 1) {
+                let suffix = file.folders.suffix(count)
+                if !others.contains(where: { $0.suffix(count) == suffix }) {
+                    return Array(suffix)
+                }
+            }
+            return file.folders
+        }
+    }
+
+    /// The file name with the distinguishing folders in front, e.g. "Week 2/slides.pdf".
+    public var displayName: String {
+        (distinguishingFolders + [fileName]).joined(separator: "/")
     }
 }
 

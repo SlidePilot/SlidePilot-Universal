@@ -156,9 +156,12 @@ public actor CompanionStore {
         }
     }
 
-    /// Whether the entry's bookmark still finds its PDF.
-    func isPDFFound(_ entry: CompanionEntry) -> Bool {
-        locator.resolve(entry.pdf.bookmark) != nil
+    /// Where the entry's PDF is now, or where it was last seen when it is not found.
+    func pdfLocation(of entry: CompanionEntry) -> (url: URL?, isFound: Bool) {
+        if let resolved = locator.resolve(entry.pdf.bookmark) {
+            return (resolved.url, true)
+        }
+        return (locator.lastKnownURL(of: entry.pdf.bookmark), false)
     }
 
     public func delete(_ id: UUID) {
