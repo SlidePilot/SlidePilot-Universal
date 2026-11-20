@@ -114,6 +114,8 @@ public struct CompanionEntry: Codable, Sendable, Equatable, Identifiable {
     public var settings: DocumentSettings
     /// Text notes (NOTES-10); `nil` until notes were written.
     public var notes: CompanionNotes?
+    /// Drawings (DRAW-07); `nil` while "Save drawings" is off or nothing was drawn.
+    public var drawings: CompanionDrawings?
     /// Entries for other PDFs whose orphaned data the user declined to take over for this
     /// PDF (NOTES-12), so the app does not ask again for that pair.
     public var declinedOrphans: Set<UUID>
@@ -124,6 +126,7 @@ public struct CompanionEntry: Codable, Sendable, Equatable, Identifiable {
         lastOpened: Date,
         settings: DocumentSettings = DocumentSettings(),
         notes: CompanionNotes? = nil,
+        drawings: CompanionDrawings? = nil,
         declinedOrphans: Set<UUID> = []
     ) {
         self.id = id
@@ -131,11 +134,12 @@ public struct CompanionEntry: Codable, Sendable, Equatable, Identifiable {
         self.lastOpened = lastOpened
         self.settings = settings
         self.notes = notes
+        self.drawings = drawings
         self.declinedOrphans = declinedOrphans
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, pdf, lastOpened, settings, notes, declinedOrphans
+        case id, pdf, lastOpened, settings, notes, drawings, declinedOrphans
     }
 
     public init(from decoder: any Decoder) throws {
@@ -148,12 +152,14 @@ public struct CompanionEntry: Codable, Sendable, Equatable, Identifiable {
         // Strict: damaged notes make the whole file unreadable, so a save never replaces
         // them with nothing.
         notes = try container.decodeIfPresent(CompanionNotes.self, forKey: .notes)
+        drawings = try container.decodeIfPresent(CompanionDrawings.self, forKey: .drawings)
         declinedOrphans = (try? container.decode(Set<UUID>.self, forKey: .declinedOrphans)) ?? []
     }
 
     /// Whether the entry holds user content (notes, drawings) that never expires (ADR 0012).
-    /// Drawings (DRAW-07) add their check here.
-    public var holdsUserContent: Bool { !(notes?.isEmpty ?? true) }
+    public var holdsUserContent: Bool {
+        !(notes?.isEmpty ?? true) || !(drawings?.isEmpty ?? true)
+    }
 
     /// Entries that hold only settings expire 12 months after the last open (SET-03).
     public static let settingsLifetime = DateComponents(month: 12)

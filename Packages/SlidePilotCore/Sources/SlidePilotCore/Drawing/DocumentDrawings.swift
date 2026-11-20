@@ -33,11 +33,21 @@ public final class DocumentDrawings {
 
     /// "Save drawings" (DRAW-06). Off: the drawing is deleted when draw mode ends and the
     /// slide cannot change while drawing. On: drawings stay per page and slides can change.
-    /// The setting itself comes with #32; until then it stays off.
+    /// The app sets it from `AppSettings.savesDrawings`.
     public var keepsDrawings = false
 
-    /// The drawings by page index. Pages without an entry have an empty drawing.
-    public private(set) var pages: [Int: PageDrawing] = [:]
+    /// The drawings by page index. Pages without an entry have an empty drawing. May hold
+    /// pages beyond the PDF's page count after a reload made the deck shorter (DOC-08).
+    public private(set) var pages: [Int: PageDrawing] = [:] {
+        didSet {
+            if pages != oldValue {
+                onPagesChange?(pages)
+            }
+        }
+    }
+
+    /// Called after every change of `pages`, so the app can store them (DRAW-07).
+    @ObservationIgnored public var onPagesChange: ((_ pages: [Int: PageDrawing]) -> Void)?
 
     /// The stroke in progress, `nil` when no pen or mouse is down.
     public private(set) var liveStroke: LiveStroke?
@@ -181,11 +191,37 @@ public final class DocumentDrawings {
         return true
     }
 
+    // MARK: - Stored drawings (DRAW-06, DRAW-07)
+
+    /// Takes over drawings loaded from the companion file. A stored page replaces the page in
+    /// memory and loses its undo history; pages that are only in memory stay.
+    public func loadStoredPages(_ stored: [Int: PageDrawing]) {
+        var merged = pages
+        for (page, drawing) in stored where merged[page] != drawing {
+            merged[page] = drawing.isEmpty ? nil : drawing
+            histories[page] = nil
+        }
+        pages = merged
+    }
+
+    /// Deletes every drawing and its undo history, when "Save drawings" is turned off
+    /// (DRAW-06). Draw mode and the color stay.
+    public func deleteAll() {
+        pages = [:]
+        histories.removeAll()
+        liveStroke = nil
+    }
+
     // MARK: - Reload
 
-    /// Drops the drawings of pages that a recompiled PDF no longer has (DOC-08).
+    /// A recompiled PDF has `pageCount` pages (DOC-08). Drawings of pages it no longer has
+    /// are kept, like the notes (NOTES-10), so a deck that is short for one compile gets
+    /// them back; only their undo history and a stroke in progress end. Without "Save
+    /// drawings" they are removed: draw mode clears only the page it ends on (DRAW-06).
     public func pageCountChanged(to pageCount: Int) {
-        pages = pages.filter { $0.key < pageCount }
+        if !keepsDrawings {
+            pages = pages.filter { $0.key < pageCount }
+        }
         histories = histories.filter { $0.key < pageCount }
         if let liveStroke, liveStroke.page >= pageCount {
             self.liveStroke = nil

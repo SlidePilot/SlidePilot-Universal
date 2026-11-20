@@ -171,6 +171,20 @@ public actor CompanionStore {
         try? FileManager.default.removeItem(at: fileURL(of: id))
     }
 
+    /// Removes the drawings of every entry, when "Save drawings" is turned off (DRAW-06).
+    /// Entries from a later app version are left alone. Returns the IDs of the changed entries.
+    @discardableResult
+    public func removeAllDrawings() -> [UUID] {
+        var changed: [UUID] = []
+        for stored in storedEntries() where !stored.isReadOnly && stored.entry.drawings != nil {
+            var entry = stored.entry
+            entry.drawings = nil
+            write(entry)
+            changed.append(entry.id)
+        }
+        return changed
+    }
+
     /// Removes settings-only entries that were not opened for 12 months (SET-03). Runs at
     /// launch. Returns the IDs of the removed entries.
     @discardableResult

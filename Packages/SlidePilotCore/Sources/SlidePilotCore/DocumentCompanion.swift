@@ -110,6 +110,19 @@ public final class DocumentCompanion {
         markEdited()
     }
 
+    /// The stored drawings (DRAW-07).
+    public var drawings: CompanionDrawings? { entry?.drawings }
+
+    /// Stores the drawings and saves them shortly afterwards (DRAW-07); `nil` or empty
+    /// drawings remove them. Drawing does not mark the document edited, like in the old app
+    /// (DRAW-08). Before the entry is loaded there is nothing to change.
+    public func setDrawings(_ drawings: CompanionDrawings?) {
+        let drawings = drawings?.isEmpty == false ? drawings : nil
+        guard entry != nil, entry?.drawings != drawings else { return }
+        entry?.drawings = drawings
+        scheduleSave()
+    }
+
     /// Records an edit of user content and saves it shortly afterwards. The document shows
     /// as edited until then (DOC-09). `setNotes(_:)` calls it; use it directly only for
     /// edits that are stored another way.

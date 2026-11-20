@@ -426,6 +426,36 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a trouvé le fichier de notes « %@ » à côté de ce PDF. Pour l’importer, autorisez SlidePilot à lire le dossier du PDF. Cela n’est nécessaire qu’une fois par dossier. « Importer des notes… » reste disponible dans le menu Fichier." } }
       }
     },
+    "Drawings stay on their slides and are stored with the PDF. Turning this off deletes all drawings." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen bleiben auf ihren Folien und werden zum PDF gespeichert. Beim Ausschalten werden alle Zeichnungen gelöscht." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les dessins restent sur leurs diapositives et sont enregistrés avec le PDF. La désactivation supprime tous les dessins." } }
+      }
+    },
+    "Delete all drawings?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Alle Zeichnungen löschen?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer tous les dessins ?" } }
+      }
+    },
+    "Delete Drawings" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen löschen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer les dessins" } }
+      }
+    },
+    "Turning off Save drawings deletes the drawings of all PDFs. This cannot be undone." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wenn du „Zeichnungen speichern“ ausschaltest, werden die Zeichnungen aller PDFs gelöscht. Das kann nicht widerrufen werden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactiver « Enregistrer les dessins » supprime les dessins de tous les PDF. Cette action est irréversible." } }
+      }
+    },
+    "Save drawings" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen speichern" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Enregistrer les dessins" } }
+      }
+    },
     "Slides fade into each other on the presentation screen." : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Folien gehen auf dem Präsentationsbildschirm ineinander über." } },

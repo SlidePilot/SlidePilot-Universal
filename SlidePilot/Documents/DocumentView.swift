@@ -39,6 +39,8 @@ struct DocumentView: View {
         }
             .shrinksOnMemoryWarning(session)
             .companionFile(session, fileURL: fileURL)
+            // "Save drawings" and the stored drawings (DRAW-06, DRAW-07).
+            .savedDrawings(session)
             .notesFileTransfer(session, fileURL: fileURL)
             .drawingsExport(session, fileURL: fileURL)
             // Videos and run: links next to the PDF (NAV-06, NAV-07).
