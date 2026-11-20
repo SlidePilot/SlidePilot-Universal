@@ -75,6 +75,7 @@ struct SlidePilotApp: App {
             SettingsView()
                 .environment(settings)
                 .environment(remote)
+                .environment(appDelegate.companions)
         }
         #else
         // The external display: a UIKit scene (ExternalDisplayScene.swift), offered by the
@@ -84,6 +85,7 @@ struct SlidePilotApp: App {
             DocumentView(document: file.document, fileURL: file.fileURL)
                 .environment(registry)
                 .environment(appDelegate.externalDisplays)
+                .environment(appDelegate.companions)
                 .environment(settings)
                 .environment(remote)
         }
