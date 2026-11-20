@@ -6,19 +6,24 @@ import UniformTypeIdentifiers
 
 /// Export Drawings… of the focused presenter window (DRAW-10).
 struct FocusedDrawingsExport {
+    /// Opens the save panel.
     let export: () -> Void
+    /// The same export for the iPad share sheet.
+    let item: DrawingsPDF
 }
 
 extension FocusedValues {
     @Entry var drawingsExport: FocusedDrawingsExport?
 }
 
-/// File ▸ Export Drawings… (⇧⌘S), like the old app (DRAW-10): after Open Recent, before
-/// Close. The document system's Duplicate also uses ⇧⌘S; AppKit gives a shortcut to the
-/// first matching item, so the export must come before the save items.
+/// File ▸ Export Drawings… (⌥⌘E), next to Export Notes… (⇧⌘E). The old app used ⇧⌘S,
+/// which is easily mistaken for a save (DRAW-10).
 struct DrawingsExportCommands: Commands {
+    /// Shows that the drawings are exported, not the plain PDF.
+    static let symbol = "pencil.and.scribble"
+
     var body: some Commands {
-        CommandGroup(before: .saveItem) {
+        CommandGroup(after: .importExport) {
             DrawingsExportMenuItem()
         }
     }
@@ -29,7 +34,7 @@ private struct DrawingsExportMenuItem: View {
 
     var body: some View {
         Button("Export Drawings…") { drawingsExport?.export() }
-            .keyboardShortcut("s", modifiers: [.command, .shift])
+            .keyboardShortcut("e", modifiers: [.command, .option])
             .disabled(drawingsExport == nil)
     }
 }
@@ -93,19 +98,15 @@ private struct DrawingsExportModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             // A short task on the main actor; a result that arrives after the window closed
-            // only sets state that is gone. A second ⇧⌘S during an export is ignored.
-            .focusedSceneValue(\.drawingsExport, FocusedDrawingsExport { Task { await export() } })
+            // only sets state that is gone. A second ⌥⌘E during an export is ignored.
+            .focusedSceneValue(
+                \.drawingsExport,
+                FocusedDrawingsExport(export: { Task { await export() } }, item: drawingsPDF)
+            )
             #if os(iOS)
-            // The iPad menu bar is hidden until it is pulled down, so the export is also in
-            // the toolbar's overflow menu, as a share sheet (Save to Files, AirDrop, Mail).
             .toolbar {
-                ToolbarItemGroup(placement: .secondaryAction) {
-                    ShareLink(
-                        item: drawingsPDF,
-                        preview: SharePreview(drawingsPDF.fileName)
-                    ) {
-                        Label("Export Drawings…", systemImage: "square.and.arrow.up.on.square")
-                    }
+                ToolbarItem(placement: .secondaryAction) {
+                    FileTransferMenu()
                 }
             }
             #endif

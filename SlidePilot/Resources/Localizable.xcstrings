@@ -221,6 +221,13 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fondu entre les diapositives" } }
       }
     },
+    "Import and Export" : {
+      "comment" : "iPad toolbar menu with Import Notes, Export Notes and Export Drawings",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Importieren und Exportieren" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer et exporter" } }
+      }
+    },
     "Export Drawings…" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen exportieren …" } },
