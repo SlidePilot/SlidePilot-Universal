@@ -21,9 +21,21 @@ struct PresentationPointerLayer: View {
     let slideFrame: CGRect
 
     var body: some View {
+        PointerMark(location: session.visiblePointerLocation, configuration: session.pointerConfiguration, slideFrame: slideFrame)
+            // The audience's pointer; VoiceOver users of the presenter gain nothing from it.
+            .accessibilityHidden(true)
+    }
+}
+
+/// Draws the pointer with its hot spot at `location` (relative to `slideFrame`).
+private struct PointerMark: View {
+    let location: CGPoint?
+    let configuration: PointerConfiguration
+    let slideFrame: CGRect
+
+    var body: some View {
         ZStack {
-            if let location = session.visiblePointerLocation, slideFrame.width > 0, slideFrame.height > 0 {
-                let configuration = session.pointerConfiguration
+            if let location, slideFrame.width > 0, slideFrame.height > 0 {
                 let hotSpot = PointerImage.hotSpot(of: configuration)
                 // A point-sized anchor at the location; the pointer hangs from it by its hot spot.
                 Color.clear
@@ -41,8 +53,6 @@ struct PresentationPointerLayer: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .allowsHitTesting(false)
-        // The audience's pointer; VoiceOver users of the presenter gain nothing from it.
-        .accessibilityHidden(true)
     }
 }
 
@@ -89,6 +99,16 @@ private struct PresenterPointer: ViewModifier {
                     .onEnded { _ in pointer.presenterEnded() },
                 isEnabled: pointer.isShown && !isDrawing
             )
+            // iPad has no cursor image to swap (PTR-06), so the presenter sees the pointer
+            // drawn under the finger, Pencil or trackpad pointer.
+            .overlay {
+                PointerMark(
+                    location: pointer.isShown ? pointer.presenterLocation : nil,
+                    configuration: configuration,
+                    slideFrame: CGRect(origin: .zero, size: size)
+                )
+                .accessibilityHidden(true)
+            }
             #else
             // Hover stops while a mouse button is held; the old app kept following then too.
             // Simultaneous, so clicks still reach links and videos.
