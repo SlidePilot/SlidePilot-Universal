@@ -51,8 +51,7 @@ private func fixtureData(_ name: String, filePath: String = #filePath) throws ->
     // "Beamer, SP-Left" is one string in the PDF; PDFKit splits it at the comma.
     @Test func mixedKeywordEntry() throws {
         let info = try PDFInspector.inspect(fixtureData("keyword-mixed.pdf"))
-        print("keyword-mixed.pdf keywords: \(info.keywords)")
-        #expect(NotesPosition(pdfKeywords: info.keywords) == .left)
+        #expect(NotesPosition(pdfKeywords: info.keywords) == .left, "keywords: \(info.keywords)")
     }
 
     // NOTES-02: the halves of a rotated page are measured as displayed, so the audience

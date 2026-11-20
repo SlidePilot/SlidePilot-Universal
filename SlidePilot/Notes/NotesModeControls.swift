@@ -10,7 +10,7 @@ struct NotesModeMenuItems: View {
 
     var body: some View {
         let session = layout == nil ? nil : session
-        NotesModeMenus(session: session)
+        NotesModeMenus(session: session, assignsShortcuts: true)
             .disabled(session == nil)
     }
 }
@@ -18,8 +18,34 @@ struct NotesModeMenuItems: View {
 /// The Notes Mode and Split Position submenus, shared by the View menu and the toolbar.
 private struct NotesModeMenus: View {
     let session: PresentationSession?
+    /// Only the menu bar declares ⌥⌘0…4, so the shortcuts exist once.
+    var assignsShortcuts = false
+    /// The toolbar menu lists the modes inline; it already carries the Notes Mode title.
+    var showsModesInline = false
 
     var body: some View {
+        if showsModesInline {
+            modePicker.pickerStyle(.inline)
+        } else {
+            modePicker.pickerStyle(.menu)
+        }
+        Picker(selection: position) {
+            ForEach(Array(NotesPosition.allCases.enumerated()), id: \.element) { index, position in
+                Label(position.title, systemImage: position.systemImage)
+                    .tag(position)
+                    // ⌥⌘0 to ⌥⌘4, in the old menu's order (NOTES-02).
+                    .keyboardShortcut(
+                        assignsShortcuts ? KeyboardShortcut(KeyEquivalent(Character("\(index)")), modifiers: [.command, .option]) : nil
+                    )
+            }
+        } label: {
+            Text("Split Position")
+            Text(position.wrappedValue.title)
+        }
+        .pickerStyle(.menu)
+    }
+
+    private var modePicker: some View {
         Picker(selection: mode) {
             ForEach(NotesMode.allCases, id: \.self) { mode in
                 Label(mode.title, systemImage: mode.systemImage)
@@ -30,19 +56,6 @@ private struct NotesModeMenus: View {
             Text("Notes Mode")
             Text(mode.wrappedValue.title)
         }
-        .pickerStyle(.menu)
-        Picker(selection: position) {
-            ForEach(Array(NotesPosition.allCases.enumerated()), id: \.element) { index, position in
-                Label(position.title, systemImage: position.systemImage)
-                    .tag(position)
-                    // ⌥⌘0 to ⌥⌘4, in the old menu's order (NOTES-02).
-                    .keyboardShortcut(KeyEquivalent(Character("\(index)")), modifiers: [.command, .option])
-            }
-        } label: {
-            Text("Split Position")
-            Text(position.wrappedValue.title)
-        }
-        .pickerStyle(.menu)
     }
 
     private var mode: Binding<NotesMode> {
@@ -69,9 +82,9 @@ private struct NotesModeToolbar: ToolbarContent {
     var body: some ToolbarContent {
         ToolbarItem {
             Menu {
-                NotesModeMenus(session: session)
+                NotesModeMenus(session: session, showsModesInline: true)
             } label: {
-                Label("Notes Mode", systemImage: session.notesDisplay.toolbarSystemImage)
+                Label("Notes Mode", systemImage: "note.text")
             }
             .help(Text("Notes Mode"))
         }
@@ -130,11 +143,5 @@ extension NotesPosition {
         case .bottom: "rectangle.bottomhalf.inset.filled"
         case .top: "rectangle.tophalf.inset.filled"
         }
-    }
-}
-
-private extension NotesDisplay {
-    var toolbarSystemImage: String {
-        showsSplitNotes ? position.systemImage : "note.text"
     }
 }
