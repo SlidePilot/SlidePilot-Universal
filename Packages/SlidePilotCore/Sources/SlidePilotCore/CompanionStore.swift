@@ -26,6 +26,10 @@ public actor CompanionStore {
     private let now: @Sendable () -> Date
     /// Loaded from disk on first use. The store is the only writer of its directory.
     private var cache: [UUID: Stored]?
+    /// Entries deleted in this run. They are never written again, so a document that still
+    /// holds a deleted entry (it was loading or closing during the delete) cannot bring the
+    /// deleted data back (SET-07).
+    private var deletedIDs: Set<UUID> = []
 
     public init(directory: URL, locator: any PDFLocator = FileBookmarkLocator(), now: @escaping @Sendable () -> Date = { Date() }) {
         self.directory = directory
@@ -159,6 +163,7 @@ public actor CompanionStore {
 
     public func delete(_ id: UUID) {
         _ = storedEntries()
+        deletedIDs.insert(id)
         cache?[id] = nil
         try? FileManager.default.removeItem(at: fileURL(of: id))
     }
@@ -194,6 +199,7 @@ public actor CompanionStore {
 
     private func write(_ entry: CompanionEntry) {
         _ = storedEntries()
+        guard !deletedIDs.contains(entry.id) else { return }
         if cache?[entry.id]?.isReadOnly == true {
             cache?[entry.id]?.entry = entry
             return

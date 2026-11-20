@@ -3,7 +3,9 @@ import Observation
 
 /// A kind of data that a companion entry can hold, as listed in the stored data overview
 /// (SET-07). A new kind (e.g. drawings) adds a case here and its check in
-/// `CompanionEntry.storedDataKinds`; the overview lists it without further changes.
+/// `CompanionEntry.storedDataKinds` (and, if it is user content, in
+/// `CompanionEntry.holdsUserContent`, so it does not expire); the overview lists it without
+/// further changes.
 public enum StoredDataKind: String, CaseIterable, Sendable, Hashable {
     case notes
     case settings

@@ -127,6 +127,16 @@ struct StoredDataOverviewTests {
         #expect(await store.storedData().map(\.kinds) == [[.notes]])
     }
 
+    // A document that loaded its entry just before the delete cannot write it back.
+    @Test func deletedEntriesAreNeverWrittenAgain() async throws {
+        let store = makeStore()
+        let entry = try await self.store("loading.pdf", in: store, notes: true)
+        await store.delete(entry.id)
+        await store.save(entry)
+        #expect(storedFiles().isEmpty)
+        #expect(await store.storedData().isEmpty)
+    }
+
     @Test func withoutStoreTheListIsEmpty() async {
         let overview = StoredDataOverview(store: nil)
         await overview.reload()

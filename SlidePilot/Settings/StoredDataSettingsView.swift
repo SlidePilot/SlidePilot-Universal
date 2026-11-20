@@ -53,6 +53,17 @@ struct StoredDataList: View {
     @State private var overview: StoredDataOverview?
     @State private var selection = Set<UUID>()
     @State private var deletion: Deletion?
+    #if os(iOS)
+    @Environment(\.editMode) private var editMode
+    #endif
+
+    private var showsDeleteSelection: Bool {
+        #if os(macOS)
+        true
+        #else
+        editMode?.wrappedValue.isEditing == true
+        #endif
+    }
 
     var body: some View {
         List(selection: $selection) {
@@ -101,7 +112,14 @@ struct StoredDataList: View {
         .toolbar {
             // In the sheet's button row on the Mac; in the bottom bar on iPad, where the
             // navigation bar is too narrow for it next to the title.
-            ToolbarItem(placement: deleteNotFoundPlacement) {
+            ToolbarItemGroup(placement: deleteNotFoundPlacement) {
+                // A visible way to delete the selection; on iPad while editing.
+                if showsDeleteSelection {
+                    Button("Delete…", role: .destructive) {
+                        deletion = .items(selection)
+                    }
+                    .disabled(selection.isEmpty)
+                }
                 Button("Delete Not Found…", role: .destructive) {
                     deletion = .notFound
                 }

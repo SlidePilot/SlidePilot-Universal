@@ -128,7 +128,10 @@ public final class DocumentCompanion {
         isTakingOver = true
         defer { isTakingOver = false }
         await flush()
-        guard let current = entry, let merged = await store.takeOver(orphan.id, for: current) else { return nil }
+        guard let current = entry, let merged = await store.takeOver(orphan.id, for: current),
+              // Not when the stored data was deleted meanwhile (SET-07).
+              entry?.id == current.id
+        else { return nil }
         entry = merged
         isStored = true
         return merged.settings
@@ -140,6 +143,8 @@ public final class DocumentCompanion {
         self.orphan = nil
         guard let store, let current = entry else { return }
         let updated = await store.decline(orphan.id, for: current)
+        // Not when the stored data was deleted meanwhile (SET-07).
+        guard entry?.id == current.id else { return }
         // Only the decline is taken over; changes made meanwhile stay.
         entry?.declinedOrphans = updated.declinedOrphans
         isStored = true
