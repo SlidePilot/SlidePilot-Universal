@@ -150,13 +150,29 @@ import Testing
         let image = try await render(data)
         #expect(PixelProbe.color(of: image, atUnit: CGPoint(x: 0.2, y: 0.2)) == .white)
         #expect(PixelProbe.color(of: image, atUnit: CGPoint(x: 0.8, y: 0.8)) != .white)
+    }
 
-        let annotation = try #require(try reopen(data).page(at: 0)?.annotations.last)
-        let bounds = try #require(annotation.paths?.first).bounds
-            .offsetBy(dx: annotation.bounds.minX, dy: annotation.bounds.minY)
-        let mediaBox = CGRect(x: 40, y: 30, width: size.width - 40, height: size.height - 30)
-        #expect(abs(bounds.minX - (mediaBox.minX + 0.1 * mediaBox.width)) < 1)
-        #expect(abs(bounds.maxY - (mediaBox.minY + 0.5 * mediaBox.height)) < 1)
+    /// Checked on the rendered page: how PDFKit reads ink paths back differs between OS versions
+    /// when the media box does not start at zero.
+    @Test func strokesOnAnOffsetMediaBoxAreDrawnWhereTheyWereDrawn() async throws {
+        let source = try reopen(TestPDF.make(pages: 1))
+        let page = try #require(source.page(at: 0))
+        let size = TestPDF.pageSize
+        page.setBounds(CGRect(x: 40, y: 30, width: size.width - 40, height: size.height - 30), for: .mediaBox)
+        let pdf = try #require(source.dataRepresentation())
+        let stroke = DrawingStroke(
+            color: .black,
+            points: [RelativePoint(x: 0.1, y: 0.5), RelativePoint(x: 0.9, y: 0.5)]
+        )
+
+        let data = try DrawingsPDFExporter.export(pdf: pdf, drawings: [0: PageDrawing(strokes: [stroke], background: .white)])
+        let image = try await SlideRasterizer(data: data)
+            .render(page: 0, region: .full, fitting: PixelSize(width: 1600, height: 1600)).image
+        // A stroke shifted by the media box origin (12 % of the page) would miss these points.
+        #expect(PixelProbe.color(of: image, atUnit: CGPoint(x: 0.5, y: 0.5)) == .other)
+        #expect(PixelProbe.color(of: image, atUnit: CGPoint(x: 0.85, y: 0.5)) == .other)
+        #expect(PixelProbe.color(of: image, atUnit: CGPoint(x: 0.5, y: 0.45)) == .white)
+        #expect(PixelProbe.color(of: image, atUnit: CGPoint(x: 0.5, y: 0.55)) == .white)
     }
 
     // MARK: - Mapping
