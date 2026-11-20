@@ -26,6 +26,10 @@ public actor CompanionStore {
     private let now: @Sendable () -> Date
     /// Loaded from disk on first use. The store is the only writer of its directory.
     private var cache: [UUID: Stored]?
+    /// Entries deleted in this run. They are never written again, so a document that still
+    /// holds a deleted entry (it was loading or closing during the delete) cannot bring the
+    /// deleted data back (SET-07).
+    private var deletedIDs: Set<UUID> = []
 
     public init(directory: URL, locator: any PDFLocator = FileBookmarkLocator(), now: @escaping @Sendable () -> Date = { Date() }) {
         self.directory = directory
@@ -144,8 +148,25 @@ public actor CompanionStore {
         storedEntries().map(\.entry)
     }
 
+    /// The entries with the size of their files, for the stored data overview (SET-07).
+    func entriesWithFileSizes() -> [(entry: CompanionEntry, byteCount: Int64)] {
+        storedEntries().map { stored in
+            let size = (try? FileManager.default.attributesOfItem(atPath: fileURL(of: stored.entry.id).path(percentEncoded: false))[.size] as? NSNumber)?.int64Value
+            return (stored.entry, size ?? 0)
+        }
+    }
+
+    /// Where the entry's PDF is now, or where it was last seen when it is not found.
+    func pdfLocation(of entry: CompanionEntry) -> (url: URL?, isFound: Bool) {
+        if let resolved = locator.resolve(entry.pdf.bookmark) {
+            return (resolved.url, true)
+        }
+        return (locator.lastKnownURL(of: entry.pdf.bookmark), false)
+    }
+
     public func delete(_ id: UUID) {
         _ = storedEntries()
+        deletedIDs.insert(id)
         cache?[id] = nil
         try? FileManager.default.removeItem(at: fileURL(of: id))
     }
@@ -181,6 +202,7 @@ public actor CompanionStore {
 
     private func write(_ entry: CompanionEntry) {
         _ = storedEntries()
+        guard !deletedIDs.contains(entry.id) else { return }
         if cache?[entry.id]?.isReadOnly == true {
             cache?[entry.id]?.entry = entry
             return

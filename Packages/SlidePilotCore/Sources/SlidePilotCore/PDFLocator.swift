@@ -28,6 +28,13 @@ public protocol PDFLocator: Sendable {
     func isSameFile(_ first: URL, _ second: URL) -> Bool
     /// The system's persistent document identifier (iPadOS file providers), if any.
     func documentIdentifier(of url: URL) -> Int?
+    /// Where the bookmark last saw its PDF, without looking for it; also for a PDF that is
+    /// not found. Used to tell PDFs with the same name apart (SET-07).
+    func lastKnownURL(of bookmark: Data) -> URL?
+}
+
+extension PDFLocator {
+    public func lastKnownURL(of bookmark: Data) -> URL? { nil }
 }
 
 /// `PDFLocator` with Foundation bookmarks: security-scoped on macOS (the app sandbox needs
@@ -78,6 +85,11 @@ public struct FileBookmarkLocator: PDFLocator {
 
     public func documentIdentifier(of url: URL) -> Int? {
         withAccess(to: url) { try? url.resourceValues(forKeys: [.documentIdentifierKey]).documentIdentifier }
+    }
+
+    public func lastKnownURL(of bookmark: Data) -> URL? {
+        guard let path = URL.resourceValues(forKeys: [.pathKey], fromBookmarkData: bookmark)?.path else { return nil }
+        return URL(filePath: path)
     }
 
     private func identifier(of url: URL) -> (any NSObjectProtocol)? {

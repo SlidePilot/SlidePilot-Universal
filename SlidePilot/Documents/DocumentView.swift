@@ -40,6 +40,7 @@ struct DocumentView: View {
             .shrinksOnMemoryWarning(session)
             .companionFile(session, fileURL: fileURL)
             .notesFileTransfer(session, fileURL: fileURL)
+            .drawingsExport(session, fileURL: fileURL)
             // Videos and run: links next to the PDF (NAV-06, NAV-07).
             .linkedFiles(session, fileURL: fileURL)
             // The presentation surfaces find the session in the registry (DOC-04).

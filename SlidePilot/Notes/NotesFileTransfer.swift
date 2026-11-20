@@ -107,16 +107,8 @@ private struct NotesFileTransferModifier: ViewModifier {
                 importNotes: { pick(.notesFile) },
                 exportNotes: { Task { await export() } }
             ) : nil)
-            #if os(iOS)
-            // The iPad menu bar is hidden until it is pulled down, so the commands are also
-            // in the toolbar's overflow menu.
-            .toolbar {
-                ToolbarItemGroup(placement: .secondaryAction) {
-                    Button("Import Notes…", systemImage: "square.and.arrow.down") { pick(.notesFile) }
-                    Button("Export Notes…", systemImage: "square.and.arrow.up") { Task { await export() } }
-                }
-            }
-            #endif
+            // On iPad the commands are also in the toolbar's Import and Export menu
+            // (FileTransferMenu.swift).
             // The unstructured tasks below are short and stay on the main actor; a result that
             // arrives after the window closed is dropped by the checks in `importNotes`.
             // One importer for both cases: two importers on the same view would not both work.

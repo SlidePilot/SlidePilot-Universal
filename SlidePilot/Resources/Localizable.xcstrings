@@ -170,6 +170,15 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas utiliser" } }
       }
     },
+    "DrawingsFileNameSuffix" : {
+      "comment" : "Suffix of the suggested drawings file name: <pdf>-Drawings.pdf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Drawings" } },
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dessins" } }
+      }
+    },
     "Edit Layout…" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Layout bearbeiten …" } },
@@ -210,6 +219,19 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien überblenden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fondu entre les diapositives" } }
+      }
+    },
+    "Import and Export" : {
+      "comment" : "iPad toolbar menu with Import Notes, Export Notes and Export Drawings",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Importieren und Exportieren" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer et exporter" } }
+      }
+    },
+    "Export Drawings…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen exportieren …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Exporter les dessins…" } }
       }
     },
     "Export Notes…" : {
@@ -386,6 +408,12 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Marge des diapositives" } }
       }
     },
+    "SlidePilot couldn’t add the drawings to a copy of the PDF." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot konnte die Zeichnungen keiner Kopie des PDFs hinzufügen." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot n’a pas pu ajouter les dessins à une copie du PDF." } }
+      }
+    },
     "SlidePilot couldn’t convert the notes to RTF." : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot konnte die Notizen nicht in RTF umwandeln." } },
@@ -420,6 +448,12 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnen beenden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Arrêter de dessiner" } }
+      }
+    },
+    "The Drawings Couldn’t Be Exported" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Zeichnungen konnten nicht exportiert werden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible d’exporter les dessins" } }
       }
     },
     "The display does not dim or sleep while SlidePilot is open." : {
@@ -1271,6 +1305,124 @@
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Video „%@“ nicht gefunden" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vidéo « %@ » introuvable" } }
+      }
+    },
+    "Stored Document Data…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gespeicherte Dokumentdaten …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Données des documents enregistrées…" } }
+      }
+    },
+    "Stored Document Data" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gespeicherte Dokumentdaten" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Données des documents enregistrées" } }
+      }
+    },
+    "Notes and settings of your PDFs stay stored when a PDF is deleted. Review and delete them here." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen und Einstellungen deiner PDFs bleiben gespeichert, wenn ein PDF gelöscht wird. Hier kannst du sie ansehen und löschen." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les notes et réglages de vos PDF restent enregistrés lorsqu’un PDF est supprimé. Consultez-les et supprimez-les ici." } }
+      }
+    },
+    "Delete…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Löschen …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer…" } }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Löschen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer" } }
+      }
+    },
+    "To keep notes, open the PDF and choose File ▸ Export Notes… before deleting its data." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Um Notizen zu behalten, öffne das PDF und wähle Ablage ▸ Notizen exportieren …, bevor du seine Daten löschst." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Pour conserver les notes, ouvrez le PDF et choisissez Fichier ▸ Exporter les notes… avant de supprimer ses données." } }
+      }
+    },
+    "No Stored Data" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine gespeicherten Daten" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune donnée enregistrée" } }
+      }
+    },
+    "Notes and settings of the PDFs you open appear here." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen und Einstellungen der PDFs, die du öffnest, erscheinen hier." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les notes et réglages des PDF que vous ouvrez apparaissent ici." } }
+      }
+    },
+    "Delete Not Found…" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht gefundene löschen …" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer les introuvables…" } }
+      }
+    },
+    "The notes and settings that SlidePilot stores are deleted. This can’t be undone." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die von SlidePilot gespeicherten Notizen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les notes et réglages enregistrés par SlidePilot sont supprimés. Cette action est irréversible." } }
+      }
+    },
+    "These PDFs may have been deleted, or they are on a drive that isn’t connected or in iCloud and not downloaded. Their notes and settings are deleted. This can’t be undone." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Diese PDFs wurden vielleicht gelöscht oder liegen auf einem nicht verbundenen Laufwerk oder nicht geladen in iCloud. Ihre Notizen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ces PDF ont peut-être été supprimés, ou se trouvent sur un disque non connecté ou dans iCloud sans être téléchargés. Leurs notes et réglages sont supprimés. Cette action est irréversible." } }
+      }
+    },
+    "Delete the Data of “%@”?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten von „%@“ löschen?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer les données de « %@ » ?" } }
+      }
+    },
+    "Delete the Data of the Selected PDFs?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten der ausgewählten PDFs löschen?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer les données des PDF sélectionnés ?" } }
+      }
+    },
+    "Last opened %@" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zuletzt geöffnet am %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dernière ouverture le %@" } }
+      }
+    },
+    "PDF not found" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "PDF nicht gefunden" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "PDF introuvable" } }
+      }
+    },
+    "Delete the Data of %lld PDFs Not Found?" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : { "stringUnit" : { "state" : "translated", "value" : "Delete the Data of %lld PDF Not Found?" } },
+              "other" : { "stringUnit" : { "state" : "translated", "value" : "Delete the Data of %lld PDFs Not Found?" } }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : { "stringUnit" : { "state" : "translated", "value" : "Daten von %lld nicht gefundenen PDF löschen?" } },
+              "other" : { "stringUnit" : { "state" : "translated", "value" : "Daten von %lld nicht gefundenen PDFs löschen?" } }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer les données de %lld PDF introuvable ?" } },
+              "other" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer les données de %lld PDF introuvables ?" } }
+            }
+          }
+        }
       }
     }
   },

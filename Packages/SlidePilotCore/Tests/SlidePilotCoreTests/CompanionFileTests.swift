@@ -105,6 +105,7 @@ final class FakeLocator: PDFLocator {
     private struct State {
         var files: [String: File] = [:]
         var documentIdentifiers: [URL: Int] = [:]
+        var lastKnownURLs: [String: URL] = [:]
     }
 
     private let state = Mutex(State())
@@ -123,6 +124,7 @@ final class FakeLocator: PDFLocator {
     func add(_ name: String, id: String? = nil) -> URL {
         let url = URL(filePath: "/decks/\(name)")
         files[id ?? name] = File(url: url)
+        state.withLock { $0.lastKnownURLs[id ?? name] = url }
         return url
     }
 
@@ -141,6 +143,10 @@ final class FakeLocator: PDFLocator {
     func isSameFile(_ first: URL, _ second: URL) -> Bool { first == second }
 
     func documentIdentifier(of url: URL) -> Int? { documentIdentifiers[url] }
+
+    func lastKnownURL(of bookmark: Data) -> URL? {
+        state.withLock { $0.lastKnownURLs[String(decoding: bookmark, as: UTF8.self)] }
+    }
 }
 
 @Suite
