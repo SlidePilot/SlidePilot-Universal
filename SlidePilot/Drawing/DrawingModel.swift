@@ -8,7 +8,7 @@ import SlidePilotCore
 /// Every change made by the user goes through here, so it is registered with `undoManager`.
 /// The editable drawing layer is the first responder in draw mode and hands this manager to
 /// the Edit menu, ⌘Z and the iPad undo gestures. It is not the document's undo manager:
-/// drawings are not saved with the document, so drawing must not mark it edited. The undo
+/// drawings are not part of the PDF, so drawing must not mark it edited. The undo
 /// history itself lives per page in `DocumentDrawings`; the undo manager only triggers it
 /// (ADR 0016).
 @Observable
@@ -44,6 +44,13 @@ final class DrawingModel {
     func stop(onPage page: Int) {
         isColorPaletteShown = false
         drawings.stopDrawing(onPage: page)
+        undoManager.removeAllActions()
+    }
+
+    /// Deletes all drawings and their undo history, when "Save drawings" is turned off
+    /// (DRAW-06).
+    func deleteAll() {
+        drawings.deleteAll()
         undoManager.removeAllActions()
     }
 
