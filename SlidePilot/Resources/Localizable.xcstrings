@@ -404,6 +404,24 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les dessins restent sur leurs diapositives et sont enregistrés avec le PDF. La désactivation supprime tous les dessins." } }
       }
     },
+    "Delete all drawings?" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Alle Zeichnungen löschen?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer tous les dessins ?" } }
+      }
+    },
+    "Delete Drawings" : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen löschen" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer les dessins" } }
+      }
+    },
+    "Turning off Save drawings deletes the drawings of all PDFs. This cannot be undone." : {
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wenn du „Zeichnungen speichern“ ausschaltest, werden die Zeichnungen aller PDFs gelöscht. Das kann nicht widerrufen werden." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactiver « Enregistrer les dessins » supprime les dessins de tous les PDF. Cette action est irréversible." } }
+      }
+    },
     "Save drawings" : {
       "localizations" : {
         "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen speichern" } },
