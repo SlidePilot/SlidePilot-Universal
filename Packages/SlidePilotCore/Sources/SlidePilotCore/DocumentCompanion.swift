@@ -110,6 +110,19 @@ public final class DocumentCompanion {
         markEdited()
     }
 
+    /// The stored drawings (DRAW-07).
+    public var drawings: CompanionDrawings? { entry?.drawings }
+
+    /// Stores the drawings and saves them shortly afterwards (DRAW-07); `nil` or empty
+    /// drawings remove them. Drawing does not mark the document edited, like in the old app
+    /// (DRAW-08). Before the entry is loaded there is nothing to change.
+    public func setDrawings(_ drawings: CompanionDrawings?) {
+        let drawings = drawings?.isEmpty == false ? drawings : nil
+        guard entry != nil, entry?.drawings != drawings else { return }
+        entry?.drawings = drawings
+        scheduleSave()
+    }
+
     /// Records an edit of user content and saves it shortly afterwards. The document shows
     /// as edited until then (DOC-09). `setNotes(_:)` calls it; use it directly only for
     /// edits that are stored another way.
@@ -128,7 +141,10 @@ public final class DocumentCompanion {
         isTakingOver = true
         defer { isTakingOver = false }
         await flush()
-        guard let current = entry, let merged = await store.takeOver(orphan.id, for: current) else { return nil }
+        guard let current = entry, let merged = await store.takeOver(orphan.id, for: current),
+              // Not when the stored data was deleted meanwhile (SET-07).
+              entry?.id == current.id
+        else { return nil }
         entry = merged
         isStored = true
         return merged.settings
@@ -140,6 +156,8 @@ public final class DocumentCompanion {
         self.orphan = nil
         guard let store, let current = entry else { return }
         let updated = await store.decline(orphan.id, for: current)
+        // Not when the stored data was deleted meanwhile (SET-07).
+        guard entry?.id == current.id else { return }
         // Only the decline is taken over; changes made meanwhile stay.
         entry?.declinedOrphans = updated.declinedOrphans
         isStored = true
@@ -152,6 +170,29 @@ public final class DocumentCompanion {
         let updated = await store.pdfDidChange(current, at: url, pageCount: pageCount, isStored: isStored)
         // Changes made while the store worked win over the snapshot it updated.
         entry?.pdf = updated.pdf
+    }
+
+    /// Deletes the stored entry of this document from the stored data overview (SET-07).
+    ///
+    /// The document continues with empty notes and settings that are not stored, so a later
+    /// save does not write the deleted data back; new changes are stored as a new entry.
+    /// The settings already applied in the window stay on screen until they change.
+    public func deleteStoredData() async {
+        guard let store, let current = entry else { return }
+        delayedSave?.cancel()
+        delayedSave = nil
+        entry = CompanionEntry(pdf: current.pdf, lastOpened: current.lastOpened)
+        isStored = false
+        editCount += 1
+        isEdited = false
+        // In the save chain, so a save that is already writing finishes before the delete.
+        let previous = saveChain
+        let link = Task {
+            await previous?.value
+            await store.delete(current.id)
+        }
+        saveChain = link
+        await link.value
     }
 
     /// Writes pending changes now, e.g. when the window closes or the app quits or goes to
@@ -202,7 +243,10 @@ public final class DocumentCompanion {
         // A PDF without any stored data gets no file, e.g. when its window just closes.
         if entry.hasStoredData || isStored {
             await store.save(entry)
-            isStored = true
+            // Not when the stored data was deleted during the write (SET-07).
+            if self.entry?.id == entry.id {
+                isStored = true
+            }
         }
         if editCount == savedEdits {
             isEdited = false

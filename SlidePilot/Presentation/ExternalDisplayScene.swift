@@ -9,6 +9,8 @@ import UIKit
 final class AppDelegate: NSObject, UIApplicationDelegate {
     let registry = SessionRegistry()
     let externalDisplays = ExternalDisplayStatus()
+    /// The open documents' companions, for the stored data overview (SET-07).
+    let companions = OpenCompanions()
     /// The app-wide settings (SET-01), here so the external display can read them too.
     let settings = AppSettings(store: UserDefaults.standard)
     /// Keeps the display awake while the app runs, if the setting is on (SET-04).

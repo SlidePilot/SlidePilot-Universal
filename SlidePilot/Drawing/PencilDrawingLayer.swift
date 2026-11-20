@@ -7,7 +7,7 @@ import UIKit
 
 /// Apple Pencil and finger drawing on iPad: `PKCanvasView` as the input layer on top of the
 /// model (ADR 0016). The model stays the source of truth; the canvas is rebuilt from it after
-/// undo, clear, a background change or a new size.
+/// every stroke, undo, clear, background change or new size.
 struct PencilDrawingLayer: View {
     let model: DrawingModel
     let page: Int
@@ -15,9 +15,11 @@ struct PencilDrawingLayer: View {
     let onEscape: () -> Void
 
     var body: some View {
-        // The canvas is transparent; a white canvas is drawn below it (DRAW-04).
-        let background = model.drawings.drawing(onPage: page).background
-        DrawingCanvas(drawing: PageDrawing(background: background), section: section)
+        // The canvas is transparent. The background (DRAW-04) and the strokes of the model
+        // are drawn below it, like on the Mac; PencilKit shows only the stroke being drawn.
+        // It sometimes left parts of the strokes it was given undrawn, e.g. stored ones
+        // (DRAW-07) after a slide change in draw mode.
+        DrawingCanvas(drawing: model.drawings.drawing(onPage: page), section: section)
             .overlay {
                 GeometryReader { proxy in
                     PencilCanvas(
@@ -112,7 +114,15 @@ private struct PencilCanvas: UIViewRepresentable {
         func rebuild(_ canvas: PKCanvasView, from drawing: PageDrawing) {
             let pointSize = model.pencilKitPointSize ?? PencilKitBridge.defaultPointSize
             isApplying = true
-            canvas.drawing = PencilKitBridge.pkDrawing(from: drawing, mapping: mapping, pointSize: pointSize)
+            var pkDrawing = PencilKitBridge.pkDrawing(from: drawing, mapping: mapping, pointSize: pointSize)
+            // The layer below draws these strokes; PencilKit keeps them invisible and only
+            // counts them.
+            pkDrawing.strokes = pkDrawing.strokes.map { stroke in
+                var stroke = stroke
+                stroke.ink = PKInk(stroke.ink.inkType, color: .clear)
+                return stroke
+            }
+            canvas.drawing = pkDrawing
             isApplying = false
             synced = drawing
             syncedMapping = mapping
@@ -143,8 +153,8 @@ private struct PencilCanvas: UIViewRepresentable {
             let newStrokes = PencilKitBridge.strokes(from: PKDrawing(strokes: added), mapping: mapping)
             let strokes = model.drawings.drawing(onPage: page).strokes + newStrokes
             model.replaceStrokes(strokes, onPage: page)
-            synced = model.drawings.drawing(onPage: page)
-            syncedStrokeCount = pkStrokes.count
+            // From now on the layer below draws the stroke, like every other stroke.
+            rebuild(canvasView, from: model.drawings.drawing(onPage: page))
         }
 
         // MARK: Live mirror

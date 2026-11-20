@@ -33,6 +33,7 @@ private struct LayoutMenuItems: View {
             .plainKeyShortcut("p")
         SlotToggle(layout: layout, slot: .notes)
             .plainKeyShortcut("n")
+        NotesModeMenuItems()
     }
 }
 

@@ -20,12 +20,13 @@ struct PresentationView: View {
             SlideSurface(
                 cache: session.cache,
                 page: session.currentPage,
+                region: session.audienceRegion,
                 role: .presentation,
                 pageLinkAction: session.showPage,
                 crossfades: SlideCrossfade.isActive(setting: settings.crossfadesSlides, reduceMotion: reduceMotion)
             )
             // Read-only and live while it is drawn (DRAW-01).
-            .drawingOverlay(session.drawing.drawings, page: session.currentPage, isOutlined: false)
+            .drawingOverlay(session.drawing.drawings, page: session.currentPage, region: session.audienceRegion, isOutlined: false)
             .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.space)) } action: { slideFrame = $0 }
             // Opaque, so it also hides the drawing (DRAW-09) and blocks clicks on the
             // slide's links while shown.
