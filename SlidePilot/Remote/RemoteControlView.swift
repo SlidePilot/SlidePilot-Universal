@@ -2,9 +2,9 @@ import SlidePilotCore
 import SlidePilotRemoteProtocol
 import SwiftUI
 
+#if os(macOS)
 /// The remote mode scene (REM-07, ADR 0015): one window that controls a presentation on
-/// another device. Opened with File ▸ Control Another Device… and, on iPad, from the
-/// document browser.
+/// another device, opened with File ▸ Control Another Device….
 enum RemoteControlScene {
     static let id = "remote-control"
 }
@@ -28,17 +28,36 @@ struct RemoteControlCommands: Commands {
         }
     }
 }
+#else
+/// Shows remote mode (REM-07, ADR 0015) in the same window, over the document browser;
+/// Close on the device list goes back.
+struct ControlAnotherDeviceButton: View {
+    @Environment(RemoteService.self) private var remote
+    @Environment(AppSettings.self) private var settings
+
+    var body: some View {
+        Button("Control Another Device…", systemImage: "appletvremote.gen4") {
+            RemoteControlPresenter.present(remote: remote, settings: settings)
+        }
+    }
+}
+#endif
 
 /// The content of a remote mode window: device list → presentations → slides, in a
 /// navigation stack so Back leaves each step; Escape does too on the slides.
 struct RemoteControlView: View {
     @Environment(RemoteService.self) private var remote
     @State private var control: RemoteControl?
+    /// Ends remote mode where it is shown over another view (iPad); `nil` in its own window.
+    var close: (() -> Void)?
 
     var body: some View {
         Group {
             if let control {
-                RemoteControlStack(control: control)
+                RemoteControlStack(control: control, close: close)
+            } else {
+                // An empty group would never appear, so the control would never be made.
+                Color.clear
             }
         }
         .onAppear {
@@ -46,19 +65,28 @@ struct RemoteControlView: View {
                 control = RemoteControl(remote: remote)
             }
         }
-        // Nearby devices are found while the window is open. It does not accept pairing
-        // requests of other devices; Settings ▸ Remote does that (REM-02).
-        .task { await remote.browse(acceptsPairingRequests: false) }
+        // Nearby devices are found while remote mode is shown.
+        .task { await remote.browse() }
         .remoteAlerts()
     }
 }
 
 private struct RemoteControlStack: View {
     @Bindable var control: RemoteControl
+    let close: (() -> Void)?
 
     var body: some View {
         NavigationStack(path: Binding(get: { control.route }, set: { control.navigate(to: $0) })) {
             RemoteDeviceList(control: control)
+                .toolbar {
+                    if let close {
+                        ToolbarItem(placement: .cancellationAction) {
+                            // Escape closes it too, as in the settings sheet.
+                            Button(role: .close, action: close)
+                                .keyboardShortcut(.cancelAction)
+                        }
+                    }
+                }
                 .navigationDestination(for: RemoteControl.Route.self) { route in
                     switch route {
                     case .presentations: RemotePresentationList(control: control)
@@ -131,7 +159,10 @@ private struct RemoteDeviceList: View {
             } header: {
                 Text("Nearby Devices")
             } footer: {
-                Text("Select a device running SlidePilot on the same network. To pair a new device, open Settings ▸ Remote on it first, then check that both devices show the same code.")
+                // Hidden while searching: the empty state explains it and would cover it.
+                if !remote.controllableDevices.isEmpty {
+                    Text("Devices with SlidePilot open on the same network appear here. A new device is paired first: check that both devices show the same code.")
+                }
             }
         }
         .overlay {

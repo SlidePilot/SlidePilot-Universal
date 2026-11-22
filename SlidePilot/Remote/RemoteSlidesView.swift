@@ -107,20 +107,20 @@ struct RemoteSlidesView: View {
 
     private var curtain: RemoteCurtain { control.state.status?.curtain ?? .none }
 
-    /// Tap: black screen on or off. Long press (iPad) or the menu arrow (Mac): black or
-    /// white (REM-07).
+    /// One tap opens the choices, one more picks off, black or white (REM-07).
     private var curtainMenu: some View {
         Menu {
-            Toggle(isOn: curtainBinding(.black)) {
+            Picker("Curtain", selection: curtainBinding) {
+                Label("Off", systemImage: "rectangle.dashed")
+                    .tag(RemoteCurtain.none)
                 Label("Black Screen", systemImage: "rectangle.fill")
-            }
-            Toggle(isOn: curtainBinding(.white)) {
+                    .tag(RemoteCurtain.black)
                 Label("White Screen", systemImage: "rectangle")
+                    .tag(RemoteCurtain.white)
             }
+            .pickerStyle(.inline)
         } label: {
             Label("Curtain", systemImage: curtainSymbol)
-        } primaryAction: {
-            control.perform(.setCurtain(control.state.curtainToggleTarget))
         }
         .accessibilityValue(curtainDescription)
     }
@@ -141,11 +141,11 @@ struct RemoteSlidesView: View {
         }
     }
 
-    private func curtainBinding(_ color: RemoteCurtain) -> Binding<Bool> {
+    private var curtainBinding: Binding<RemoteCurtain> {
         Binding {
-            curtain == color
-        } set: { isShown in
-            control.perform(.setCurtain(isShown ? color : .none))
+            curtain
+        } set: { newCurtain in
+            control.perform(.setCurtain(newCurtain))
         }
     }
 

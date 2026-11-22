@@ -144,15 +144,6 @@ struct ControllerStateTests {
         #expect(other.receive(.presentations([deckB, third])).isEmpty)
     }
 
-    @Test func curtainButtonTogglesBlack() {
-        var state = selectedState()
-        #expect(state.curtainToggleTarget == .black)
-        _ = state.receive(.status(status(deckA, curtain: .black)))
-        #expect(state.curtainToggleTarget == .none)
-        _ = state.receive(.status(status(deckA, curtain: .white)))
-        #expect(state.curtainToggleTarget == .none)
-    }
-
     @Test func progressCountsTheCurrentSlide() {
         var state = selectedState()
         #expect(state.progress == nil)

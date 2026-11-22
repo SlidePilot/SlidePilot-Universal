@@ -142,12 +142,6 @@ public struct RemoteControllerState: Sendable, Equatable {
         }
     }
 
-    /// The curtain a tap on the curtain button sets: black while none is shown, otherwise
-    /// none (REM-07; the menu offers black and white).
-    public var curtainToggleTarget: RemoteCurtain {
-        (status?.curtain ?? RemoteCurtain.none) == RemoteCurtain.none ? .black : .none
-    }
-
     /// The fraction of the presentation shown so far: the slide number over the slide
     /// count, so the last slide is 1.
     public var progress: Double? {

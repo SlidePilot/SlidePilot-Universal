@@ -1,34 +1,18 @@
 import SlidePilotRemoteProtocol
 import SwiftUI
 
-/// The Remote pane (REM-02, REM-03): remote control on/off, nearby devices with Connect and
-/// Disconnect, and the trusted devices.
+/// The Remote pane (REM-02, REM-03): remote control on/off and the trusted devices.
+/// Devices are paired in remote mode (REM-07) on the controlling device.
 ///
-/// Browsing runs and pairing requests are accepted only while the pane is visible. The
-/// pairing code and problem alerts come from `remoteAlerts()`: on the Mac on the pane and
+/// The pairing code and problem alerts come from `remoteAlerts()`: on the Mac on the pane and
 /// the Trusted Devices sheet, on iPad on the settings sheet's navigation stack, so they show
 /// wherever the user is in Settings.
 struct RemoteSettingsPane: View {
     @Environment(RemoteService.self) private var remote
     @State private var isShowingTrustedDevices = false
-    @State private var deviceToDisconnect: RemoteService.Device?
 
     var body: some View {
         content
-            .task { await remote.browse() }
-            .alert(
-                Text("Disconnect “\(deviceToDisconnect?.name ?? "")”?"),
-                isPresented: Binding(
-                    get: { deviceToDisconnect != nil },
-                    set: { if !$0 { deviceToDisconnect = nil } }
-                ),
-                presenting: deviceToDisconnect
-            ) { device in
-                Button("Disconnect", role: .destructive) { remote.disconnect(device.id) }
-                Button("Cancel", role: .cancel) {}
-            } message: { device in
-                Text("“\(device.name)” is also removed from the trusted devices and has to be paired again.")
-            }
     }
 
     @ViewBuilder private var content: some View {
@@ -59,28 +43,14 @@ struct RemoteSettingsPane: View {
         Section {
             Toggle(isOn: $remote.allowsRemoteControl) {
                 Text("Allow remote control")
-                Text("Paired devices can find this device and control its presentations.")
+                Text("Other devices can find this device, pair with it and control its presentations.")
             }
-        }
-        Section {
-            if remote.devices.isEmpty {
-                Label {
-                    Text("Searching for devices…")
-                } icon: {
-                    ProgressView()
-                        .controlSize(.small)
-                }
-                .foregroundStyle(.secondary)
-            }
-            ForEach(remote.devices) { device in
-                RemoteDeviceRow(device: device) {
-                    deviceToDisconnect = device
-                }
-            }
-        } header: {
-            Text("Nearby Devices")
         } footer: {
-            Text("Open SlidePilot on another device on the same network and open Settings ▸ Remote there too. Then connect and check that both devices show the same code.")
+            #if os(macOS)
+            Text("To control another device from this one, choose File ▸ Control Another Device….")
+            #else
+            Text("To control another device from this one, choose “Control Another Device…” in the document browser.")
+            #endif
         }
         Section {
             #if os(macOS)
@@ -92,45 +62,6 @@ struct RemoteSettingsPane: View {
                 TrustedDevicesList()
             }
             #endif
-        }
-    }
-}
-
-/// One nearby device with its state and the matching action.
-private struct RemoteDeviceRow: View {
-    @Environment(RemoteService.self) private var remote
-    let device: RemoteService.Device
-    let disconnect: () -> Void
-
-    var body: some View {
-        LabeledContent {
-            switch device.status {
-            case .available, .trusted:
-                // On a trusted device this checks the trust and pairs again if the other
-                // device forgot this one.
-                Button("Connect") { remote.pair(with: device.id) }
-                    .buttonStyle(.borderless)
-                    .accessibilityLabel(Text("Connect to \(device.name)"))
-                    .accessibilityInputLabels([Text("Connect"), Text("Connect to \(device.name)")])
-            case .pairing:
-                ProgressView()
-                    .controlSize(.small)
-                    .accessibilityHidden(true)
-            case .connected:
-                // Disconnecting also removes the trust, as in the old app (REM-03).
-                Button("Disconnect", action: disconnect)
-                    .buttonStyle(.borderless)
-                    .accessibilityLabel(Text("Disconnect \(device.name)"))
-                    .accessibilityInputLabels([Text("Disconnect"), Text("Disconnect \(device.name)")])
-            }
-        } label: {
-            Text(device.name)
-            switch device.status {
-            case .available: EmptyView()
-            case .pairing: Text("Pairing…")
-            case .trusted: Text("Trusted")
-            case .connected: Text("Connected")
-            }
         }
     }
 }
@@ -209,13 +140,20 @@ extension View {
 
 private struct RemoteAlertsModifier: ViewModifier {
     @Environment(RemoteService.self) private var remote
+    @State private var id = UUID()
+
+    /// Only the view that appeared last shows the alerts, so a code shows once. Views shown
+    /// over others (sheets, remote mode) appear after them.
+    private var showsAlerts: Bool { remote.alertPresenters.last == id }
 
     func body(content: Content) -> some View {
         content
+            .onAppear { remote.alertPresenterAppeared(id) }
+            .onDisappear { remote.alertPresenterWentAway(id) }
             .alert(
                 Text("Pair with “\(remote.pairingRequests.first?.deviceName ?? "")”?"),
                 isPresented: Binding(
-                    get: { remote.pairingRequests.first != nil },
+                    get: { showsAlerts && remote.pairingRequests.first != nil },
                     set: { _ in }
                 ),
                 presenting: remote.pairingRequests.first
@@ -229,7 +167,7 @@ private struct RemoteAlertsModifier: ViewModifier {
             .alert(
                 problemTitle,
                 isPresented: Binding(
-                    get: { remote.problem != nil },
+                    get: { showsAlerts && remote.problem != nil },
                     set: { if !$0 { remote.problem = nil } }
                 ),
                 presenting: remote.problem
@@ -252,7 +190,7 @@ private struct RemoteAlertsModifier: ViewModifier {
     private static func message(for problem: RemoteService.Problem) -> String {
         switch problem.kind {
         case .declined:
-            String(localized: "The pairing was cancelled. To pair, open Settings ▸ Remote on both devices and confirm the code on both.")
+            String(localized: "The pairing was cancelled. To pair, try again and confirm the same code on both devices.")
         case .incompatibleVersion(let peerNeedsUpdate):
             peerNeedsUpdate
                 ? String(localized: "Update SlidePilot on “\(problem.deviceName)” to the latest version.")

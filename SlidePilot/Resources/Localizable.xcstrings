@@ -549,22 +549,6 @@
         }
       }
     },
-    "Connect" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbinden"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connecter"
-          }
-        }
-      }
-    },
     "Connect a display, or start Screen Mirroring in Control Center." : {
       "localizations" : {
         "de" : {
@@ -577,22 +561,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Connectez un écran ou lancez « Recopie de l’écran » dans le centre de contrôle."
-          }
-        }
-      }
-    },
-    "Connect to %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mit %@ verbinden"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se connecter à %@"
           }
         }
       }
@@ -992,6 +960,22 @@
         }
       }
     },
+    "Devices with SlidePilot open on the same network appear here. A new device is paired first: check that both devices show the same code." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier erscheinen Geräte im selben Netzwerk, auf denen SlidePilot geöffnet ist. Ein neues Gerät wird zuerst gekoppelt: Prüfe, ob beide Geräte denselben Code zeigen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les appareils du même réseau sur lesquels SlidePilot est ouvert apparaissent ici. Un nouvel appareil est d’abord jumelé : vérifiez que les deux appareils affichent le même code."
+          }
+        }
+      }
+    },
     "Devices you pair with appear here." : {
       "localizations" : {
         "de" : {
@@ -1004,54 +988,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Les appareils que vous jumelez apparaissent ici."
-          }
-        }
-      }
-    },
-    "Disconnect" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trennen"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déconnecter"
-          }
-        }
-      }
-    },
-    "Disconnect %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ trennen"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déconnecter %@"
-          }
-        }
-      }
-    },
-    "Disconnect “%@”?" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "„%@“ trennen?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Déconnecter « %@ » ?"
           }
         }
       }
@@ -2197,22 +2133,6 @@
         }
       }
     },
-    "Open SlidePilot on another device on the same network and open Settings ▸ Remote there too. Then connect and check that both devices show the same code." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Öffne SlidePilot auf einem anderen Gerät im selben Netzwerk und dort ebenfalls Einstellungen ▸ Remote. Verbinde dann die Geräte und prüfe, ob beide denselben Code zeigen."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrez SlidePilot sur un autre appareil du même réseau, puis Réglages ▸ Remote sur celui-ci aussi. Connectez ensuite les appareils et vérifiez qu’ils affichent le même code."
-          }
-        }
-      }
-    },
     "Open SlidePilot on another device on the same network. “Allow remote control” must be on there." : {
       "localizations" : {
         "de" : {
@@ -2291,6 +2211,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Orange"
+          }
+        }
+      }
+    },
+    "Other devices can find this device, pair with it and control its presentations." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Andere Geräte können dieses Gerät finden, sich damit koppeln und seine Präsentationen steuern."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "D’autres appareils peuvent trouver cet appareil, se jumeler avec lui et contrôler ses présentations."
           }
         }
       }
@@ -2457,22 +2393,6 @@
         }
       }
     },
-    "Paired devices can find this device and control its presentations." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gekoppelte Geräte können dieses Gerät finden und seine Präsentationen steuern."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les appareils jumelés peuvent trouver cet appareil et contrôler ses présentations."
-          }
-        }
-      }
-    },
     "Pairing with “%@” Cancelled" : {
       "localizations" : {
         "de" : {
@@ -2501,22 +2421,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Échec du jumelage avec « %@ »"
-          }
-        }
-      }
-    },
-    "Pairing…" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wird gekoppelt …"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jumelage…"
           }
         }
       }
@@ -2889,22 +2793,6 @@
         }
       }
     },
-    "Searching for devices…" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suche nach Geräten …"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recherche d’appareils…"
-          }
-        }
-      }
-    },
     "Seconds" : {
       "localizations" : {
         "de" : {
@@ -2917,22 +2805,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Secondes"
-          }
-        }
-      }
-    },
-    "Select a device running SlidePilot on the same network. To pair a new device, open Settings ▸ Remote on it first, then check that both devices show the same code." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wähle ein Gerät im selben Netzwerk, auf dem SlidePilot läuft. Um ein neues Gerät zu koppeln, öffne dort zuerst Einstellungen ▸ Remote und prüfe dann, ob beide Geräte denselben Code zeigen."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez un appareil du même réseau sur lequel SlidePilot est ouvert. Pour jumeler un nouvel appareil, ouvrez d’abord Réglages ▸ Remote sur celui-ci, puis vérifiez que les deux appareils affichent le même code."
           }
         }
       }
@@ -3852,18 +3724,18 @@
         }
       }
     },
-    "The pairing was cancelled. To pair, open Settings ▸ Remote on both devices and confirm the code on both." : {
+    "The pairing was cancelled. To pair, try again and confirm the same code on both devices." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Koppeln wurde abgebrochen. Öffne zum Koppeln auf beiden Geräten Einstellungen ▸ Remote und bestätige den Code auf beiden."
+            "value" : "Das Koppeln wurde abgebrochen. Versuche es erneut und bestätige auf beiden Geräten denselben Code."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le jumelage a été annulé. Pour jumeler, ouvrez Réglages ▸ Remote sur les deux appareils et confirmez le code sur chacun."
+            "value" : "Le jumelage a été annulé. Réessayez et confirmez le même code sur les deux appareils."
           }
         }
       }
@@ -3993,6 +3865,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minuteur"
+          }
+        }
+      }
+    },
+    "To control another device from this one, choose File ▸ Control Another Device…." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle Ablage ▸ Anderes Gerät steuern …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour contrôler un autre appareil depuis celui-ci, choisissez Fichier ▸ Contrôler un autre appareil…."
+          }
+        }
+      }
+    },
+    "To control another device from this one, choose “Control Another Device…” in the document browser." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle „Anderes Gerät steuern …“ im Dokument-Browser."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour contrôler un autre appareil depuis celui-ci, choisissez « Contrôler un autre appareil… » dans le navigateur de documents."
           }
         }
       }
@@ -4380,22 +4284,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "« %@ » doit être de nouveau jumelé avant que l’un des appareils puisse contrôler l’autre."
-          }
-        }
-      }
-    },
-    "“%@” is also removed from the trusted devices and has to be paired again." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "„%@“ wird auch aus den vertrauenswürdigen Geräten entfernt und muss erneut gekoppelt werden."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "« %@ » est aussi retiré des appareils de confiance et doit être de nouveau jumelé."
           }
         }
       }
