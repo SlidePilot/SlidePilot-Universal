@@ -32,15 +32,24 @@ public struct DocumentSettings: Sendable, Equatable {
     /// The legacy notes file next to the PDF is not loaded automatically any more (NOTES-08):
     /// the user chose Don't Import, or the file failed to load.
     public var declinedLegacyNotes: Bool?
+    /// Whether the pointer is shown (PTR-07).
+    public var isPointerDisplayed: Bool?
+    /// The pointer's appearance (PTR-07).
+    public var pointerAppearance: PointerAppearance?
     /// Text or split notes (NOTES-01); wins over the PDF's keywords (NOTES-03).
     public var notesMode: NotesMode?
     /// The split position (NOTES-02); wins over the PDF's keywords (NOTES-03).
     public var notesPosition: NotesPosition?
 
-    public init(layout: PresenterLayout? = nil, isNavigatorDisplayed: Bool? = nil, declinedLegacyNotes: Bool? = nil) {
+    public init(
+        layout: PresenterLayout? = nil, isNavigatorDisplayed: Bool? = nil, declinedLegacyNotes: Bool? = nil,
+        isPointerDisplayed: Bool? = nil, pointerAppearance: PointerAppearance? = nil
+    ) {
         self.layout = layout
         self.isNavigatorDisplayed = isNavigatorDisplayed
         self.declinedLegacyNotes = declinedLegacyNotes
+        self.isPointerDisplayed = isPointerDisplayed
+        self.pointerAppearance = pointerAppearance
     }
 
     public var isEmpty: Bool { self == DocumentSettings() }
@@ -49,6 +58,7 @@ public struct DocumentSettings: Sendable, Equatable {
 extension DocumentSettings: Codable {
     private enum CodingKeys: String, CodingKey {
         case layout, isNavigatorDisplayed, declinedLegacyNotes
+        case isPointerDisplayed, pointerAppearance
         case notesMode, notesPosition
     }
 
@@ -58,6 +68,8 @@ extension DocumentSettings: Codable {
         layout = try? container.decodeIfPresent(PresenterLayout.self, forKey: .layout)
         isNavigatorDisplayed = try? container.decodeIfPresent(Bool.self, forKey: .isNavigatorDisplayed)
         declinedLegacyNotes = try? container.decodeIfPresent(Bool.self, forKey: .declinedLegacyNotes)
+        isPointerDisplayed = try? container.decodeIfPresent(Bool.self, forKey: .isPointerDisplayed)
+        pointerAppearance = try? container.decodeIfPresent(PointerAppearance.self, forKey: .pointerAppearance)
         notesMode = try? container.decodeIfPresent(NotesMode.self, forKey: .notesMode)
         notesPosition = try? container.decodeIfPresent(NotesPosition.self, forKey: .notesPosition)
     }
@@ -67,6 +79,8 @@ extension DocumentSettings: Codable {
         try container.encodeIfPresent(layout, forKey: .layout)
         try container.encodeIfPresent(isNavigatorDisplayed, forKey: .isNavigatorDisplayed)
         try container.encodeIfPresent(declinedLegacyNotes, forKey: .declinedLegacyNotes)
+        try container.encodeIfPresent(isPointerDisplayed, forKey: .isPointerDisplayed)
+        try container.encodeIfPresent(pointerAppearance, forKey: .pointerAppearance)
         try container.encodeIfPresent(notesMode, forKey: .notesMode)
         try container.encodeIfPresent(notesPosition, forKey: .notesPosition)
     }

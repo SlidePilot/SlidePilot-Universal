@@ -5,7 +5,6 @@ import SlidePilotRendering
 
 /// State of one open document: the slides and the current page. The presenter and the
 /// presentation observe the same session (DOC-04).
-/// Later issues add notes, drawing and pointer state.
 @Observable
 final class PresentationSession: Identifiable {
     /// Identifies the session's presentation window (macOS) and its registry entry.
@@ -40,6 +39,9 @@ final class PresentationSession: Identifiable {
     var isNavigatorDisplayed = false
     /// Draw mode and the drawings of all pages (DRAW-01 to DRAW-08).
     let drawing = DrawingModel()
+    /// Whether the pointer is shown, its appearance and where the presenter points (PTR-01, PTR-02).
+    let pointer = PointerState()
+
     /// Text or split notes and the split position (NOTES-01 to NOTES-03). Starts from the
     /// PDF's keywords; stored per-document settings replace it once loaded (SET-02).
     private(set) var notesDisplay: NotesDisplay {

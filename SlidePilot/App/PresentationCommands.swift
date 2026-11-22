@@ -13,13 +13,15 @@ extension FocusedValues {
     @Entry var startPresentation: StartPresentationAction?
 }
 
-/// The Presentation menu. Later issues add pointer commands.
+/// The Presentation menu.
 struct PresentationCommands: Commands {
     var body: some Commands {
         CommandMenu("Presentation") {
             SlideNavigationMenuItems()
             Divider()
             CurtainMenuItems()
+            Divider()
+            PointerMenuItems()
             #if os(macOS)
             Divider()
             StartPresentationButton()
