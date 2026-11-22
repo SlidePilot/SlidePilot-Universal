@@ -1417,22 +1417,6 @@
         }
       }
     },
-    "Hide Navigator" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Navigator ausblenden"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Masquer le navigateur"
-          }
-        }
-      }
-    },
     "Hours" : {
       "localizations" : {
         "de" : {

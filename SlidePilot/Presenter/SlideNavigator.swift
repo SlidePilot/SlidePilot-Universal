@@ -11,11 +11,10 @@ extension FocusedValues {
 /// system provides resizing and, in a narrow iPad window, one column at a time. **O**, Esc,
 /// the menu and the sidebar button all drive `session.isNavigatorDisplayed`.
 ///
-/// `slidesChrome` (the clock) always goes on the slides column. `chrome` adds the toolbar
-/// items: on the Mac to the slides column, so the sidebar keeps the full window height. On
-/// iPad a document window always shows the document's own bar above a split view's column
-/// bars; the column bars are hidden and `chrome` goes on the document's bar, so there is
-/// one bar, as without the navigator.
+/// `slidesChrome` (the clock) and `chrome` (the toolbar items) go on the slides column, so
+/// the sidebar keeps the full window height on the Mac. On iPad the document browser's launch
+/// scene (REM-07) makes the split view's column bars the document's only bar, so the items
+/// and the system sidebar button go there too.
 struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome: ViewModifier>: View {
     let session: PresentationSession
     let slidesChrome: SlidesChrome
@@ -28,21 +27,11 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
     #endif
 
     var body: some View {
-        #if os(macOS)
         splitView(detail: detail.modifier(slidesChrome).modifier(chrome))
+            #if os(macOS)
             // Layout changes are locked in draw mode (DRAW-05).
             .toolbar(removing: session.drawing.isActive ? .sidebarToggle : nil)
-        #else
-        splitView(detail: detail.modifier(slidesChrome).toolbar(.hidden, for: .navigationBar))
-            .modifier(chrome)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigatorToggle(session: session)
-                        // Layout changes are locked in draw mode (DRAW-05).
-                        .disabled(session.drawing.isActive)
-                }
-            }
-        #endif
+            #endif
     }
 
     private func splitView(detail: some View) -> some View {
@@ -51,7 +40,9 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
                 // The old navigator was 180 pt wide; now it can be resized (approved deviation).
                 .navigationSplitViewColumnWidth(min: 120, ideal: 180, max: 400)
                 #if os(iOS)
-                .toolbar(.hidden, for: .navigationBar)
+                // Layout changes are locked in draw mode (DRAW-05). The iPad takes this only
+                // from the sidebar column.
+                .toolbar(removing: session.drawing.isActive ? .sidebarToggle : nil)
                 #endif
         } detail: {
             detail
@@ -99,26 +90,6 @@ extension View {
         }
     }
 }
-
-#if os(iOS)
-/// The sidebar button of the document's bar on iPad, where the split view's own button is
-/// hidden with its column bar.
-private struct NavigatorToggle: View {
-    let session: PresentationSession
-
-    var body: some View {
-        Button {
-            session.isNavigatorDisplayed.toggle()
-        } label: {
-            if session.isNavigatorDisplayed {
-                Label("Hide Navigator", systemImage: "sidebar.leading")
-            } else {
-                Label("Show Navigator", systemImage: "sidebar.leading")
-            }
-        }
-    }
-}
-#endif
 
 /// Show Navigator in the Moderator menu with the old app's plain **O** (LAY-06).
 struct NavigatorMenuItems: View {
