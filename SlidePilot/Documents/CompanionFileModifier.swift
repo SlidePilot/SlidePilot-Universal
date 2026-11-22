@@ -16,7 +16,8 @@ extension CompanionStore {
     }
 }
 
-/// The companions of the open documents, so the Mac can save them before the app quits.
+/// The companions of the open documents, so the Mac can save them before the app quits and
+/// the stored data overview (SET-07) can delete an open document's data.
 @MainActor
 @Observable
 final class OpenCompanions {
@@ -29,6 +30,8 @@ final class OpenCompanions {
     func remove(_ companion: DocumentCompanion) {
         companions[ObjectIdentifier(companion)] = nil
     }
+
+    var all: [DocumentCompanion] { Array(companions.values) }
 
     func flushAll() async {
         for companion in companions.values {
@@ -49,7 +52,7 @@ private struct CompanionFileModifier: ViewModifier {
     let session: PresentationSession
     let fileURL: URL?
     @Environment(\.scenePhase) private var scenePhase
-    /// Provided on the Mac only; iPadOS saves when the app leaves the foreground.
+    /// The Mac saves these before quitting; iPadOS saves when the app leaves the foreground.
     @Environment(OpenCompanions.self) private var openCompanions: OpenCompanions?
     #if os(macOS)
     /// A reference, not a value: storing the window must not redraw the document window.
@@ -77,6 +80,20 @@ private struct CompanionFileModifier: ViewModifier {
             // The navigator is a per-document setting like in the old app (SET-02, LAY-06).
             .onChange(of: session.isNavigatorDisplayed) { _, isDisplayed in
                 companion.updateSettings { $0.isNavigatorDisplayed = isDisplayed }
+            }
+            // So are the pointer's display state and appearance (PTR-07).
+            .onChange(of: session.pointer.isShown) { _, isShown in
+                companion.updateSettings { $0.isPointerDisplayed = isShown }
+            }
+            .onChange(of: session.pointer.appearance) { _, appearance in
+                companion.updateSettings { $0.pointerAppearance = appearance }
+            }
+            // Stored only once changed, so the PDF's keywords keep applying until then (NOTES-03).
+            .onChange(of: session.notesDisplay) { _, display in
+                companion.updateSettings {
+                    $0.notesMode = display.mode
+                    $0.notesPosition = display.position
+                }
             }
             .alert(
                 Text("Use Data from a Missing PDF?"),
@@ -150,6 +167,13 @@ private struct CompanionFileModifier: ViewModifier {
         if let isNavigatorDisplayed = settings.isNavigatorDisplayed {
             session.isNavigatorDisplayed = isNavigatorDisplayed
         }
+        if let isPointerDisplayed = settings.isPointerDisplayed {
+            session.pointer.isShown = isPointerDisplayed
+        }
+        if let pointerAppearance = settings.pointerAppearance {
+            session.pointer.appearance = pointerAppearance
+        }
+        session.applyStoredNotesDisplay(mode: settings.notesMode, position: settings.notesPosition)
     }
 }
 

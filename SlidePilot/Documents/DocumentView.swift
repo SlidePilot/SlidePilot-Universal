@@ -39,7 +39,10 @@ struct DocumentView: View {
         }
             .shrinksOnMemoryWarning(session)
             .companionFile(session, fileURL: fileURL)
+            // "Save drawings" and the stored drawings (DRAW-06, DRAW-07).
+            .savedDrawings(session)
             .notesFileTransfer(session, fileURL: fileURL)
+            .drawingsExport(session, fileURL: fileURL)
             // Videos and run: links next to the PDF (NAV-06, NAV-07).
             .linkedFiles(session, fileURL: fileURL)
             // The presentation surfaces find the session in the registry (DOC-04).
@@ -90,12 +93,15 @@ private struct PresenterChrome: ViewModifier {
         content
             // Layout changes are locked in draw mode (DRAW-05).
             .presenterLayoutControls(session.layout, isLocked: session.drawing.isActive)
+            .notesModeControls(session)
             .drawingControls(session)
             .presenterTimerControls(session)
             .presenterNavigation(session)
             .notesEditingControls(session.notes)
             // Black and white curtain and its warning (CUR-01, CUR-02).
             .presenterCurtain(session)
+            // Show Pointer and its appearance (PTR-01, PTR-02).
+            .pointerControls(session)
             #if os(iOS)
             // How to present on a second screen (#82); the Mac needs no hint.
             .externalDisplayHint()

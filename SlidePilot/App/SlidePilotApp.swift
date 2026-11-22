@@ -54,6 +54,7 @@ struct SlidePilotApp: App {
             ModeratorCommands()
             NotesFormatCommands()
             NotesFileCommands()
+            DrawingsExportCommands()
             RemoteControlCommands()
         }
 
@@ -87,6 +88,7 @@ struct SlidePilotApp: App {
             SettingsView()
                 .environment(settings)
                 .environment(remote)
+                .environment(appDelegate.companions)
         }
         #else
         // The external display: a UIKit scene (ExternalDisplayScene.swift), offered by the
@@ -96,6 +98,7 @@ struct SlidePilotApp: App {
             DocumentView(document: file.document, fileURL: file.fileURL)
                 .environment(registry)
                 .environment(appDelegate.externalDisplays)
+                .environment(appDelegate.companions)
                 .environment(settings)
                 .environment(remote)
         }
@@ -108,21 +111,8 @@ struct SlidePilotApp: App {
             LayoutCommands()
             NotesFormatCommands()
             NotesFileCommands()
+            DrawingsExportCommands()
             RemoteControlCommands()
-        }
-
-        // The document browser offers remote mode next to opening a presentation (REM-07).
-        DocumentGroupLaunchScene {
-            ControlAnotherDeviceButton()
-        } background: {
-            Rectangle().fill(Color.accentColor.gradient)
-        }
-
-        // Remote mode: controls a presentation on another device (REM-07, ADR 0015).
-        WindowGroup(Text("Remote Control"), id: RemoteControlScene.id) {
-            RemoteControlView()
-                .environment(remote)
-                .environment(settings)
         }
 
         #endif

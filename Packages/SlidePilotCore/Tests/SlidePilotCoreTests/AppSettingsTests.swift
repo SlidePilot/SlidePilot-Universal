@@ -10,12 +10,14 @@ struct AppSettingsTests {
         let settings = AppSettings(store: InMemorySettingsStore())
         #expect(!settings.keepsDisplayAwake)
         #expect(!settings.crossfadesSlides)
+        #expect(!settings.savesDrawings)
     }
 
     // The old app's keys keep their meaning.
     @Test func usesTheOldKeys() {
         #expect(AppSettings.Key.keepsDisplayAwake == "isSleepDisabled")
         #expect(AppSettings.Key.crossfadesSlides == "crossfadeSlides")
+        #expect(AppSettings.Key.savesDrawings == "saveDrawings")
     }
 
     @Test func readsStoredValues() {
@@ -116,5 +118,14 @@ struct AppSettingsTests {
         settings.crossfadesSlides = true
         #expect(defaults.bool(forKey: "crossfadeSlides"))
         #expect(AppSettings(store: defaults).crossfadesSlides)
+    }
+
+    // DRAW-06: "Save drawings" is read from and written to the old key.
+    @Test func savesDrawingsUsesTheOldKey() {
+        let store = InMemorySettingsStore(values: ["saveDrawings": true])
+        let settings = AppSettings(store: store)
+        #expect(settings.savesDrawings)
+        settings.savesDrawings = false
+        #expect(store.values["saveDrawings"] as? Bool == false)
     }
 }

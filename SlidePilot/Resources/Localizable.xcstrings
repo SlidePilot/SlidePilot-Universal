@@ -3,1388 +3,4449 @@
   "strings" : {
     "%@, stopped" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "%@, gestoppt" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%@, arrêté" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, gestoppt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, arrêté"
+          }
+        }
       }
     },
     "A PDF named “%@” with the same number of pages can no longer be found. You can use its stored data for this PDF." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ein PDF namens „%@“ mit derselben Seitenzahl wird nicht mehr gefunden. Du kannst seine gespeicherten Daten für dieses PDF verwenden." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un PDF nommé « %@ » avec le même nombre de pages est introuvable. Vous pouvez utiliser ses données enregistrées pour ce PDF." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein PDF namens „%@“ mit derselben Seitenzahl wird nicht mehr gefunden. Du kannst seine gespeicherten Daten für dieses PDF verwenden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un PDF nommé « %@ » avec le même nombre de pages est introuvable. Vous pouvez utiliser ses données enregistrées pour ce PDF."
+          }
+        }
       }
     },
-    "Black" : {
+    "Align Left" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Schwarz" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Noir" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linksbündig"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aligner à gauche"
+          }
+        }
+      }
+    },
+    "Align Right" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechtsbündig"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aligner à droite"
+          }
+        }
       }
     },
     "Allow Access" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff erlauben" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugriff erlauben"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser l’accès"
+          }
+        }
+      }
+    },
+    "Allow Access to Play Video…" : {
+      "comment" : "Button over a video on the current slide when the PDF's folder is not accessible",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugriff zum Abspielen erlauben …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser l’accès pour lire la vidéo…"
+          }
+        }
+      }
+    },
+    "Allow Access to the Folder?" : {
+      "comment" : "Title of the alert that asks for access to the PDF's folder (videos and run: links)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugriff auf den Ordner erlauben?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser l’accès au dossier ?"
+          }
+        }
       }
     },
     "Allow Access…" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff erlauben …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès…" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zugriff erlauben …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser l’accès…"
+          }
+        }
       }
     },
     "Allow SlidePilot to read the folder that contains “%@”." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erlaube SlidePilot, den Ordner mit „%@“ zu lesen." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autorisez SlidePilot à lire le dossier qui contient « %@ »." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube SlidePilot, den Ordner mit „%@“ zu lesen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez SlidePilot à lire le dossier qui contient « %@ »."
+          }
+        }
       }
     },
-    "Black Screen" : {
+    "Allow remote control" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Schwarzer Bildschirm" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran noir" } }
-      }
-    },
-    "Bottom Left" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unten links" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En bas à gauche" } }
-      }
-    },
-    "Bottom Right" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unten rechts" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En bas à droite" } }
-      }
-    },
-    "Blue" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Blau" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Bleu" } }
-      }
-    },
-    "Cancel" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Abbrechen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Annuler" } }
-      }
-    },
-    "Canvas Background" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hintergrund der Zeichenfläche" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fond du canevas" } }
-      }
-    },
-    "Clear Canvas" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichenfläche leeren" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Effacer le canevas" } }
-      }
-    },
-    "Clear Drawings" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnungen löschen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Effacer les dessins" } }
-      }
-    },
-    "Choose a SlidePilot notes file in RTF format." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle eine SlidePilot-Notizdatei im RTF-Format." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez un fichier de notes SlidePilot au format RTF." } }
-      }
-    },
-    "Choose the folder that contains “%@”." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle den Ordner, der „%@“ enthält." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez le dossier qui contient « %@ »." } }
-      }
-    },
-    "Clock" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Uhr" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Horloge" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fernsteuerung erlauben"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser le contrôle à distance"
+          }
+        }
       }
     },
     "Arrangement" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Anordnung" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Agencement" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anordnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agencement"
+          }
+        }
+      }
+    },
+    "Bigger" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus grand"
+          }
+        }
+      }
+    },
+    "Black" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwarz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noir"
+          }
+        }
+      }
+    },
+    "Black Screen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schwarzer Bildschirm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran noir"
+          }
+        }
+      }
+    },
+    "Blue" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blau"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bleu"
+          }
+        }
+      }
+    },
+    "Bold" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fett"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gras"
+          }
+        }
+      }
+    },
+    "Bottom" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En bas"
+          }
+        }
+      }
+    },
+    "Bottom Left" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unten links"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En bas à gauche"
+          }
+        }
+      }
+    },
+    "Bottom Right" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unten rechts"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En bas à droite"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbrechen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler"
+          }
+        }
+      }
+    },
+    "Canvas Background" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hintergrund der Zeichenfläche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fond du canevas"
+          }
+        }
+      }
+    },
+    "Can’t Connect to “%@”" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Verbindung zu „%@“"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible de se connecter à « %@ »"
+          }
+        }
+      }
+    },
+    "Center" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zentriert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Centrer"
+          }
+        }
+      }
+    },
+    "Check that both devices are on the same network and SlidePilot is open on “%@”." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe, ob beide Geräte im selben Netzwerk sind und SlidePilot auf „%@“ geöffnet ist."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez que les deux appareils sont sur le même réseau et que SlidePilot est ouvert sur « %@ »."
+          }
+        }
+      }
+    },
+    "Check that the file is in the place the PDF expects, relative to the PDF." : {
+      "comment" : "Message when a run: link target is missing",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prüfe, ob die Datei dort liegt, wo das PDF sie erwartet (relativ zum PDF)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vérifiez que le fichier se trouve à l’emplacement attendu par le PDF, relativement au PDF."
+          }
+        }
+      }
+    },
+    "Choose a SlidePilot notes file in RTF format." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle eine SlidePilot-Notizdatei im RTF-Format."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez un fichier de notes SlidePilot au format RTF."
+          }
+        }
+      }
+    },
+    "Choose the folder that contains the PDF and its videos." : {
+      "comment" : "Message of the folder picker for the PDF's folder",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle den Ordner, der das PDF und seine Videos enthält."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez le dossier qui contient le PDF et ses vidéos."
+          }
+        }
+      }
+    },
+    "Choose the folder that contains “%@”." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle den Ordner, der „%@“ enthält."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez le dossier qui contient « %@ »."
+          }
+        }
+      }
+    },
+    "Circle" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kreis"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cercle"
+          }
+        }
+      }
+    },
+    "Clear Canvas" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichenfläche leeren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer le canevas"
+          }
+        }
+      }
+    },
+    "Clear Drawings" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnungen löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Effacer les dessins"
+          }
+        }
+      }
+    },
+    "Clock" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uhr"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horloge"
+          }
+        }
+      }
+    },
+    "Code: %@\n\nPair only if “%@” shows the same code." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code: %1$@\n\nKopple nur, wenn „%2$@“ denselben Code zeigt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Code : %1$@\n\nJumelez uniquement si « %2$@ » affiche le même code."
+          }
+        }
       }
     },
     "Color" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Farbe" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couleur" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Farbe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleur"
+          }
+        }
+      }
+    },
+    "Connect" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecter"
+          }
+        }
       }
     },
     "Connect a display, or start Screen Mirroring in Control Center." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Schließe einen Bildschirm an oder starte „Bildschirmsynchronisierung“ im Kontrollzentrum." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connectez un écran ou lancez « Recopie de l’écran » dans le centre de contrôle." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe einen Bildschirm an oder starte „Bildschirmsynchronisierung“ im Kontrollzentrum."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connectez un écran ou lancez « Recopie de l’écran » dans le centre de contrôle."
+          }
+        }
+      }
+    },
+    "Connect to %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit %@ verbinden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se connecter à %@"
+          }
+        }
       }
     },
     "Connected" : {
       "comment" : "Accessibility value of the external display button; status of a remote device",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbunden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connecté" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecté"
+          }
+        }
+      }
+    },
+    "Connecting…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbinden …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connexion…"
+          }
+        }
+      }
+    },
+    "Control Another Device…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anderes Gerät steuern …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contrôler un autre appareil…"
+          }
+        }
+      }
+    },
+    "Controls this device." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steuert dieses Gerät."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contrôle cet appareil."
+          }
+        }
       }
     },
     "Cover the presentation with a black screen" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Präsentation mit einem schwarzen Bildschirm verdecken" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couvrir la présentation d'un écran noir" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Präsentation mit einem schwarzen Bildschirm verdecken"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couvrir la présentation d'un écran noir"
+          }
+        }
       }
     },
     "Cover the presentation with a white screen" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Präsentation mit einem weißen Bildschirm verdecken" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couvrir la présentation d'un écran blanc" } }
-      }
-    },
-    "Current Slide" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle" } }
-      }
-    },
-    "Current slide, %lld of %lld" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie, %1$lld von %2$lld" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle, %1$lld sur %2$lld" } }
-      }
-    },
-    "Custom Color" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Eigene Farbe" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Couleur personnalisée" } }
-      }
-    },
-    "Don’t Import" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht importieren" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas importer" } }
-      }
-    },
-    "Don’t Use" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verwenden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ne pas utiliser" } }
-      }
-    },
-    "Edit Layout…" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Layout bearbeiten …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Modifier la disposition…" } }
-      }
-    },
-    "Draw" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dessiner" } }
-      }
-    },
-    "Draw on the current slide" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Auf der aktuellen Folie zeichnen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dessiner sur la diapositive actuelle" } }
-      }
-    },
-    "Drawing" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnung" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dessin" } }
-      }
-    },
-    "Drawing Canvas" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichenfläche" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Canevas de dessin" } }
-      }
-    },
-    "End of presentation" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ende der Präsentation" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fin de la présentation" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Präsentation mit einem weißen Bildschirm verdecken"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couvrir la présentation d'un écran blanc"
+          }
+        }
       }
     },
     "Crossfade slides" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien überblenden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fondu entre les diapositives" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folien überblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fondu entre les diapositives"
+          }
+        }
+      }
+    },
+    "Current Slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelle Folie"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive actuelle"
+          }
+        }
+      }
+    },
+    "Current Slide and Notes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelle Folie und Notizen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive actuelle et notes"
+          }
+        }
+      }
+    },
+    "Current and Next Slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelle und nächste Folie"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive actuelle et suivante"
+          }
+        }
+      }
+    },
+    "Current slide, %lld of %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelle Folie, %1$lld von %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive actuelle, %1$lld sur %2$lld"
+          }
+        }
+      }
+    },
+    "Cursor" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cursor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Curseur"
+          }
+        }
+      }
+    },
+    "Curtain" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorhang"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rideau"
+          }
+        }
+      }
+    },
+    "Custom Color" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Farbe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleur personnalisée"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        }
+      }
+    },
+    "Delete Drawings" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnungen löschen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les dessins"
+          }
+        }
+      }
+    },
+    "Delete Not Found…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht gefundene löschen …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les introuvables…"
+          }
+        }
+      }
+    },
+    "Delete all drawings?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Zeichnungen löschen?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer tous les dessins ?"
+          }
+        }
+      }
+    },
+    "Delete the Data of %lld PDFs Not Found?" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete the Data of %lld PDF Not Found?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Delete the Data of %lld PDFs Not Found?"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Daten von %lld nicht gefundenen PDF löschen?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Daten von %lld nicht gefundenen PDFs löschen?"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Supprimer les données de %lld PDF introuvable ?"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Supprimer les données de %lld PDF introuvables ?"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Delete the Data of the Selected PDFs?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daten der ausgewählten PDFs löschen?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les données des PDF sélectionnés ?"
+          }
+        }
+      }
+    },
+    "Delete the Data of “%@”?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daten von „%@“ löschen?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer les données de « %@ » ?"
+          }
+        }
+      }
+    },
+    "Delete…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Löschen …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer…"
+          }
+        }
+      }
+    },
+    "Devices you pair with appear here." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekoppelte Geräte erscheinen hier."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les appareils que vous jumelez apparaissent ici."
+          }
+        }
+      }
+    },
+    "Disconnect" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trennen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecter"
+          }
+        }
+      }
+    },
+    "Disconnect %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ trennen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecter %@"
+          }
+        }
+      }
+    },
+    "Disconnect “%@”?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ trennen?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecter « %@ » ?"
+          }
+        }
+      }
+    },
+    "Disconnected from “%@”" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindung zu „%@“ getrennt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déconnecté de « %@ »"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fertig"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminé"
+          }
+        }
+      }
+    },
+    "Don’t Import" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht importieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne pas importer"
+          }
+        }
+      }
+    },
+    "Don’t Use" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht verwenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne pas utiliser"
+          }
+        }
+      }
+    },
+    "Dot" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Punkt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Point"
+          }
+        }
+      }
+    },
+    "Draw" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dessiner"
+          }
+        }
+      }
+    },
+    "Draw on the current slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf der aktuellen Folie zeichnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dessiner sur la diapositive actuelle"
+          }
+        }
+      }
+    },
+    "Drawing" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dessin"
+          }
+        }
+      }
+    },
+    "Drawing Canvas" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichenfläche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Canevas de dessin"
+          }
+        }
+      }
+    },
+    "Drawings stay on their slides and are stored with the PDF. Turning this off deletes all drawings." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnungen bleiben auf ihren Folien und werden zum PDF gespeichert. Beim Ausschalten werden alle Zeichnungen gelöscht."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les dessins restent sur leurs diapositives et sont enregistrés avec le PDF. La désactivation supprime tous les dessins."
+          }
+        }
+      }
+    },
+    "DrawingsFileNameSuffix" : {
+      "comment" : "Suffix of the suggested drawings file name: <pdf>-Drawings.pdf",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drawings"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnungen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dessins"
+          }
+        }
+      }
+    },
+    "Edit Layout…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Layout bearbeiten …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier la disposition…"
+          }
+        }
+      }
+    },
+    "End of presentation" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ende der Präsentation"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fin de la présentation"
+          }
+        }
+      }
+    },
+    "Export Drawings…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnungen exportieren …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter les dessins…"
+          }
+        }
       }
     },
     "Export Notes…" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen exportieren …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Exporter les notes…" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen exportieren …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter les notes…"
+          }
+        }
+      }
+    },
+    "External Display" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Externer Bildschirm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran externe"
+          }
+        }
+      }
+    },
+    "Finish editing the notes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bearbeiten der Notizen beenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminer la modification des notes"
+          }
+        }
+      }
+    },
+    "Font" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schrift"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Police"
+          }
+        }
+      }
+    },
+    "Format" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Format"
+          }
+        }
       }
     },
     "General" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Allgemein" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Général" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allgemein"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Général"
+          }
+        }
       }
     },
-    "Hidden" : {
+    "Go Back" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ausgeblendet" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Masqué" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zurück"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revenir"
+          }
+        }
+      }
+    },
+    "Go back to the previously viewed slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zur zuletzt gezeigten Folie zurückkehren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revenir à la dernière diapositive affichée"
+          }
+        }
+      }
+    },
+    "Go to slide %lld" : {
+      "comment" : "VoiceOver action of an internal link on a slide",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu Folie %lld wechseln"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aller à la diapositive %lld"
+          }
+        }
       }
     },
     "Green" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Grün" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vert" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grün"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vert"
+          }
+        }
+      }
+    },
+    "Hand" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hand"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Main"
+          }
+        }
+      }
+    },
+    "Hidden" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ausgeblendet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masqué"
+          }
+        }
+      }
+    },
+    "Hide Navigator" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navigator ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer le navigateur"
+          }
+        }
+      }
+    },
+    "Hours" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heures"
+          }
+        }
       }
     },
     "Import" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Importieren" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer"
+          }
+        }
       }
     },
     "Import Notes for This PDF?" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen für dieses PDF importieren?" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer les notes de ce PDF ?" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen für dieses PDF importieren?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer les notes de ce PDF ?"
+          }
+        }
       }
     },
     "Import Notes…" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen importieren …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Importer des notes…" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen importieren …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer des notes…"
+          }
+        }
+      }
+    },
+    "Import and Export" : {
+      "comment" : "iPad toolbar menu with Import Notes, Export Notes and Export Drawings",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importieren und Exportieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer et exporter"
+          }
+        }
+      }
+    },
+    "Individual" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Individuell"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Individuel"
+          }
+        }
+      }
+    },
+    "Italic" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kursiv"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Italique"
+          }
+        }
+      }
+    },
+    "Keep SlidePilot open on “%@”." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lass SlidePilot auf „%@“ geöffnet."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gardez SlidePilot ouvert sur « %@ »."
+          }
+        }
       }
     },
     "Keep display awake" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bildschirm wach halten" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Garder l’écran allumé" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirm wach halten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garder l’écran allumé"
+          }
+        }
       }
     },
     "Large Left" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Groß links" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Grande à gauche" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groß links"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grande à gauche"
+          }
+        }
       }
     },
     "Large Right" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Groß rechts" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Grande à droite" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groß rechts"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grande à droite"
+          }
+        }
+      }
+    },
+    "Last opened %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zuletzt geöffnet am %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dernière ouverture le %@"
+          }
+        }
       }
     },
     "Layout" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Layout" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Disposition" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Layout"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disposition"
+          }
+        }
       }
     },
     "Left" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Links" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gauche" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gauche"
+          }
+        }
       }
     },
-    "Normal" : {
+    "Links in a PDF can open documents and videos, but not programs or scripts." : {
+      "comment" : "Message when a run: link points to a program or script",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links in einem PDF können Dokumente und Videos öffnen, aber keine Programme oder Skripte."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les liens d’un PDF peuvent ouvrir des documents et des vidéos, mais pas des programmes ni des scripts."
+          }
+        }
       }
     },
-    "Padding.None" : {
+    "List…" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "None" } },
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kein" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune" } }
-      }
-    },
-    "Padding.Normal" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normale" } }
-      }
-    },
-    "Padding.Small" : {
-      "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Small" } },
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Klein" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Petite" } }
-      }
-    },
-    "Right" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Rechts" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Droite" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liste…"
+          }
+        }
       }
     },
     "Magenta" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Magenta" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Magenta" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magenta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magenta"
+          }
+        }
       }
     },
-    "Orange" : {
+    "Minutes" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Orange" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Orange" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minuten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutes"
+          }
+        }
       }
     },
-    "Remove all strokes from the slide" : {
+    "Moderator" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Alle Striche von der Folie entfernen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer tous les traits de la diapositive" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moderator"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moderator"
+          }
+        }
+      }
+    },
+    "Nearby Devices" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geräte in der Nähe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils à proximité"
+          }
+        }
+      }
+    },
+    "Next Slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächste Folie"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive suivante"
+          }
+        }
+      }
+    },
+    "Next slide, %lld of %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächste Folie, %1$lld von %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive suivante, %1$lld sur %2$lld"
+          }
+        }
+      }
+    },
+    "Next slide: end of presentation" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächste Folie: Ende der Präsentation"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive suivante : fin de la présentation"
+          }
+        }
+      }
+    },
+    "No Notes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine Notizen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune note"
+          }
+        }
+      }
+    },
+    "No Open Presentations" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine geöffneten Präsentationen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune présentation ouverte"
+          }
+        }
+      }
+    },
+    "No Stored Data" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine gespeicherten Daten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune donnée enregistrée"
+          }
+        }
+      }
+    },
+    "No Trusted Devices" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine vertrauenswürdigen Geräte"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun appareil de confiance"
+          }
+        }
+      }
+    },
+    "None" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune"
+          }
+        }
+      }
+    },
+    "Normal" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
+          }
+        }
+      }
+    },
+    "Not Now" : {
+      "comment" : "Alert button that declines folder access for now",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht jetzt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus tard"
+          }
+        }
+      }
+    },
+    "Not connected" : {
+      "comment" : "Accessibility value of the external display button",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht verbunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non connecté"
+          }
+        }
+      }
+    },
+    "Not paired" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht gekoppelt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non jumelé"
+          }
+        }
+      }
+    },
+    "Notes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes"
+          }
+        }
+      }
+    },
+    "Notes Can’t Be Shown" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen können nicht angezeigt werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’afficher les notes"
+          }
+        }
+      }
+    },
+    "Notes Mode" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizmodus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode des notes"
+          }
+        }
+      }
+    },
+    "Notes and settings of the PDFs you open appear here." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen und Einstellungen der PDFs, die du öffnest, erscheinen hier."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes et réglages des PDF que vous ouvrez apparaissent ici."
+          }
+        }
+      }
+    },
+    "Notes and settings of your PDFs stay stored when a PDF is deleted. Review and delete them here." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen und Einstellungen deiner PDFs bleiben gespeichert, wenn ein PDF gelöscht wird. Hier kannst du sie ansehen und löschen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes et réglages de vos PDF restent enregistrés lorsqu’un PDF est supprimé. Consultez-les et supprimez-les ici."
+          }
+        }
+      }
+    },
+    "Notes slide, %lld of %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizfolie, %1$lld von %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive de notes, %1$lld sur %2$lld"
+          }
+        }
       }
     },
     "NotesFileNameSuffix" : {
       "comment" : "Suffix of the suggested notes file name: <pdf>-Notes.rtf",
       "extractionState" : "manual",
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Notes" } },
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Notes" } }
-      }
-    },
-    "Replace Notes" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen ersetzen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remplacer les notes" } }
-      }
-    },
-    "Replace the Notes of This PDF?" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen dieses PDFs ersetzen?" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remplacer les notes de ce PDF ?" } }
-      }
-    },
-    "Settings" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages" } }
-      }
-    },
-    "Settings…" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Einstellungen …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réglages…" } }
-      }
-    },
-    "Size of the clock and timer above the slides." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Größe von Uhr und Timer über den Folien." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Taille de l’horloge et du minuteur au-dessus des diapositives." } }
-      }
-    },
-    "Slide" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folie" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive" } }
-      }
-    },
-    "Slide padding" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folienabstand" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Marge des diapositives" } }
-      }
-    },
-    "SlidePilot couldn’t convert the notes to RTF." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot konnte die Notizen nicht in RTF umwandeln." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot n’a pas pu convertir les notes en RTF." } }
-      }
-    },
-    "SlidePilot found the notes file “%@” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder. Import Notes… in the File menu stays available." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot hat neben diesem PDF die Notizdatei „%@“ gefunden. Erlaube SlidePilot, den Ordner des PDFs zu lesen, um sie zu importieren. Das ist nur einmal pro Ordner nötig. „Notizen importieren …“ im Menü „Ablage“ bleibt verfügbar." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a trouvé le fichier de notes « %@ » à côté de ce PDF. Pour l’importer, autorisez SlidePilot à lire le dossier du PDF. Cela n’est nécessaire qu’une fois par dossier. « Importer des notes… » reste disponible dans le menu Fichier." } }
-      }
-    },
-    "Slides fade into each other on the presentation screen." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Folien gehen auf dem Präsentationsbildschirm ineinander über." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les diapositives se fondent les unes dans les autres sur l’écran de présentation." } }
-      }
-    },
-    "Small" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Klein" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Petit" } }
-      }
-    },
-    "Space around each slide in the presenter view." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Abstand um jede Folie in der Moderatoransicht." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Espace autour de chaque diapositive dans la vue présentateur." } }
-      }
-    },
-    "Stop drawing" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeichnen beenden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Arrêter de dessiner" } }
-      }
-    },
-    "The display does not dim or sleep while SlidePilot is open." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Der Bildschirm wird nicht abgedunkelt und schläft nicht ein, solange SlidePilot geöffnet ist." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "L’écran ne s’assombrit pas et ne se met pas en veille tant que SlidePilot est ouvert." } }
-      }
-    },
-    "External Display" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Externer Bildschirm" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran externe" } }
-      }
-    },
-    "Go Back" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zurück" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Revenir" } }
-      }
-    },
-    "Go back to the previously viewed slide" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zur zuletzt gezeigten Folie zurückkehren" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Revenir à la dernière diapositive affichée" } }
-      }
-    },
-    "Go to slide %lld" : {
-      "comment" : "VoiceOver action of an internal link on a slide",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zu Folie %lld wechseln" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aller à la diapositive %lld" } }
-      }
-    },
-    "Hide Navigator" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Navigator ausblenden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Masquer le navigateur" } }
-      }
-    },
-    "Hours" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Stunden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Heures" } }
-      }
-    },
-    "Minutes" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Minuten" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Minutes" } }
-      }
-    },
-    "Moderator" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Moderator" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Moderator" } }
-      }
-    },
-    "Next Slide" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante" } }
-      }
-    },
-    "Next slide, %lld of %lld" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie, %1$lld von %2$lld" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante, %1$lld sur %2$lld" } }
-      }
-    },
-    "Next slide: end of presentation" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nächste Folie: Ende der Präsentation" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive suivante : fin de la présentation" } }
-      }
-    },
-    "Align Left" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Linksbündig" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aligner à gauche" } }
-      }
-    },
-    "Align Right" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Rechtsbündig" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aligner à droite" } }
-      }
-    },
-    "Bigger" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Größer" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus grand" } }
-      }
-    },
-    "Bold" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fett" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gras" } }
-      }
-    },
-    "Center" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zentriert" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Centrer" } }
-      }
-    },
-    "Done" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fertig" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Terminé" } }
-      }
-    },
-    "Finish editing the notes" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bearbeiten der Notizen beenden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Terminer la modification des notes" } }
-      }
-    },
-    "Font" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Schrift" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Police" } }
-      }
-    },
-    "Format" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Format" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Format" } }
-      }
-    },
-    "Italic" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kursiv" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Italique" } }
-      }
-    },
-    "List…" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Liste …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Liste…" } }
-      }
-    },
-    "Notes" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Notes" } }
-      }
-    },
-    "Notes Can’t Be Shown" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen können nicht angezeigt werden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible d’afficher les notes" } }
-      }
-    },
-    "Smaller" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Kleiner" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus petit" } }
-      }
-    },
-    "Spacing…" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Abstand …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Espacement…" } }
-      }
-    },
-    "Text" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Text" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Texte" } }
-      }
-    },
-    "The imported notes replace the current notes of every slide." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die importierten Notizen ersetzen die aktuellen Notizen aller Folien." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les notes importées remplacent les notes actuelles de toutes les diapositives." } }
-      }
-    },
-    "The Notes Couldn’t Be Exported" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Notizen konnten nicht exportiert werden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible d’exporter les notes" } }
-      }
-    },
-    "The Notes Couldn’t Be Imported" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Notizen konnten nicht importiert werden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible d’importer les notes" } }
-      }
-    },
-    "These notes were saved by a newer version of SlidePilot." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Diese Notizen wurden mit einer neueren Version von SlidePilot gesichert." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ces notes ont été enregistrées avec une version plus récente de SlidePilot." } }
-      }
-    },
-    "Time display" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeitanzeige" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Affichage de l’heure" } }
-      }
-    },
-    "Top Left" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Oben links" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En haut à gauche" } }
-      }
-    },
-    "Top Right" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Oben rechts" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "En haut à droite" } }
-      }
-    },
-    "Underline" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Unterstrichen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Souligné" } }
-      }
-    },
-    "Page Number" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Seitenzahl" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Numéro de page" } }
-      }
-    },
-    "Overtime %@" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Überzogen %@" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Dépassement %@" } }
-      }
-    },
-    "Not connected" : {
-      "comment" : "Accessibility value of the external display button",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht verbunden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Non connecté" } }
-      }
-    },
-    "Open link %@" : {
-      "comment" : "VoiceOver action of a web or mail link on a slide; the argument is the web host or the mail address",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Link %@ öffnen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir le lien %@" } }
-      }
-    },
-    "Present on a second screen" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Auf einem zweiten Bildschirm präsentieren" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présenter sur un second écran" } }
-      }
-    },
-    "Presentation" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présentation" } }
-      }
-    },
-    "Presentation, slide %lld of %lld" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation, Folie %1$lld von %2$lld" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présentation, diapositive %1$lld sur %2$lld" } }
-      }
-    },
-    "Preview Next Slide" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vorschau nächste Folie" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aperçu de la diapositive suivante" } }
-      }
-    },
-    "Previous Slide" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vorherige Folie" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive précédente" } }
-      }
-    },
-    "Ready to present" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bereit zum Präsentieren" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Prêt à présenter" } }
-      }
-    },
-    "Reset Time" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeit zurücksetzen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Réinitialiser le temps" } }
-      }
-    },
-    "Screen is hidden" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Bildschirm ist verdeckt" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "L'écran est couvert" } }
-      }
-    },
-    "Seconds" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Sekunden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Secondes" } }
-      }
-    },
-    "Set" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Stellen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Régler" } }
-      }
-    },
-    "Set Timer" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Timer stellen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Régler le minuteur" } }
-      }
-    },
-    "Set Timer…" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Timer stellen …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Régler le minuteur…" } }
-      }
-    },
-    "Separator" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Trenner" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Séparateur" } }
-      }
-    },
-    "Show Current Slide" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie anzeigen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher la diapositive courante" } }
-      }
-    },
-    "Show Navigator" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Navigator anzeigen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher le navigateur" } }
-      }
-    },
-    "Show Notes" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Notizen anzeigen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher les notes" } }
-      }
-    },
-    "Show the presentation in full screen" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation im Vollbildmodus zeigen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher la présentation en plein écran" } }
-      }
-    },
-    "Single Slide" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Eine Folie" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Une diapositive" } }
-      }
-    },
-    "Slide %lld" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folie %lld" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive %lld" } }
-      }
-    },
-    "Slide Navigator" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folien-Navigator" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Navigateur de diapositives" } }
-      }
-    },
-    "Start Presentation" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Präsentation starten" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Démarrer la présentation" } }
-      }
-    },
-    "Start Time" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeit starten" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Démarrer le temps" } }
-      }
-    },
-    "Start/Stop Time" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeit starten/stoppen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Démarrer/arrêter le temps" } }
-      }
-    },
-    "Stop Time" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zeit stoppen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Arrêter le temps" } }
-      }
-    },
-    "Stopwatch" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Stoppuhr" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Chronomètre" } }
-      }
-    },
-    "Swipe up or down to resize the slides" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nach oben oder unten wischen, um die Größe der Folien zu ändern" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Balayez vers le haut ou le bas pour redimensionner les diapositives" } }
-      }
-    },
-    "The document “%@” could not be opened." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das Dokument „%@“ konnte nicht geöffnet werden." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le document « %@ » n’a pas pu être ouvert." } }
-      }
-    },
-    "The document could not be opened." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das Dokument konnte nicht geöffnet werden." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le document n’a pas pu être ouvert." } }
-      }
-    },
-    "The file is damaged or is not a PDF document." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Datei ist beschädigt oder kein PDF-Dokument." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le fichier est endommagé ou n’est pas un document PDF." } }
-      }
-    },
-    "The PDF does not contain any pages." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das PDF enthält keine Seiten." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le PDF ne contient aucune page." } }
-      }
-    },
-    "The PDF is protected with a password. Remove the password and open it again." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das PDF ist mit einem Passwort geschützt. Entferne das Passwort und öffne es erneut." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le PDF est protégé par un mot de passe. Supprimez le mot de passe et ouvrez-le à nouveau." } }
-      }
-    },
-    "Timer" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Timer" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Minuteur" } }
-      }
-    },
-    "The presentation is shown on the external display." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Präsentation wird auf dem externen Bildschirm gezeigt." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "La présentation est affichée sur l’écran externe." } }
-      }
-    },
-    "Three Slides, Large Left" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Drei Folien, groß links" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Trois diapositives, grande à gauche" } }
-      }
-    },
-    "Three Slides, Large Right" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Drei Folien, groß rechts" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Trois diapositives, grande à droite" } }
-      }
-    },
-    "Turn Off Timer" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Timer ausschalten" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactiver le minuteur" } }
-      }
-    },
-    "Two Slides" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zwei Folien" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Deux diapositives" } }
-      }
-    },
-    "Use Data" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten verwenden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Utiliser les données" } }
-      }
-    },
-    "Use Data from a Missing PDF?" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Daten eines fehlenden PDFs verwenden?" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Utiliser les données d’un PDF introuvable ?" } }
-      }
-    },
-    "White" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Weiß" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Blanc" } }
-      }
-    },
-    "White Canvas" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Weiße Zeichenfläche" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Canevas blanc" } }
-      }
-    },
-    "White Screen" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Weißer Bildschirm" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Écran blanc" } }
-      }
-    },
-    "Remote" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Remote" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remote" } }
-      }
-    },
-    "Pair" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Koppeln" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumeler" } }
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notes"
+          }
+        }
       }
     },
     "OK" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "OK" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "OK" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
       }
     },
-    "Code: %@\n\nPair only if “%@” shows the same code." : {
+    "Off" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Code: %1$@\n\nKopple nur, wenn „%2$@“ denselben Code zeigt." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Code : %1$@\n\nJumelez uniquement si « %2$@ » affiche le même code." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivé"
+          }
+        }
       }
     },
-    "Allow remote control" : {
+    "On" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fernsteuerung erlauben" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser le contrôle à distance" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activé"
+          }
+        }
       }
     },
-    "Paired devices can find this device and control its presentations." : {
+    "Open Presentations" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gekoppelte Geräte können dieses Gerät finden und seine Präsentationen steuern." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les appareils jumelés peuvent trouver cet appareil et contrôler ses présentations." } }
-      }
-    },
-    "Nearby Devices" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Geräte in der Nähe" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Appareils à proximité" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geöffnete Präsentationen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Présentations ouvertes"
+          }
+        }
       }
     },
     "Open SlidePilot on another device on the same network and open Settings ▸ Remote there too. Then connect and check that both devices show the same code." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffne SlidePilot auf einem anderen Gerät im selben Netzwerk und dort ebenfalls Einstellungen ▸ Remote. Verbinde dann die Geräte und prüfe, ob beide denselben Code zeigen." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrez SlidePilot sur un autre appareil du même réseau, puis Réglages ▸ Remote sur celui-ci aussi. Connectez ensuite les appareils et vérifiez qu’ils affichent le même code." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne SlidePilot auf einem anderen Gerät im selben Netzwerk und dort ebenfalls Einstellungen ▸ Remote. Verbinde dann die Geräte und prüfe, ob beide denselben Code zeigen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez SlidePilot sur un autre appareil du même réseau, puis Réglages ▸ Remote sur celui-ci aussi. Connectez ensuite les appareils et vérifiez qu’ils affichent le même code."
+          }
+        }
       }
     },
-    "Trusted Devices…" : {
+    "Open SlidePilot on another device on the same network. “Allow remote control” must be on there." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vertrauenswürdige Geräte …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Appareils de confiance…" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne SlidePilot auf einem anderen Gerät im selben Netzwerk. Dort muss „Fernsteuerung erlauben“ eingeschaltet sein."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez SlidePilot sur un autre appareil du même réseau. « Autoriser le contrôle à distance » doit y être activé."
+          }
+        }
       }
     },
-    "Pair with “%@”?" : {
+    "Open a presentation on “%@”." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Mit „%@“ koppeln?" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumeler avec « %@ » ?" } }
-      }
-    },
-    "The pairing was cancelled. To pair, open Settings ▸ Remote on both devices and confirm the code on both." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Das Koppeln wurde abgebrochen. Öffne zum Koppeln auf beiden Geräten Einstellungen ▸ Remote und bestätige den Code auf beiden." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le jumelage a été annulé. Pour jumeler, ouvrez Réglages ▸ Remote sur les deux appareils et confirmez le code sur chacun." } }
-      }
-    },
-    "Untitled" : {
-      "comment" : "Name of a document without a file name, e.g. in the remote's list of presentations.",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Ohne Titel" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Sans titre" } }
-      }
-    },
-    "Update SlidePilot on “%@” to the latest version." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktualisiere SlidePilot auf „%@“ auf die neueste Version." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Mettez à jour SlidePilot sur « %@ » vers la dernière version." } }
-      }
-    },
-    "Update SlidePilot on this device to the latest version." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktualisiere SlidePilot auf diesem Gerät auf die neueste Version." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Mettez à jour SlidePilot sur cet appareil vers la dernière version." } }
-      }
-    },
-    "The devices could not verify each other. Try again." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Geräte konnten sich nicht gegenseitig verifizieren. Versuche es erneut." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les appareils n’ont pas pu se vérifier mutuellement. Réessayez." } }
-      }
-    },
-    "Check that both devices are on the same network and SlidePilot is open on “%@”." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Prüfe, ob beide Geräte im selben Netzwerk sind und SlidePilot auf „%@“ geöffnet ist." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vérifiez que les deux appareils sont sur le même réseau et que SlidePilot est ouvert sur « %@ »." } }
-      }
-    },
-    "Connect" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbinden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connecter" } }
-      }
-    },
-    "Connect to %@" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Mit %@ verbinden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Se connecter à %@" } }
-      }
-    },
-    "Disconnect" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Trennen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Déconnecter" } }
-      }
-    },
-    "Disconnect %@" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "%@ trennen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Déconnecter %@" } }
-      }
-    },
-    "Pairing…" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wird gekoppelt …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumelage…" } }
-      }
-    },
-    "Trusted" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vertrauenswürdig" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "De confiance" } }
-      }
-    },
-    "No Trusted Devices" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine vertrauenswürdigen Geräte" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucun appareil de confiance" } }
-      }
-    },
-    "Devices you pair with appear here." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gekoppelte Geräte erscheinen hier." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les appareils que vous jumelez apparaissent ici." } }
-      }
-    },
-    "Trusted Devices" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vertrauenswürdige Geräte" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Appareils de confiance" } }
-      }
-    },
-    "Remove “%@”?" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ entfernen?" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer « %@ » ?" } }
-      }
-    },
-    "Remove" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Entfernen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer" } }
-      }
-    },
-    "Remove %@" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "%@ entfernen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Supprimer %@" } }
-      }
-    },
-    "“%@” has to be paired again before either device can control the other." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ muss erneut gekoppelt werden, bevor eines der Geräte das andere steuern kann." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » doit être de nouveau jumelé avant que l’un des appareils puisse contrôler l’autre." } }
-      }
-    },
-    "Paired %@" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Gekoppelt am %@" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumelé le %@" } }
-      }
-    },
-    "Searching for devices…" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Suche nach Geräten …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recherche d’appareils…" } }
-      }
-    },
-    "Pairing with “%@” Cancelled" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Koppeln mit „%@“ abgebrochen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumelage avec « %@ » annulé" } }
-      }
-    },
-    "Can’t Connect to “%@”" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Verbindung zu „%@“" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible de se connecter à « %@ »" } }
-      }
-    },
-    "Pairing with “%@” Failed" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Koppeln mit „%@“ fehlgeschlagen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Échec du jumelage avec « %@ »" } }
-      }
-    },
-    "Disconnect “%@”?" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ trennen?" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Déconnecter « %@ » ?" } }
-      }
-    },
-    "“%@” is also removed from the trusted devices and has to be paired again." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ wird auch aus den vertrauenswürdigen Geräten entfernt und muss erneut gekoppelt werden." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » est aussi retiré des appareils de confiance et doit être de nouveau jumelé." } }
-      }
-    },
-    "“%@” is not a SlidePilot notes file in RTF format." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ ist keine SlidePilot-Notizdatei im RTF-Format." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » n’est pas un fichier de notes SlidePilot au format RTF." } }
-      }
-    },
-    "Allow Access to Play Video…" : {
-      "comment" : "Button over a video on the current slide when the PDF's folder is not accessible",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff zum Abspielen erlauben …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès pour lire la vidéo…" } }
-      }
-    },
-    "Allow Access to the Folder?" : {
-      "comment" : "Title of the alert that asks for access to the PDF's folder (videos and run: links)",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Zugriff auf den Ordner erlauben?" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Autoriser l’accès au dossier ?" } }
-      }
-    },
-    "Check that the file is in the place the PDF expects, relative to the PDF." : {
-      "comment" : "Message when a run: link target is missing",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Prüfe, ob die Datei dort liegt, wo das PDF sie erwartet (relativ zum PDF)." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vérifiez que le fichier se trouve à l’emplacement attendu par le PDF, relativement au PDF." } }
-      }
-    },
-    "Choose the folder that contains the PDF and its videos." : {
-      "comment" : "Message of the folder picker for the PDF's folder",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle den Ordner, der das PDF und seine Videos enthält." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez le dossier qui contient le PDF et ses vidéos." } }
-      }
-    },
-    "Links in a PDF can open documents and videos, but not programs or scripts." : {
-      "comment" : "Message when a run: link points to a program or script",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Links in einem PDF können Dokumente und Videos öffnen, aber keine Programme oder Skripte." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les liens d’un PDF peuvent ouvrir des documents et des vidéos, mais pas des programmes ni des scripts." } }
-      }
-    },
-    "Not Now" : {
-      "comment" : "Alert button that declines folder access for now",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht jetzt" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Plus tard" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne eine Präsentation auf „%@“."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez une présentation sur « %@ »."
+          }
+        }
       }
     },
     "Open file %@" : {
       "comment" : "VoiceOver action of a run: link on a slide; the argument is the file name",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Datei %@ öffnen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrir le fichier %@" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datei %@ öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir le fichier %@"
+          }
+        }
+      }
+    },
+    "Open link %@" : {
+      "comment" : "VoiceOver action of a web or mail link on a slide; the argument is the web host or the mail address",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link %@ öffnen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrir le lien %@"
+          }
+        }
+      }
+    },
+    "Orange" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orange"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orange"
+          }
+        }
+      }
+    },
+    "Overtime %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überzogen %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dépassement %@"
+          }
+        }
+      }
+    },
+    "PDF not found" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF nicht gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF introuvable"
+          }
+        }
+      }
+    },
+    "Padding.None" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune"
+          }
+        }
+      }
+    },
+    "Padding.Normal" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normale"
+          }
+        }
+      }
+    },
+    "Padding.Small" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Small"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klein"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Petite"
+          }
+        }
+      }
+    },
+    "Page Number" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seitenzahl"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Numéro de page"
+          }
+        }
+      }
+    },
+    "Pair" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koppeln"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jumeler"
+          }
+        }
+      }
+    },
+    "Pair with “%@”?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit „%@“ koppeln?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jumeler avec « %@ » ?"
+          }
+        }
+      }
+    },
+    "Paired %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekoppelt am %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jumelé le %@"
+          }
+        }
+      }
+    },
+    "Paired devices can find this device and control its presentations." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekoppelte Geräte können dieses Gerät finden und seine Präsentationen steuern."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les appareils jumelés peuvent trouver cet appareil et contrôler ses présentations."
+          }
+        }
+      }
+    },
+    "Pairing with “%@” Cancelled" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koppeln mit „%@“ abgebrochen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jumelage avec « %@ » annulé"
+          }
+        }
+      }
+    },
+    "Pairing with “%@” Failed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koppeln mit „%@“ fehlgeschlagen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec du jumelage avec « %@ »"
+          }
+        }
+      }
+    },
+    "Pairing…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird gekoppelt …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jumelage…"
+          }
+        }
+      }
+    },
+    "Pairs with this device and controls it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Koppelt dieses Gerät und steuert es."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jumelle cet appareil et le contrôle."
+          }
+        }
+      }
+    },
+    "Pointer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeiger"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pointeur"
+          }
+        }
+      }
+    },
+    "Pointer Appearance" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aussehen des Zeigers"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apparence du pointeur"
+          }
+        }
+      }
+    },
+    "Present on a second screen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf einem zweiten Bildschirm präsentieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Présenter sur un second écran"
+          }
+        }
+      }
+    },
+    "Presentation" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Präsentation"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Présentation"
+          }
+        }
+      }
+    },
+    "Presentation, slide %lld of %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Präsentation, Folie %1$lld von %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Présentation, diapositive %1$lld sur %2$lld"
+          }
+        }
+      }
+    },
+    "Preview Next Slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschau nächste Folie"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aperçu de la diapositive suivante"
+          }
+        }
+      }
+    },
+    "Previous Slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorherige Folie"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive précédente"
+          }
+        }
+      }
+    },
+    "Ready to present" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereit zum Präsentieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prêt à présenter"
+          }
+        }
+      }
+    },
+    "Reconnecting…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbindung wird wiederhergestellt …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconnexion…"
+          }
+        }
+      }
+    },
+    "Remote" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remote"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remote"
+          }
+        }
+      }
+    },
+    "Remote Control" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fernsteuerung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contrôle à distance"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entfernen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer"
+          }
+        }
+      }
+    },
+    "Remove %@" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ entfernen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer %@"
+          }
+        }
+      }
+    },
+    "Remove all strokes from the slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle Striche von der Folie entfernen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer tous les traits de la diapositive"
+          }
+        }
+      }
+    },
+    "Remove “%@”?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ entfernen?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supprimer « %@ » ?"
+          }
+        }
+      }
+    },
+    "Replace Notes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen ersetzen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplacer les notes"
+          }
+        }
+      }
+    },
+    "Replace the Notes of This PDF?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen dieses PDFs ersetzen?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplacer les notes de ce PDF ?"
+          }
+        }
+      }
+    },
+    "Reset Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit zurücksetzen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réinitialiser le temps"
+          }
+        }
+      }
+    },
+    "Right" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechts"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Droite"
+          }
+        }
+      }
+    },
+    "Save drawings" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnungen speichern"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrer les dessins"
+          }
+        }
+      }
+    },
+    "Screen is hidden" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildschirm ist verdeckt"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'écran est couvert"
+          }
+        }
+      }
+    },
+    "Searching for Devices" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche nach Geräten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche d’appareils"
+          }
+        }
+      }
+    },
+    "Searching for devices…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suche nach Geräten …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche d’appareils…"
+          }
+        }
+      }
+    },
+    "Seconds" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sekunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secondes"
+          }
+        }
+      }
+    },
+    "Select a device running SlidePilot on the same network. To pair a new device, open Settings ▸ Remote on it first, then check that both devices show the same code." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle ein Gerät im selben Netzwerk, auf dem SlidePilot läuft. Um ein neues Gerät zu koppeln, öffne dort zuerst Einstellungen ▸ Remote und prüfe dann, ob beide Geräte denselben Code zeigen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez un appareil du même réseau sur lequel SlidePilot est ouvert. Pour jumeler un nouvel appareil, ouvrez d’abord Réglages ▸ Remote sur celui-ci, puis vérifiez que les deux appareils affichent le même code."
+          }
+        }
+      }
+    },
+    "Separator" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trenner"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Séparateur"
+          }
+        }
+      }
+    },
+    "Set" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stellen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Régler"
+          }
+        }
+      }
+    },
+    "Set Timer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer stellen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Régler le minuteur"
+          }
+        }
+      }
+    },
+    "Set Timer…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer stellen …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Régler le minuteur…"
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglages"
+          }
+        }
+      }
+    },
+    "Settings…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einstellungen …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réglages…"
+          }
+        }
+      }
+    },
+    "Show Current Slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuelle Folie anzeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la diapositive courante"
+          }
+        }
+      }
+    },
+    "Show Navigator" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navigator anzeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher le navigateur"
+          }
+        }
+      }
+    },
+    "Show Notes" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen anzeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher les notes"
+          }
+        }
+      }
+    },
+    "Show Pointer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeiger anzeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher le pointeur"
+          }
+        }
+      }
+    },
+    "Show Progress" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortschritt anzeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la progression"
+          }
+        }
+      }
+    },
+    "Show the pointer on the presentation and choose its appearance" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeiger auf der Präsentation anzeigen und sein Aussehen wählen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher le pointeur sur la présentation et choisir son apparence"
+          }
+        }
+      }
+    },
+    "Show the presentation in full screen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Präsentation im Vollbildmodus zeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher la présentation en plein écran"
+          }
+        }
+      }
+    },
+    "Single Slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Folie"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une diapositive"
+          }
+        }
+      }
+    },
+    "Size of the clock and timer above the slides." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe von Uhr und Timer über den Folien."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille de l’horloge et du minuteur au-dessus des diapositives."
+          }
+        }
+      }
+    },
+    "Slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folie"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive"
+          }
+        }
+      }
+    },
+    "Slide %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folie %lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive %lld"
+          }
+        }
+      }
+    },
+    "Slide %lld of %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folie %1$lld von %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diapositive %1$lld sur %2$lld"
+          }
+        }
+      }
+    },
+    "Slide Navigator" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folien-Navigator"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navigateur de diapositives"
+          }
+        }
+      }
+    },
+    "Slide padding" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folienabstand"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marge des diapositives"
+          }
+        }
+      }
+    },
+    "SlidePilot couldn’t add the drawings to a copy of the PDF." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot konnte die Zeichnungen keiner Kopie des PDFs hinzufügen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot n’a pas pu ajouter les dessins à une copie du PDF."
+          }
+        }
+      }
+    },
+    "SlidePilot couldn’t convert the notes to RTF." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot konnte die Notizen nicht in RTF umwandeln."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot n’a pas pu convertir les notes en RTF."
+          }
+        }
       }
     },
     "SlidePilot does not open “%@”." : {
       "comment" : "Alert title when a run: link points to a program or script; the argument is the file name",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot öffnet „%@“ nicht." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot n’ouvre pas « %@ »." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot öffnet „%@“ nicht."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot n’ouvre pas « %@ »."
+          }
+        }
+      }
+    },
+    "SlidePilot found the notes file “%@” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder. Import Notes… in the File menu stays available." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot hat neben diesem PDF die Notizdatei „%@“ gefunden. Erlaube SlidePilot, den Ordner des PDFs zu lesen, um sie zu importieren. Das ist nur einmal pro Ordner nötig. „Notizen importieren …“ im Menü „Ablage“ bleibt verfügbar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot a trouvé le fichier de notes « %@ » à côté de ce PDF. Pour l’importer, autorisez SlidePilot à lire le dossier du PDF. Cela n’est nécessaire qu’une fois par dossier. « Importer des notes… » reste disponible dans le menu Fichier."
+          }
+        }
       }
     },
     "SlidePilot needs access to the folder of this PDF to play “%@”." : {
       "comment" : "Help tag of the button over a video; the argument is the video's file name",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot benötigt Zugriff auf den Ordner dieses PDFs, um „%@“ abzuspielen." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot a besoin d’accéder au dossier de ce PDF pour lire « %@ »." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot benötigt Zugriff auf den Ordner dieses PDFs, um „%@“ abzuspielen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot a besoin d’accéder au dossier de ce PDF pour lire « %@ »."
+          }
+        }
+      }
+    },
+    "Slides fade into each other on the presentation screen." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Folien gehen auf dem Präsentationsbildschirm ineinander über."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les diapositives se fondent les unes dans les autres sur l’écran de présentation."
+          }
+        }
+      }
+    },
+    "Small" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klein"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Petit"
+          }
+        }
+      }
+    },
+    "Smaller" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kleiner"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus petit"
+          }
+        }
+      }
+    },
+    "Space around each slide in the presenter view." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abstand um jede Folie in der Moderatoransicht."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espace autour de chaque diapositive dans la vue présentateur."
+          }
+        }
+      }
+    },
+    "Spacing…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abstand …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espacement…"
+          }
+        }
+      }
+    },
+    "Split" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF spalten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scinder le PDF"
+          }
+        }
+      }
+    },
+    "Split Position" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trennposition"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Position de séparation"
+          }
+        }
+      }
+    },
+    "Start Presentation" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Präsentation starten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarrer la présentation"
+          }
+        }
+      }
+    },
+    "Start Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit starten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarrer le temps"
+          }
+        }
+      }
+    },
+    "Start/Stop Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit starten/stoppen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Démarrer/arrêter le temps"
+          }
+        }
+      }
+    },
+    "Stop Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit stoppen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêter le temps"
+          }
+        }
+      }
+    },
+    "Stop drawing" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnen beenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêter de dessiner"
+          }
+        }
+      }
+    },
+    "Stopwatch" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stoppuhr"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chronomètre"
+          }
+        }
+      }
+    },
+    "Stored Document Data" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gespeicherte Dokumentdaten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Données des documents enregistrées"
+          }
+        }
+      }
+    },
+    "Stored Document Data…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gespeicherte Dokumentdaten …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Données des documents enregistrées…"
+          }
+        }
+      }
+    },
+    "Swipe up or down to resize the slides" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach oben oder unten wischen, um die Größe der Folien zu ändern"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balayez vers le haut ou le bas pour redimensionner les diapositives"
+          }
+        }
+      }
+    },
+    "Target Black" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zielscheibe schwarz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cible noire"
+          }
+        }
+      }
+    },
+    "Target Red" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zielscheibe rot"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cible rouge"
+          }
+        }
+      }
+    },
+    "Text" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texte"
+          }
+        }
+      }
+    },
+    "The Drawings Couldn’t Be Exported" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Zeichnungen konnten nicht exportiert werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’exporter les dessins"
+          }
+        }
+      }
+    },
+    "The Notes Couldn’t Be Exported" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Notizen konnten nicht exportiert werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’exporter les notes"
+          }
+        }
+      }
+    },
+    "The Notes Couldn’t Be Imported" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Notizen konnten nicht importiert werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’importer les notes"
+          }
+        }
+      }
+    },
+    "The PDF does not contain any pages." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das PDF enthält keine Seiten."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le PDF ne contient aucune page."
+          }
+        }
+      }
+    },
+    "The PDF is protected with a password. Remove the password and open it again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das PDF ist mit einem Passwort geschützt. Entferne das Passwort und öffne es erneut."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le PDF est protégé par un mot de passe. Supprimez le mot de passe et ouvrez-le à nouveau."
+          }
+        }
+      }
+    },
+    "The devices could not verify each other. Try again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Geräte konnten sich nicht gegenseitig verifizieren. Versuche es erneut."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les appareils n’ont pas pu se vérifier mutuellement. Réessayez."
+          }
+        }
+      }
+    },
+    "The display does not dim or sleep while SlidePilot is open." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Bildschirm wird nicht abgedunkelt und schläft nicht ein, solange SlidePilot geöffnet ist."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’écran ne s’assombrit pas et ne se met pas en veille tant que SlidePilot est ouvert."
+          }
+        }
+      }
+    },
+    "The document could not be opened." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Dokument konnte nicht geöffnet werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le document n’a pas pu être ouvert."
+          }
+        }
+      }
+    },
+    "The document “%@” could not be opened." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Dokument „%@“ konnte nicht geöffnet werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le document « %@ » n’a pas pu être ouvert."
+          }
+        }
+      }
+    },
+    "The file is damaged or is not a PDF document." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei ist beschädigt oder kein PDF-Dokument."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le fichier est endommagé ou n’est pas un document PDF."
+          }
+        }
       }
     },
     "The file “%@” could not be found." : {
       "comment" : "Alert title when a run: link target is missing; the argument is the file name",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Datei „%@“ wurde nicht gefunden." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Le fichier « %@ » est introuvable." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei „%@“ wurde nicht gefunden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le fichier « %@ » est introuvable."
+          }
+        }
+      }
+    },
+    "The imported notes replace the current notes of every slide." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die importierten Notizen ersetzen die aktuellen Notizen aller Folien."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes importées remplacent les notes actuelles de toutes les diapositives."
+          }
+        }
+      }
+    },
+    "The notes and settings that SlidePilot stores are deleted. This can’t be undone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die von SlidePilot gespeicherten Notizen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes et réglages enregistrés par SlidePilot sont supprimés. Cette action est irréversible."
+          }
+        }
+      }
+    },
+    "The pairing was cancelled. To pair, open Settings ▸ Remote on both devices and confirm the code on both." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Koppeln wurde abgebrochen. Öffne zum Koppeln auf beiden Geräten Einstellungen ▸ Remote und bestätige den Code auf beiden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le jumelage a été annulé. Pour jumeler, ouvrez Réglages ▸ Remote sur les deux appareils et confirmez le code sur chacun."
+          }
+        }
+      }
+    },
+    "The presentation is shown on the external display." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Präsentation wird auf dem externen Bildschirm gezeigt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La présentation est affichée sur l’écran externe."
+          }
+        }
+      }
+    },
+    "These PDFs may have been deleted, or they are on a drive that isn’t connected or in iCloud and not downloaded. Their notes and settings are deleted. This can’t be undone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese PDFs wurden vielleicht gelöscht oder liegen auf einem nicht verbundenen Laufwerk oder nicht geladen in iCloud. Ihre Notizen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ces PDF ont peut-être été supprimés, ou se trouvent sur un disque non connecté ou dans iCloud sans être téléchargés. Leurs notes et réglages sont supprimés. Cette action est irréversible."
+          }
+        }
+      }
+    },
+    "These notes were saved by a newer version of SlidePilot." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Notizen wurden mit einer neueren Version von SlidePilot gesichert."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ces notes ont été enregistrées avec une version plus récente de SlidePilot."
+          }
+        }
       }
     },
     "This PDF contains videos or links to files next to it. To play and open them, choose the folder that contains the PDF. SlidePilot remembers it for all PDFs in that folder." : {
       "comment" : "Message of the alert that asks for access to the PDF's folder",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Dieses PDF enthält Videos oder Links auf Dateien neben dem PDF. Wähle den Ordner mit dem PDF, damit SlidePilot sie abspielen und öffnen kann. SlidePilot merkt sich den Ordner für alle PDFs darin." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ce PDF contient des vidéos ou des liens vers des fichiers situés à côté. Pour les lire et les ouvrir, choisissez le dossier qui contient le PDF. SlidePilot s’en souvient pour tous les PDF de ce dossier." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses PDF enthält Videos oder Links auf Dateien neben dem PDF. Wähle den Ordner mit dem PDF, damit SlidePilot sie abspielen und öffnen kann. SlidePilot merkt sich den Ordner für alle PDFs darin."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce PDF contient des vidéos ou des liens vers des fichiers situés à côté. Pour les lire et les ouvrir, choisissez le dossier qui contient le PDF. SlidePilot s’en souvient pour tous les PDF de ce dossier."
+          }
+        }
+      }
+    },
+    "Three Slides, Large Left" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drei Folien, groß links"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trois diapositives, grande à gauche"
+          }
+        }
+      }
+    },
+    "Three Slides, Large Right" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drei Folien, groß rechts"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trois diapositives, grande à droite"
+          }
+        }
+      }
+    },
+    "Time display" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeitanzeige"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affichage de l’heure"
+          }
+        }
+      }
+    },
+    "Timer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minuteur"
+          }
+        }
+      }
+    },
+    "To keep notes, open the PDF and choose File ▸ Export Notes… before deleting its data." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um Notizen zu behalten, öffne das PDF und wähle Ablage ▸ Notizen exportieren …, bevor du seine Daten löschst."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour conserver les notes, ouvrez le PDF et choisissez Fichier ▸ Exporter les notes… avant de supprimer ses données."
+          }
+        }
+      }
+    },
+    "Top" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oben"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En haut"
+          }
+        }
+      }
+    },
+    "Top Left" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oben links"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En haut à gauche"
+          }
+        }
+      }
+    },
+    "Top Right" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oben rechts"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En haut à droite"
+          }
+        }
+      }
+    },
+    "Trusted" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vertrauenswürdig"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De confiance"
+          }
+        }
+      }
+    },
+    "Trusted Devices" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vertrauenswürdige Geräte"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils de confiance"
+          }
+        }
+      }
+    },
+    "Trusted Devices…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vertrauenswürdige Geräte …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils de confiance…"
+          }
+        }
+      }
+    },
+    "Turn Off Timer" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer ausschalten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactiver le minuteur"
+          }
+        }
+      }
+    },
+    "Turning off Save drawings deletes the drawings of all PDFs. This cannot be undone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn du „Zeichnungen speichern“ ausschaltest, werden die Zeichnungen aller PDFs gelöscht. Das kann nicht widerrufen werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactiver « Enregistrer les dessins » supprime les dessins de tous les PDF. Cette action est irréversible."
+          }
+        }
+      }
+    },
+    "Two Slides" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zwei Folien"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deux diapositives"
+          }
+        }
+      }
+    },
+    "Underline" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unterstrichen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Souligné"
+          }
+        }
+      }
+    },
+    "Untitled" : {
+      "comment" : "Name of a document without a file name, e.g. in the remote's list of presentations.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Titel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans titre"
+          }
+        }
+      }
+    },
+    "Update SlidePilot on this device to the latest version." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisiere SlidePilot auf diesem Gerät auf die neueste Version."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettez à jour SlidePilot sur cet appareil vers la dernière version."
+          }
+        }
+      }
+    },
+    "Update SlidePilot on “%@” to the latest version." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisiere SlidePilot auf „%@“ auf die neueste Version."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettez à jour SlidePilot sur « %@ » vers la dernière version."
+          }
+        }
+      }
+    },
+    "Use Data" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daten verwenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser les données"
+          }
+        }
+      }
+    },
+    "Use Data from a Missing PDF?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daten eines fehlenden PDFs verwenden?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser les données d’un PDF introuvable ?"
+          }
+        }
       }
     },
     "Video %@" : {
       "comment" : "VoiceOver label of a video player on a slide; the argument is the file name",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Video %@" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vidéo %@" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidéo %@"
+          }
+        }
       }
     },
     "Video “%@” not found" : {
       "comment" : "Shown over a video on the current slide when its file is missing; the argument is the file name",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Video „%@“ nicht gefunden" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vidéo « %@ » introuvable" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video „%@“ nicht gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vidéo « %@ » introuvable"
+          }
+        }
       }
     },
-    "Connecting…" : {
+    "White" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbinden …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connexion…" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiß"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blanc"
+          }
+        }
       }
     },
-    "Control Another Device…" : {
+    "White Canvas" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Anderes Gerät steuern …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Contrôler un autre appareil…" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiße Zeichenfläche"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Canevas blanc"
+          }
+        }
       }
     },
-    "Controls this device." : {
+    "White Screen" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Steuert dieses Gerät." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Contrôle cet appareil." } }
-      }
-    },
-    "Current Slide and Notes" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle Folie und Notizen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle et notes" } }
-      }
-    },
-    "Current and Next Slide" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aktuelle und nächste Folie" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive actuelle et suivante" } }
-      }
-    },
-    "Curtain" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Vorhang" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rideau" } }
-      }
-    },
-    "Disconnected from “%@”" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbindung zu „%@“ getrennt" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Déconnecté de « %@ »" } }
-      }
-    },
-    "Keep SlidePilot open on “%@”." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Lass SlidePilot auf „%@“ geöffnet." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Gardez SlidePilot ouvert sur « %@ »." } }
-      }
-    },
-    "No Notes" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine Notizen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune note" } }
-      }
-    },
-    "No Open Presentations" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Keine geöffneten Präsentationen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Aucune présentation ouverte" } }
-      }
-    },
-    "Not paired" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nicht gekoppelt" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Non jumelé" } }
-      }
-    },
-    "Off" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Aus" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Désactivé" } }
-      }
-    },
-    "Open Presentations" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Geöffnete Präsentationen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Présentations ouvertes" } }
-      }
-    },
-    "Open SlidePilot on another device on the same network. “Allow remote control” must be on there." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffne SlidePilot auf einem anderen Gerät im selben Netzwerk. Dort muss „Fernsteuerung erlauben“ eingeschaltet sein." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrez SlidePilot sur un autre appareil du même réseau. « Autoriser le contrôle à distance » doit y être activé." } }
-      }
-    },
-    "Open a presentation on “%@”." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffne eine Präsentation auf „%@“." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ouvrez une présentation sur « %@ »." } }
-      }
-    },
-    "Pairs with this device and controls it." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Koppelt dieses Gerät und steuert es." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jumelle cet appareil et le contrôle." } }
-      }
-    },
-    "Reconnecting…" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Verbindung wird wiederhergestellt …" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Reconnexion…" } }
-      }
-    },
-    "Remote Control" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fernsteuerung" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Contrôle à distance" } }
-      }
-    },
-    "Searching for Devices" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Suche nach Geräten" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recherche d’appareils" } }
-      }
-    },
-    "Select a device running SlidePilot on the same network. To pair a new device, open Settings ▸ Remote on it first, then check that both devices show the same code." : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle ein Gerät im selben Netzwerk, auf dem SlidePilot läuft. Um ein neues Gerät zu koppeln, öffne dort zuerst Einstellungen ▸ Remote und prüfe dann, ob beide Geräte denselben Code zeigen." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez un appareil du même réseau sur lequel SlidePilot est ouvert. Pour jumeler un nouvel appareil, ouvrez d’abord Réglages ▸ Remote sur celui-ci, puis vérifiez que les deux appareils affichent le même code." } }
-      }
-    },
-    "Show Progress" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Fortschritt anzeigen" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher la progression" } }
-      }
-    },
-    "Slide %lld of %lld" : {
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Folie %1$lld von %2$lld" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Diapositive %1$lld sur %2$lld" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weißer Bildschirm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écran blanc"
+          }
+        }
       }
     },
     "^[%lld slide](inflect: true)" : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "^[%lld Folie](inflect: true)" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "^[%lld diapositive](inflect: true)" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^[%lld Folie](inflect: true)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "^[%lld diapositive](inflect: true)"
+          }
+        }
       }
     },
     "“%@” does not trust this device any more. Select it again to pair." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ vertraut diesem Gerät nicht mehr. Wähle es erneut aus, um es zu koppeln." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » ne fait plus confiance à cet appareil. Sélectionnez-le à nouveau pour le jumeler." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ vertraut diesem Gerät nicht mehr. Wähle es erneut aus, um es zu koppeln."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » ne fait plus confiance à cet appareil. Sélectionnez-le à nouveau pour le jumeler."
+          }
+        }
+      }
+    },
+    "“%@” has to be paired again before either device can control the other." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ muss erneut gekoppelt werden, bevor eines der Geräte das andere steuern kann."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » doit être de nouveau jumelé avant que l’un des appareils puisse contrôler l’autre."
+          }
+        }
+      }
+    },
+    "“%@” is also removed from the trusted devices and has to be paired again." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ wird auch aus den vertrauenswürdigen Geräten entfernt und muss erneut gekoppelt werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » est aussi retiré des appareils de confiance et doit être de nouveau jumelé."
+          }
+        }
+      }
+    },
+    "“%@” is not a SlidePilot notes file in RTF format." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ ist keine SlidePilot-Notizdatei im RTF-Format."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » n’est pas un fichier de notes SlidePilot au format RTF."
+          }
+        }
       }
     },
     "“%@” removed this device from its trusted devices. Pair again to control it." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%@“ hat dieses Gerät aus seinen vertrauenswürdigen Geräten entfernt. Kopple es erneut, um es zu steuern." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %@ » a retiré cet appareil de ses appareils de confiance. Jumelez-le à nouveau pour le contrôler." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ hat dieses Gerät aus seinen vertrauenswürdigen Geräten entfernt. Kopple es erneut, um es zu steuern."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » a retiré cet appareil de ses appareils de confiance. Jumelez-le à nouveau pour le contrôler."
+          }
+        }
       }
     },
     "“%@” was closed on “%@”." : {
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "„%1$@“ wurde auf „%2$@“ geschlossen." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "« %1$@ » a été fermé sur « %2$@ »." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%1$@“ wurde auf „%2$@“ geschlossen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %1$@ » a été fermé sur « %2$@ »."
+          }
+        }
       }
     }
   },

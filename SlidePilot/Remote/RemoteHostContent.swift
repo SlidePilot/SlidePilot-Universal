@@ -33,18 +33,25 @@ extension PresentationSession {
 /// Renders the slide images a controller asked for from the render cache (PRE-02) and
 /// compresses them, off the main actor.
 enum RemoteSlideImages {
+    /// The current and next slide show the audience's half; the notes half is sent only
+    /// with split notes, otherwise the controller shows the text notes (REM-04, NOTES-02).
     /// `nil` if a slide cannot be rendered, e.g. after the deck got shorter.
     @concurrent
-    nonisolated static func render(_ request: SlideImageRequest, from cache: RenderCache) async -> SlideImages? {
+    nonisolated static func render(
+        _ request: SlideImageRequest, from cache: RenderCache, audience: PageRegion, notes notesRegion: PageRegion?
+    ) async -> SlideImages? {
         let box = SlidePilotRendering.PixelSize(width: request.size.width, height: request.size.height)
         do {
-            // The audience's region; split notes (#28) add the notes image here.
-            let current = try await encoded(cache.image(page: request.slideIndex, region: .full, fitting: box))
+            let current = try await encoded(cache.image(page: request.slideIndex, region: audience, fitting: box))
             var next: EncodedImage?
             if let nextIndex = request.nextSlideIndex {
-                next = try await encoded(cache.image(page: nextIndex, region: .full, fitting: box))
+                next = try await encoded(cache.image(page: nextIndex, region: audience, fitting: box))
             }
-            return SlideImages(presentationID: request.presentationID, slideIndex: request.slideIndex, current: current, next: next, notes: nil)
+            var notes: EncodedImage?
+            if let notesRegion {
+                notes = try await encoded(cache.image(page: request.slideIndex, region: notesRegion, fitting: box))
+            }
+            return SlideImages(presentationID: request.presentationID, slideIndex: request.slideIndex, current: current, next: next, notes: notes)
         } catch {
             return nil
         }

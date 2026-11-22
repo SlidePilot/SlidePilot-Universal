@@ -54,12 +54,17 @@ struct PresenterLayoutView: View {
     /// The current slide with the editable drawing on top (DRAW-01). Links are off, the
     /// canvas covers them anyway.
     private var drawingSlot: some View {
-        SlideSurface(cache: session.cache, page: session.currentPage, role: .current)
+        SlideSurface(cache: session.cache, page: session.currentPage, region: session.audienceRegion, role: .current)
             .overlay {
-                EditableDrawingLayer(model: session.drawing, page: session.currentPage, onEscape: session.stopDrawing)
+                EditableDrawingLayer(
+                    model: session.drawing, page: session.currentPage, region: session.audienceRegion,
+                    onEscape: session.stopDrawing
+                )
                     // The white canvas would hide the slide's hairline.
                     .slideOutline(session.drawing.drawings.drawing(onPage: session.currentPage).background == .white)
             }
+            // The audience still sees where the presenter is about to draw (PTR-01).
+            .presenterPointer(session)
             .padding(padding)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -114,20 +119,33 @@ private struct PresenterSlotView: View {
     var body: some View {
         switch kind {
         case .current:
-            SlideSurface(cache: session.cache, page: session.currentPage, role: .current, pageLinkAction: session.showPage)
-                .drawingOverlay(session.drawing.drawings, page: session.currentPage)
+            SlideSurface(
+                cache: session.cache, page: session.currentPage, region: session.audienceRegion, role: .current,
+                pageLinkAction: session.showPage
+            )
+                .drawingOverlay(session.drawing.drawings, page: session.currentPage, region: session.audienceRegion)
+                .presenterPointer(session)
                 .slideNavigationForVoiceOver(session)
                 .finishesNotesEditing(session)
         case .next:
             NextSlidePreview(
-                cache: session.cache, currentPage: session.currentPage, pageLinkAction: session.showPage,
-                drawings: session.drawing.drawings
+                cache: session.cache, currentPage: session.currentPage, region: session.audienceRegion,
+                pageLinkAction: session.showPage, drawings: session.drawing.drawings
             )
                 .slideNavigationForVoiceOver(session)
                 .finishesNotesEditing(session)
         case .notes:
-            // Text notes; split notes follow with #28.
-            NotesEditor(session: session)
+            if let region = session.splitNotesRegion {
+                // The notes half of the current page (NOTES-01, NOTES-02); the drawing
+                // belongs to the audience's half, so none is shown here.
+                SlideSurface(
+                    cache: session.cache, page: session.currentPage, region: region, role: .notes,
+                    pageLinkAction: session.showPage
+                )
+                    .slideNavigationForVoiceOver(session)
+            } else {
+                NotesEditor(session: session)
+            }
         }
     }
 }

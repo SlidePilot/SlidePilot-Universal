@@ -23,7 +23,10 @@ struct SettingsView: View {
         #if os(macOS)
         TabView(selection: $selection) {
             Tab("General", systemImage: "gearshape", value: .general) {
-                SettingsPane { GeneralSettingsView() }
+                SettingsPane {
+                    GeneralSettingsView()
+                    StoredDataSection()
+                }
             }
             Tab("Layout", systemImage: "rectangle.split.2x1", value: .layout) {
                 SettingsPane { LayoutSettingsView() }
@@ -44,6 +47,7 @@ struct SettingsView: View {
                         Label("Remote", systemImage: "antenna.radiowaves.left.and.right")
                     }
                 }
+                StoredDataSection()
             }
             .navigationTitle("Settings")
             .navigationDestination(for: SettingsTab.self) { tab in
@@ -53,6 +57,8 @@ struct SettingsView: View {
                         .navigationTitle("Layout")
                 case .remote:
                     RemoteSettingsPane()
+                case .storedData:
+                    StoredDataList()
                 case .general:
                     EmptyView()
                 }

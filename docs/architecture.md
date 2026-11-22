@@ -72,7 +72,7 @@ iPhone and iPad share the iOS column. Layouts adapt to the available size and si
 
 Native design first ([ADR 0010](decisions/0010-native-design-first.md)): standard SwiftUI components, SF Symbols, system colors and fonts everywhere. Custom drawing only for the slide surface, the pointer overlay and the drawing layer. The mapping from old custom controls to native components is the "Native replacement" column in the parity doc.
 
-Drawing ([ADR 0016](decisions/0016-drawing-engine.md)): `DocumentDrawings` (Core) is the single source of truth per document, with one undo history per page. Read-only surfaces add `.drawingOverlay(_:page:region:)` on top of a `SlideSurface`; further layers such as the pointer stack as more overlays above it, and the presentation's curtain covers them all. The editable layer is an `NSView` on the Mac and a `PKCanvasView` on iPad; both are first responder in draw mode and provide the drawing's own `UndoManager`.
+Drawing ([ADR 0016](decisions/0016-drawing-engine.md)): `DocumentDrawings` (Core) is the single source of truth per document, with one undo history per page. Read-only surfaces add `.drawingOverlay(_:page:region:)` on top of a `SlideSurface`; further layers such as the pointer stack as more overlays above it, and the presentation's curtain covers them all. The editable layer is an `NSView` on the Mac and a `PKCanvasView` on iPad; both are first responder in draw mode and provide the drawing's own `UndoManager`. On iPad the model's strokes are drawn below the canvas; PencilKit only shows the stroke in progress. With "Save drawings" on, `SavedDrawingsModifier` (app) keeps the drawings in the companion file.
 
 ## Persistence
 

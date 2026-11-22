@@ -40,6 +40,7 @@ public final class AppSettings {
         public static let keepsDisplayAwake = "isSleepDisabled"
         public static let crossfadesSlides = "crossfadeSlides"
         public static let allowsRemoteControl = "allowsRemoteControl"
+        public static let savesDrawings = "saveDrawings"
         public static let layoutPadding = "layoutPadding"
         public static let timeDisplaySize = TimeDisplaySize.defaultsKey
         public static let remoteControlLayout = "remoteControlLayout"
@@ -55,6 +56,12 @@ public final class AppSettings {
     /// Crossfade between slides on the presentation window (LAY-07, SET-05). Default off.
     public var crossfadesSlides: Bool {
         didSet { store.set(crossfadesSlides, forKey: Key.crossfadesSlides) }
+    }
+
+    /// Keep drawings across slide changes and store them with the document (DRAW-06,
+    /// DRAW-07). Default off. Turning it off deletes all drawings; the app does that.
+    public var savesDrawings: Bool {
+        didSet { store.set(savesDrawings, forKey: Key.savesDrawings) }
     }
 
     /// Other devices may find this one and control it once paired (REM-02). Default on, as
@@ -96,6 +103,7 @@ public final class AppSettings {
         self.store = store
         keepsDisplayAwake = store.object(forKey: Key.keepsDisplayAwake) as? Bool ?? false
         crossfadesSlides = store.object(forKey: Key.crossfadesSlides) as? Bool ?? false
+        savesDrawings = store.object(forKey: Key.savesDrawings) as? Bool ?? false
         allowsRemoteControl = store.object(forKey: Key.allowsRemoteControl) as? Bool ?? true
         layoutPadding = (store.object(forKey: Key.layoutPadding) as? Int)
             .flatMap(LayoutPadding.init(rawValue:)) ?? .default

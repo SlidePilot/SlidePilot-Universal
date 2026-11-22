@@ -86,6 +86,19 @@ struct MacSnapshots {
         try await WindowSnapshot.record(PresentationView(session: session).environment(AppSettings(store: InMemorySettingsStore())), name: "curtain-presentation", size: CGSize(width: 960, height: 600), appearance: appearance)
     }
 
+    // PTR-01 to PTR-03: each pointer appearance on the presentation, placed by a remote
+    // controller's location. The presentation ignores the appearance setting, so light only.
+    @Test(arguments: PointerAppearance.allCases)
+    func pointer(pointerAppearance: PointerAppearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        let session = PresentationSession(data: document.data, info: document.info, page: 1, layoutStore: InMemoryPresenterLayoutStore())
+        session.pointer.isShown = true
+        session.pointer.appearance = pointerAppearance
+        session.remotePointerLocation = CGPoint(x: 0.3, y: 0.4)
+        let view = PresentationView(session: session).environment(AppSettings(store: InMemorySettingsStore()))
+        try await WindowSnapshot.record(view, name: "pointer-\(pointerAppearance.rawValue)", size: CGSize(width: 960, height: 600), appearance: .light)
+    }
+
     // TIME-01 to TIME-03, TIME-06: clock with a running stopwatch (normal size) and a timer
     // in overtime (small size).
     @Test(arguments: WindowSnapshot.Appearance.allCases)

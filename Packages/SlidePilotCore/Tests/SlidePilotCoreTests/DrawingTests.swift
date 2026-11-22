@@ -243,7 +243,9 @@ struct DocumentDrawingsTests {
         #expect(drawings.color == .green)
     }
 
-    @Test func shorterDeckDropsDrawingsOfRemovedPages() {
+    // DOC-08, DRAW-07: drawings of pages a shorter deck no longer has are kept, like the
+    // notes, so they come back when the pages do; their history and live stroke end.
+    @Test func shorterDeckKeepsDrawingsOfRemovedPages() {
         let drawings = DocumentDrawings()
         drawings.keepsDrawings = true
         drawings.startDrawing(onPage: 0)
@@ -251,8 +253,19 @@ struct DocumentDrawingsTests {
         draw(drawings, onPage: 4)
         drawings.beginLiveStroke(onPage: 4, at: [a])
         drawings.pageCountChanged(to: 3)
-        #expect(Array(drawings.pages.keys) == [0])
+        #expect(Set(drawings.pages.keys) == [0, 4])
         #expect(drawings.liveStroke == nil)
         #expect(!drawings.canUndo(onPage: 4))
+    }
+
+    // DRAW-06: without "Save drawings" no drawing outlives draw mode, also not one on a page
+    // the reload removed (the page is clamped, so ending draw mode clears another page).
+    @Test func shorterDeckDropsRemovedPagesWithoutSaving() {
+        let drawings = DocumentDrawings()
+        drawings.startDrawing(onPage: 4)
+        draw(drawings, onPage: 4)
+        drawings.pageCountChanged(to: 3)
+        drawings.stopDrawing(onPage: 2)
+        #expect(drawings.pages.isEmpty)
     }
 }

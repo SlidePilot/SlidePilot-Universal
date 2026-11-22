@@ -5,7 +5,6 @@ import SlidePilotRendering
 
 /// State of one open document: the slides and the current page. The presenter and the
 /// presentation observe the same session (DOC-04).
-/// Later issues add notes, drawing and pointer state.
 @Observable
 final class PresentationSession: Identifiable {
     /// Identifies the session's presentation window (macOS) and its registry entry.
@@ -40,6 +39,17 @@ final class PresentationSession: Identifiable {
     var isNavigatorDisplayed = false
     /// Draw mode and the drawings of all pages (DRAW-01 to DRAW-08).
     let drawing = DrawingModel()
+    /// Whether the pointer is shown, its appearance and where the presenter points (PTR-01, PTR-02).
+    let pointer = PointerState()
+
+    /// Text or split notes and the split position (NOTES-01 to NOTES-03). Starts from the
+    /// PDF's keywords; stored per-document settings replace it once loaded (SET-02).
+    private(set) var notesDisplay: NotesDisplay {
+        didSet {
+            // The remote's slide images show other halves now (REM-04).
+            if notesDisplay != oldValue { contentVersion += 1 }
+        }
+    }
 
     init(
         data: Data,
@@ -59,6 +69,7 @@ final class PresentationSession: Identifiable {
         // Cheap to create: the cache opens the PDF on its first render.
         cache = RenderCache(data: data, info: info)
         position = DeckPosition(page: page, pageCount: info.pageCount)
+        notesDisplay = NotesDisplay(pdfKeywords: info.keywords)
     }
 
     var currentPage: Int { position.page }
@@ -90,6 +101,41 @@ final class PresentationSession: Identifiable {
     func goBack() {
         guard allowsPageSwitching else { return }
         position.goBack()
+    }
+
+    /// The part of each page the audience sees: current and next slide, presentation,
+    /// thumbnails, drawings and the remote (NOTES-02).
+    var audienceRegion: PageRegion { .audience(notesDisplay.position) }
+
+    /// The notes half shown in the notes slot, or `nil` for text notes (NOTES-01, NOTES-02).
+    var splitNotesRegion: PageRegion? {
+        notesDisplay.showsSplitNotes ? .notes(notesDisplay.position) : nil
+    }
+
+    private var areNotesShown: Bool { layout.isVisible(.notes) }
+
+    /// Notes ▸ Notes Mode (NOTES-01).
+    func setNotesMode(_ mode: NotesMode) {
+        notesDisplay.setMode(mode, notesShown: areNotesShown)
+        if notesDisplay.showsSplitNotes { notes.finishEditing() }
+    }
+
+    /// Notes ▸ Split Position (NOTES-02).
+    func setNotesPosition(_ position: NotesPosition) {
+        notesDisplay.setPosition(position, notesShown: areNotesShown)
+        if notesDisplay.showsSplitNotes { notes.finishEditing() }
+    }
+
+    /// Call when the notes slot appears (NOTES-02).
+    func notesSlotDidShow() {
+        notesDisplay.notesDidShow()
+    }
+
+    /// Applies stored per-document settings (SET-02); they win over the keywords. Position
+    /// first, then mode, coupled like the old app's `load(configuration:)`.
+    func applyStoredNotesDisplay(mode: NotesMode?, position: NotesPosition?) {
+        notesDisplay.applyStored(mode: mode, position: position, notesShown: areNotesShown)
+        if notesDisplay.showsSplitNotes { notes.finishEditing() }
     }
 
     /// Shows a recompiled version of the PDF (DOC-08). The page stays, clamped to the

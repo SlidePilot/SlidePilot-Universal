@@ -32,11 +32,24 @@ public struct DocumentSettings: Sendable, Equatable {
     /// The legacy notes file next to the PDF is not loaded automatically any more (NOTES-08):
     /// the user chose Don't Import, or the file failed to load.
     public var declinedLegacyNotes: Bool?
+    /// Whether the pointer is shown (PTR-07).
+    public var isPointerDisplayed: Bool?
+    /// The pointer's appearance (PTR-07).
+    public var pointerAppearance: PointerAppearance?
+    /// Text or split notes (NOTES-01); wins over the PDF's keywords (NOTES-03).
+    public var notesMode: NotesMode?
+    /// The split position (NOTES-02); wins over the PDF's keywords (NOTES-03).
+    public var notesPosition: NotesPosition?
 
-    public init(layout: PresenterLayout? = nil, isNavigatorDisplayed: Bool? = nil, declinedLegacyNotes: Bool? = nil) {
+    public init(
+        layout: PresenterLayout? = nil, isNavigatorDisplayed: Bool? = nil, declinedLegacyNotes: Bool? = nil,
+        isPointerDisplayed: Bool? = nil, pointerAppearance: PointerAppearance? = nil
+    ) {
         self.layout = layout
         self.isNavigatorDisplayed = isNavigatorDisplayed
         self.declinedLegacyNotes = declinedLegacyNotes
+        self.isPointerDisplayed = isPointerDisplayed
+        self.pointerAppearance = pointerAppearance
     }
 
     public var isEmpty: Bool { self == DocumentSettings() }
@@ -45,6 +58,8 @@ public struct DocumentSettings: Sendable, Equatable {
 extension DocumentSettings: Codable {
     private enum CodingKeys: String, CodingKey {
         case layout, isNavigatorDisplayed, declinedLegacyNotes
+        case isPointerDisplayed, pointerAppearance
+        case notesMode, notesPosition
     }
 
     /// A damaged or unknown field falls back to "not saved" instead of failing the entry.
@@ -53,6 +68,10 @@ extension DocumentSettings: Codable {
         layout = try? container.decodeIfPresent(PresenterLayout.self, forKey: .layout)
         isNavigatorDisplayed = try? container.decodeIfPresent(Bool.self, forKey: .isNavigatorDisplayed)
         declinedLegacyNotes = try? container.decodeIfPresent(Bool.self, forKey: .declinedLegacyNotes)
+        isPointerDisplayed = try? container.decodeIfPresent(Bool.self, forKey: .isPointerDisplayed)
+        pointerAppearance = try? container.decodeIfPresent(PointerAppearance.self, forKey: .pointerAppearance)
+        notesMode = try? container.decodeIfPresent(NotesMode.self, forKey: .notesMode)
+        notesPosition = try? container.decodeIfPresent(NotesPosition.self, forKey: .notesPosition)
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -60,6 +79,10 @@ extension DocumentSettings: Codable {
         try container.encodeIfPresent(layout, forKey: .layout)
         try container.encodeIfPresent(isNavigatorDisplayed, forKey: .isNavigatorDisplayed)
         try container.encodeIfPresent(declinedLegacyNotes, forKey: .declinedLegacyNotes)
+        try container.encodeIfPresent(isPointerDisplayed, forKey: .isPointerDisplayed)
+        try container.encodeIfPresent(pointerAppearance, forKey: .pointerAppearance)
+        try container.encodeIfPresent(notesMode, forKey: .notesMode)
+        try container.encodeIfPresent(notesPosition, forKey: .notesPosition)
     }
 }
 
@@ -105,6 +128,8 @@ public struct CompanionEntry: Codable, Sendable, Equatable, Identifiable {
     public var settings: DocumentSettings
     /// Text notes (NOTES-10); `nil` until notes were written.
     public var notes: CompanionNotes?
+    /// Drawings (DRAW-07); `nil` while "Save drawings" is off or nothing was drawn.
+    public var drawings: CompanionDrawings?
     /// Entries for other PDFs whose orphaned data the user declined to take over for this
     /// PDF (NOTES-12), so the app does not ask again for that pair.
     public var declinedOrphans: Set<UUID>
@@ -115,6 +140,7 @@ public struct CompanionEntry: Codable, Sendable, Equatable, Identifiable {
         lastOpened: Date,
         settings: DocumentSettings = DocumentSettings(),
         notes: CompanionNotes? = nil,
+        drawings: CompanionDrawings? = nil,
         declinedOrphans: Set<UUID> = []
     ) {
         self.id = id
@@ -122,11 +148,12 @@ public struct CompanionEntry: Codable, Sendable, Equatable, Identifiable {
         self.lastOpened = lastOpened
         self.settings = settings
         self.notes = notes
+        self.drawings = drawings
         self.declinedOrphans = declinedOrphans
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, pdf, lastOpened, settings, notes, declinedOrphans
+        case id, pdf, lastOpened, settings, notes, drawings, declinedOrphans
     }
 
     public init(from decoder: any Decoder) throws {
@@ -139,12 +166,14 @@ public struct CompanionEntry: Codable, Sendable, Equatable, Identifiable {
         // Strict: damaged notes make the whole file unreadable, so a save never replaces
         // them with nothing.
         notes = try container.decodeIfPresent(CompanionNotes.self, forKey: .notes)
+        drawings = try container.decodeIfPresent(CompanionDrawings.self, forKey: .drawings)
         declinedOrphans = (try? container.decode(Set<UUID>.self, forKey: .declinedOrphans)) ?? []
     }
 
     /// Whether the entry holds user content (notes, drawings) that never expires (ADR 0012).
-    /// Drawings (DRAW-07) add their check here.
-    public var holdsUserContent: Bool { !(notes?.isEmpty ?? true) }
+    public var holdsUserContent: Bool {
+        !(notes?.isEmpty ?? true) || !(drawings?.isEmpty ?? true)
+    }
 
     /// Entries that hold only settings expire 12 months after the last open (SET-03).
     public static let settingsLifetime = DateComponents(month: 12)

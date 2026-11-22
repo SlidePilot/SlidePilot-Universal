@@ -348,8 +348,11 @@ final class RemoteService {
                 try? await session.send(message)
             case .images(let request, let sequence):
                 guard latestImages[token] == sequence,
-                      let cache = registry.session(for: request.presentationID.rawValue)?.cache,
-                      let images = await RemoteSlideImages.render(request, from: cache),
+                      let presentation = registry.session(for: request.presentationID.rawValue),
+                      let images = await RemoteSlideImages.render(
+                          request, from: presentation.cache,
+                          audience: presentation.audienceRegion, notes: presentation.splitNotesRegion
+                      ),
                       latestImages[token] == sequence
                 else { continue }
                 try? await session.send(.slideImages(images))
