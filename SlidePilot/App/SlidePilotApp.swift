@@ -42,11 +42,14 @@ struct SlidePilotApp: App {
         #if os(macOS)
         DocumentGroup(viewing: PDFFileDocument.self) { file in
             DocumentView(document: file.document, fileURL: file.fileURL)
+                // Pairing codes of devices that start controlling this one (REM-02).
+                .remoteAlerts()
                 .environment(registry)
                 .environment(presentationWindows)
                 .environment(appDelegate.companions)
                 // Padding and time display size of the presenter (LAY-04, TIME-06).
                 .environment(settings)
+                .environment(remote)
         }
         .commands {
             PresentationCommands()
@@ -55,7 +58,19 @@ struct SlidePilotApp: App {
             NotesFormatCommands()
             NotesFileCommands()
             DrawingsExportCommands()
+            RemoteControlCommands()
         }
+
+        // Remote mode: controls a presentation on another device (REM-07, ADR 0015).
+        WindowGroup(Text("Remote Control"), id: RemoteControlScene.id) {
+            RemoteControlView()
+                .environment(remote)
+                .environment(settings)
+                .frame(minWidth: 480, minHeight: 360)
+        }
+        .restorationBehavior(.disabled)
+        // Opened with File ▸ Control Another Device…, not File ▸ New.
+        .commandsRemoved()
 
         // The presentation window of each document (DOC-04 to DOC-06). It is opened by the
         // presenter, never restored at launch and has no File ▸ New command.
@@ -84,6 +99,8 @@ struct SlidePilotApp: App {
         // (AppWindowTracker.swift).
         DocumentGroup(viewing: PDFFileDocument.self) { file in
             DocumentView(document: file.document, fileURL: file.fileURL)
+                // Pairing codes of devices that start controlling this one (REM-02).
+                .remoteAlerts()
                 .environment(registry)
                 .environment(appDelegate.externalDisplays)
                 .environment(appDelegate.companions)
@@ -100,6 +117,16 @@ struct SlidePilotApp: App {
             NotesFormatCommands()
             NotesFileCommands()
             DrawingsExportCommands()
+        }
+
+        // The document browser offers remote mode below the app name (REM-07). It opens in
+        // the same window, over the browser.
+        DocumentGroupLaunchScene {
+            // No pairing alerts here: the launch scene cannot present them, so pairing
+            // requests are only accepted while a document or remote mode is shown.
+            ControlAnotherDeviceButton()
+                .environment(remote)
+                .environment(settings)
         }
 
         #endif
