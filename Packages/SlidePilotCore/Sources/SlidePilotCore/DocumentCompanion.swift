@@ -123,6 +123,24 @@ public final class DocumentCompanion {
         scheduleSave()
     }
 
+    /// The document's data as a `.slidepilot` file (NOTES-11), or `nil` before the entry is
+    /// loaded.
+    public func exportFile(at date: Date = Date()) -> SlidePilotFile? {
+        entry.map { SlidePilotFile(entry: $0, exportedAt: date) }
+    }
+
+    /// Takes over the data of a `.slidepilot` file (NOTES-11): its notes replace the stored
+    /// ones, its settings override the stored ones, and with `includingDrawings` its drawings
+    /// replace the stored ones. Returns the settings to apply, or `nil` before the entry is
+    /// loaded. The import is saved shortly afterwards and marks the document edited until then.
+    public func importFile(_ file: SlidePilotFile, includingDrawings: Bool) -> DocumentSettings? {
+        guard var entry else { return nil }
+        entry.importFile(file, includingDrawings: includingDrawings)
+        self.entry = entry
+        markEdited()
+        return entry.settings
+    }
+
     /// Records an edit of user content and saves it shortly afterwards. The document shows
     /// as edited until then (DOC-09). `setNotes(_:)` calls it; use it directly only for
     /// edits that are stored another way.

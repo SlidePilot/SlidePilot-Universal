@@ -148,6 +148,21 @@ public actor CompanionStore {
         storedEntries().map(\.entry)
     }
 
+    /// Imports a `.slidepilot` file into the entry of a PDF that is not open (NOTES-11) and
+    /// stores it. `entry` comes from `open(pdfAt:pageCount:)`. Returns the stored entry.
+    public func importFile(_ file: SlidePilotFile, into entry: CompanionEntry, includingDrawings: Bool) -> CompanionEntry {
+        var entry = cache?[entry.id]?.entry ?? entry
+        entry.importFile(file, includingDrawings: includingDrawings)
+        write(entry)
+        return entry
+    }
+
+    /// The stored entry with this ID, e.g. to export it (NOTES-11).
+    public func entry(withID id: UUID) -> CompanionEntry? {
+        _ = storedEntries()
+        return cache?[id]?.entry
+    }
+
     /// The entries with the size of their files, for the stored data overview (SET-07).
     func entriesWithFileSizes() -> [(entry: CompanionEntry, byteCount: Int64)] {
         storedEntries().map { stored in

@@ -11,6 +11,12 @@ final class PresentationSession: Identifiable {
     let id = UUID()
     /// The document's display name, e.g. for the remote's list of presentations (REM-04).
     let title: String
+    /// Where the PDF is, if the document system says; a `.slidepilot` file lists the open
+    /// PDFs by it (NOTES-11).
+    var fileURL: URL?
+    /// A `.slidepilot` file opened on its own and handed to this document; its window asks
+    /// before importing it (NOTES-11).
+    var slidePilotFileRequest: SlidePilotFileRequest?
     /// Replaced when the PDF is reloaded; views read page sizes from `cache.info`.
     private(set) var cache: RenderCache
     private(set) var position: DeckPosition

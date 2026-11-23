@@ -58,8 +58,18 @@ struct SlidePilotApp: App {
             NotesFormatCommands()
             NotesFileCommands()
             DrawingsExportCommands()
+            SlidePilotFileCommands()
             RemoteControlCommands()
         }
+
+        // A .slidepilot file opened on its own, imported into a PDF (NOTES-11).
+        DocumentGroup(viewing: SlidePilotFileDocument.self) { file in
+            SlidePilotFileView(document: file.document, fileURL: file.fileURL)
+                .environment(registry)
+                .environment(appDelegate.companions)
+                .environment(settings)
+        }
+        .windowResizability(.contentSize)
 
         // Remote mode: controls a presentation on another device (REM-07, ADR 0015).
         WindowGroup(Text("Remote Control"), id: RemoteControlScene.id) {
@@ -117,6 +127,15 @@ struct SlidePilotApp: App {
             NotesFormatCommands()
             NotesFileCommands()
             DrawingsExportCommands()
+            SlidePilotFileCommands()
+        }
+
+        // A .slidepilot file opened on its own, imported into a PDF (NOTES-11).
+        DocumentGroup(viewing: SlidePilotFileDocument.self) { file in
+            SlidePilotFileView(document: file.document, fileURL: file.fileURL)
+                .environment(registry)
+                .environment(appDelegate.companions)
+                .environment(settings)
         }
 
         // The document browser offers remote mode below the app name (REM-07). It opens in
