@@ -137,12 +137,15 @@ private struct SlidePilotFileTransferModifier: ViewModifier {
             // on the same view would not both work.
             .background {
                 Color.clear
-                    .fileImporter(isPresented: $isImporting, allowedContentTypes: [.slidePilotFile]) { result in
+                    .fileImporter(isPresented: $isImporting, allowedContentTypes: UTType.slidePilotFileTypes) { result in
                         // A short task on the main actor; a result after the window closed is
                         // dropped because the entry is gone.
                         guard case .success(let url) = result else { return }
                         Task { await read(url) }
                     }
+                    #if os(macOS)
+                    .fileDialogMessage(Text("Choose a SlidePilot file to import into this PDF."))
+                    #endif
                     .fileDialogConfirmationLabel(Text("Import"))
             }
             .fileExporter(

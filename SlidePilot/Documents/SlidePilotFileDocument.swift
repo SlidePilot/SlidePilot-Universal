@@ -9,6 +9,15 @@ extension UTType {
     nonisolated static var slidePilotFile: UTType {
         UTType(exportedAs: "\(Bundle.main.bundleIdentifier ?? "SlidePilot").\(SlidePilotFileFormat.fileExtension)", conformingTo: .data)
     }
+
+    /// Every type a `.slidepilot` file may have. Several builds on one device (App Store,
+    /// TestFlight, development) each declare their own type for the extension, and the system
+    /// gives the file only one of them, so matching only this build's type would grey the
+    /// file out in the open panel.
+    nonisolated static var slidePilotFileTypes: [UTType] {
+        let declared = UTType.types(tag: SlidePilotFileFormat.fileExtension, tagClass: .filenameExtension, conformingTo: nil)
+        return [.slidePilotFile] + declared.filter { $0 != .slidePilotFile }
+    }
 }
 
 /// A `.slidepilot` file: opened as a document of its own (double-click, AirDrop, Open With,
@@ -16,7 +25,7 @@ extension UTType {
 ///
 /// `nonisolated` because the document system reads files off the main actor.
 nonisolated struct SlidePilotFileDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.slidePilotFile] }
+    static var readableContentTypes: [UTType] { UTType.slidePilotFileTypes }
 
     /// A file from a later app version opens with an explanation instead of the system's
     /// generic error.

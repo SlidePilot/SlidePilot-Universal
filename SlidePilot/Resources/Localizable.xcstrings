@@ -452,6 +452,23 @@
         }
       }
     },
+    "Choose a SlidePilot file to import into this PDF." : {
+      "comment" : "Message of the open panel for importing a .slidepilot file (NOTES-11)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle eine SlidePilot-Datei, die in dieses PDF importiert wird."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez un fichier SlidePilot à importer dans ce PDF."
+          }
+        }
+      }
+    },
     "Choose a SlidePilot notes file in RTF format." : {
       "localizations" : {
         "de" : {
