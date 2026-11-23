@@ -3,8 +3,7 @@ import SwiftUI
 /// The app settings (SET-01): a tab per pane in the Mac Settings window, one form in the
 /// iPad settings sheet.
 ///
-/// Each pane lives in its own file and provides form sections. Later issues add their pane
-/// here: Pointer.
+/// Each pane lives in its own file and provides form sections.
 struct SettingsView: View {
     #if os(macOS)
     @AppStorage(SettingsTab.storageKey) private var selection = SettingsTab.general
@@ -31,6 +30,9 @@ struct SettingsView: View {
             Tab("Layout", systemImage: "rectangle.split.2x1", value: .layout) {
                 SettingsPane { LayoutSettingsView() }
             }
+            Tab("Pointer", systemImage: "scope", value: .pointer) {
+                SettingsPane { PointerSettingsView() }
+            }
             Tab("Remote", systemImage: "antenna.radiowaves.left.and.right", value: .remote) {
                 RemoteSettingsPane()
             }
@@ -42,6 +44,9 @@ struct SettingsView: View {
                 Section {
                     NavigationLink(value: SettingsTab.layout) {
                         Label("Layout", systemImage: "rectangle.split.2x1")
+                    }
+                    NavigationLink(value: SettingsTab.pointer) {
+                        Label("Pointer", systemImage: "scope")
                     }
                     NavigationLink(value: SettingsTab.remote) {
                         Label("Remote", systemImage: "antenna.radiowaves.left.and.right")
@@ -55,6 +60,9 @@ struct SettingsView: View {
                 case .layout:
                     Form { LayoutSettingsView() }
                         .navigationTitle("Layout")
+                case .pointer:
+                    Form { PointerSettingsView() }
+                        .navigationTitle("Pointer")
                 case .remote:
                     RemoteSettingsPane()
                 case .storedData:

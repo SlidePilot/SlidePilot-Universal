@@ -201,3 +201,129 @@ struct PointerSettingsTests {
         #expect(decoded.isNavigatorDisplayed == true)
     }
 }
+
+@Suite
+struct PointerEditorTests {
+    // PTR-04: the old editor's shapes, in its order.
+    @Test func offersTheOldShapes() {
+        #expect(PointerShape.editorShapes == [.target, .dot, .circle, .plus, .cross, .square])
+        #expect(PointerShape.cursor.editorLimits == nil)
+        #expect(PointerShape.hand.editorLimits == nil)
+    }
+
+    // PTR-04: target 35–150 and thickness 2–50; other shapes 5–100; dot and square have
+    // no thickness; border and shadow 0–50.
+    @Test func usesTheOldRanges() throws {
+        let target = try #require(PointerShape.target.editorLimits)
+        #expect(target.size == 35...150)
+        #expect(target.thickness == 2...50)
+        for shape in [PointerShape.circle, .plus, .cross] {
+            let limits = try #require(shape.editorLimits)
+            #expect(limits.size == 5...100)
+            #expect(limits.thickness == 2...50)
+        }
+        for shape in [PointerShape.dot, .square] {
+            let limits = try #require(shape.editorLimits)
+            #expect(limits.size == 5...100)
+            #expect(limits.thickness == nil)
+        }
+        for shape in PointerShape.editorShapes {
+            let limits = try #require(shape.editorLimits)
+            #expect(limits.borderWidth == 0...50)
+            #expect(limits.shadowWidth == 0...50)
+        }
+    }
+
+    // DEF-14: changing the shape keeps the values instead of resetting them.
+    @Test func changingTheShapeKeepsTheValues() {
+        let pointer = PointerConfiguration(
+            shape: .target, size: 60, thickness: 8, color: .red, borderWidth: 4, borderColor: .white, shadowWidth: 12
+        )
+        let circle = pointer.withShape(.circle)
+        #expect(circle == PointerConfiguration(
+            shape: .circle, size: 60, thickness: 8, color: .red, borderWidth: 4, borderColor: .white, shadowWidth: 12
+        ))
+        // Back again: nothing lost.
+        #expect(circle.withShape(.target) == pointer)
+    }
+
+    @Test func changingTheShapeMovesValuesIntoItsRanges() {
+        let dot = PointerConfiguration(shape: .dot, size: 10, color: .black, borderWidth: 5, borderColor: .white, shadowWidth: 10)
+        let target = dot.withShape(.target)
+        #expect(target.size == 35)
+        #expect(target.thickness == 2)
+        #expect(target.borderWidth == 5)
+        #expect(target.shadowWidth == 10)
+        let big = PointerConfiguration(shape: .target, size: 150, thickness: 3)
+        #expect(big.withShape(.plus).size == 100)
+    }
+
+    // Dot and square ignore the thickness, so it is kept for the next shape.
+    @Test func shapesWithoutThicknessKeepIt() {
+        let pointer = PointerConfiguration(shape: .circle, size: 20, thickness: 7)
+        #expect(pointer.withShape(.square).thickness == 7)
+        #expect(pointer.withShape(.square).withShape(.circle).thickness == 7)
+    }
+
+    @Test func clampsHandEditedValues() {
+        let pointer = PointerConfiguration(
+            shape: .cross, size: .nan, thickness: 500,
+            color: PointerColor(red: 2, green: -1, blue: 0.5, alpha: 3), borderWidth: -4, shadowWidth: 80
+        )
+        let clamped = pointer.clampedForEditor()
+        #expect(clamped.size == 5)
+        #expect(clamped.thickness == 50)
+        #expect(clamped.borderWidth == 0)
+        #expect(clamped.shadowWidth == 50)
+        #expect(clamped.color == PointerColor(red: 1, green: 0, blue: 0.5, alpha: 1))
+    }
+
+    // The editor cannot show the system images; such a stored pointer becomes Target.
+    @Test func systemImagesBecomeTheDefault() {
+        #expect(PointerConfiguration.hand.clampedForEditor() == .defaultIndividual)
+        #expect(PointerConfiguration.hand.withShape(.cursor) == .defaultIndividual)
+    }
+
+    @Test func presetsFitTheEditor() {
+        for preset in [PointerConfiguration.target, .targetRed, .circle, .dot] {
+            #expect(preset.clampedForEditor() == preset)
+        }
+    }
+}
+
+@Suite
+struct PointerColorTests {
+    // PTR-05: colors are stored as sRGB components with alpha.
+    @Test func convertsFromAndToCGColor() throws {
+        let color = PointerColor(red: 0.2, green: 0.4, blue: 0.6, alpha: 0.5)
+        let roundTrip = try #require(PointerColor(color.cgColor))
+        #expect(abs(roundTrip.red - 0.2) < 0.0001)
+        #expect(abs(roundTrip.green - 0.4) < 0.0001)
+        #expect(abs(roundTrip.blue - 0.6) < 0.0001)
+        #expect(abs(roundTrip.alpha - 0.5) < 0.0001)
+    }
+
+    @Test func convertsGrayToSRGB() throws {
+        let gray = CGColor(gray: 1, alpha: 0.25)
+        let color = try #require(PointerColor(gray))
+        #expect(abs(color.red - 1) < 0.0001)
+        #expect(abs(color.blue - 1) < 0.0001)
+        #expect(abs(color.alpha - 0.25) < 0.0001)
+    }
+
+    // A Display P3 red lies outside sRGB; it is moved to sRGB's edge.
+    @Test func clampsWideGamutColors() throws {
+        let p3 = try #require(CGColorSpace(name: CGColorSpace.displayP3))
+        let red = try #require(CGColor(colorSpace: p3, components: [1, 0, 0, 1]))
+        let color = try #require(PointerColor(red))
+        #expect(color.red == 1)
+        #expect((0...1).contains(color.green))
+        #expect((0...1).contains(color.blue))
+    }
+
+    @Test func storesComponentsAsJSON() throws {
+        let data = try JSONEncoder().encode(PointerColor.white)
+        let object = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Double])
+        #expect(object == ["red": 1, "green": 1, "blue": 1, "alpha": 1])
+    }
+}

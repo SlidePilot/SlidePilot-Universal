@@ -6,7 +6,9 @@ import SwiftUI
 /// The mouse pointer that stands for the pointer over the current slide and the
 /// presentation (PTR-06): the system cursor for Cursor and Hand, else the drawn pointer.
 enum PointerCursor {
-    /// Rendered once per configuration; the cursor is asked for on every redraw.
+    /// Rendered once per configuration; the cursor is asked for on every redraw. Kept
+    /// small, because the pointer editor makes a new configuration per slider step.
+    private static let maxImages = 16
     private static var images: [PointerConfiguration: NSImage] = [:]
 
     static func style(for configuration: PointerConfiguration) -> PointerStyle {
@@ -27,6 +29,9 @@ enum PointerCursor {
         // Sharp on Retina screens; AppKit picks the matching representation.
         renderer.scale = 2
         let image = renderer.nsImage
+        if images.count >= maxImages {
+            images.removeAll()
+        }
         images[configuration] = image
         return image
     }
