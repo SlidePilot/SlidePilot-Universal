@@ -3,7 +3,10 @@ import Synchronization
 import Testing
 @testable import SlidePilotRendering
 
-@Suite
+/// Tests wait for the versions themselves, never against a fixed deadline: on a loaded CI
+/// simulator the whole test process ran about 50 times slower than locally (#148), so any
+/// deadline is a guess. The time limit only ends a real hang.
+@Suite(.timeLimit(.minutes(3)))
 struct PDFFileObserverTests {
     // MARK: - Validation
 
@@ -51,7 +54,7 @@ struct PDFFileObserverTests {
         // Same bytes in a new file, like an atomic save of an unchanged deck.
         try file.initialData.write(to: file.url, options: .atomic)
         await harness.observer.handle(.contents)
-        #expect(!(await harness.waitForVersions(1, within: .milliseconds(400))))
+        #expect(!(await harness.receivesVersions(1, within: .milliseconds(400))))
         await harness.stop()
     }
 
@@ -65,7 +68,7 @@ struct PDFFileObserverTests {
             await harness.observer.handle(.contents)
         }
         #expect(await harness.waitForVersions(1))
-        #expect(!(await harness.waitForVersions(2, within: .milliseconds(300))))
+        #expect(!(await harness.receivesVersions(2, within: .milliseconds(300))))
         #expect(harness.pageCounts == [6])
         await harness.stop()
     }
@@ -85,13 +88,32 @@ struct PDFFileObserverTests {
         await harness.stop()
     }
 
+    @Test func waitsForACoordinatedWriter() async throws {
+        // The read must wait for a writer that still holds the file; otherwise it reads the
+        // old bytes and drops the change as unchanged. A slow file system (a loaded CI
+        // simulator, an iCloud download) delays a reload but never loses it (#148).
+        let file = try TemporaryPDF(pages: 3)
+        let harness = Harness(file: file)
+        let complete = TestPDF.make(pages: 5)
+        let intent = NSFileAccessIntent.writingIntent(with: file.url, options: [])
+        try await coordinate(intent) {
+            // Blocks only the writer's own queue, like a slow writer would.
+            Thread.sleep(forTimeInterval: 0.5)
+            try? complete.write(to: intent.url)
+        }
+        await harness.observer.handle(.contents)
+        #expect(await harness.waitForVersions(1))
+        #expect(harness.pageCounts == [5])
+        await harness.stop()
+    }
+
     @Test func keepsLoadedVersionWhenFileStaysIncomplete() async throws {
         let file = try TemporaryPDF(pages: 3)
         let harness = Harness(file: file)
         let complete = TestPDF.make(pages: 5)
         try complete.prefix(complete.count - 8).write(to: file.url)
         await harness.observer.handle(.contents)
-        #expect(!(await harness.waitForVersions(1, within: .milliseconds(500))))
+        #expect(!(await harness.receivesVersions(1, within: .milliseconds(500))))
 
         // The next change starts over.
         try complete.write(to: file.url)
@@ -108,7 +130,7 @@ struct PDFFileObserverTests {
         try FileManager.default.moveItem(at: file.url, to: moved)
         await harness.observer.handle(.moved(moved))
         // A rename alone does not reload.
-        #expect(!(await harness.waitForVersions(1, within: .milliseconds(300))))
+        #expect(!(await harness.receivesVersions(1, within: .milliseconds(300))))
 
         try TestPDF.make(pages: 2).write(to: moved)
         await harness.observer.handle(.contents)
@@ -122,7 +144,7 @@ struct PDFFileObserverTests {
         let harness = Harness(file: file)
         try FileManager.default.removeItem(at: file.url)
         await harness.observer.handle(.contents)
-        #expect(!(await harness.waitForVersions(1, within: .milliseconds(300))))
+        #expect(!(await harness.receivesVersions(1, within: .milliseconds(300))))
 
         // Delete and recreate, like a build script that cleans first.
         try file.write(pages: 4)
@@ -134,13 +156,12 @@ struct PDFFileObserverTests {
 
     // MARK: - File presenter
 
-    // The presenter reports uncoordinated writes about 1 s after the write (#10). The time
-    // limit only ends a hang; the test waits for the version itself, not for a fixed time.
-    @Test(.timeLimit(.minutes(1)), arguments: [false, true])
+    // The presenter reports uncoordinated writes about 1 s after the write (#10).
+    @Test(arguments: [false, true])
     func presenterReportsRewrite(atomically: Bool) async throws {
         let file = try TemporaryPDF(pages: 3)
         let versions = PDFFileObserver.versions(of: file.url, current: file.initialData, timing: .fast)
-        try waitForPresenterRegistration(at: file.url)
+        try await waitForPresenterRegistration(at: file.url)
         try TestPDF.make(pages: 5).write(to: file.url, options: atomically ? .atomic : [])
         var iterator = versions.makeAsyncIterator()
         let version = await iterator.next()
@@ -152,10 +173,38 @@ struct PDFFileObserverTests {
 /// the presenter, and an uncoordinated write in that gap is never reported. A coordinated
 /// read is granted only after the service has processed the registration (it asks the
 /// presenter to relinquish the file first), so writes after this call are reported.
-private func waitForPresenterRegistration(at url: URL) throws {
-    var coordinationError: NSError?
-    NSFileCoordinator(filePresenter: nil).coordinate(readingItemAt: url, options: [], error: &coordinationError) { _ in }
-    if let coordinationError { throw coordinationError }
+///
+/// Asynchronous, so the wait does not block a thread of the shared concurrency pool, which
+/// all tests of the process run on.
+private func waitForPresenterRegistration(at url: URL) async throws {
+    try await coordinate(.readingIntent(with: url, options: []))
+}
+
+/// Returns once the coordinated access is granted; `accessor` then runs on its own queue and
+/// holds the file until it returns. Cancelling the task (the suite's time limit) cancels the
+/// coordination, so a hang fails the test instead of blocking the whole run.
+private func coordinate(_ intent: NSFileAccessIntent, accessor: @escaping @Sendable () -> Void = {}) async throws {
+    let queue = OperationQueue()
+    // `NSFileCoordinator` is not Sendable; the mutex hands it to the cancellation handler and
+    // keeps it alive until the access was granted or cancelled.
+    let coordinator = Mutex(NSFileCoordinator(filePresenter: nil))
+    try await withTaskCancellationHandler {
+        try await withCheckedThrowingContinuation { (granted: CheckedContinuation<Void, any Error>) in
+            coordinator.withLock { coordinator in
+                // Called exactly once, with an error if coordination failed or was cancelled.
+                coordinator.coordinate(with: [intent], queue: queue) { error in
+                    if let error {
+                        granted.resume(throwing: error)
+                    } else {
+                        granted.resume()
+                        accessor()
+                    }
+                }
+            }
+        }
+    } onCancel: {
+        coordinator.withLock { $0.cancel() }
+    }
 }
 
 // MARK: - Helpers
@@ -198,14 +247,29 @@ private final class Received: Sendable {
 
     var pageCounts: [Int] { versions.withLock { $0.map(\.info.pageCount) } }
 
-    /// Whether at least `count` versions arrived within `limit`.
-    func wait(for count: Int, within limit: Duration) async -> Bool {
-        let deadline = ContinuousClock.now + limit
-        while ContinuousClock.now < deadline {
-            if versions.withLock({ $0.count }) >= count { return true }
+    /// Waits until at least `count` versions arrived; false only if the test was cancelled
+    /// (by its time limit) first.
+    func wait(for count: Int) async -> Bool {
+        while !Task.isCancelled {
+            if hasArrived(count) { return true }
             try? await Task.sleep(for: .milliseconds(10))
         }
-        return versions.withLock { $0.count } >= count
+        return hasArrived(count)
+    }
+
+    /// Whether at least `count` versions arrive within `limit`. Only for checks that nothing
+    /// arrives: a slow runner can make them pass wrongly, never fail wrongly.
+    func arrive(_ count: Int, within limit: Duration) async -> Bool {
+        let deadline = ContinuousClock.now + limit
+        while ContinuousClock.now < deadline, !Task.isCancelled {
+            if hasArrived(count) { return true }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        return hasArrived(count)
+    }
+
+    private func hasArrived(_ count: Int) -> Bool {
+        versions.withLock { $0.count } >= count
     }
 }
 
@@ -227,11 +291,14 @@ private struct Harness {
 
     var pageCounts: [Int] { received.pageCounts }
 
-    /// The default only ends a hang: a busy CI simulator took over 3 s for the coordinated
-    /// read while the whole test plan ran in parallel. Checks that nothing arrives pass
-    /// their own short limit.
-    func waitForVersions(_ count: Int, within limit: Duration = .seconds(15)) async -> Bool {
-        await received.wait(for: count, within: limit)
+    /// Waits for `count` versions without a deadline; see the suite's time limit.
+    func waitForVersions(_ count: Int) async -> Bool {
+        await received.wait(for: count)
+    }
+
+    /// Whether `count` versions arrive within `limit`, for checks that nothing arrives.
+    func receivesVersions(_ count: Int, within limit: Duration) async -> Bool {
+        await received.arrive(count, within: limit)
     }
 
     func stop() async {
