@@ -2,10 +2,10 @@ import SlidePilotCore
 import SwiftUI
 
 extension PresentationSession {
-    /// The pointer of the chosen appearance (PTR-02). Individual is the default custom
-    /// pointer until the pointer editor (PTR-04, PTR-05) lets the user change it.
-    var pointerConfiguration: PointerConfiguration {
-        pointer.appearance.configuration(individual: .defaultIndividual)
+    /// The pointer of the chosen appearance (PTR-02). Individual is the custom pointer of
+    /// the pointer editor (PTR-04), one for all documents (PTR-05).
+    func pointerConfiguration(settings: AppSettings?) -> PointerConfiguration {
+        pointer.appearance.configuration(individual: settings?.individualPointer ?? .defaultIndividual)
     }
 
     /// Where the audience sees the pointer: the presenter's or the remote's (PTR-01, REM-05).
@@ -19,9 +19,14 @@ extension PresentationSession {
 struct PresentationPointerLayer: View {
     let session: PresentationSession
     let slideFrame: CGRect
+    @Environment(AppSettings.self) private var settings: AppSettings?
 
     var body: some View {
-        PointerMark(location: session.visiblePointerLocation, configuration: session.pointerConfiguration, slideFrame: slideFrame)
+        PointerMark(
+            location: session.visiblePointerLocation,
+            configuration: session.pointerConfiguration(settings: settings),
+            slideFrame: slideFrame
+        )
             // The audience's pointer; VoiceOver users of the presenter gain nothing from it.
             .accessibilityHidden(true)
     }
@@ -61,26 +66,41 @@ extension View {
     /// presenter's current slide and, on iPad, with a finger dragged over it (PTR-01).
     /// Apply it to the `SlideSurface` itself, so the location is relative to the slide.
     func presenterPointer(_ session: PresentationSession) -> some View {
-        modifier(PresenterPointer(pointer: session.pointer, configuration: session.pointerConfiguration, isDrawing: session.drawing.isActive))
+        modifier(PresenterPointer(session: session))
     }
 
     /// Over the presentation the mouse pointer looks like the pointer (PTR-06).
     func presentationPointerStyle(_ session: PresentationSession) -> some View {
         #if os(macOS)
-        pointerStyle(session.pointer.isShown ? PointerCursor.style(for: session.pointerConfiguration) : nil)
+        modifier(PresentationPointerStyle(session: session))
         #else
         self
         #endif
     }
 }
 
-private struct PresenterPointer: ViewModifier {
-    let pointer: PointerState
-    let configuration: PointerConfiguration
-    let isDrawing: Bool
-    @State private var size = CGSize.zero
+#if os(macOS)
+private struct PresentationPointerStyle: ViewModifier {
+    let session: PresentationSession
+    @Environment(AppSettings.self) private var settings: AppSettings?
 
     func body(content: Content) -> some View {
+        content
+            .pointerStyle(session.pointer.isShown ? PointerCursor.style(for: session.pointerConfiguration(settings: settings)) : nil)
+    }
+}
+#endif
+
+private struct PresenterPointer: ViewModifier {
+    let session: PresentationSession
+    @Environment(AppSettings.self) private var settings: AppSettings?
+    @State private var size = CGSize.zero
+
+    private var pointer: PointerState { session.pointer }
+    private var isDrawing: Bool { session.drawing.isActive }
+
+    func body(content: Content) -> some View {
+        let configuration = session.pointerConfiguration(settings: settings)
         content
             .onGeometryChange(for: CGSize.self) { $0.size } action: { size = $0 }
             .onContinuousHover { phase in

@@ -129,3 +129,40 @@ struct AppSettingsTests {
         #expect(store.values["saveDrawings"] as? Bool == false)
     }
 }
+
+@MainActor
+@Suite
+struct IndividualPointerSettingTests {
+    // PTR-05: the custom pointer is Target until the user edits it.
+    @Test func defaultsToTarget() {
+        let settings = AppSettings(store: InMemorySettingsStore())
+        #expect(settings.individualPointer == .target)
+        #expect(AppSettings.Key.individualPointer == "individualPointerKey")
+    }
+
+    @Test func storesTheEditedPointer() {
+        let store = InMemorySettingsStore()
+        let settings = AppSettings(store: store)
+        let pointer = PointerConfiguration(
+            shape: .plus, size: 30, thickness: 6, color: PointerColor(red: 0, green: 0.5, blue: 1, alpha: 0.8),
+            borderWidth: 2, borderColor: .white, shadowWidth: 4
+        )
+        settings.individualPointer = pointer
+        #expect(store.values["individualPointerKey"] is Data)
+        #expect(AppSettings(store: store).individualPointer == pointer)
+    }
+
+    // The old app's value (colors as archived NSColor) or anything else unreadable falls
+    // back to the default.
+    @Test func ignoresUnreadableValues() {
+        let old = Data(#"{"shape":0,"size":44,"color":"YnBsaXN0"}"#.utf8)
+        #expect(AppSettings(store: InMemorySettingsStore(values: ["individualPointerKey": old])).individualPointer == .target)
+        #expect(AppSettings(store: InMemorySettingsStore(values: ["individualPointerKey": "target"])).individualPointer == .target)
+    }
+
+    @Test func clampsStoredValues() throws {
+        let stored = try JSONEncoder().encode(PointerConfiguration(shape: .target, size: 500, thickness: 3))
+        let settings = AppSettings(store: InMemorySettingsStore(values: ["individualPointerKey": stored]))
+        #expect(settings.individualPointer.size == 150)
+    }
+}

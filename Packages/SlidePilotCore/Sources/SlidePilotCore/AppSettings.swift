@@ -30,8 +30,7 @@ public final class InMemorySettingsStore: SettingsStore {
 
 /// The app-wide settings shown in the Settings window (Mac) and the settings sheet (iPad).
 ///
-/// One instance per app. Every change is written to the store right away. Later issues add
-/// their settings here (pointer).
+/// One instance per app. Every change is written to the store right away.
 @MainActor
 @Observable
 public final class AppSettings {
@@ -46,6 +45,7 @@ public final class AppSettings {
         public static let remoteControlLayout = "remoteControlLayout"
         public static let remoteShowsProgress = "remoteShowsProgress"
         public static let remoteLastDeviceID = "remoteLastDeviceID"
+        public static let individualPointer = "individualPointerKey"
     }
 
     /// Keep the display awake while the app runs (SET-04, SET-05). Default off.
@@ -97,6 +97,16 @@ public final class AppSettings {
         didSet { store.set(remoteLastDeviceID, forKey: Key.remoteLastDeviceID) }
     }
 
+    /// The custom pointer of the Individual appearance, edited in the pointer editor
+    /// (PTR-04). Global, not per document (PTR-05, PTR-07); stored as JSON with sRGB colors.
+    /// Default: Target.
+    public var individualPointer: PointerConfiguration {
+        didSet {
+            guard individualPointer != oldValue else { return }
+            store.set(try? JSONEncoder().encode(individualPointer), forKey: Key.individualPointer)
+        }
+    }
+
     @ObservationIgnored private let store: any SettingsStore
 
     public init(store: any SettingsStore) {
@@ -113,5 +123,8 @@ public final class AppSettings {
             .flatMap(RemoteControlLayout.init(rawValue:)) ?? .default
         remoteShowsProgress = store.object(forKey: Key.remoteShowsProgress) as? Bool ?? true
         remoteLastDeviceID = store.object(forKey: Key.remoteLastDeviceID) as? String
+        individualPointer = (store.object(forKey: Key.individualPointer) as? Data)
+            .flatMap { try? JSONDecoder().decode(PointerConfiguration.self, from: $0) }?
+            .clampedForEditor() ?? .defaultIndividual
     }
 }
