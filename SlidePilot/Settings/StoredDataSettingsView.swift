@@ -33,7 +33,7 @@ struct StoredDataSection: View {
             }
             #endif
         } footer: {
-            Text("Notes and settings of your PDFs stay stored when a PDF is deleted. Review and delete them here.")
+            Text("Notes, drawings and settings of your PDFs stay stored when a PDF is deleted. Review and delete them here.")
         }
     }
 }
@@ -112,7 +112,7 @@ struct StoredDataList: View {
                 ContentUnavailableView(
                     "No Stored Data",
                     systemImage: "doc.text",
-                    description: Text("Notes and settings of the PDFs you open appear here.")
+                    description: Text("Notes, drawings and settings of the PDFs you open appear here.")
                 )
             }
         }
@@ -168,9 +168,9 @@ struct StoredDataList: View {
         } message: { deletion in
             switch deletion {
             case .items:
-                Text("The notes and settings that SlidePilot stores are deleted. This can’t be undone.")
+                Text("The notes, drawings and settings that SlidePilot stores are deleted. This can’t be undone.")
             case .notFound:
-                Text("These PDFs may have been deleted, or they are on a drive that isn’t connected or in iCloud and not downloaded. Their notes and settings are deleted. This can’t be undone.")
+                Text("These PDFs may have been deleted, or they are on a drive that isn’t connected or in iCloud and not downloaded. Their notes, drawings and settings are deleted. This can’t be undone.")
             }
         }
         #if os(macOS)

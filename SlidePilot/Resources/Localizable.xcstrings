@@ -2222,34 +2222,34 @@
         }
       }
     },
-    "Notes and settings of the PDFs you open appear here." : {
+    "Notes, drawings and settings of the PDFs you open appear here." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notizen und Einstellungen der PDFs, die du öffnest, erscheinen hier."
+            "value" : "Notizen, Zeichnungen und Einstellungen der PDFs, die du öffnest, erscheinen hier."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les notes et réglages des PDF que vous ouvrez apparaissent ici."
+            "value" : "Les notes, dessins et réglages des PDF que vous ouvrez apparaissent ici."
           }
         }
       }
     },
-    "Notes and settings of your PDFs stay stored when a PDF is deleted. Review and delete them here." : {
+    "Notes, drawings and settings of your PDFs stay stored when a PDF is deleted. Review and delete them here." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notizen und Einstellungen deiner PDFs bleiben gespeichert, wenn ein PDF gelöscht wird. Hier kannst du sie ansehen und löschen."
+            "value" : "Notizen, Zeichnungen und Einstellungen deiner PDFs bleiben gespeichert, wenn ein PDF gelöscht wird. Hier kannst du sie ansehen und löschen."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les notes et réglages de vos PDF restent enregistrés lorsqu’un PDF est supprimé. Consultez-les et supprimez-les ici."
+            "value" : "Les notes, dessins et réglages de vos PDF restent enregistrés lorsqu’un PDF est supprimé. Consultez-les et supprimez-les ici."
           }
         }
       }
@@ -4157,18 +4157,18 @@
         }
       }
     },
-    "The notes and settings that SlidePilot stores are deleted. This can’t be undone." : {
+    "The notes, drawings and settings that SlidePilot stores are deleted. This can’t be undone." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die von SlidePilot gespeicherten Notizen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden."
+            "value" : "Die von SlidePilot gespeicherten Notizen, Zeichnungen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les notes et réglages enregistrés par SlidePilot sont supprimés. Cette action est irréversible."
+            "value" : "Les notes, dessins et réglages enregistrés par SlidePilot sont supprimés. Cette action est irréversible."
           }
         }
       }
@@ -4237,18 +4237,18 @@
         }
       }
     },
-    "These PDFs may have been deleted, or they are on a drive that isn’t connected or in iCloud and not downloaded. Their notes and settings are deleted. This can’t be undone." : {
+    "These PDFs may have been deleted, or they are on a drive that isn’t connected or in iCloud and not downloaded. Their notes, drawings and settings are deleted. This can’t be undone." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diese PDFs wurden vielleicht gelöscht oder liegen auf einem nicht verbundenen Laufwerk oder nicht geladen in iCloud. Ihre Notizen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden."
+            "value" : "Diese PDFs wurden vielleicht gelöscht oder liegen auf einem nicht verbundenen Laufwerk oder nicht geladen in iCloud. Ihre Notizen, Zeichnungen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ces PDF ont peut-être été supprimés, ou se trouvent sur un disque non connecté ou dans iCloud sans être téléchargés. Leurs notes et réglages sont supprimés. Cette action est irréversible."
+            "value" : "Ces PDF ont peut-être été supprimés, ou se trouvent sur un disque non connecté ou dans iCloud sans être téléchargés. Leurs notes, dessins et réglages sont supprimés. Cette action est irréversible."
           }
         }
       }
