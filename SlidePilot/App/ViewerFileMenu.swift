@@ -1,14 +1,15 @@
 #if os(macOS)
 import AppKit
 
-/// Hides the document system's saving items in the File menu (#136).
+/// Hides the document system's New and saving items in the File menu (#136).
 ///
-/// SlidePilot only views PDFs, but `DocumentGroup` puts Save, Save As…, Duplicate,
-/// Rename…, Move To… and Revert To next to Close, and Save fails with an error. SwiftUI
-/// can only replace that command group as a whole, which also drops Close, Open Recent
-/// and Share, so the items are hidden in the menu SwiftUI built instead. A hidden item
-/// takes no part in key equivalent matching, so ⌘S and ⇧⌘S do nothing. Found by trying
-/// it out in the test host:
+/// SlidePilot only views PDFs, but `DocumentGroup` adds a New item that is always
+/// disabled and puts Save, Save As…, Duplicate, Rename…, Move To… and Revert To next to
+/// Close, and Save fails with an error. SwiftUI can only replace these command groups as
+/// a whole, which also drops Control Another Device…, Close, Open Recent and Share, so
+/// the items are hidden in the menu SwiftUI built instead. A hidden item takes no part
+/// in key equivalent matching, so ⌘N, ⌘S and ⇧⌘S do nothing. Found by trying it out in
+/// the test host:
 /// - The items must stay in the menu with their actions: AppKit only adds Share while
 ///   `NSDocument` validates them.
 /// - Save As and Duplicate are alternates (Option key), and NSMenu always shows one
@@ -21,8 +22,9 @@ import AppKit
 ///   glue, not app state.
 @MainActor
 final class ViewerFileMenu {
-    /// The `NSDocument` actions that save, copy, move, lock or revert a document.
+    /// New, and the `NSDocument` actions that save, copy, move, lock or revert a document.
     private static let savingActions: Set<Selector> = [
+        #selector(NSDocumentController.newDocument(_:)),
         #selector(NSDocument.save(_:)),
         #selector(NSDocument.saveAs(_:)),
         #selector(NSDocument.saveTo(_:)),
