@@ -86,7 +86,7 @@ struct SlidePilotFileView: View {
             Button("Import", role: pending.check.replacesData ? .destructive : nil) {
                 Task { await storeImport(pending) }
             }
-            Button("Cancel", role: .cancel) {}
+            Button("Cancel", role: .cancel) { isImporting = false }
         } message: { pending in
             Text(pending.check.confirmationMessage ?? "")
         }
@@ -142,8 +142,15 @@ struct SlidePilotFileView: View {
                     .pickerStyle(.inline)
                     #endif
                 }
-                Button("Choose PDF…") { isChoosingPDF = true }
-                    .disabled(isImporting)
+                HStack {
+                    Button("Choose PDF…") { isChoosingPDF = true }
+                        .disabled(isImporting)
+                    if isImporting {
+                        // Reading a large PDF, or one still in iCloud, can take a moment.
+                        ProgressView()
+                            .controlSize(.small)
+                    }
+                }
             } header: {
                 Text("Import Into")
             } footer: {
@@ -209,7 +216,9 @@ struct SlidePilotFileView: View {
     /// otherwise.
     private func importFile(_ file: SlidePilotFile, intoPDFAt url: URL) async {
         isImporting = true
-        defer { isImporting = false }
+        // Stays on while the confirmation is up; `storeImport` ends it.
+        var finished = true
+        defer { if finished { isImporting = false } }
         let isAccessing = url.startAccessingSecurityScopedResource()
         defer {
             if isAccessing { url.stopAccessingSecurityScopedResource() }
@@ -225,6 +234,8 @@ struct SlidePilotFileView: View {
             failureMessage = String(localized: "“\(url.lastPathComponent)” couldn’t be opened as a PDF.")
             return
         }
+        // Records an open of the PDF (SET-03) even if the import is cancelled: choosing the
+        // PDF counts as using it, and the entry's match is refreshed for its next open.
         guard let opening = await store.open(pdfAt: url, pageCount: pageCount) else {
             failureMessage = String(localized: "SlidePilot can’t store data for “\(url.lastPathComponent)”.")
             return
@@ -243,15 +254,36 @@ struct SlidePilotFileView: View {
         if check.confirmationMessage == nil {
             await storeImport(pending)
         } else {
+            finished = false
             pendingImport = pending
         }
     }
 
     /// Stores the data for a PDF that is not open; the Mac then opens it.
+    ///
+    /// The PDF may have been opened while the confirmation was up: its window holds the old
+    /// entry and would write it back over the import, so the file goes to that window
+    /// instead. One that opens during the write gets it too.
     private func storeImport(_ pending: PendingImport) async {
+        defer { isImporting = false }
         guard let store = CompanionStore.app else { return }
-        _ = await store.importFile(pending.file, into: pending.entry, includingDrawings: savesDrawings)
+        if let session = openSession(for: pending) {
+            hand(pending.file, to: session)
+            return
+        }
+        guard let stored = await store.importFile(pending.file, into: pending.entry, includingDrawings: savesDrawings) else {
+            failureMessage = String(localized: "SlidePilot can’t store data for “\(pending.pdf.lastPathComponent)”.")
+            return
+        }
+        if let session = openSession(for: pending), session.companion.entry != stored {
+            hand(pending.file, to: session)
+            return
+        }
         #if os(macOS)
+        let isAccessing = pending.pdf.startAccessingSecurityScopedResource()
+        defer {
+            if isAccessing { pending.pdf.stopAccessingSecurityScopedResource() }
+        }
         do {
             try await openDocument(at: pending.pdf)
             close()
@@ -263,7 +295,18 @@ struct SlidePilotFileView: View {
         #endif
     }
 
+    /// An open window of the pending import's PDF, also one whose data is still loading.
+    private func openSession(for pending: PendingImport) -> PresentationSession? {
+        let path = pending.pdf.standardizedFileURL.resolvingSymlinksInPath().path(percentEncoded: false)
+        return registry.sessions.first { session in
+            session.companion.entry?.id == pending.entry.id
+                || session.fileURL?.standardizedFileURL.resolvingSymlinksInPath().path(percentEncoded: false) == path
+        }
+    }
+
     /// Reads the PDF off the main actor; coordinated, so a file in iCloud Drive is downloaded.
+    /// The coordinated read blocks one thread of the pool until then, which is acceptable for
+    /// a single import the user started.
     @concurrent
     private static func pageCount(ofPDFAt url: URL) async throws -> Int {
         var coordinationError: NSError?

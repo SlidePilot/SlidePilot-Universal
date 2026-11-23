@@ -23,8 +23,10 @@ struct SlidePilotFileImportCheck {
         let skipsDrawings = file.drawings != nil && !savesDrawings
         replacesData = hasData
         var paragraphs: [String] = []
-        if hasData {
+        if hasData && savesDrawings {
             paragraphs.append(String(localized: "The notes and drawings of this PDF are replaced by those in “\(fileName)”, and its settings are applied. This can’t be undone."))
+        } else if hasData {
+            paragraphs.append(String(localized: "The notes of this PDF are replaced by those in “\(fileName)”, and its settings are applied. This can’t be undone."))
         }
         if mismatch.contains(.fileName) {
             paragraphs.append(String(localized: "The file was exported for “\(file.pdfFileName)”."))
@@ -227,7 +229,8 @@ private struct SlidePilotFileTransferModifier: ViewModifier {
     }
 
     /// Reads and decodes off the main actor; coordinated, so a file in iCloud Drive is
-    /// downloaded first.
+    /// downloaded first. That blocks one thread of the pool meanwhile, which is acceptable for
+    /// a single import the user started.
     @concurrent
     private static func readFile(_ url: URL) async throws -> SlidePilotFile {
         let isAccessing = url.startAccessingSecurityScopedResource()

@@ -4156,6 +4156,22 @@
         }
       }
     },
+    "The notes of this PDF are replaced by those in “%@”, and its settings are applied. This can’t be undone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Notizen dieses PDFs werden durch die aus „%@“ ersetzt, und deren Einstellungen werden übernommen. Das kann nicht widerrufen werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes de ce PDF sont remplacées par celles de « %@ », et ses réglages sont appliqués. Cette action est irréversible."
+          }
+        }
+      }
+    },
     "The notes, drawings and settings in this file replace those of the PDF. SlidePilot asks before replacing stored data." : {
       "localizations" : {
         "de" : {

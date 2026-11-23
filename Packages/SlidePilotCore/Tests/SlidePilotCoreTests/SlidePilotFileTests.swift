@@ -237,7 +237,7 @@ struct SlidePilotFileImportTests {
         #expect(opening.entry.hasStoredData)
         let notes = CompanionNotes(format: .rtf, pages: [Data([1])])
         let file = SlidePilotFile(pdfFileName: "talk.pdf", pdfPageCount: 2, exportedAt: .now, notes: notes, drawings: drawings)
-        let imported = await store.importFile(file, into: opening.entry, includingDrawings: false)
+        let imported = try #require(await store.importFile(file, into: opening.entry, includingDrawings: false))
         #expect(imported.notes == notes)
         #expect(imported.drawings == nil)
         #expect(imported.settings.isNavigatorDisplayed == true)
@@ -246,6 +246,19 @@ struct SlidePilotFileImportTests {
         await companion.open(pdfAt: url, pageCount: 2)
         #expect(companion.notes == notes)
         #expect(companion.entry?.id == stored.id)
+    }
+
+    // An entry deleted while the import waited for confirmation is not written back (SET-07).
+    @Test func importIntoADeletedEntryWritesNothing() async throws {
+        let store = CompanionStore(directory: directory, locator: locator)
+        let url = locator.add("talk.pdf")
+        var entry = try #require(await store.open(pdfAt: url, pageCount: 2)).entry
+        entry.settings.isNavigatorDisplayed = true
+        await store.save(entry)
+        await store.delete(entry.id)
+        let file = SlidePilotFile(pdfFileName: "talk.pdf", pdfPageCount: 2, exportedAt: .now, notes: CompanionNotes(format: .rtf, pages: [Data([1])]))
+        #expect(await store.importFile(file, into: entry, includingDrawings: true) == nil)
+        #expect(await store.entries().isEmpty)
     }
 
     // The stored data overview exports an entry, from the open window when there is one.

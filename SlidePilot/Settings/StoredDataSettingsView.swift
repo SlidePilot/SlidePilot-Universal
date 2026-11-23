@@ -56,6 +56,7 @@ struct StoredDataList: View {
     #if os(macOS)
     /// The entry being exported as a `.slidepilot` file (NOTES-11).
     @State private var export: (document: SlidePilotFileDocument, name: String)?
+    @State private var exportFailure: String?
     #endif
     #if os(iOS)
     @Environment(\.editMode) private var editMode
@@ -178,7 +179,20 @@ struct StoredDataList: View {
             document: export?.document,
             contentType: .slidePilotFile,
             defaultFilename: export?.name
-        ) { _ in }
+        ) { result in
+            if case .failure(let error) = result, (error as? CocoaError)?.code != .userCancelled {
+                exportFailure = error.localizedDescription
+            }
+        }
+        .alert(
+            Text("The SlidePilot File Couldn’t Be Exported"),
+            isPresented: Binding(get: { exportFailure != nil }, set: { if !$0 { exportFailure = nil } }),
+            presenting: exportFailure
+        ) { _ in
+            Button("OK") {}
+        } message: { message in
+            Text(message)
+        }
         #endif
         .task {
             if overview == nil {
