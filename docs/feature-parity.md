@@ -186,7 +186,7 @@ Source: `Base.lproj/Main.storyboard` and the key handlers listed. "Plain" means 
 | Menu | Command | Shortcut | ID |
 |---|---|---|---|
 | SlidePilot | Settings… | ⌘, | SET-01 |
-| File | Open… / Close | ⌘O / ⌘W | DOC-01 |
+| File | Open… / Close (Mac: the document system's Save, Save As…, Duplicate, Rename…, Move To… and Revert To are hidden, as the old app had none; ⌘S and ⇧⌘S do nothing, #136. The system adds Share and a disabled New, which stay) | ⌘O / ⌘W | DOC-01 |
 | File | Export Drawings | ⌥⌘E (old: ⇧⌘S) | DRAW-10 |
 | Edit | Undo / Redo / Cut / Copy / Paste / Paste and Match Style / Select All | ⌘Z / ⇧⌘Z / ⌘X / ⌘C / ⌘V / ⌥⇧⌘V / ⌘A | – |
 | Format | Bold / Italic / Underline | ⌘B / ⌘I / ⌘U | NOTES-04 |

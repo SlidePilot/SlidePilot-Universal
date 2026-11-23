@@ -13,5 +13,12 @@ final class MacAppDelegate: NSObject, NSApplicationDelegate {
         }
         return .terminateLater
     }
+
+    /// Keeps Save and the other saving items out of the File menu (#136).
+    private let fileMenu = ViewerFileMenu()
+
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        fileMenu.start()
+    }
 }
 #endif
