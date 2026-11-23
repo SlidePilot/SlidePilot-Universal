@@ -105,6 +105,13 @@ private struct PresenterChrome: ViewModifier {
             #if os(iOS)
             // How to present on a second screen (#82); the Mac needs no hint.
             .externalDisplayHint()
+            // Import/export notes and drawings (NOTES-06, DRAW-10). Here, in the slides
+            // column, so a phone's compact stack shows it too.
+            .toolbar {
+                ToolbarItem(placement: .secondaryAction) {
+                    FileTransferMenu()
+                }
+            }
             // The Mac has the Settings window instead (SET-01).
             .settingsSheet()
             #endif

@@ -1,6 +1,7 @@
 #!/bin/sh
-# Copies the fixture PDFs into "On My iPad/SlidePilot Fixtures" of an iOS simulator,
-# so they can be opened from SlidePilot's document browser.
+# Copies the fixture PDFs into "SlidePilot Fixtures" in the local Files storage ("On My iPad"
+# or "On My iPhone") of an iPad or iPhone simulator, so they can be opened from SlidePilot's
+# document browser.
 #
 # Usage (from the repository root): scripts/sim-copy-fixtures.sh <simulator UDID>
 # Find the UDID with: xcrun simctl list devices available
@@ -30,7 +31,7 @@ for group in "$groups"/*; do
     fi
 done
 if [ -z "$storage" ] || [ ! -d "$storage" ]; then
-    echo "No \"On My iPad\" storage found. Boot the simulator once and open the Files app, then try again." >&2
+    echo "No \"On My iPad\" or \"On My iPhone\" storage found. Boot the simulator once and open the Files app, then try again." >&2
     exit 69
 fi
 
@@ -39,4 +40,4 @@ mkdir -p "$destination/media"
 cp Fixtures/*.pdf Fixtures/*.rtf "$destination/"
 # media.pdf links to media/ relative to itself.
 cp Fixtures/media/* "$destination/media/"
-echo "Copied fixtures to On My iPad/SlidePilot Fixtures on $udid."
+echo "Copied fixtures to SlidePilot Fixtures (On My iPad / On My iPhone) on $udid."

@@ -1,9 +1,9 @@
 #if os(iOS)
 import SwiftUI
 
-/// Import Notes…, Export Notes… and Export Drawings… in one toolbar menu on iPad, where the
-/// menu bar is hidden until it is pulled down (NOTES-06, DRAW-10). One menu keeps the
-/// toolbar short and names each command next to its symbol.
+/// Import Notes…, Export Notes… and Export Drawings… in one toolbar menu on iPad and iPhone:
+/// the iPad hides its menu bar until it is pulled down, the iPhone has none (NOTES-06,
+/// DRAW-10). One menu keeps the toolbar short and names each command next to its symbol.
 struct FileTransferMenu: View {
     @FocusedValue(\.notesFile) private var notesFile
     @FocusedValue(\.drawingsExport) private var drawingsExport

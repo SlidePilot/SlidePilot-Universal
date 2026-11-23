@@ -3380,18 +3380,18 @@
         }
       }
     },
-    "SlidePilot found the notes file “%@” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder. Import Notes… in the File menu stays available." : {
+    "SlidePilot found the notes file “%@” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder. Import Notes… stays available." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SlidePilot hat neben diesem PDF die Notizdatei „%@“ gefunden. Erlaube SlidePilot, den Ordner des PDFs zu lesen, um sie zu importieren. Das ist nur einmal pro Ordner nötig. „Notizen importieren …“ im Menü „Ablage“ bleibt verfügbar."
+            "value" : "SlidePilot hat neben diesem PDF die Notizdatei „%@“ gefunden. Erlaube SlidePilot, den Ordner des PDFs zu lesen, um sie zu importieren. Das ist nur einmal pro Ordner nötig. „Notizen importieren …“ bleibt verfügbar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SlidePilot a trouvé le fichier de notes « %@ » à côté de ce PDF. Pour l’importer, autorisez SlidePilot à lire le dossier du PDF. Cela n’est nécessaire qu’une fois par dossier. « Importer des notes… » reste disponible dans le menu Fichier."
+            "value" : "SlidePilot a trouvé le fichier de notes « %@ » à côté de ce PDF. Pour l’importer, autorisez SlidePilot à lire le dossier du PDF. Cela n’est nécessaire qu’une fois par dossier. « Importer des notes… » reste disponible."
           }
         }
       }

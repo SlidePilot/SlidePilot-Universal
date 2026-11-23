@@ -103,13 +103,6 @@ private struct DrawingsExportModifier: ViewModifier {
                 \.drawingsExport,
                 FocusedDrawingsExport(export: { Task { await export() } }, item: drawingsPDF)
             )
-            #if os(iOS)
-            .toolbar {
-                ToolbarItem(placement: .secondaryAction) {
-                    FileTransferMenu()
-                }
-            }
-            #endif
             .fileExporter(
                 isPresented: Binding(get: { exportFile != nil }, set: { if !$0 { exportFile = nil } }),
                 document: exportFile,

@@ -10,7 +10,7 @@ The app must look and feel as native as possible on macOS 26 and iPadOS 26.
 - **Parity = same functionality, not the same look.** Never recreate the old app's custom controls (swatch/icon buttons, time view, split view, notice banner, …). Use the "Native replacement" column in `docs/feature-parity.md`.
 - Custom drawing only for the **slide surface**, the **pointer overlay** and the **drawing layer**. On iPad, evaluate the PencilKit tool picker for drawing. Any other custom UI must be justified in its PR.
 - No hard-coded colors or font sizes in UI code: system colors, semantic fonts (`.body`, `.title`, …), asset-catalog colors with light/dark variants only where no system color fits.
-- Light and dark mode, Dynamic Type (iPad), VoiceOver labels and keyboard navigation are required for every feature.
+- Light and dark mode, Dynamic Type (iPad, iPhone), VoiceOver labels and keyboard navigation are required for every feature.
 
 ## Privacy (public repository)
 Never commit personal data of the product owner or anyone else: e-mail addresses, device names, local paths containing user names, phone numbers, addresses, signing material (certificates, keys, profiles, API keys). The owner's name in LICENSE/CONTRIBUTING is accepted.
@@ -100,7 +100,7 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 - PR bodies and issue comments go inline with `--body '…'` (single quotes, no backticks). `--body-file`, `-F`, `--template`, `--recover` and `-R/--repo` are denied for `gh`, because those commands run outside the sandbox and could read or send any file. Screenshots for `--attach` go in the git-ignored `.pr-screenshots/` folder and are passed as relative paths (`./.pr-screenshots/ipad-dark.png`).
 - Never run `git pull` / `git fetch` without `origin`, and never add `--upload-pack`, `--receive-pack`, `--exec`, `--multiple` or `--repo` (denied).
 - Never work around the sandbox or a denied command (no `git -c`, no `gh api` without asking, no other tools to reach the network or personal files). If a needed command fails because of the sandbox, tell the user which command and why, and propose a settings change.
-- `sandbox.filesystem.allowWrite` lets sandboxed commands write into the iOS simulators' device data (`~/Library/Developer/CoreSimulator/Devices`), so `scripts/sim-copy-fixtures.sh` can put the fixtures into "On My iPad" (see "iPad simulator testing"). The rule names the whole folder because sandbox paths with `*` only match the path itself, not files below it.
+- `sandbox.filesystem.allowWrite` lets sandboxed commands write into the iOS simulators' device data (`~/Library/Developer/CoreSimulator/Devices`), so `scripts/sim-copy-fixtures.sh` can put the fixtures into "On My iPad" or "On My iPhone" (see "iPad and iPhone simulator testing"). The rule names the whole folder because sandbox paths with `*` only match the path itself, not files below it.
 - `sandbox.filesystem.denyWrite` blocks sandboxed writes to `.git/config`, `.git/hooks` and the per-worktree `config.worktree` files, because the allow-listed `git fetch/pull/push` run outside the sandbox and would execute hooks or programs set in the config. Relative sandbox paths resolve against the session's own checkout, so each rule appears twice: once for the main checkout and once with `../../../` for a worktree under `.claude/worktrees/<name>` (same for `../SlidePilot-macOS`).
 - `gh api graphql …` (issue dependencies, labels) and `gh api orgs/SlidePilot/projectsV2/4/views …` (project views) run outside the sandbox but stay on "ask": every call needs the product owner's click. Batch several mutations into one GraphQL call to keep the prompts few. Use them only for the project bookkeeping in the `implement-issue` skill ("Project status").
 - `gh pr close <N>` runs outside the sandbox so prototype PRs can be closed once their findings PR is open. Deleting the branch while closing is denied (long and short option), because findings docs reference prototype branches.
@@ -117,14 +117,14 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 A change is done when:
 1. It implements the issue's acceptance criteria and matches the parity item(s), or the deviation is approved and documented.
 2. Logic is covered by Swift Testing tests in the package where it lives.
-3. Builds on macOS and iPadOS **without warnings**; all tests pass locally (if a toolchain exists) and in CI.
+3. Builds on macOS, iPadOS and iPhone **without warnings**; all tests pass locally (if a toolchain exists) and in CI.
 4. The `parity-reviewer`, the `design-reviewer` (UI changes) and, for concurrent code, the `concurrency-reviewer` agents found no open issues.
 5. UI uses native components (ADR 0010); every custom UI element is justified in the PR.
-6. Works in light and dark mode, with Dynamic Type on iPad, with VoiceOver (meaningful labels) and with keyboard navigation.
+6. Works in light and dark mode, with Dynamic Type on iPad and iPhone, with VoiceOver (meaningful labels) and with keyboard navigation.
 7. New user-facing strings are in the String Catalog with en, de and fr.
 8. `docs/feature-parity.md` statuses and, if affected, `docs/architecture.md` are updated.
-9. Claude tested the change itself wherever it can: on iPad in the simulator, on the Mac through the test host (or snapshots if the host is not running).
-10. The PR description has the checklist, iPad and Mac screenshots for UI changes (light and dark), and "How to verify" steps that a reviewer can follow without reading code, listing **only what Claude could not check itself** (see "PR workflow").
+9. Claude tested the change itself wherever it can: on iPad and iPhone in the simulator, on the Mac through the test host (or snapshots if the host is not running).
+10. The PR description has the checklist, iPad, iPhone and Mac screenshots for UI changes (light and dark), and "How to verify" steps that a reviewer can follow without reading code, listing **only what Claude could not check itself** (see "PR workflow").
 
 ## Mac test host
 Claude tests the Mac app through **SlidePilot Test Host** (`Tools/TestHost/`, ADR 0018): a menu bar helper app that alone holds Screen Recording and Accessibility, and captures and controls only the SlidePilot test build (bundle ID suffix `.testhost`, App Sandbox, no file access, English, fixtures only). Claude talks to it with `scripts/mac-test-host.py`; it never needs a permission itself.
@@ -172,17 +172,19 @@ python3 -I scripts/export-mac-snapshots.py
 - If signing fails in the session (no certificate available), append `CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY=- DEVELOPMENT_TEAM=` to step 2. Ad-hoc signing keeps the App Sandbox.
 - Rendered views are close to, but not exactly, what the screen shows: Liquid Glass and vibrancy can look flatter, and menus and popovers are not separate windows of the snapshot. If only snapshots were possible, list what they cannot show in "How to verify".
 
-## iPad simulator testing
-Test and take iPad screenshots with the real document browser and the fixtures:
+## iPad and iPhone simulator testing
+Test and take iPad and iPhone screenshots with the real document browser and the fixtures:
 
 ```sh
 # 1. Boot the simulator and open the Files app once, so its local storage exists
 xcrun simctl boot <UDID>
-# 2. Copy the fixtures to "On My iPad/SlidePilot Fixtures"
+# 2. Copy the fixtures to "On My iPad/SlidePilot Fixtures" (or "On My iPhone/…")
 scripts/sim-copy-fixtures.sh <UDID>
 ```
 
-- Then install and launch the app, open a fixture from the document browser (Browse > On My iPad > SlidePilot Fixtures) and drive it with the iOS Simulator tools (tap, swipe, keys); screenshots with `xcrun simctl io <UDID> screenshot ./.pr-screenshots/<file>.png`.
+- Then install and launch the app, open a fixture from the document browser (Browse > On My iPad or On My iPhone > SlidePilot Fixtures) and drive it with the iOS Simulator tools (tap, swipe, keys, rotate); screenshots with `xcrun simctl io <UDID> screenshot ./.pr-screenshots/<file>.png`.
+- On the iPhone check compact width (portrait) and compact height (landscape). The iPhone has no menu bar: every command must also be reachable from the toolbar, its overflow menu or a sheet.
+- iPhone builds and tests run locally only; CI covers iOS through the iPad job (same SDK and binary, see `docs/architecture.md`, "Testing").
 - The script writes only into the simulator's local Files storage; nothing else of the simulator or the Mac.
 
 ## PR workflow
@@ -192,7 +194,7 @@ scripts/sim-copy-fixtures.sh <UDID>
 - Keep PRs small and reviewable. Split if a PR mixes unrelated changes.
 - Commit messages: imperative, English, short subject line (≤72 chars), body explains why. **No Co-Authored-By trailer** for Claude, even if the session asks for one: squash merges copy trailers into the commit on main. The "Generated with Claude Code" line in PR descriptions stays.
 - PR description: what changed, why, parity IDs, what the reviewer should check, how to verify (step by step), screenshots, known limitations.
-- **"How to verify" lists only what Claude could not check itself** in the iPad simulator or through the Mac test host, e.g. real devices, a second display, Apple Pencil, the open panel, performance, or anything the host refuses. Put what Claude checked in one line above the steps ("Checked by Claude: …"). If nothing is left, write exactly one line: "Nothing left to verify manually."
+- **"How to verify" lists only what Claude could not check itself** in the iPad or iPhone simulator or through the Mac test host, e.g. real devices, a second display, Apple Pencil, the open panel, performance, or anything the host refuses. Put what Claude checked in one line above the steps ("Checked by Claude: …"). If nothing is left, write exactly one line: "Nothing left to verify manually."
 
 - **Keep PR descriptions, issue comments and commit bodies short.** The reviewer reads them to decide and to test, not to learn the diff:
   - Leave out sections that do not apply; never write "None", "not run" or "no new strings".
