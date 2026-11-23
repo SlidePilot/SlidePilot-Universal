@@ -5,9 +5,10 @@ import SwiftUI
 /// menu bar is hidden until it is pulled down (NOTES-06, DRAW-10). One menu keeps the
 /// toolbar short and names each command next to its symbol.
 struct FileTransferMenu: View {
-    @FocusedValue(\.notesFile) private var notesFile
-    @FocusedValue(\.drawingsExport) private var drawingsExport
-    @FocusedValue(\.slidePilotFile) private var slidePilotFile
+    // From the environment: focused values do not reach a toolbar menu on iPad.
+    @Environment(\.notesFile) private var notesFile
+    @Environment(\.drawingsExport) private var drawingsExport
+    @Environment(\.slidePilotFile) private var slidePilotFile
 
     var body: some View {
         Menu {

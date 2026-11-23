@@ -51,6 +51,11 @@ extension FocusedValues {
     @Entry var slidePilotFile: FocusedSlidePilotFile?
 }
 
+extension EnvironmentValues {
+    /// The same commands for the iPad toolbar menu, which focused values do not reach.
+    @Entry var slidePilotFile: FocusedSlidePilotFile?
+}
+
 /// File ▸ Import SlidePilot File… and Export SlidePilot File…, after the notes and drawings
 /// commands. No shortcuts: ⇧⌘O and ⇧⌘E are the notes', ⌥⌘E the drawings' (ADR 0019).
 struct SlidePilotFileCommands: Commands {
@@ -121,11 +126,8 @@ private struct SlidePilotFileTransferModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .focusedSceneValue(\.slidePilotFile, companion.entry != nil ? FocusedSlidePilotFile(
-                importFile: { isImporting = true },
-                exportFile: export,
-                shareItem: shareItem
-            ) : nil)
+            .focusedSceneValue(\.slidePilotFile, slidePilotFileCommands)
+            .environment(\.slidePilotFile, slidePilotFileCommands)
             .onChange(of: fileURL, initial: true) { _, fileURL in
                 session.fileURL = fileURL
             }
@@ -178,6 +180,14 @@ private struct SlidePilotFileTransferModifier: ViewModifier {
             } message: { failure in
                 Text(failure.message)
             }
+    }
+
+    private var slidePilotFileCommands: FocusedSlidePilotFile? {
+        companion.entry != nil ? FocusedSlidePilotFile(
+            importFile: { isImporting = true },
+            exportFile: export,
+            shareItem: shareItem
+        ) : nil
     }
 
     // MARK: - Export

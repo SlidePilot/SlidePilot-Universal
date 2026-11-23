@@ -105,6 +105,13 @@ private struct PresenterChrome: ViewModifier {
             // Show Pointer and its appearance (PTR-01, PTR-02).
             .pointerControls(session)
             #if os(iOS)
+            // Notes, drawings and .slidepilot import and export (NOTES-06, DRAW-10, NOTES-11),
+            // in the slides column's bar like the other items.
+            .toolbar {
+                ToolbarItem(placement: .secondaryAction) {
+                    FileTransferMenu()
+                }
+            }
             // How to present on a second screen (#82); the Mac needs no hint.
             .externalDisplayHint()
             // The Mac has the Settings window instead (SET-01).

@@ -38,6 +38,10 @@ struct SlidePilotFileView: View {
     /// iPad: the PDF the data was stored for, until the user closed the message.
     @State private var importedPDFName: String?
     @State private var failureMessage: String?
+    #if os(macOS)
+    /// `dismiss` does not close a document window on the Mac.
+    @State private var window = FileWindowReference()
+    #endif
 
     private var fileName: String {
         fileURL?.lastPathComponent ?? SlidePilotFile.exportName(forPDFNamed: nil)
@@ -70,9 +74,12 @@ struct SlidePilotFileView: View {
         }
         #if os(macOS)
         .frame(minWidth: 420, idealWidth: 460, minHeight: 340, idealHeight: 400)
+        .background(WindowBridge { [window] in window.window = $0 })
         #endif
         .alert(
-            Text("Replace the Data of “\(pendingImport?.entry.pdf.fileName ?? "")”?"),
+            pendingImport?.check.replacesData == false
+                ? Text("Import the SlidePilot File?")
+                : Text("Replace the Data of “\(pendingImport?.entry.pdf.fileName ?? "")”?"),
             isPresented: Binding(get: { pendingImport != nil }, set: { if !$0 { pendingImport = nil } }),
             presenting: pendingImport
         ) { pending in
@@ -88,7 +95,7 @@ struct SlidePilotFileView: View {
             isPresented: Binding(get: { importedPDFName != nil }, set: { if !$0 { importedPDFName = nil } }),
             presenting: importedPDFName
         ) { _ in
-            Button("OK") { dismiss() }
+            Button("OK") { close() }
         } message: { pdfName in
             Text("Open “\(pdfName)” to present with the imported notes, drawings and settings.")
         }
@@ -146,14 +153,11 @@ struct SlidePilotFileView: View {
         .formStyle(.grouped)
         .navigationTitle(fileName)
         .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Import") {
-                    if let session = openDocuments.first(where: { $0.id == target }) {
-                        Task { await hand(file, to: session) }
-                    }
+            // Only for an open PDF; Choose PDF… imports on its own.
+            if !openDocuments.isEmpty {
+                ToolbarItem(placement: .confirmationAction) {
+                    importButton(file)
                 }
-                .disabled(target == nil || isImporting)
-                .keyboardShortcut(.defaultAction)
             }
         }
         .fileImporter(isPresented: $isChoosingPDF, allowedContentTypes: [.pdf]) { result in
@@ -169,22 +173,36 @@ struct SlidePilotFileView: View {
         }
     }
 
+    private func importButton(_ file: SlidePilotFile) -> some View {
+        Button("Import") {
+            if let session = openDocuments.first(where: { $0.id == target }) {
+                hand(file, to: session)
+            }
+        }
+        .disabled(target == nil || isImporting)
+        .keyboardShortcut(.defaultAction)
+    }
+
     /// The open PDF with the file's PDF name, or the only open PDF.
     private func defaultTarget(for file: SlidePilotFile) -> PresentationSession.ID? {
         let documents = openDocuments
         return (documents.first { pdfName(of: $0) == file.pdfFileName } ?? (documents.count == 1 ? documents[0] : nil))?.id
     }
 
-    /// Hands the file to an open document, whose window asks before importing, and brings
-    /// that window forward on the Mac.
-    private func hand(_ file: SlidePilotFile, to session: PresentationSession) async {
+    /// Hands the file to an open document, whose window asks before importing. Closing this
+    /// window brings that one forward.
+    private func hand(_ file: SlidePilotFile, to session: PresentationSession) {
         session.slidePilotFileRequest = SlidePilotFileRequest(file: file, fileName: fileName)
+        close()
+    }
+
+    /// Closes this file's window once the import is handed on.
+    private func close() {
         #if os(macOS)
-        if let url = session.fileURL {
-            _ = try? await openDocument(at: url)
-        }
-        #endif
+        window.window?.close()
+        #else
         dismiss()
+        #endif
     }
 
     /// Imports into a chosen PDF: through its window when it is open, into its stored entry
@@ -214,7 +232,7 @@ struct SlidePilotFileView: View {
         // Open already, maybe under another URL form: its window imports, so its next save
         // does not write the old data back.
         if let session = registry.sessions.first(where: { $0.companion.entry?.id == opening.entry.id }) {
-            await hand(file, to: session)
+            hand(file, to: session)
             return
         }
         let check = SlidePilotFileImportCheck(
@@ -236,7 +254,7 @@ struct SlidePilotFileView: View {
         #if os(macOS)
         do {
             try await openDocument(at: pending.pdf)
-            dismiss()
+            close()
         } catch {
             importedPDFName = pending.entry.pdf.fileName
         }
@@ -268,3 +286,10 @@ struct SlidePilotFileView: View {
         }
     }
 }
+
+#if os(macOS)
+/// The window of an opened `.slidepilot` file. A reference, so storing it does not redraw.
+private final class FileWindowReference {
+    weak var window: NSWindow?
+}
+#endif

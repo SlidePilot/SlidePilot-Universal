@@ -16,6 +16,11 @@ extension FocusedValues {
     @Entry var drawingsExport: FocusedDrawingsExport?
 }
 
+extension EnvironmentValues {
+    /// The same export for the iPad toolbar menu, which focused values do not reach.
+    @Entry var drawingsExport: FocusedDrawingsExport?
+}
+
 /// File ▸ Export Drawings… (⌥⌘E), next to Export Notes… (⇧⌘E). The old app used ⇧⌘S,
 /// which is easily mistaken for a save (DRAW-10).
 struct DrawingsExportCommands: Commands {
@@ -99,17 +104,8 @@ private struct DrawingsExportModifier: ViewModifier {
         content
             // A short task on the main actor; a result that arrives after the window closed
             // only sets state that is gone. A second ⌥⌘E during an export is ignored.
-            .focusedSceneValue(
-                \.drawingsExport,
-                FocusedDrawingsExport(export: { Task { await export() } }, item: drawingsPDF)
-            )
-            #if os(iOS)
-            .toolbar {
-                ToolbarItem(placement: .secondaryAction) {
-                    FileTransferMenu()
-                }
-            }
-            #endif
+            .focusedSceneValue(\.drawingsExport, drawingsExportCommand)
+            .environment(\.drawingsExport, drawingsExportCommand)
             .fileExporter(
                 isPresented: Binding(get: { exportFile != nil }, set: { if !$0 { exportFile = nil } }),
                 document: exportFile,
@@ -130,6 +126,10 @@ private struct DrawingsExportModifier: ViewModifier {
             } message: { message in
                 Text(message)
             }
+    }
+
+    private var drawingsExportCommand: FocusedDrawingsExport {
+        FocusedDrawingsExport(export: { Task { await export() } }, item: drawingsPDF)
     }
 
     private var drawingsPDF: DrawingsPDF {
