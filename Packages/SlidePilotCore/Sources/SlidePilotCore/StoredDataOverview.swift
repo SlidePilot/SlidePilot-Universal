@@ -2,12 +2,13 @@ import Foundation
 import Observation
 
 /// A kind of data that a companion entry can hold, as listed in the stored data overview
-/// (SET-07). A new kind (e.g. drawings) adds a case here and its check in
+/// (SET-07) and for a `.slidepilot` file (NOTES-11). A new kind adds a case here and its check in
 /// `CompanionEntry.storedDataKinds` (and, if it is user content, in
 /// `CompanionEntry.holdsUserContent`, so it does not expire); the overview lists it without
 /// further changes.
 public enum StoredDataKind: String, CaseIterable, Sendable, Hashable {
     case notes
+    case drawings
     case settings
 }
 
@@ -17,6 +18,7 @@ extension CompanionEntry {
         StoredDataKind.allCases.filter { kind in
             switch kind {
             case .notes: !(notes?.isEmpty ?? true)
+            case .drawings: !(drawings?.isEmpty ?? true)
             case .settings: !settings.isEmpty
             }
         }
@@ -146,6 +148,15 @@ public final class StoredDataOverview {
             await store.delete(id)
         }
         await reload()
+    }
+
+    /// The data of an entry as a `.slidepilot` file (NOTES-11). An open document's entry is
+    /// taken from its window, which may hold changes that are not saved yet.
+    public func exportFile(for id: UUID, at date: Date = Date()) async -> SlidePilotFile? {
+        if let companion = openCompanions().first(where: { $0.entry?.id == id }) {
+            return companion.exportFile(at: date)
+        }
+        return await store?.entry(withID: id).map { SlidePilotFile(entry: $0, exportedAt: date) }
     }
 
     /// Deletes every entry whose PDF is not found.

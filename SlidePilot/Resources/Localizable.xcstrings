@@ -445,6 +445,22 @@
         }
       }
     },
+    "Can’t Import This File" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datei kann nicht importiert werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’importer ce fichier"
+          }
+        }
+      }
+    },
     "Center" : {
       "localizations" : {
         "de" : {
@@ -490,6 +506,55 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vérifiez que le fichier se trouve à l’emplacement attendu par le PDF, relativement au PDF."
+          }
+        }
+      }
+    },
+    "Choose" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auswählen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir"
+          }
+        }
+      }
+    },
+    "Choose PDF…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF auswählen …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir un PDF…"
+          }
+        }
+      }
+    },
+    "Choose a SlidePilot file to import into this PDF." : {
+      "comment" : "Message of the open panel for importing a .slidepilot file (NOTES-11)",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähle eine SlidePilot-Datei, die in dieses PDF importiert wird."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez un fichier SlidePilot à importer dans ce PDF."
           }
         }
       }
@@ -684,6 +749,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Connexion…"
+          }
+        }
+      }
+    },
+    "Contains" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enthält"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contient"
           }
         }
       }
@@ -892,6 +973,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Couleur personnalisée"
+          }
+        }
+      }
+    },
+    "Data Imported" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daten importiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Données importées"
           }
         }
       }
@@ -1242,6 +1339,22 @@
         }
       }
     },
+    "Drawings" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeichnungen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dessins"
+          }
+        }
+      }
+    },
     "Drawings stay on their slides and are stored with the PDF. Turning this off deletes all drawings." : {
       "localizations" : {
         "de" : {
@@ -1358,6 +1471,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exporter les notes…"
+          }
+        }
+      }
+    },
+    "Export SlidePilot File…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot-Datei exportieren …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter un fichier SlidePilot…"
+          }
+        }
+      }
+    },
+    "Exported" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportiert"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporté"
+          }
+        }
+      }
+    },
+    "Export…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportieren …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter…"
           }
         }
       }
@@ -1571,6 +1732,22 @@
         }
       }
     },
+    "Import Into" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importieren in"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer dans"
+          }
+        }
+      }
+    },
     "Import Notes for This PDF?" : {
       "localizations" : {
         "de" : {
@@ -1603,6 +1780,22 @@
         }
       }
     },
+    "Import SlidePilot File…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot-Datei importieren …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer un fichier SlidePilot…"
+          }
+        }
+      }
+    },
     "Import and Export" : {
       "comment" : "iPad toolbar menu with Import Notes, Export Notes and Export Drawings",
       "localizations" : {
@@ -1616,6 +1809,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Importer et exporter"
+          }
+        }
+      }
+    },
+    "Import the SlidePilot File?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot-Datei importieren?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer le fichier SlidePilot ?"
           }
         }
       }
@@ -1941,6 +2150,22 @@
         }
       }
     },
+    "No PDF is open. Choose the PDF to import the file into." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es ist kein PDF geöffnet. Wähle das PDF, in das die Datei importiert werden soll."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun PDF n’est ouvert. Choisissez le PDF dans lequel importer le fichier."
+          }
+        }
+      }
+    },
     "No Stored Data" : {
       "localizations" : {
         "de" : {
@@ -1969,6 +2194,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucun appareil de confiance"
+          }
+        }
+      }
+    },
+    "No stored data" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine gespeicherten Daten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune donnée enregistrée"
           }
         }
       }
@@ -2103,34 +2344,34 @@
         }
       }
     },
-    "Notes and settings of the PDFs you open appear here." : {
+    "Notes, drawings and settings of the PDFs you open appear here." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notizen und Einstellungen der PDFs, die du öffnest, erscheinen hier."
+            "value" : "Notizen, Zeichnungen und Einstellungen der PDFs, die du öffnest, erscheinen hier."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les notes et réglages des PDF que vous ouvrez apparaissent ici."
+            "value" : "Les notes, dessins et réglages des PDF que vous ouvrez apparaissent ici."
           }
         }
       }
     },
-    "Notes and settings of your PDFs stay stored when a PDF is deleted. Review and delete them here." : {
+    "Notes, drawings and settings of your PDFs stay stored when a PDF is deleted. Review and delete them here." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notizen und Einstellungen deiner PDFs bleiben gespeichert, wenn ein PDF gelöscht wird. Hier kannst du sie ansehen und löschen."
+            "value" : "Notizen, Zeichnungen und Einstellungen deiner PDFs bleiben gespeichert, wenn ein PDF gelöscht wird. Hier kannst du sie ansehen und löschen."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les notes et réglages de vos PDF restent enregistrés lorsqu’un PDF est supprimé. Consultez-les et supprimez-les ici."
+            "value" : "Les notes, dessins et réglages de vos PDF restent enregistrés lorsqu’un PDF est supprimé. Consultez-les et supprimez-les ici."
           }
         }
       }
@@ -2223,6 +2464,22 @@
         }
       }
     },
+    "Open PDFs" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geöffnete PDFs"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF ouverts"
+          }
+        }
+      }
+    },
     "Open Presentations" : {
       "localizations" : {
         "de" : {
@@ -2305,6 +2562,22 @@
         }
       }
     },
+    "Open “%@” to present with the imported notes, drawings and settings." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne „%@“, um mit den importierten Notizen, Zeichnungen und Einstellungen zu präsentieren."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez « %@ » pour présenter avec les notes, dessins et réglages importés."
+          }
+        }
+      }
+    },
     "Orange" : {
       "localizations" : {
         "de" : {
@@ -2349,6 +2622,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dépassement %@"
+          }
+        }
+      }
+    },
+    "PDF" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF"
           }
         }
       }
@@ -2447,6 +2736,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Numéro de page"
+          }
+        }
+      }
+    },
+    "Pages" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seiten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pages"
           }
         }
       }
@@ -2831,6 +3136,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remplacer les notes"
+          }
+        }
+      }
+    },
+    "Replace the Data of This PDF?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daten dieses PDFs ersetzen?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplacer les données de ce PDF ?"
+          }
+        }
+      }
+    },
+    "Replace the Data of “%@”?" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daten von „%@“ ersetzen?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remplacer les données de « %@ » ?"
           }
         }
       }
@@ -3327,6 +3664,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Marge des diapositives"
+          }
+        }
+      }
+    },
+    "SlidePilot can’t store data for PDFs on this device." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot kann auf diesem Gerät keine Daten für PDFs speichern."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot ne peut pas enregistrer de données pour les PDF sur cet appareil."
+          }
+        }
+      }
+    },
+    "SlidePilot can’t store data for “%@”." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot kann keine Daten für „%@“ speichern."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot ne peut pas enregistrer de données pour « %@ »."
           }
         }
       }
@@ -3829,6 +4198,38 @@
         }
       }
     },
+    "The SlidePilot File Couldn’t Be Exported" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die SlidePilot-Datei konnte nicht exportiert werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’exporter le fichier SlidePilot"
+          }
+        }
+      }
+    },
+    "The SlidePilot File Couldn’t Be Imported" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die SlidePilot-Datei konnte nicht importiert werden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’importer le fichier SlidePilot"
+          }
+        }
+      }
+    },
     "The devices could not verify each other. Try again." : {
       "localizations" : {
         "de" : {
@@ -3893,6 +4294,22 @@
         }
       }
     },
+    "The drawings in the file aren’t imported because Save Drawings is off." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Zeichnungen in der Datei werden nicht importiert, weil „Zeichnungen sichern“ aus ist."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les dessins du fichier ne sont pas importés, car « Enregistrer les dessins » est désactivé."
+          }
+        }
+      }
+    },
     "The file is damaged or is not a PDF document." : {
       "localizations" : {
         "de" : {
@@ -3905,6 +4322,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Le fichier est endommagé ou n’est pas un document PDF."
+          }
+        }
+      }
+    },
+    "The file was exported for a PDF with a different number of pages (%lld instead of %lld)." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei wurde für ein PDF mit einer anderen Seitenzahl exportiert (%lld statt %lld)."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le fichier a été exporté pour un PDF ayant un autre nombre de pages (%lld au lieu de %lld)."
+          }
+        }
+      }
+    },
+    "The file was exported for “%@”." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Datei wurde für „%@“ exportiert."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le fichier a été exporté pour « %@ »."
           }
         }
       }
@@ -3942,18 +4391,66 @@
         }
       }
     },
-    "The notes and settings that SlidePilot stores are deleted. This can’t be undone." : {
+    "The notes and drawings of this PDF are replaced by those in “%@”, and its settings are applied. This can’t be undone." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die von SlidePilot gespeicherten Notizen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden."
+            "value" : "Die Notizen und Zeichnungen dieses PDFs werden durch die aus „%@“ ersetzt, und deren Einstellungen werden übernommen. Das kann nicht widerrufen werden."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les notes et réglages enregistrés par SlidePilot sont supprimés. Cette action est irréversible."
+            "value" : "Les notes et les dessins de ce PDF sont remplacés par ceux de « %@ », et ses réglages sont appliqués. Cette action est irréversible."
+          }
+        }
+      }
+    },
+    "The notes, drawings and settings that SlidePilot stores are deleted. This can’t be undone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die von SlidePilot gespeicherten Notizen, Zeichnungen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes, dessins et réglages enregistrés par SlidePilot sont supprimés. Cette action est irréversible."
+          }
+        }
+      }
+    },
+    "The notes of this PDF are replaced by those in “%@”, and its settings are applied. This can’t be undone." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Notizen dieses PDFs werden durch die aus „%@“ ersetzt, und deren Einstellungen werden übernommen. Das kann nicht widerrufen werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes de ce PDF sont remplacées par celles de « %@ », et ses réglages sont appliqués. Cette action est irréversible."
+          }
+        }
+      }
+    },
+    "The notes, drawings and settings in this file replace those of the PDF. SlidePilot asks before replacing stored data." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Notizen, Zeichnungen und Einstellungen dieser Datei ersetzen die des PDFs. SlidePilot fragt nach, bevor gespeicherte Daten ersetzt werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes, dessins et réglages de ce fichier remplacent ceux du PDF. SlidePilot demande confirmation avant de remplacer des données enregistrées."
           }
         }
       }
@@ -3990,18 +4487,18 @@
         }
       }
     },
-    "These PDFs may have been deleted, or they are on a drive that isn’t connected or in iCloud and not downloaded. Their notes and settings are deleted. This can’t be undone." : {
+    "These PDFs may have been deleted, or they are on a drive that isn’t connected or in iCloud and not downloaded. Their notes, drawings and settings are deleted. This can’t be undone." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diese PDFs wurden vielleicht gelöscht oder liegen auf einem nicht verbundenen Laufwerk oder nicht geladen in iCloud. Ihre Notizen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden."
+            "value" : "Diese PDFs wurden vielleicht gelöscht oder liegen auf einem nicht verbundenen Laufwerk oder nicht geladen in iCloud. Ihre Notizen, Zeichnungen und Einstellungen werden gelöscht. Das kann nicht widerrufen werden."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ces PDF ont peut-être été supprimés, ou se trouvent sur un disque non connecté ou dans iCloud sans être téléchargés. Leurs notes et réglages sont supprimés. Cette action est irréversible."
+            "value" : "Ces PDF ont peut-être été supprimés, ou se trouvent sur un disque non connecté ou dans iCloud sans être téléchargés. Leurs notes, dessins et réglages sont supprimés. Cette action est irréversible."
           }
         }
       }
@@ -4151,18 +4648,18 @@
         }
       }
     },
-    "To keep notes, open the PDF and choose File ▸ Export Notes… before deleting its data." : {
+    "To keep the notes, drawings and settings of a PDF, choose Export… in its context menu before deleting its data." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um Notizen zu behalten, öffne das PDF und wähle Ablage ▸ Notizen exportieren …, bevor du seine Daten löschst."
+            "value" : "Um die Notizen, Zeichnungen und Einstellungen eines PDFs zu behalten, wähle vor dem Löschen „Exportieren …“ im Kontextmenü."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour conserver les notes, ouvrez le PDF et choisissez Fichier ▸ Exporter les notes… avant de supprimer ses données."
+            "value" : "Pour conserver les notes, dessins et réglages d’un PDF, choisissez « Exporter… » dans son menu contextuel avant de supprimer ses données."
           }
         }
       }
@@ -4506,6 +5003,22 @@
         }
       }
     },
+    "“%@” couldn’t be opened as a PDF." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ konnte nicht als PDF geöffnet werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » n’a pas pu être ouvert comme PDF."
+          }
+        }
+      }
+    },
     "“%@” does not trust this device any more. Select it again to pair." : {
       "localizations" : {
         "de" : {
@@ -4554,6 +5067,22 @@
         }
       }
     },
+    "“%@” isn’t a SlidePilot file, or it is damaged." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ ist keine SlidePilot-Datei oder beschädigt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » n’est pas un fichier SlidePilot, ou il est endommagé."
+          }
+        }
+      }
+    },
     "“%@” removed this device from its trusted devices. Pair again to control it." : {
       "localizations" : {
         "de" : {
@@ -4582,6 +5111,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "« %1$@ » a été fermé sur « %2$@ »."
+          }
+        }
+      }
+    },
+    "“%@” was exported by a newer version of SlidePilot. Update SlidePilot to import it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "„%@“ wurde mit einer neueren Version von SlidePilot exportiert. Aktualisiere SlidePilot, um die Datei zu importieren."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "« %@ » a été exporté par une version plus récente de SlidePilot. Mettez SlidePilot à jour pour l’importer."
           }
         }
       }

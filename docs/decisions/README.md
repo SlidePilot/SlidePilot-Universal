@@ -20,6 +20,7 @@
 | [0016](0016-drawing-engine.md) | Drawing: shared relative model, PencilKit input on iPad, own toolbar | Accepted |
 | [0017](0017-remote-wire-format-and-pairing.md) | Remote wire format, versioning, pairing and encryption | Accepted |
 | [0018](0018-mac-test-host.md) | Mac test host: capture and drive only the SlidePilot test build | Accepted |
+| [0019](0019-slidepilot-file.md) | The `.slidepilot` file: export and import of a PDF's stored data | Accepted |
 
 ## Process
 1. Propose the decision in chat with the product owner (context, options, recommendation).

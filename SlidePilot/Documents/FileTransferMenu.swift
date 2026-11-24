@@ -1,12 +1,15 @@
 #if os(iOS)
 import SwiftUI
 
-/// Import Notes…, Export Notes… and Export Drawings… in one toolbar menu on iPad and iPhone:
-/// the iPad hides its menu bar until it is pulled down, the iPhone has none (NOTES-06,
-/// DRAW-10). One menu keeps the toolbar short and names each command next to its symbol.
+/// Import Notes…, Export Notes…, Export Drawings… and the `.slidepilot` file (NOTES-11) in
+/// one toolbar menu on iPad and iPhone: the iPad hides its menu bar until it is pulled down,
+/// the iPhone has none (NOTES-06, DRAW-10). One menu keeps the toolbar short and names each
+/// command next to its symbol.
 struct FileTransferMenu: View {
-    @FocusedValue(\.notesFile) private var notesFile
-    @FocusedValue(\.drawingsExport) private var drawingsExport
+    // From the environment: focused values do not reach a toolbar menu on iPad.
+    @Environment(\.notesFile) private var notesFile
+    @Environment(\.drawingsExport) private var drawingsExport
+    @Environment(\.slidePilotFile) private var slidePilotFile
 
     var body: some View {
         Menu {
@@ -18,6 +21,18 @@ struct FileTransferMenu: View {
                 // A share sheet: Save to Files, AirDrop, Mail.
                 ShareLink(item: item, preview: SharePreview(item.fileName)) {
                     Label("Export Drawings…", systemImage: DrawingsExportCommands.symbol)
+                }
+            }
+            // Notes, drawings and settings in one file (NOTES-11).
+            Section {
+                Button("Import SlidePilot File…", systemImage: SlidePilotFileCommands.importSymbol) {
+                    slidePilotFile?.importFile()
+                }
+                .disabled(slidePilotFile == nil)
+                if let item = slidePilotFile?.shareItem {
+                    ShareLink(item: item, preview: SharePreview(item.fileName)) {
+                        Label("Export SlidePilot File…", systemImage: SlidePilotFileCommands.exportSymbol)
+                    }
                 }
             }
         } label: {

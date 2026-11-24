@@ -1,5 +1,6 @@
 #if os(iOS)
 import SlidePilotCore
+import SlidePilotRendering
 import SwiftUI
 import UIKit
 
@@ -57,12 +58,49 @@ struct NotesTextView: UIViewRepresentable {
     }
 }
 
-/// A text view with its own undo history. The responder chain's undo manager belongs to
-/// the PDF document: text edits registered there would mark the PDF edited.
+/// A text view with its own undo history and the automatic lists (NOTES-13). The
+/// responder chain's undo manager belongs to the PDF document: text edits registered
+/// there would mark the PDF edited.
 private final class NotesUITextView: UITextView {
     private let notesUndoManager = UndoManager()
 
     override var undoManager: UndoManager? { notesUndoManager }
+
+    /// `* ` or `- ` at the start of a line starts a list; Return on an empty list item
+    /// ends it. The space is typed first, so Undo right after the conversion brings back
+    /// the typed characters.
+    override func insertText(_ text: String) {
+        if text == "\n", let edit = NotesList.editForReturn(in: textStorage, selection: selectedRange, typingAttributes: typingAttributes) {
+            apply(edit)
+            return
+        }
+        super.insertText(text)
+        if text == " ", markedTextRange == nil, let edit = NotesList.editAfterTypingSpace(in: textStorage, caret: selectedRange.location) {
+            apply(edit)
+        }
+    }
+
+    /// Backspace at the start of a list item removes its marker.
+    override func deleteBackward() {
+        if let edit = NotesList.editForBackspace(in: textStorage, selection: selectedRange, typingAttributes: typingAttributes) {
+            apply(edit)
+        } else {
+            super.deleteBackward()
+        }
+    }
+
+    /// Applies a list edit as its own undo step. UITextView has no public way to make a
+    /// paragraph style change undoable, so the inverse edit is registered here.
+    private func apply(_ edit: NotesList.Edit) {
+        let inverse = edit.inverse(in: textStorage, selection: selectedRange, typingAttributes: typingAttributes)
+        notesUndoManager.registerUndo(withTarget: self) { textView in
+            textView.apply(inverse)
+        }
+        textStorage.replaceCharacters(in: edit.range, with: edit.replacement)
+        selectedRange = edit.selection
+        typingAttributes = edit.typingAttributes
+        delegate?.textViewDidChange?(self)
+    }
 }
 
 final class NotesTextCoordinator: NSObject, UITextViewDelegate, NSTextStorageDelegate {

@@ -17,6 +17,40 @@
 				<string>com.adobe.pdf</string>
 			</array>
 		</dict>
+		<!-- The .slidepilot file (NOTES-11, ADR 0019): imported into a PDF, never edited. -->
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>SlidePilot File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>$(PRODUCT_BUNDLE_IDENTIFIER).slidepilot</string>
+			</array>
+		</dict>
+	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER).slidepilot</string>
+			<key>UTTypeDescription</key>
+			<string>SlidePilot File</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+				<string>public.content</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>slidepilot</string>
+				</array>
+			</dict>
+		</dict>
 	</array>
 	<!-- iPadOS: the external display scene (DOC-04). Declared here as well as in the app
 	     delegate, so restored scene sessions that skip configurationForConnecting use it too.

@@ -33,7 +33,7 @@ struct StoredDataSection: View {
             }
             #endif
         } footer: {
-            Text("Notes and settings of your PDFs stay stored when a PDF is deleted. Review and delete them here.")
+            Text("Notes, drawings and settings of your PDFs stay stored when a PDF is deleted. Review and delete them here.")
         }
     }
 }
@@ -53,6 +53,11 @@ struct StoredDataList: View {
     @State private var overview: StoredDataOverview?
     @State private var selection = Set<UUID>()
     @State private var deletion: Deletion?
+    #if os(macOS)
+    /// The entry being exported as a `.slidepilot` file (NOTES-11).
+    @State private var export: (document: SlidePilotFileDocument, name: String)?
+    @State private var exportFailure: String?
+    #endif
     #if os(iOS)
     @Environment(\.editMode) private var editMode
     #endif
@@ -72,6 +77,7 @@ struct StoredDataList: View {
                     ForEach(items) { item in
                         StoredDataRow(item: item)
                             .contextMenu {
+                                exportButton(for: item)
                                 Button("Delete…", systemImage: "trash", role: .destructive) {
                                     deletion = .items(selection.contains(item.id) ? selection : [item.id])
                                 }
@@ -106,7 +112,7 @@ struct StoredDataList: View {
                 ContentUnavailableView(
                     "No Stored Data",
                     systemImage: "doc.text",
-                    description: Text("Notes and settings of the PDFs you open appear here.")
+                    description: Text("Notes, drawings and settings of the PDFs you open appear here.")
                 )
             }
         }
@@ -162,11 +168,32 @@ struct StoredDataList: View {
         } message: { deletion in
             switch deletion {
             case .items:
-                Text("The notes and settings that SlidePilot stores are deleted. This can’t be undone.")
+                Text("The notes, drawings and settings that SlidePilot stores are deleted. This can’t be undone.")
             case .notFound:
-                Text("These PDFs may have been deleted, or they are on a drive that isn’t connected or in iCloud and not downloaded. Their notes and settings are deleted. This can’t be undone.")
+                Text("These PDFs may have been deleted, or they are on a drive that isn’t connected or in iCloud and not downloaded. Their notes, drawings and settings are deleted. This can’t be undone.")
             }
         }
+        #if os(macOS)
+        .fileExporter(
+            isPresented: Binding(get: { export != nil }, set: { if !$0 { export = nil } }),
+            document: export?.document,
+            contentType: .slidePilotFile,
+            defaultFilename: export?.name
+        ) { result in
+            if case .failure(let error) = result, (error as? CocoaError)?.code != .userCancelled {
+                exportFailure = error.localizedDescription
+            }
+        }
+        .alert(
+            Text("The SlidePilot File Couldn’t Be Exported"),
+            isPresented: Binding(get: { exportFailure != nil }, set: { if !$0 { exportFailure = nil } }),
+            presenting: exportFailure
+        ) { _ in
+            Button("OK") {}
+        } message: { message in
+            Text(message)
+        }
+        #endif
         .task {
             if overview == nil {
                 overview = StoredDataOverview(store: .app) { [openCompanions] in openCompanions?.all ?? [] }
@@ -176,7 +203,28 @@ struct StoredDataList: View {
     }
 
     private var exportHint: Text {
-        Text("To keep notes, open the PDF and choose File ▸ Export Notes… before deleting its data.")
+        Text("To keep the notes, drawings and settings of a PDF, choose Export… in its context menu before deleting its data.")
+    }
+
+    /// Exports the entry as a `.slidepilot` file (NOTES-11): a save panel on the Mac, the
+    /// share sheet on iPad.
+    @ViewBuilder
+    private func exportButton(for item: StoredDataItem) -> some View {
+        let name = SlidePilotFile.exportName(forPDFNamed: item.fileName)
+        #if os(macOS)
+        Button("Export…", systemImage: SlidePilotFileCommands.exportSymbol) {
+            Task {
+                guard let file = await overview?.exportFile(for: item.id) else { return }
+                export = (SlidePilotFileDocument(file: file), name)
+            }
+        }
+        #else
+        if let overview {
+            ShareLink(item: SlidePilotFileExport(fileName: name) { await overview.exportFile(for: item.id) }, preview: SharePreview(name)) {
+                Label("Export…", systemImage: SlidePilotFileCommands.exportSymbol)
+            }
+        }
+        #endif
     }
 
     private var deleteNotFoundPlacement: ToolbarItemPlacement {
@@ -240,10 +288,11 @@ private struct StoredDataRow: View {
     }
 }
 
-private extension StoredDataKind {
+extension StoredDataKind {
     var title: LocalizedStringResource {
         switch self {
         case .notes: "Notes"
+        case .drawings: "Drawings"
         case .settings: "Settings"
         }
     }

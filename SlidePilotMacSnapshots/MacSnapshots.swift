@@ -208,6 +208,24 @@ extension MacSnapshots {
         let view = SettingsPane { GeneralSettingsView() }.environment(settings)
         try await WindowSnapshot.record(view, name: "settings-general", size: CGSize(width: 500, height: 160), appearance: appearance)
     }
+
+    // NOTES-11: a .slidepilot file opened on its own, with one open PDF to import into.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func slidePilotFile(appearance: WindowSnapshot.Appearance) async throws {
+        let file = try SlidePilotFileFormat.decode(Fixture.data("plain-slides.slidepilot"))
+        let registry = SessionRegistry()
+        let session = PresentationSession(
+            data: try Fixture.data("plain-slides.pdf"), title: "plain-slides",
+            info: try PDFFileDocument(data: Fixture.data("plain-slides.pdf")).info,
+            layoutStore: InMemoryPresenterLayoutStore(), companionStore: nil
+        )
+        session.fileURL = URL(filePath: "/plain-slides.pdf")
+        registry.register(session)
+        let view = SlidePilotFileView(document: SlidePilotFileDocument(file: file), fileURL: URL(filePath: "/plain-slides.slidepilot"))
+            .environment(registry)
+            .environment(AppSettings(store: InMemorySettingsStore()))
+        try await WindowSnapshot.record(view, name: "slidepilot-file", size: CGSize(width: 460, height: 420), appearance: appearance)
+    }
 }
 
 private extension View {

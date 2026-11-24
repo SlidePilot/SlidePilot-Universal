@@ -43,6 +43,8 @@ struct DocumentView: View {
             .savedDrawings(session)
             .notesFileTransfer(session, fileURL: fileURL)
             .drawingsExport(session, fileURL: fileURL)
+            // The .slidepilot file with notes, drawings and settings (NOTES-11).
+            .slidePilotFileTransfer(session, fileURL: fileURL)
             // Videos and run: links next to the PDF (NAV-06, NAV-07).
             .linkedFiles(session, fileURL: fileURL)
             // The presentation surfaces find the session in the registry (DOC-04).
@@ -103,15 +105,15 @@ private struct PresenterChrome: ViewModifier {
             // Show Pointer and its appearance (PTR-01, PTR-02).
             .pointerControls(session)
             #if os(iOS)
-            // How to present on a second screen (#82); the Mac needs no hint.
-            .externalDisplayHint()
-            // Import/export notes and drawings (NOTES-06, DRAW-10). Here, in the slides
-            // column, so a phone's compact stack shows it too.
+            // Notes, drawings and .slidepilot import and export (NOTES-06, DRAW-10, NOTES-11),
+            // in the slides column's bar like the other items.
             .toolbar {
                 ToolbarItem(placement: .secondaryAction) {
                     FileTransferMenu()
                 }
             }
+            // How to present on a second screen (#82); the Mac needs no hint.
+            .externalDisplayHint()
             // The Mac has the Settings window instead (SET-01).
             .settingsSheet()
             #endif

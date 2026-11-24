@@ -1,6 +1,7 @@
 #if os(macOS)
 import AppKit
 import SlidePilotCore
+import SlidePilotRendering
 import SwiftUI
 
 /// The notes text view on the Mac (NOTES-04).
@@ -80,7 +81,7 @@ struct NotesTextView: NSViewRepresentable {
 }
 
 /// Reports when the text view gets or loses the keyboard, for the Done button and the
-/// plain-letter shortcuts (NOTES-04).
+/// plain-letter shortcuts (NOTES-04), and adds the automatic lists (NOTES-13).
 private final class FocusReportingTextView: NSTextView {
     var onFocusChange: ((Bool) -> Void)?
 
@@ -102,6 +103,49 @@ private final class FocusReportingTextView: NSTextView {
             onFocusChange?(false)
         }
         return accepted
+    }
+
+    // MARK: Automatic lists (NOTES-13)
+
+    /// `* ` or `- ` at the start of a line starts a list. The space is typed first, so
+    /// Undo right after the conversion brings back the typed characters.
+    override func insertText(_ string: Any, replacementRange: NSRange) {
+        super.insertText(string, replacementRange: replacementRange)
+        let typed = (string as? String) ?? (string as? NSAttributedString)?.string
+        guard typed == " ", !hasMarkedText(), let textStorage,
+              let edit = NotesList.editAfterTypingSpace(in: textStorage, caret: selectedRange().location)
+        else { return }
+        apply(edit)
+    }
+
+    /// Return on an empty list item ends the list.
+    override func insertNewline(_ sender: Any?) {
+        if let textStorage, let edit = NotesList.editForReturn(in: textStorage, selection: selectedRange(), typingAttributes: typingAttributes) {
+            apply(edit)
+        } else {
+            super.insertNewline(sender)
+        }
+    }
+
+    /// Backspace at the start of a list item removes its marker.
+    override func deleteBackward(_ sender: Any?) {
+        if let textStorage, let edit = NotesList.editForBackspace(in: textStorage, selection: selectedRange(), typingAttributes: typingAttributes) {
+            apply(edit)
+        } else {
+            super.deleteBackward(sender)
+        }
+    }
+
+    /// Applies a list edit as its own undo step, through the text view's own change
+    /// handling (undo, delegate, text storage delegate).
+    private func apply(_ edit: NotesList.Edit) {
+        breakUndoCoalescing()
+        guard shouldChangeText(in: edit.range, replacementString: edit.replacement.string) else { return }
+        textStorage?.replaceCharacters(in: edit.range, with: edit.replacement)
+        didChangeText()
+        setSelectedRange(edit.selection)
+        typingAttributes = edit.typingAttributes
+        breakUndoCoalescing()
     }
 }
 

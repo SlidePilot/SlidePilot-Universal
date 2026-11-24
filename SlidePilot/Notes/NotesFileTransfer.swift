@@ -18,6 +18,11 @@ extension FocusedValues {
     @Entry var notesFile: FocusedNotesFile?
 }
 
+extension EnvironmentValues {
+    /// The same commands for the iPad toolbar menu, which focused values do not reach.
+    @Entry var notesFile: FocusedNotesFile?
+}
+
 /// File ▸ Import Notes… (⇧⌘O) and Export Notes… (⇧⌘E), the old Open and Save Notes
 /// (NOTES-06). Notes are saved automatically, so Save became an RTF export; ⌘S is not
 /// used, so a habitual save does not open a save panel.
@@ -101,12 +106,17 @@ private struct NotesFileTransferModifier: ViewModifier {
     private var companion: DocumentCompanion { session.companion }
     private var pageCount: Int { session.cache.info.pageCount }
 
+    private var notesFileCommands: FocusedNotesFile? {
+        session.notes.isAvailable ? FocusedNotesFile(
+            importNotes: { pick(.notesFile) },
+            exportNotes: { Task { await export() } }
+        ) : nil
+    }
+
     func body(content: Content) -> some View {
         content
-            .focusedSceneValue(\.notesFile, session.notes.isAvailable ? FocusedNotesFile(
-                importNotes: { pick(.notesFile) },
-                exportNotes: { Task { await export() } }
-            ) : nil)
+            .focusedSceneValue(\.notesFile, notesFileCommands)
+            .environment(\.notesFile, notesFileCommands)
             // On iPad the commands are also in the toolbar's Import and Export menu
             // (FileTransferMenu.swift).
             // The unstructured tasks below are short and stay on the main actor; a result that
