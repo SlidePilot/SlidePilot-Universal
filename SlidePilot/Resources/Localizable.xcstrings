@@ -1211,6 +1211,40 @@
         }
       }
     },
+    "Do you like SlidePilot?" : {
+      "comment" : "Title of the donation hint in the free Mac download.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gefällt dir SlidePilot?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vous aimez SlidePilot ?"
+          }
+        }
+      }
+    },
+    "Donate" : {
+      "comment" : "Button of the donation hint; opens the donation page.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faire un don"
+          }
+        }
+      }
+    },
     "Done" : {
       "localizations" : {
         "de" : {
@@ -1712,6 +1746,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heures"
+          }
+        }
+      }
+    },
+    "If you do, we would be very happy if you supported SlidePilot with a small donation and told others about the app." : {
+      "comment" : "Message of the donation hint in the free Mac download.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falls ja, würden wir uns sehr freuen, wenn du SlidePilot mit einer kleinen Spende unterstützt und anderen von der App erzählst."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si c’est le cas, nous serions ravis que vous souteniez SlidePilot par un petit don et que vous parliez de l’app autour de vous."
           }
         }
       }
@@ -2247,7 +2298,7 @@
       }
     },
     "Not Now" : {
-      "comment" : "Alert button that declines folder access for now",
+      "comment" : "Alert button that postpones a request (folder access, donation hint)",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4034,6 +4085,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Données des documents enregistrées…"
+          }
+        }
+      }
+    },
+    "Support SlidePilot" : {
+      "comment" : "App menu item of the free Mac download; opens the donation page.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot unterstützen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soutenir SlidePilot"
           }
         }
       }

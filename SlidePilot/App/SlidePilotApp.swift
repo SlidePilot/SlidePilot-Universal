@@ -44,6 +44,8 @@ struct SlidePilotApp: App {
             DocumentView(document: file.document, fileURL: file.fileURL)
                 // Pairing codes of devices that start controlling this one (REM-02).
                 .remoteAlerts()
+                // Free Mac download only (DROP-03).
+                .donationHint(appDelegate.donationHint)
                 .environment(registry)
                 .environment(presentationWindows)
                 .environment(appDelegate.companions)
@@ -60,6 +62,7 @@ struct SlidePilotApp: App {
             DrawingsExportCommands()
             SlidePilotFileCommands()
             RemoteControlCommands()
+            DonationCommands()
         }
 
         // A .slidepilot file opened on its own, imported into a PDF (NOTES-11).

@@ -22,6 +22,6 @@ App Store pricing is per app record, not per platform. A free Mac app and a paid
 
 ## Consequences
 - Bundle ID, team and product flags stay in xcconfig files; nothing hard-codes a bundle ID. The real bundle ID prefix and team stay in the git-ignored `Config/Local.xcconfig`.
-- The free download is a second build variant of the same target (own xcconfig/scheme, own bundle ID so it does not share settings or the sandbox container with the App Store version). It is planned as a separate issue.
+- The free download is a second build variant of the same target (own xcconfig/scheme, own bundle ID so it does not share settings or the sandbox container with the App Store version). Implemented as the build configuration `FreeDownload` (`Config/FreeDownload.xcconfig`, scheme "SlidePilot Free Download", see `docs/release.md`).
 - The donation hint is behind a compile-time flag that only the free download sets.
 - If the pricing model has to change later, the iPad app must move to a new bundle ID and a new record. The iOS platform then stays unused in the existing record.

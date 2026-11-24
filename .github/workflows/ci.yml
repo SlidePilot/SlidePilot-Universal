@@ -120,6 +120,14 @@ jobs:
             -destination 'platform=macOS' \
             CODE_SIGNING_ALLOWED=NO \
             build test
+      # Keeps the free Mac download (donation hint, ADR 0011) building.
+      - name: Free download build
+        run: |
+          set -euo pipefail
+          xcodebuild -project SlidePilot.xcodeproj -scheme "SlidePilot Free Download" \
+            -destination 'platform=macOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
       # Keeps the Mac snapshot target building and working (see CLAUDE.md).
       - name: Mac snapshots
         run: |

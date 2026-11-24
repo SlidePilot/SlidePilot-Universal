@@ -176,7 +176,7 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 |---|---|---|---|---|
 | DROP-01 | Touch Bar (curtains, notes, navigator, next-slide preview, draw, pointer + appearance popover; in draw mode: colors, eraser, close) | `Views/TouchBar/*` | Product-owner decision 2026-11-10 | dropped |
 | DROP-02 | Sparkle updater (Check for Updates…) | `Sparkle.framework`; `Info.plist:52-55` | App Store distribution; the free Mac download has no updater (ADR 0011) | dropped |
-| DROP-03 | Donation alert after the 5th launch (`AppStartCount`, `AlreadyDisplayedDonationAlert`). Replaced by a simple donation hint **in the free Mac download only** (outside the App Store); the App Store version has none. Form decided before Phase 5 | `Helpers/AppStartTracker.swift`; `PresenterViewController.swift:143-162` | Pricing model (ADR 0011) | changed |
+| DROP-03 | Donation alert after the 5th launch (`AppStartCount`, `AlreadyDisplayedDonationAlert`). Replaced by a donation hint **in the free Mac download only** (outside the App Store, build configuration `FreeDownload`); the App Store version (Mac and iPad) has none. **Product-owner decision 2026-11-24:** the same one-time alert after the 5th launch (same keys, counted up to 6, same donation page) plus "Support SlidePilot" in the app menu below About. The decline button says "Not Now" instead of "No, I don't like it!" | `Helpers/AppStartTracker.swift`; `PresenterViewController.swift:143-162` | Pricing model (ADR 0011) | done |
 
 ---
 
