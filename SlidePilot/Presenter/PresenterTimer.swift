@@ -31,13 +31,15 @@ private struct PresenterTimeDisplayModifier: ViewModifier {
     // previews without settings use the default.
     @Environment(AppSettings.self) private var settings: AppSettings?
     @Environment(\.isCompactHeight) private var isCompactHeight
+    @Environment(\.presenterToolbarFocus) private var focus
 
     private var size: TimeDisplaySize { settings?.timeDisplaySize ?? .default }
 
     func body(content: Content) -> some View {
         content
             .safeAreaInset(edge: .top, spacing: 0) {
-                if size != .hidden {
+                // Drawing in a compact window gives the slide the room of the clock (#152).
+                if size != .hidden, focus != .drawing {
                     TimeDisplay(timer: session.timer, size: size)
                         // Aligned with the slides' 30 pt padding; the old app's top margin,
                         // the small one in compact height like the smaller display there.
@@ -51,11 +53,12 @@ private struct PresenterTimeDisplayModifier: ViewModifier {
 private struct PresenterTimerModifier: ViewModifier {
     let session: PresentationSession
     @State private var isSettingTimer = false
+    @Environment(\.presenterToolbarFocus) private var focus
 
     func body(content: Content) -> some View {
         content
             .toolbar {
-                TimerToolbar(session: session, isSettingTimer: $isSettingTimer)
+                TimerToolbar(session: session, isSettingTimer: $isSettingTimer, placement: focus.placement())
             }
             .sheet(isPresented: $isSettingTimer) {
                 SetTimerSheet(duration: session.timer.timerDuration) { seconds in
@@ -75,9 +78,10 @@ private struct PresenterTimerModifier: ViewModifier {
 private struct TimerToolbar: ToolbarContent {
     let session: PresentationSession
     @Binding var isSettingTimer: Bool
+    let placement: ToolbarItemPlacement
 
     var body: some ToolbarContent {
-        ToolbarItemGroup {
+        ToolbarItemGroup(placement: placement) {
             TimerToggle(session: session, isSettingTimer: $isSettingTimer)
             StartStopTimeButton(session: session)
             ResetTimeButton(session: session)
