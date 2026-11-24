@@ -32,10 +32,12 @@ struct LayoutSettingsView: View {
     }
 }
 
-/// The settings panes, so a command can open a specific one (LAY-04: Edit Layout…).
+/// The settings panes, so a command can open a specific one (LAY-04: Edit Layout…,
+/// PTR-04: Edit Pointer…).
 enum SettingsTab: String, Hashable {
     case general
     case layout
+    case pointer
     case remote
     /// The stored data overview (SET-07); a page of the iPad sheet, a sheet of the General
     /// tab on the Mac.

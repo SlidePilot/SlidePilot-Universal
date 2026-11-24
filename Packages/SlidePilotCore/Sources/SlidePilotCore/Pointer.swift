@@ -246,3 +246,87 @@ public struct PointerDrawing: Sendable, Equatable {
         CGRect(x: (side - diameter) / 2, y: (side - diameter) / 2, width: diameter, height: diameter)
     }
 }
+
+// MARK: - Pointer editor (PTR-04)
+
+/// The slider ranges the pointer editor offers for one shape (PTR-04,
+/// `PointerEditorViewController.swift:73-79`).
+public struct PointerEditorLimits: Sendable, Equatable {
+    public var size: ClosedRange<Double>
+    /// `nil` for shapes without a thickness (dot and square).
+    public var thickness: ClosedRange<Double>?
+    public var borderWidth: ClosedRange<Double> { 0...50 }
+    public var shadowWidth: ClosedRange<Double> { 0...50 }
+}
+
+extension PointerShape {
+    /// The shapes of the editor's picker, in the old app's order.
+    public static let editorShapes: [PointerShape] = [.target, .dot, .circle, .plus, .cross, .square]
+
+    /// The editor's ranges for this shape; `nil` for the system images.
+    public var editorLimits: PointerEditorLimits? {
+        switch self {
+        case .cursor, .hand: nil
+        case .target: PointerEditorLimits(size: 35...150, thickness: 2...50)
+        case .circle, .plus, .cross: PointerEditorLimits(size: 5...100, thickness: 2...50)
+        case .dot, .square: PointerEditorLimits(size: 5...100, thickness: nil)
+        }
+    }
+}
+
+extension PointerConfiguration {
+    /// This pointer with another shape. The values are kept and only moved into the new
+    /// shape's ranges; the old app reset them to the shape's defaults (DEF-14).
+    public func withShape(_ shape: PointerShape) -> PointerConfiguration {
+        var configuration = self
+        configuration.shape = shape
+        return configuration.clampedForEditor()
+    }
+
+    /// This pointer with every value inside the editor's ranges, so a hand-edited or
+    /// outdated stored pointer still fits the sliders. A system image becomes the default
+    /// custom pointer, which the editor cannot show.
+    public func clampedForEditor() -> PointerConfiguration {
+        guard let limits = shape.editorLimits else { return .defaultIndividual }
+        var configuration = self
+        configuration.size = Self.clamp(size, to: limits.size)
+        if let thickness = limits.thickness {
+            configuration.thickness = Self.clamp(self.thickness, to: thickness)
+        }
+        configuration.borderWidth = Self.clamp(borderWidth, to: limits.borderWidth)
+        configuration.shadowWidth = Self.clamp(shadowWidth, to: limits.shadowWidth)
+        configuration.color = color.clamped
+        configuration.borderColor = borderColor.clamped
+        return configuration
+    }
+
+    private static func clamp(_ value: Double, to range: ClosedRange<Double>) -> Double {
+        // NaN would pass `min`/`max` unchanged.
+        value.isNaN ? range.lowerBound : min(max(value, range.lowerBound), range.upperBound)
+    }
+}
+
+extension PointerColor {
+    /// The color in sRGB, e.g. from a color picker. Colors outside sRGB (Display P3) are
+    /// moved to its edge; `nil` if the color cannot be converted (patterns).
+    public init?(_ cgColor: CGColor) {
+        guard let sRGB = CGColorSpace(name: CGColorSpace.sRGB),
+              let converted = cgColor.converted(to: sRGB, intent: .defaultIntent, options: nil),
+              let components = converted.components, components.count == 4
+        else { return nil }
+        self = PointerColor(
+            red: Double(components[0]), green: Double(components[1]),
+            blue: Double(components[2]), alpha: Double(components[3])
+        ).clamped
+    }
+
+    public var cgColor: CGColor {
+        CGColor(srgbRed: red, green: green, blue: blue, alpha: alpha)
+    }
+
+    /// Every component in 0…1.
+    var clamped: PointerColor {
+        func clamp(_ value: Double) -> Double { value.isNaN ? 0 : min(max(value, 0), 1) }
+        return PointerColor(red: clamp(red), green: clamp(green), blue: clamp(blue), alpha: clamp(alpha))
+    }
+}

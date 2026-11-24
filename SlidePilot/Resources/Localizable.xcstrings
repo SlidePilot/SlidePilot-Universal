@@ -17,6 +17,64 @@
         }
       }
     },
+    "%lld points" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld point"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld points"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Punkt"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Punkte"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld point"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld points"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "A PDF named “%@” with the same number of pages can no longer be found. You can use its stored data for this PDF." : {
       "localizations" : {
         "de" : {
@@ -255,6 +313,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gras"
+          }
+        }
+      }
+    },
+    "Border color" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Randfarbe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleur de la bordure"
+          }
+        }
+      }
+    },
+    "Border width" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Randbreite"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Largeur de la bordure"
           }
         }
       }
@@ -739,6 +829,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Couvrir la présentation d'un écran blanc"
+          }
+        }
+      }
+    },
+    "Cross" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kreuz"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Croix"
           }
         }
       }
@@ -1301,6 +1407,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modifier la disposition…"
+          }
+        }
+      }
+    },
+    "Edit Pointer…" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeiger bearbeiten …"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifier le pointeur…"
           }
         }
       }
@@ -2730,6 +2852,22 @@
         }
       }
     },
+    "Plus" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus"
+          }
+        }
+      }
+    },
     "Pointer" : {
       "localizations" : {
         "de" : {
@@ -2758,6 +2896,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apparence du pointeur"
+          }
+        }
+      }
+    },
+    "Pointer preview" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorschau des Zeigers"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aperçu du pointeur"
           }
         }
       }
@@ -3226,6 +3380,38 @@
         }
       }
     },
+    "Shadow" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schatten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ombre"
+          }
+        }
+      }
+    },
+    "Shape" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Form"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forme"
+          }
+        }
+      }
+    },
     "Show Current Slide" : {
       "localizations" : {
         "de" : {
@@ -3338,6 +3524,22 @@
         }
       }
     },
+    "Shown when the pointer appearance is Individual." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird verwendet, wenn das Aussehen des Zeigers „Individuell“ ist."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisé lorsque l’apparence du pointeur est « Individuel »."
+          }
+        }
+      }
+    },
     "Single Slide" : {
       "localizations" : {
         "de" : {
@@ -3350,6 +3552,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Une diapositive"
+          }
+        }
+      }
+    },
+    "Size" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Größe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taille"
           }
         }
       }
@@ -3676,6 +3894,22 @@
         }
       }
     },
+    "Square" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quadrat"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carré"
+          }
+        }
+      }
+    },
     "Start Presentation" : {
       "localizations" : {
         "de" : {
@@ -3816,6 +4050,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Balayez vers le haut ou le bas pour redimensionner les diapositives"
+          }
+        }
+      }
+    },
+    "Target" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zielscheibe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cible"
           }
         }
       }
@@ -4265,6 +4515,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ces notes ont été enregistrées avec une version plus récente de SlidePilot."
+          }
+        }
+      }
+    },
+    "Thickness" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stärke"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Épaisseur"
           }
         }
       }
