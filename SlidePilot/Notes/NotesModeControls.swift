@@ -78,9 +78,10 @@ private struct NotesModeMenus: View {
 /// The Notes menu in the presenter's toolbar (NOTES-01, NOTES-02).
 private struct NotesModeToolbar: ToolbarContent {
     let session: PresentationSession
+    let placement: ToolbarItemPlacement
 
     var body: some ToolbarContent {
-        ToolbarItem {
+        ToolbarItem(placement: placement) {
             Menu {
                 NotesModeMenus(session: session, showsModesInline: true)
             } label: {
@@ -95,14 +96,24 @@ extension View {
     /// Adds the Notes menu to the toolbar (hidden in draw mode, DRAW-05) and shows the right
     /// half when the notes slot appears in Split mode without a position (NOTES-02).
     func notesModeControls(_ session: PresentationSession) -> some View {
-        toolbar {
-            if !session.drawing.isActive {
-                NotesModeToolbar(session: session)
+        modifier(NotesModeControlsModifier(session: session))
+    }
+}
+
+private struct NotesModeControlsModifier: ViewModifier {
+    let session: PresentationSession
+    @Environment(\.presenterToolbarFocus) private var focus
+
+    func body(content: Content) -> some View {
+        content
+            .toolbar {
+                if !session.drawing.isActive {
+                    NotesModeToolbar(session: session, placement: focus.placement())
+                }
             }
-        }
-        .onChange(of: session.layout.isVisible(.notes)) { _, isVisible in
-            if isVisible { session.notesSlotDidShow() }
-        }
+            .onChange(of: session.layout.isVisible(.notes)) { _, isVisible in
+                if isVisible { session.notesSlotDidShow() }
+            }
     }
 }
 

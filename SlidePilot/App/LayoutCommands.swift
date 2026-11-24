@@ -42,9 +42,10 @@ private struct LayoutMenuItems: View {
 /// (product-owner decision 2026-11-19); the menu still reaches every layout.
 struct PresenterLayoutToolbar: ToolbarContent {
     let layout: PresenterLayoutModel
+    var placement: ToolbarItemPlacement = .automatic
 
     var body: some ToolbarContent {
-        ToolbarItem {
+        ToolbarItem(placement: placement) {
             Menu {
                 ArrangementMenuContent(layout: layout)
             } label: {
@@ -226,11 +227,22 @@ extension View {
     /// Adds the Arrangement menu to the toolbar and the layout menu commands of this window.
     /// While `isLocked` (draw mode, DRAW-05) the toolbar item is hidden and the menu items off.
     func presenterLayoutControls(_ layout: PresenterLayoutModel, isLocked: Bool = false) -> some View {
-        toolbar {
-            if !isLocked {
-                PresenterLayoutToolbar(layout: layout)
+        modifier(PresenterLayoutControlsModifier(layout: layout, isLocked: isLocked))
+    }
+}
+
+private struct PresenterLayoutControlsModifier: ViewModifier {
+    let layout: PresenterLayoutModel
+    let isLocked: Bool
+    @Environment(\.presenterToolbarFocus) private var focus
+
+    func body(content: Content) -> some View {
+        content
+            .toolbar {
+                if !isLocked {
+                    PresenterLayoutToolbar(layout: layout, placement: focus.placement())
+                }
             }
-        }
-        .focusedSceneValue(\.presenterLayout, isLocked ? nil : layout)
+            .focusedSceneValue(\.presenterLayout, isLocked ? nil : layout)
     }
 }

@@ -17,15 +17,28 @@ extension View {
     /// the slides. Inline, because a popover tip on a toolbar item of a document window is
     /// never shown (iPadOS 27 simulator); the tip takes no space once it is invalidated.
     func externalDisplayHint() -> some View {
-        toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                ExternalDisplayStatusButton()
+        modifier(ExternalDisplayHintModifier())
+    }
+}
+
+private struct ExternalDisplayHintModifier: ViewModifier {
+    @Environment(\.presenterToolbarFocus) private var focus
+    @Environment(\.presenterMakesRoomForDrawing) private var makesRoomForDrawing
+
+    func body(content: Content) -> some View {
+        content
+            .toolbar {
+                ToolbarItem(placement: focus.placement(.primaryAction)) {
+                    ExternalDisplayStatusButton()
+                }
             }
-        }
-        .safeAreaInset(edge: .top) {
-            TipView(ExternalDisplayTip())
-                .padding(.horizontal)
-        }
+            .safeAreaInset(edge: .top) {
+                // Drawing keeps the room for the slide (#152).
+                if !makesRoomForDrawing {
+                    TipView(ExternalDisplayTip())
+                        .padding(.horizontal)
+                }
+            }
     }
 }
 
