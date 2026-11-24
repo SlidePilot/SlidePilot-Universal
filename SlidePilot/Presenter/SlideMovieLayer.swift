@@ -48,6 +48,13 @@ private struct SlideMovieView: View {
 
     @State private var player: AVPlayer?
     @State private var isMissing = false
+    /// The system player is black until its first frame is ready, so it stays hidden over
+    /// the PDF's poster until then (#141).
+    @State private var isShown = false
+    /// A player that already played elsewhere (the other window, an earlier view) has its
+    /// frame at once: it appears without a fade.
+    @State private var fadesIn = true
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private struct Load: Equatable {
         let url: URL
@@ -60,20 +67,46 @@ private struct SlideMovieView: View {
         ZStack {
             Color.clear
             if let player {
-                MoviePlayerView(player: player, showsControls: MoviePlayerView.showsControls(isPresenter: isPresenter))
-                    .accessibilityLabel(Text("Video \(url.lastPathComponent)"))
+                MoviePlayerView(
+                    player: player,
+                    showsControls: MoviePlayerView.showsControls(isPresenter: isPresenter),
+                    readinessChanged: show
+                )
+                // A new player gets a new view: a reused one could still report the
+                // previous player's frame as ready.
+                .id(ObjectIdentifier(player))
+                .opacity(isShown ? 1 : 0)
+                .allowsHitTesting(isShown)
+                .accessibilityHidden(!isShown)
+                .accessibilityLabel(Text("Video \(url.lastPathComponent)"))
             } else if isMissing, isPresenter {
                 missingFile
             }
         }
         .task(id: Load(url: url, page: page, access: linkedFiles.accessGeneration)) {
             if linkedFiles.isAvailable(url) {
-                player = linkedFiles.player(for: movie, url: url, page: page)
+                let next = linkedFiles.player(for: movie, url: url, page: page)
+                if next !== player {
+                    // A kept player (reload, access change) stays shown; a new one waits.
+                    isShown = false
+                    fadesIn = next.currentItem?.status != .readyToPlay
+                    player = next
+                }
                 isMissing = false
             } else {
                 player = nil
+                isShown = false
                 isMissing = true
             }
+        }
+    }
+
+    /// Shows the player once it has a frame. It is not hidden again while it stays the
+    /// same player, so a loop or seek never flashes the poster.
+    private func show(isReady: Bool) {
+        guard isReady, !isShown else { return }
+        withAnimation(fadesIn && !reduceMotion ? .easeIn(duration: 0.2) : nil) {
+            isShown = true
         }
     }
 
