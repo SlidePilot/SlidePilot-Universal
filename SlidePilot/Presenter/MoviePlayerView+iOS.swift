@@ -9,9 +9,14 @@ import SwiftUI
 struct MoviePlayerView: UIViewControllerRepresentable {
     let player: AVPlayer
     let showsControls: Bool
+    /// Called with `isReadyForDisplay`: the player is black until its first frame is
+    /// ready, so the slide keeps it hidden over the poster until then (#141).
+    let readinessChanged: (Bool) -> Void
 
     /// The external display has no input, so only the presenter has controls.
     static func showsControls(isPresenter: Bool) -> Bool { isPresenter }
+
+    func makeCoordinator() -> MoviePlayerReadiness { MoviePlayerReadiness() }
 
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let controller = AVPlayerViewController()
@@ -22,7 +27,9 @@ struct MoviePlayerView: UIViewControllerRepresentable {
         // Control Center or on the Lock Screen (old bug SlidePilot-macOS#95).
         controller.updatesNowPlayingInfoCenter = false
         Self.configureAudioSession()
-        update(controller)
+        update(controller, readiness: context.coordinator)
+        // The slide gives every player its own view, so this reports that player's frame.
+        context.coordinator.observe(controller, \.isReadyForDisplay)
         return controller
     }
 
@@ -41,14 +48,16 @@ struct MoviePlayerView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ controller: AVPlayerViewController, context: Context) {
-        update(controller)
+        update(controller, readiness: context.coordinator)
     }
 
-    static func dismantleUIViewController(_ controller: AVPlayerViewController, coordinator: ()) {
+    static func dismantleUIViewController(_ controller: AVPlayerViewController, coordinator: MoviePlayerReadiness) {
+        coordinator.stop()
         controller.player = nil
     }
 
-    private func update(_ controller: AVPlayerViewController) {
+    private func update(_ controller: AVPlayerViewController, readiness: MoviePlayerReadiness) {
+        readiness.changed = readinessChanged
         if controller.player !== player { controller.player = player }
         controller.showsPlaybackControls = showsControls
     }

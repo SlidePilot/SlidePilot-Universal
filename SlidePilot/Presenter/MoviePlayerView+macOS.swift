@@ -10,10 +10,15 @@ import SwiftUI
 struct MoviePlayerView: NSViewRepresentable {
     let player: AVPlayer
     let showsControls: Bool
+    /// Called with `isReadyForDisplay`: the player is black until its first frame is
+    /// ready, so the slide keeps it hidden over the poster until then (#141).
+    let readinessChanged: (Bool) -> Void
 
     /// Like the old app, the presentation has controls too: it may be the only window the
     /// presenter sees.
     static func showsControls(isPresenter: Bool) -> Bool { true }
+
+    func makeCoordinator() -> MoviePlayerReadiness { MoviePlayerReadiness() }
 
     func makeNSView(context: Context) -> SlideMoviePlayerView {
         let view = SlideMoviePlayerView()
@@ -22,19 +27,23 @@ struct MoviePlayerView: NSViewRepresentable {
         // A slide video is part of the talk, not media playback: it must not show in Now
         // Playing, take the media keys or claim the audio route (old bug SlidePilot-macOS#95).
         view.updatesNowPlayingInfoCenter = false
-        update(view)
+        update(view, readiness: context.coordinator)
+        // The slide gives every player its own view, so this reports that player's frame.
+        context.coordinator.observe(view, \.isReadyForDisplay)
         return view
     }
 
     func updateNSView(_ view: SlideMoviePlayerView, context: Context) {
-        update(view)
+        update(view, readiness: context.coordinator)
     }
 
-    static func dismantleNSView(_ view: SlideMoviePlayerView, coordinator: ()) {
+    static func dismantleNSView(_ view: SlideMoviePlayerView, coordinator: MoviePlayerReadiness) {
+        coordinator.stop()
         view.player = nil
     }
 
-    private func update(_ view: SlideMoviePlayerView) {
+    private func update(_ view: SlideMoviePlayerView, readiness: MoviePlayerReadiness) {
+        readiness.changed = readinessChanged
         if view.player !== player { view.player = player }
         view.showsControls = showsControls
     }
