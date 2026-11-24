@@ -53,6 +53,7 @@ struct SettingsView: View {
                     }
                 }
                 StoredDataSection()
+                HelpSection()
             }
             .navigationTitle("Settings")
             .navigationDestination(for: SettingsTab.self) { tab in

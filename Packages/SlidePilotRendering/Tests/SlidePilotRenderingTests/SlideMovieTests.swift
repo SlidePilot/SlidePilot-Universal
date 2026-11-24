@@ -60,6 +60,7 @@ private func isClose(_ first: CGRect, _ second: CGRect) -> Bool {
         #expect(movie.reference == "media/test-pattern.mp4")
         // /Rect [90.709 63.409 272.126 214.305] on a 362.835 × 272.126 pt page.
         #expect(isClose(movie.unitRect, CGRect(x: 0.25, y: 0.21247, width: 0.5, height: 0.55451)))
+        #expect(isClose(movie.bounds, CGRect(x: 90.709, y: 63.409, width: 181.417, height: 150.896)))
         #expect(await cache.movies(page: 0).isEmpty)
         #expect(await cache.movies(page: 99).isEmpty)
     }
@@ -126,11 +127,11 @@ private func isClose(_ first: CGRect, _ second: CGRect) -> Bool {
     }
 
     @Test func placesTheMovieInARegionWithoutClipping() {
-        let movie = SlideMovie(unitRect: CGRect(x: 0.25, y: 0.25, width: 0.5, height: 0.5), reference: "a.mp4")
+        let movie = SlideMovie(unitRect: CGRect(x: 0.25, y: 0.25, width: 0.5, height: 0.5), bounds: .zero, reference: "a.mp4")
         #expect(movie.unitRect(in: .full) == movie.unitRect)
         #expect(movie.unitRect(in: .leftHalf) == CGRect(x: 0.5, y: 0.25, width: 1, height: 0.5))
         #expect(movie.unitRect(in: .rightHalf) == CGRect(x: -0.5, y: 0.25, width: 1, height: 0.5))
-        let notesSide = SlideMovie(unitRect: CGRect(x: 0.6, y: 0.1, width: 0.3, height: 0.3), reference: "a.mp4")
+        let notesSide = SlideMovie(unitRect: CGRect(x: 0.6, y: 0.1, width: 0.3, height: 0.3), bounds: .zero, reference: "a.mp4")
         #expect(notesSide.unitRect(in: .leftHalf) == nil)
     }
 
@@ -156,6 +157,17 @@ private func isClose(_ first: CGRect, _ second: CGRect) -> Bool {
         }
         #expect(await cache.movies(page: 1).first?.reference == "media/test-pattern.mp4")
         #expect(await cache.linkedFileReferences() == ["media/test-pattern.mp4"])
+    }
+
+    /// The overlay steps of one frame place the video at the same place (#140).
+    @Test func buildStepsOfTheFixtureShareTheVideoBounds() async throws {
+        let cache = try cache(try fixtureData("video-options.pdf"))
+        var bounds: [CGRect] = []
+        for page in 7...9 {
+            bounds.append(try #require(await cache.movies(page: page).first).bounds)
+        }
+        #expect(bounds[0].width > 0)
+        #expect(bounds.allSatisfy { isClose($0, bounds[0]) })
     }
 
     /// pdfTeX route: a hidden widget runs the movie action when the page opens.

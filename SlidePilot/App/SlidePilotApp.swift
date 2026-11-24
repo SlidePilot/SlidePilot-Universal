@@ -62,6 +62,7 @@ struct SlidePilotApp: App {
             DrawingsExportCommands()
             SlidePilotFileCommands()
             RemoteControlCommands()
+            HelpCommands()
             DonationCommands()
         }
 
@@ -124,6 +125,7 @@ struct SlidePilotApp: App {
             PresentationCommands()
             ModeratorCommands()
             SettingsCommands()
+            HelpCommands()
         }
         .commands {
             LayoutCommands()

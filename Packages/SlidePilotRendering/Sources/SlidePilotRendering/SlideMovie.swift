@@ -7,13 +7,17 @@ import SlidePilotCore
 public struct SlideMovie: Sendable, Hashable {
     /// The video's area as a fraction of the displayed page (`/Rotate` applied), origin top left.
     public let unitRect: CGRect
+    /// The annotation's rectangle in PDF points (page space, as written in the PDF). Tells
+    /// whether two overlay build steps show a video at the same place (#140).
+    public let bounds: CGRect
     /// The file as written in the PDF, usually relative to the PDF (see `LinkedFile`).
     public let reference: String
     /// Autostart, loop, start and duration.
     public let activation: MovieActivation
 
-    public init(unitRect: CGRect, reference: String, activation: MovieActivation = MovieActivation()) {
+    public init(unitRect: CGRect, bounds: CGRect, reference: String, activation: MovieActivation = MovieActivation()) {
         self.unitRect = unitRect
+        self.bounds = bounds
         self.reference = reference
         self.activation = activation
     }
@@ -254,7 +258,7 @@ enum MovieExtractor {
             guard case .movie(let reference, let activation) = entry.kind else { return nil }
             let rect = LinkExtractor.displayedUnitRect(of: entry.bounds, mediaBox: mediaBox, rotation: page.rotation)
             guard rect.width > 0, rect.height > 0 else { return nil }
-            return SlideMovie(unitRect: rect, reference: reference, activation: activation)
+            return SlideMovie(unitRect: rect, bounds: entry.bounds, reference: reference, activation: activation)
         }
     }
 }

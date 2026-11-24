@@ -3816,6 +3816,23 @@
         }
       }
     },
+    "SlidePilot Help" : {
+      "comment" : "Help menu item and settings link that open the online user guide",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot-Hilfe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aide SlidePilot"
+          }
+        }
+      }
+    },
     "SlidePilot needs access to the folder of this PDF to play “%@”." : {
       "comment" : "Help tag of the button over a video; the argument is the video's file name",
       "localizations" : {
