@@ -22,7 +22,7 @@ Before the 2.0 release, every open issue of [SlidePilot-macOS](https://github.co
 | [65](https://github.com/SlidePilot/SlidePilot-macOS/issues/65) | Timer colors at remaining-time thresholds | Request | 2.0 | [#166](https://github.com/SlidePilot/SlidePilot-Universal/issues/166) |
 | [69](https://github.com/SlidePilot/SlidePilot-macOS/issues/69) | Zoom into slides | Request | 2.1 | [#172](https://github.com/SlidePilot/SlidePilot-Universal/issues/172) |
 | [71](https://github.com/SlidePilot/SlidePilot-macOS/issues/71) | Upgrade to Sparkle 2 | Obsolete | No updater in the rewrite (DROP-02) | – |
-| [74](https://github.com/SlidePilot/SlidePilot-macOS/issues/74) | Keyboard back to the slides after Return in the navigator | Request | 2.0; the rewrite still keeps the focus in the page field on the Mac | [#164](https://github.com/SlidePilot/SlidePilot-Universal/issues/164) |
+| [74](https://github.com/SlidePilot/SlidePilot-macOS/issues/74) | Keyboard back to the slides after Return in the navigator | Request | Not at all: the page field keeps the keyboard after Return, like in the old app; ⌃⌘←/→ change slides meanwhile (NAV-02) and Esc closes the navigator | – |
 | [75](https://github.com/SlidePilot/SlidePilot-macOS/issues/75) | Navigate by PDF outline | Request | 2.1 | [#170](https://github.com/SlidePilot/SlidePilot-Universal/issues/170) |
 | [76](https://github.com/SlidePilot/SlidePilot-macOS/issues/76) | Resize the navigator | Solved by the rewrite | The navigator is a resizable sidebar (LAY-06) | – |
 | [77](https://github.com/SlidePilot/SlidePilot-macOS/issues/77) | Timer controls by double click and right click | Solved by the rewrite | Timer toggle, Set Timer and Start/Stop in the toolbar (TIME-02 to TIME-04) | – |
