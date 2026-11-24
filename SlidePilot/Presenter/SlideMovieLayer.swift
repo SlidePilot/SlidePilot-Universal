@@ -22,7 +22,8 @@ struct SlideMovieLayer: View {
         if let linkedFiles {
             GeometryReader { proxy in
                 let size = proxy.size
-                ForEach(Array(movies.enumerated()), id: \.offset) { _, movie in
+                ForEach(Self.identified(movies), id: \.id) { item in
+                    let movie = item.movie
                     if let rect = movie.unitRect(in: region), let url = linkedFiles.url(for: movie.reference) {
                         SlideMovieView(movie: movie, url: url, page: page, isPresenter: isPresenter, linkedFiles: linkedFiles)
                             .frame(width: rect.width * size.width, height: rect.height * size.height)
@@ -34,6 +35,22 @@ struct SlideMovieLayer: View {
             }
             // A video reaching past a split-notes half must not cover the notes.
             .clipped()
+        }
+    }
+
+    private struct Item {
+        let id: String
+        let movie: SlideMovie
+    }
+
+    /// Identifies a video by its reference and how often it came before on the page, so an
+    /// overlay build step that shows the same `\movie` again keeps its view (#140).
+    private static func identified(_ movies: [SlideMovie]) -> [Item] {
+        var seen: [String: Int] = [:]
+        return movies.map { movie in
+            let count = seen[movie.reference, default: 0]
+            seen[movie.reference] = count + 1
+            return Item(id: "\(count) \(movie.reference)", movie: movie)
         }
     }
 }
