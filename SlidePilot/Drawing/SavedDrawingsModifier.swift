@@ -27,6 +27,15 @@ private struct SavedDrawingsModifier: ViewModifier {
                     guard settings?.savesDrawings == true else { return }
                     companion.setDrawings(CompanionDrawings(pages: pages))
                 }
+                // Deleting the stored data in Settings also deletes the drawings on screen and
+                // their undo history (SET-07). Without "Save drawings" the drawing of draw mode
+                // is not stored data, so it stays. Weak: the drawings already hold the
+                // companion through `onPagesChange`.
+                let model = drawing
+                companion.onStoredDataDeleted = { [settings, weak model] in
+                    guard settings?.savesDrawings == true else { return }
+                    model?.deleteAll()
+                }
             }
             // The entry arrives after opening, and changes when the data of a missing PDF is
             // taken over (NOTES-12).
