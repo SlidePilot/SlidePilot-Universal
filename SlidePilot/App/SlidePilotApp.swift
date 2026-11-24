@@ -29,6 +29,8 @@ struct SlidePilotApp: App {
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
         CompanionStore.cleanUpAtLaunch()
+        // Copies of embedded videos that a crash or force quit left behind (#142).
+        EmbeddedFileStore.removeLeftovers()
         #if DEBUG
         TestHostAppearance.apply()
         #endif

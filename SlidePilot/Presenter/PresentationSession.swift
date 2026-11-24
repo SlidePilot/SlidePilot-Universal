@@ -19,6 +19,9 @@ final class PresentationSession: Identifiable {
     var slidePilotFileRequest: SlidePilotFileRequest?
     /// Replaced when the PDF is reloaded; views read page sizes from `cache.info`.
     private(set) var cache: RenderCache
+    /// Temporary files of the videos stored inside the PDF, shared by the caches of all
+    /// versions of the PDF; removed when the document closes (#142).
+    @ObservationIgnored private let embeddedFiles = EmbeddedFileStore()
     private(set) var position: DeckPosition
     /// Stopwatch/timer of this document; starts in stopwatch mode (TIME-02 to TIME-05).
     var timer = PresentationTimer()
@@ -73,7 +76,7 @@ final class PresentationSession: Identifiable {
         companion = DocumentCompanion(store: companionStore)
         notes = NotesModel(companion: companion)
         // Cheap to create: the cache opens the PDF on its first render.
-        cache = RenderCache(data: data, info: info)
+        cache = RenderCache(data: data, info: info, embeddedFiles: embeddedFiles)
         position = DeckPosition(page: page, pageCount: info.pageCount)
         notesDisplay = NotesDisplay(pdfKeywords: info.keywords)
     }
@@ -144,11 +147,18 @@ final class PresentationSession: Identifiable {
         if notesDisplay.showsSplitNotes { notes.finishEditing() }
     }
 
+    /// Removes the copies of embedded videos right away when the window closes (#142);
+    /// the session itself may be released later.
+    func documentClosed() {
+        let embeddedFiles = embeddedFiles
+        Task { await embeddedFiles.removeAll() }
+    }
+
     /// Shows a recompiled version of the PDF (DOC-08). The page stays, clamped to the
     /// new last page when the deck got shorter (DEF-18).
     func reload(with version: PDFVersion) {
         data = version.data
-        cache = RenderCache(data: version.data, info: version.info)
+        cache = RenderCache(data: version.data, info: version.info, embeddedFiles: embeddedFiles)
         contentVersion += 1
         position.changePageCount(to: version.info.pageCount)
         drawing.drawings.pageCountChanged(to: version.info.pageCount)

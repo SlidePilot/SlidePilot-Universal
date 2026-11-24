@@ -236,3 +236,134 @@ private func isClose(_ first: CGRect, _ second: CGRect) -> Bool {
         #expect(try await cache(data).movies(page: 0).first?.activation == expected)
     }
 }
+
+// MARK: - Videos stored inside the PDF (#142)
+
+@Suite struct EmbeddedMovieTests {
+    private func makeStore() -> (EmbeddedFileStore, parent: URL) {
+        let parent = FileManager.default.temporaryDirectory.appending(path: "EmbeddedMovieTests-\(UUID().uuidString)", directoryHint: .isDirectory)
+        return (EmbeddedFileStore(parent: parent), parent)
+    }
+
+    private func cache(_ name: String, store: EmbeddedFileStore) throws -> RenderCache {
+        let data = try fixtureData(name)
+        return RenderCache(data: data, info: try PDFInspector.inspect(data), embeddedFiles: store)
+    }
+
+    private func exists(_ url: URL) -> Bool {
+        FileManager.default.fileExists(atPath: url.path(percentEncoded: false))
+    }
+
+    @Test func writesTheEmbeddedVideoOfTheFixtureToATemporaryFile() async throws {
+        let (store, parent) = makeStore()
+        defer { EmbeddedFileStore.removeLeftovers(in: parent) }
+        let cache = try cache("media-embedded.pdf", store: store)
+        let movies = await cache.movies(page: 1)
+        #expect(movies.count == 1)
+        let movie = try #require(movies.first)
+        #expect(movie.reference == "test-pattern.mp4")
+        #expect(movie.fileName == "test-pattern.mp4")
+        #expect(movie.activation == MovieActivation())
+        let file = try #require(movie.embeddedFile)
+        #expect(file.pathExtension == "mp4")
+        #expect(file.deletingLastPathComponent().standardizedFileURL == store.directory.standardizedFileURL)
+        #expect(try Data(contentsOf: file) == fixtureData("media/test-pattern.mp4"))
+    }
+
+    /// Both overlay steps embed the same video, so they share the file and the player (#140).
+    @Test func buildStepsShareTheFile() async throws {
+        let (store, parent) = makeStore()
+        defer { EmbeddedFileStore.removeLeftovers(in: parent) }
+        let cache = try cache("media-embedded.pdf", store: store)
+        let plain = try #require(await cache.movies(page: 1).first)
+        let first = try #require(await cache.movies(page: 2).first)
+        let second = try #require(await cache.movies(page: 3).first)
+        #expect(first.activation == MovieActivation(mode: .repeat, autostarts: true))
+        #expect(second.activation == first.activation)
+        #expect(isClose(first.bounds, second.bounds))
+        #expect(first.embeddedFile == plain.embeddedFile)
+        #expect(second.embeddedFile == plain.embeddedFile)
+        #expect(await store.files.count == 1)
+    }
+
+    /// An embedded video never asks for folder access.
+    @Test func embeddedVideosAreNoLinkedFiles() async throws {
+        let (store, parent) = makeStore()
+        defer { EmbeddedFileStore.removeLeftovers(in: parent) }
+        #expect(try await cache("media-embedded.pdf", store: store).linkedFileReferences().isEmpty)
+    }
+
+    /// A reload that no longer embeds the video removes its file; one that still does keeps it.
+    @Test func reloadRemovesFilesThePDFNoLongerStores() async throws {
+        let (store, parent) = makeStore()
+        defer { EmbeddedFileStore.removeLeftovers(in: parent) }
+        let file = try #require(await cache("media-embedded.pdf", store: store).movies(page: 1).first?.embeddedFile)
+
+        let same = try cache("media-embedded.pdf", store: store)
+        await same.removeUnusedEmbeddedFiles()
+        #expect(exists(file))
+        #expect(await same.movies(page: 1).first?.embeddedFile == file)
+
+        await (try cache("media.pdf", store: store)).removeUnusedEmbeddedFiles()
+        #expect(!exists(file))
+        #expect(await store.files.isEmpty)
+    }
+
+    /// Closing the document empties the store and removes its folder.
+    @Test func closingTheDocumentRemovesTheFiles() async throws {
+        let (store, parent) = makeStore()
+        defer { EmbeddedFileStore.removeLeftovers(in: parent) }
+        let cache = try cache("media-embedded.pdf", store: store)
+        let file = try #require(await cache.movies(page: 1).first?.embeddedFile)
+        #expect(exists(file))
+        // What closing the document does (PresentationSession.documentClosed).
+        await store.removeAll()
+        #expect(!exists(store.directory))
+    }
+
+    /// A temporary copy that went away (closed document, system cleanup) is written again
+    /// the next time the page's videos are asked for.
+    @Test func writesARemovedFileAgain() async throws {
+        let (store, parent) = makeStore()
+        defer { EmbeddedFileStore.removeLeftovers(in: parent) }
+        let cache = try cache("media-embedded.pdf", store: store)
+        let file = try #require(await cache.movies(page: 1).first?.embeddedFile)
+        await store.removeAll()
+        #expect(!exists(file))
+        #expect(await cache.movies(page: 1).first?.embeddedFile == file)
+        #expect(exists(file))
+    }
+
+    /// Without an extension in the name, the stream's MIME type gives one; `/EF /UF` wins
+    /// over `/EF /F`.
+    @Test func takesTheExtensionFromTheMIMEType() async throws {
+        let (store, parent) = makeStore()
+        defer { EmbeddedFileStore.removeLeftovers(in: parent) }
+        let data = try rawPDF(
+            annotations: ["/Subtype /Movie /Rect [0 0 200 150] /Movie << /F << /Type /Filespec /UF (clip) /EF << /F 6 0 R /UF 5 0 R >> >> >>"],
+            extraObjects: [
+                "<< /Type /EmbeddedFile /Subtype /video#2Fquicktime /Length 7 >>\nstream\nunicode\nendstream",
+                "<< /Type /EmbeddedFile /Length 5 >>\nstream\nplain\nendstream",
+            ]
+        )
+        let cache = RenderCache(data: data, info: try PDFInspector.inspect(data), embeddedFiles: store)
+        let movie = try #require(await cache.movies(page: 0).first)
+        let file = try #require(movie.embeddedFile)
+        #expect(file.pathExtension == "mov")
+        #expect(try Data(contentsOf: file) == Data("unicode".utf8))
+        #expect(movie.reference == "clip")
+    }
+
+    /// A broken embedded stream keeps the poster; it never looks for a file of that name.
+    @Test func skipsEmbeddedVideosThatCannotBeRead() async throws {
+        let (store, parent) = makeStore()
+        defer { EmbeddedFileStore.removeLeftovers(in: parent) }
+        let data = try rawPDF(
+            annotations: ["/Subtype /Movie /Rect [0 0 200 150] /Movie << /F << /Type /Filespec /F (a.mp4) /EF << /F 5 0 R >> >> >>"],
+            extraObjects: ["<< /Type /EmbeddedFile /Length 0 >>\nstream\n\nendstream"]
+        )
+        let cache = RenderCache(data: data, info: try PDFInspector.inspect(data), embeddedFiles: store)
+        #expect(await cache.movies(page: 0).isEmpty)
+        #expect(await cache.linkedFileReferences().isEmpty)
+    }
+}

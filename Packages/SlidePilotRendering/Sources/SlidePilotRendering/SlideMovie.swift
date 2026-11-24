@@ -2,6 +2,7 @@ import CoreGraphics
 import Foundation
 import PDFKit
 import SlidePilotCore
+import UniformTypeIdentifiers
 
 /// A video placed on a page with Beamer's `\movie` (NAV-07).
 public struct SlideMovie: Sendable, Hashable {
@@ -10,16 +11,32 @@ public struct SlideMovie: Sendable, Hashable {
     /// The annotation's rectangle in PDF points (page space, as written in the PDF). Tells
     /// whether two overlay build steps show a video at the same place (#140).
     public let bounds: CGRect
-    /// The file as written in the PDF, usually relative to the PDF (see `LinkedFile`).
+    /// The file as written in the PDF, usually relative to the PDF (see `LinkedFile`). For
+    /// a video stored inside the PDF, the name it was embedded with.
     public let reference: String
     /// Autostart, loop, start and duration.
     public let activation: MovieActivation
+    /// The temporary copy of a video stored inside the PDF (#142); `nil` for a video that
+    /// `reference` names.
+    public let embeddedFile: URL?
 
-    public init(unitRect: CGRect, bounds: CGRect, reference: String, activation: MovieActivation = MovieActivation()) {
+    public init(
+        unitRect: CGRect,
+        bounds: CGRect,
+        reference: String,
+        activation: MovieActivation = MovieActivation(),
+        embeddedFile: URL? = nil
+    ) {
         self.unitRect = unitRect
         self.bounds = bounds
         self.reference = reference
         self.activation = activation
+        self.embeddedFile = embeddedFile
+    }
+
+    /// The video's file name, for labels.
+    public var fileName: String {
+        URL(filePath: reference).lastPathComponent
     }
 
     /// The video's area as a fraction of `region`, origin top left. Not clipped, so the video
@@ -45,8 +62,9 @@ public struct SlideMovie: Sendable, Hashable {
 enum RawAnnotationReader {
     struct Entry {
         enum Kind: Equatable {
-            /// A `Movie` annotation, its file and how it plays.
-            case movie(String, MovieActivation)
+            /// A `Movie` annotation, its file and how it plays. `embedded` is the video's
+            /// stream when the PDF stores it (`/EF`); the file name is then only its name.
+            case movie(String, MovieActivation, embedded: CGPDFStreamRef?)
             /// A `Link` annotation with a `/Launch` action and its file.
             case launch(String)
         }
@@ -76,7 +94,7 @@ enum RawAnnotationReader {
                 else { return nil }
                 var activation = activation(of: annotation)
                 activation.autostarts = autostart.contains(annotation: annotation, title: string(annotation, "T"))
-                return Entry(bounds: bounds, kind: .movie(file, activation))
+                return Entry(bounds: bounds, kind: .movie(file, activation, embedded: embeddedFile(movie, "F")))
             case "Link":
                 var action: CGPDFDictionaryRef?
                 guard CGPDFDictionaryGetDictionary(annotation, "A", &action), let action,
@@ -197,6 +215,35 @@ enum RawAnnotationReader {
         return Double(value)
     }
 
+    // MARK: - Embedded files
+
+    /// The embedded file stream of the file specification under `key`: `/EF /UF`, else
+    /// `/EF /F`.
+    private static func embeddedFile(_ dictionary: CGPDFDictionaryRef, _ key: String) -> CGPDFStreamRef? {
+        var specification: CGPDFDictionaryRef?
+        guard CGPDFDictionaryGetDictionary(dictionary, key, &specification), let specification else { return nil }
+        var files: CGPDFDictionaryRef?
+        guard CGPDFDictionaryGetDictionary(specification, "EF", &files), let files else { return nil }
+        for fileKey in ["UF", "F"] {
+            var stream: CGPDFStreamRef?
+            if CGPDFDictionaryGetStream(files, fileKey, &stream), let stream { return stream }
+        }
+        return nil
+    }
+
+    /// The decoded bytes of an embedded file, and the file extension that tells AVFoundation
+    /// its type: from `name`, else from the stream's MIME type (`/Subtype`).
+    static func embeddedData(_ stream: CGPDFStreamRef, name: String) -> (data: Data, fileExtension: String)? {
+        var format = CGPDFDataFormat.raw
+        guard let data = CGPDFStreamCopyData(stream, &format) as Data?, format == .raw, !data.isEmpty else { return nil }
+        var fileExtension = URL(filePath: name).pathExtension
+        if fileExtension.isEmpty, let streamDictionary = CGPDFStreamGetDictionary(stream),
+           let mimeType = Self.name(streamDictionary, "Subtype") {
+            fileExtension = UTType(mimeType: mimeType)?.preferredFilenameExtension ?? ""
+        }
+        return (data, fileExtension)
+    }
+
     // MARK: - Helpers
 
     /// `/F`, or the platform entries `/Unix` and `/Mac` of older writers.
@@ -249,16 +296,54 @@ enum RawAnnotationReader {
     }
 }
 
+/// A movie as read from the page, with the bytes of a video stored inside the PDF.
+struct ExtractedMovie: Sendable {
+    struct Embedded: Sendable {
+        let data: Data
+        let fileExtension: String
+    }
+
+    let movie: SlideMovie
+    /// `nil` for a video that the movie's reference names.
+    let embedded: Embedded?
+
+    /// The movie with the temporary copy of its embedded video; `nil` when the copy could
+    /// not be written, so the poster stays.
+    func storing(in store: EmbeddedFileStore) async -> SlideMovie? {
+        guard let embedded else { return movie }
+        do {
+            let file = try await store.file(for: embedded.data, fileExtension: embedded.fileExtension)
+            return SlideMovie(
+                unitRect: movie.unitRect,
+                bounds: movie.bounds,
+                reference: movie.reference,
+                activation: movie.activation,
+                embeddedFile: file
+            )
+        } catch {
+            return nil
+        }
+    }
+}
+
 /// Reads the movies of a page.
 enum MovieExtractor {
-    static func movies(on page: PDFPage) -> [SlideMovie] {
+    static func movies(on page: PDFPage) -> [ExtractedMovie] {
         let mediaBox = page.bounds(for: .mediaBox)
         guard mediaBox.width > 0, mediaBox.height > 0, let pageRef = page.pageRef else { return [] }
         return RawAnnotationReader.entries(of: pageRef).compactMap { entry in
-            guard case .movie(let reference, let activation) = entry.kind else { return nil }
+            guard case .movie(let reference, let activation, let stream) = entry.kind else { return nil }
             let rect = LinkExtractor.displayedUnitRect(of: entry.bounds, mediaBox: mediaBox, rotation: page.rotation)
             guard rect.width > 0, rect.height > 0 else { return nil }
-            return SlideMovie(unitRect: rect, bounds: entry.bounds, reference: reference, activation: activation)
+            var embedded: ExtractedMovie.Embedded?
+            if let stream {
+                // An embedded video that cannot be read never falls back to a file of that
+                // name next to the PDF.
+                guard let (data, fileExtension) = RawAnnotationReader.embeddedData(stream, name: reference) else { return nil }
+                embedded = ExtractedMovie.Embedded(data: data, fileExtension: fileExtension)
+            }
+            let movie = SlideMovie(unitRect: rect, bounds: entry.bounds, reference: reference, activation: activation)
+            return ExtractedMovie(movie: movie, embedded: embedded)
         }
     }
 }

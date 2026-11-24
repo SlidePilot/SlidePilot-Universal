@@ -1,0 +1,67 @@
+% A video stored inside the PDF (NAV-07, #142): a Movie annotation whose file
+% specification carries the video as an embedded file stream (/EF). Beamer's
+% multimedia package never embeds, so the annotations are written with pdfTeX
+% primitives. The PDF needs no other file.
+\documentclass{beamer}
+\input{common/preamble}
+\title{Embedded video}
+\subtitle{SlidePilot test fixture}
+\hypersetup{pdftitle={Embedded video}}
+
+% The video, once; every annotation refers to the same stream.
+\immediate\pdfobj stream attr{/Type /EmbeddedFile /Subtype /video#2Fmp4}
+  file{media/test-pattern.mp4}
+\edef\videoobj{\the\pdflastobj}
+
+% \embeddedmovie{title}{activation dictionary entries}{poster text}
+% Places a 6.4 cm x 3.6 cm Movie annotation over a framed poster.
+\newcommand{\embeddedmovie}[3]{%
+  \leavevmode
+  \rlap{\pdfannot width 6.4cm height 3.6cm depth 0pt {%
+    /Subtype /Movie /T (#1)
+    /Movie << /F << /Type /Filespec /F (test-pattern.mp4) /UF (test-pattern.mp4)
+      /EF << /F \videoobj\space 0 R >> >> /Aspect [320 180] >>
+    /A << #2 >>}}%
+  \fbox{\parbox[b][3.4cm][c]{6.2cm}{\centering #3}}%
+}
+
+% Plays the movie titled #1 when the page opens, like the multimedia package's
+% autostart: a hidden widget with a page-open action.
+\newcommand{\autostart}[1]{%
+  \pdfannot width 0pt height 0pt depth 0pt {%
+    /Subtype /Widget /FT /Btn /F 2 /T (#1-autostart)
+    /AA << /PO << /S /Movie /T (#1) /Operation /Play >> >>}%
+}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Embedded video}
+  \centering
+  \embeddedmovie{plain}{/ShowControls false}{Embedded video:\\ starts only with Play,\\ needs no folder access}
+\end{frame}
+
+\begin{frame}{Embedded video over two steps}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}[<+->]
+        \item First step
+        \item Second step
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      \autostart{looping}%
+      \embeddedmovie{looping}{/Mode /Repeat}{Autostart, loop:\\ keeps playing on\\ the second step}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Last slide}
+  \centering
+  \Large Last slide
+\end{frame}
+
+\end{document}

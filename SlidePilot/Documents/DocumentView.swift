@@ -51,7 +51,11 @@ struct DocumentView: View {
             .linkedFiles(session, fileURL: fileURL)
             // The presentation surfaces find the session in the registry (DOC-04).
             .onAppear { registry.register(session) }
-            .onDisappear { registry.unregister(session.id) }
+            .onDisappear {
+                registry.unregister(session.id)
+                // The iPad keeps a closed document's state until the next one opens.
+                session.documentClosed()
+            }
             #if os(iOS)
             // The iPad external display shows the document of the active window.
             .onAppWindowChange { registry.register(session, inWindow: $0) }

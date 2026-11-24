@@ -1,5 +1,6 @@
 import CoreGraphics
 import Foundation
+import SlidePilotCore
 
 /// Renders and caches slide images of one PDF (ADR 0005, PRE-01, PRE-02).
 ///
@@ -66,13 +67,25 @@ public actor RenderCache {
     /// Movies per page, like the links.
     private var pageMovies: [Int: Task<[SlideMovie], Never>] = [:]
     private var linkedFiles: Task<[String], Never>?
+    /// Holds the videos stored inside the PDF (#142).
+    private let embeddedFiles: EmbeddedFileStore
+    /// The temporary files this PDF's pages have returned so far.
+    private var usedEmbeddedFiles: Set<URL> = []
 
     /// - Parameters:
     ///   - data: The PDF. Every worker opens its own `PDFDocument` from it (DEF-02).
     ///   - info: The result of `PDFInspector.inspect(data)`.
-    public init(data: Data, info: PDFDocumentInfo, configuration: Configuration = .platformDefault) {
+    ///   - embeddedFiles: Where videos stored inside the PDF are written. Pass the document's
+    ///     store, so the caches of a reloaded PDF share the files.
+    public init(
+        data: Data,
+        info: PDFDocumentInfo,
+        configuration: Configuration = .platformDefault,
+        embeddedFiles: EmbeddedFileStore = EmbeddedFileStore()
+    ) {
         self.info = info
         self.configuration = configuration
+        self.embeddedFiles = embeddedFiles
         foreground = SlideRasterizer(data: data)
         background = (0..<max(0, configuration.backgroundWorkers)).map { _ in SlideRasterizer(data: data) }
     }
@@ -178,13 +191,54 @@ public actor RenderCache {
 
     // MARK: - Movies and linked files
 
-    /// The movies on `page` (NAV-07), read once per page like the links.
+    /// The movies on `page` (NAV-07), read once per page like the links. A video stored
+    /// inside the PDF is written to a temporary file first (#142).
     public func movies(page: Int) async -> [SlideMovie] {
-        if let read = pageMovies[page] { return await read.value }
+        if let read = pageMovies[page] {
+            let movies = await read.value
+            // A temporary copy may be gone (system cleanup, the document closed while its
+            // views live on): read the page again, so the file is written again.
+            let isComplete = movies.allSatisfy { movie in
+                movie.embeddedFile.map { FileManager.default.fileExists(atPath: $0.path(percentEncoded: false)) } ?? true
+            }
+            if isComplete { return movies }
+            if pageMovies[page] == read { pageMovies[page] = nil }
+            return await self.movies(page: page)
+        }
         let rasterizer = nextBackgroundRasterizer()
-        let read = Task { await rasterizer.movies(page: page) }
+        let store = embeddedFiles
+        let read = Task {
+            var movies: [SlideMovie] = []
+            for extracted in await rasterizer.movies(page: page) {
+                if let movie = await extracted.storing(in: store) { movies.append(movie) }
+            }
+            return movies
+        }
         pageMovies[page] = read
-        return await read.value
+        let movies = await read.value
+        for movie in movies {
+            if let file = movie.embeddedFile { usedEmbeddedFiles.insert(file) }
+        }
+        return movies
+    }
+
+    /// Removes the temporary files of videos that this PDF no longer stores, after a reload
+    /// (DOC-08, #142). Reads every page only when the store holds files this PDF has not
+    /// shown yet, so a first open does not write every video ahead of time.
+    public func removeUnusedEmbeddedFiles() async {
+        guard await !embeddedFiles.files.subtracting(usedEmbeddedFiles).isEmpty else { return }
+        let mark = await embeddedFiles.mark()
+        var used: Set<URL> = []
+        for page in 0..<info.pageCount {
+            // The document closed or a newer reload took over.
+            guard !Task.isCancelled else { return }
+            for movie in await movies(page: page) {
+                if let file = movie.embeddedFile { used.insert(file) }
+            }
+        }
+        guard !Task.isCancelled else { return }
+        // Files that a newer reload asked for since `mark` stay as well.
+        await embeddedFiles.removeAll(except: used, requestedSince: mark)
     }
 
     /// Every file the PDF refers to with `\movie` or a `run:` link, as written in the PDF,
