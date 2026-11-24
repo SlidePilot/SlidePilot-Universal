@@ -30,6 +30,9 @@ private struct LinkedFilesModifier: ViewModifier {
                 await linkedFiles.prepare(documentURL: fileURL, cache: session.cache)
                 guard !Task.isCancelled else { return }
                 await linkedFiles.reloaded(page: session.currentPage, cache: session.cache)
+                guard !Task.isCancelled else { return }
+                // Last: a video that the reload removed has stopped by now (#142).
+                await session.cache.removeUnusedEmbeddedFiles()
             }
             .onChange(of: session.currentPage, initial: true) { _, page in
                 linkedFiles.showPage(page, change: session.position.lastChange, cache: session.cache)

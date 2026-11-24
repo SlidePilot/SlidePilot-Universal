@@ -24,7 +24,7 @@ struct SlideMovieLayer: View {
                 let size = proxy.size
                 ForEach(Self.identified(movies), id: \.id) { item in
                     let movie = item.movie
-                    if let rect = movie.unitRect(in: region), let url = linkedFiles.url(for: movie.reference) {
+                    if let rect = movie.unitRect(in: region), let url = linkedFiles.url(for: movie) {
                         SlideMovieView(movie: movie, url: url, page: page, isPresenter: isPresenter, linkedFiles: linkedFiles)
                             .frame(width: rect.width * size.width, height: rect.height * size.height)
                             // The player's own view extends into the safe area on iPad.
@@ -95,7 +95,7 @@ private struct SlideMovieView: View {
                 .opacity(isShown ? 1 : 0)
                 .allowsHitTesting(isShown)
                 .accessibilityHidden(!isShown)
-                .accessibilityLabel(Text("Video \(url.lastPathComponent)"))
+                .accessibilityLabel(Text("Video \(movie.fileName)"))
             } else if isMissing, isPresenter {
                 missingFile
             }
@@ -132,8 +132,8 @@ private struct SlideMovieView: View {
     /// VoiceOver still reads the full title.
     @ViewBuilder
     private var missingFile: some View {
-        if linkedFiles.needsFolderAccess {
-            let reason = Text("SlidePilot needs access to the folder of this PDF to play “\(url.lastPathComponent)”.")
+        if linkedFiles.needsFolderAccess, movie.embeddedFile == nil {
+            let reason = Text("SlidePilot needs access to the folder of this PDF to play “\(movie.fileName)”.")
             ViewThatFits {
                 accessButton.labelStyle(.titleAndIcon)
                 accessButton.labelStyle(.iconOnly)
@@ -162,6 +162,6 @@ private struct SlideMovieView: View {
     }
 
     private var notFoundLabel: some View {
-        Label("Video “\(url.lastPathComponent)” not found", systemImage: "exclamationmark.triangle")
+        Label("Video “\(movie.fileName)” not found", systemImage: "exclamationmark.triangle")
     }
 }
