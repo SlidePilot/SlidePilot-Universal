@@ -42,7 +42,7 @@ final class LinkedFiles {
 
     @ObservationIgnored private let folderStore: FolderAccessStore?
     @ObservationIgnored private var accessedFolders: [URL] = []
-    @ObservationIgnored private var players = SlideVideoPlayers<AVPlayer>()
+    @ObservationIgnored private var players = SlideVideoPlayers<MoviePlayback>()
     @ObservationIgnored private var hasAsked = false
     /// The local files the PDF refers to, checked again after a grant.
     @ObservationIgnored private var referencedFiles: [URL] = []
@@ -54,7 +54,7 @@ final class LinkedFiles {
     }
 
     isolated deinit {
-        for player in players.removeAll() { player.pause() }
+        for playback in players.removeAll() { playback.stop() }
         stopAccessingFolders()
     }
 
@@ -130,14 +130,20 @@ final class LinkedFiles {
 
     /// The shared player for a video on `page`. A new page stops and drops the players of
     /// the previous one, like the old app did when the slide changed.
-    func player(for url: URL, page: Int) -> AVPlayer {
-        let (player, dropped) = players.player(for: url, on: page) { AVPlayer(url: url) }
-        for player in dropped { player.pause() }
-        return player
+    ///
+    /// The player is set up here, not in a view, so a video that autostarts plays once
+    /// although the presenter and the presentation both show it (#139). Two videos of one
+    /// file on the same page share a player, so the first one's activation applies.
+    func player(for url: URL, page: Int, activation: MovieActivation) -> AVPlayer {
+        let (playback, dropped) = players.player(for: url, on: page) {
+            MoviePlayback(url: url, activation: activation)
+        }
+        for playback in dropped { playback.stop() }
+        return playback.player
     }
 
     func showPage(_ page: Int) {
-        for player in players.show(page: page) { player.pause() }
+        for playback in players.show(page: page) { playback.stop() }
     }
 
     /// After a reload (DOC-08) the current page may no longer show a video or show another
@@ -147,7 +153,7 @@ final class LinkedFiles {
         guard !Task.isCancelled else { return }
         let files = Set(movies.compactMap { url(for: $0.reference) })
         let dropped = players.reloaded(page: page, showing: files)
-        for player in dropped { player.pause() }
+        for playback in dropped { playback.stop() }
         if !dropped.isEmpty {
             linkedFilesLog.info("Stopped \(dropped.count, privacy: .public) video(s) that a reload removed from page \(page + 1, privacy: .public)")
         }

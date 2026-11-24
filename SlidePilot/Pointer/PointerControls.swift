@@ -137,9 +137,18 @@ extension PointerAppearance {
 extension View {
     /// The pointer's toolbar menu in the presenter (PTR-01, PTR-02).
     func pointerControls(_ session: PresentationSession) -> some View {
-        toolbar {
-            ToolbarItem {
-                PointerToolbarMenu(pointer: session.pointer)
+        modifier(PointerControlsModifier(pointer: session.pointer))
+    }
+}
+
+private struct PointerControlsModifier: ViewModifier {
+    let pointer: PointerState
+    @Environment(\.presenterToolbarFocus) private var focus
+
+    func body(content: Content) -> some View {
+        content.toolbar {
+            ToolbarItem(placement: focus.placement()) {
+                PointerToolbarMenu(pointer: pointer)
             }
         }
     }

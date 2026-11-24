@@ -56,7 +56,7 @@ actor SlideRasterizer {
             guard let pageRef = document.page(at: index)?.pageRef else { continue }
             for entry in RawAnnotationReader.entries(of: pageRef) {
                 let reference = switch entry.kind {
-                case .movie(let file), .launch(let file): file
+                case .movie(let file, _), .launch(let file): file
                 }
                 if !references.contains(reference) { references.append(reference) }
             }

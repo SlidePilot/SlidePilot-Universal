@@ -37,6 +37,8 @@ struct DocumentView: View {
         ) {
             PresenterLayoutView(session: session)
         }
+            // Done and the drawing tools stay in a compact bar (#152).
+            .presenterToolbarFocus(session)
             .shrinksOnMemoryWarning(session)
             .companionFile(session, fileURL: fileURL)
             // "Save drawings" and the stored drawings (DRAW-06, DRAW-07).

@@ -111,11 +111,12 @@ private struct SlideNavigationKeys: ViewModifier {
 
 private struct PresenterNavigation: ViewModifier {
     let session: PresentationSession
+    @Environment(\.presenterToolbarFocus) private var focus
 
     func body(content: Content) -> some View {
         content
             .toolbar {
-                ToolbarItem(placement: .navigation) {
+                ToolbarItem(placement: focus.placement(.navigation)) {
                     Button("Go Back", systemImage: "arrow.uturn.backward.circle") {
                         session.goBack()
                     }
