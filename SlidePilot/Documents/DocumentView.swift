@@ -110,6 +110,8 @@ private struct PresenterChrome: ViewModifier {
             .presenterCurtain(session)
             // Show Pointer and its appearance (PTR-01, PTR-02).
             .pointerControls(session)
+            // "Slide 7 of 18" under the Mac window title (LAY-10).
+            .presenterWindowSubtitle(session.position)
             #if os(iOS)
             // Notes, drawings and .slidepilot import and export (NOTES-06, DRAW-10, NOTES-11),
             // in the slides column's bar like the other items.
