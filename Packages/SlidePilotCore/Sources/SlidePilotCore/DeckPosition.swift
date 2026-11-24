@@ -1,3 +1,12 @@
+/// How the current page was reached. Only a step keeps a video playing across overlay build
+/// steps (NAV-07, #140); anything else counts as a jump.
+public enum PageChange: Sendable, Equatable {
+    /// One page forward or back (next or previous slide).
+    case step
+    /// Any other change: navigator, link, page field, Go Back, a reload, the first page.
+    case jump
+}
+
 /// The current page of a deck, always a valid index, and the previously viewed page
 /// for "Go Back" (NAV-03).
 public struct DeckPosition: Sendable, Equatable {
@@ -8,6 +17,8 @@ public struct DeckPosition: Sendable, Equatable {
     /// counts: a step, a jump (navigator, link) and going back itself, so going back twice
     /// returns to where you were. `nil` until the page changed for the first time.
     public private(set) var previousPage: Int?
+    /// How the last page change happened; `.jump` until the first change.
+    public private(set) var lastChange: PageChange = .jump
 
     public init(page: Int = 0, pageCount: Int) {
         self.pageCount = max(pageCount, 1)
@@ -21,18 +32,15 @@ public struct DeckPosition: Sendable, Equatable {
     /// Goes to `index`, clamped to the first and last page. Staying on the same page
     /// (e.g. "next" on the last page) keeps the previous page.
     public mutating func show(_ index: Int) {
-        let target = min(max(index, 0), pageCount - 1)
-        guard target != page else { return }
-        previousPage = page
-        page = target
+        move(to: index, change: .jump)
     }
 
     public mutating func showNext() {
-        show(page + 1)
+        move(to: page + 1, change: .step)
     }
 
     public mutating func showPrevious() {
-        show(page - 1)
+        move(to: page - 1, change: .step)
     }
 
     /// Shows the previously viewed page (NAV-03).
@@ -46,10 +54,20 @@ public struct DeckPosition: Sendable, Equatable {
     /// "Go Back": the previous page stays unless it no longer exists or is now current.
     /// (The old app overwrote it with the current page, so Go Back did nothing after a reload.)
     public mutating func changePageCount(to newCount: Int) {
+        let oldPage = page
         pageCount = max(newCount, 1)
         page = min(page, pageCount - 1)
+        if page != oldPage { lastChange = .jump }
         if let previousPage, previousPage >= pageCount || previousPage == page {
             self.previousPage = nil
         }
+    }
+
+    private mutating func move(to index: Int, change: PageChange) {
+        let target = min(max(index, 0), pageCount - 1)
+        guard target != page else { return }
+        previousPage = page
+        page = target
+        lastChange = change
     }
 }

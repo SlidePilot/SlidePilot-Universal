@@ -115,4 +115,25 @@ struct DeckPositionTests {
         #expect(position.page == 3)
         #expect(position.previousPage == nil)
     }
+
+    /// #140: only next and previous keep a video playing across build steps.
+    @Test func recordsWhetherTheChangeWasAStep() {
+        var position = DeckPosition(page: 2, pageCount: 6)
+        #expect(position.lastChange == .jump)
+        position.showNext()
+        #expect(position.lastChange == .step)
+        position.showPrevious()
+        #expect(position.lastChange == .step)
+        position.show(3)
+        #expect(position.lastChange == .jump)
+        position.showNext()
+        position.goBack()
+        #expect(position.page == 3)
+        #expect(position.lastChange == .jump)
+        position.showNext()
+        position.changePageCount(to: 6)
+        #expect(position.lastChange == .step)
+        position.changePageCount(to: 3)
+        #expect(position.lastChange == .jump)
+    }
 }

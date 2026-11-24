@@ -32,7 +32,7 @@ private struct LinkedFilesModifier: ViewModifier {
                 await linkedFiles.reloaded(page: session.currentPage, cache: session.cache)
             }
             .onChange(of: session.currentPage, initial: true) { _, page in
-                linkedFiles.showPage(page)
+                linkedFiles.showPage(page, change: session.position.lastChange, cache: session.cache)
             }
             .alert(Text("Allow Access to the Folder?"), isPresented: $linkedFiles.isAskingForFolderAccess) {
                 Button("Allow Access…") { linkedFiles.requestFolderAccess() }

@@ -41,6 +41,13 @@ final class MoviePlayback {
         setup?.cancel()
     }
 
+    /// Plays a kept video whose autostart begins on a later build step (#140). A video that
+    /// already plays goes on.
+    func start() {
+        guard player.rate == 0 else { return }
+        player.play()
+    }
+
     /// Stops playback for good; the slide no longer shows the video.
     func stop() {
         setup?.cancel()
