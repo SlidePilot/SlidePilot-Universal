@@ -42,7 +42,7 @@ final class LinkedFiles {
 
     @ObservationIgnored private let folderStore: FolderAccessStore?
     @ObservationIgnored private var accessedFolders: [URL] = []
-    @ObservationIgnored private var players: [URL: AVPlayer] = [:]
+    @ObservationIgnored private var players: [URL: MoviePlayback] = [:]
     @ObservationIgnored private var activePage: Int?
     @ObservationIgnored private var hasAsked = false
     /// The local files the PDF refers to, checked again after a grant.
@@ -55,7 +55,7 @@ final class LinkedFiles {
     }
 
     isolated deinit {
-        for player in players.values { player.pause() }
+        for playback in players.values { playback.stop() }
         stopAccessingFolders()
     }
 
@@ -131,18 +131,22 @@ final class LinkedFiles {
 
     /// The shared player for a video on `page`. A new page stops and drops the players of
     /// the previous one, like the old app did when the slide changed.
-    func player(for url: URL, page: Int) -> AVPlayer {
+    ///
+    /// The player is set up here, not in a view, so a video that autostarts plays once
+    /// although the presenter and the presentation both show it (#139). Two videos of one
+    /// file on the same page share a player, so the first one's activation applies.
+    func player(for url: URL, page: Int, activation: MovieActivation) -> AVPlayer {
         showPage(page)
-        if let player = players[url] { return player }
-        let player = AVPlayer(url: url)
-        players[url] = player
-        return player
+        if let playback = players[url] { return playback.player }
+        let playback = MoviePlayback(url: url, activation: activation)
+        players[url] = playback
+        return playback.player
     }
 
     func showPage(_ page: Int) {
         guard page != activePage else { return }
         activePage = page
-        for player in players.values { player.pause() }
+        for playback in players.values { playback.stop() }
         players.removeAll()
     }
 

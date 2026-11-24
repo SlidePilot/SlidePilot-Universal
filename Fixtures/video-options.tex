@@ -1,0 +1,73 @@
+% Playback options of \movie (multimedia package, NAV-07): autostart, loop,
+% repeat, palindrome, start and duration, and a video over several overlay
+% steps. Uses the video of media.pdf, so keep the folder layout.
+\documentclass{beamer}
+\input{common/preamble}
+\usepackage{multimedia}
+\title{Video options}
+\subtitle{SlidePilot test fixture}
+\hypersetup{pdftitle={Video options}}
+
+% The poster: a framed box with the options, so each slide says what to expect.
+\newcommand{\poster}[1]{%
+  \fbox{\parbox[c][3.4cm][c]{6.2cm}{\centering #1}}%
+}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Plain video}
+  \centering
+  \movie[width=6.4cm,height=3.6cm]{\poster{No options:\\ starts only with Play}}{media/test-pattern.mp4}
+\end{frame}
+
+\begin{frame}{Autostart}
+  \centering
+  \movie[width=6.4cm,height=3.6cm,autostart]{\poster{autostart:\\ plays once when the slide is shown}}{media/test-pattern.mp4}
+\end{frame}
+
+\begin{frame}{Autostart and loop}
+  \centering
+  \movie[width=6.4cm,height=3.6cm,autostart,loop]{\poster{autostart, loop:\\ plays without a gap until the slide changes}}{media/test-pattern.mp4}
+\end{frame}
+
+\begin{frame}{Repeat}
+  \centering
+  \movie[width=6.4cm,height=3.6cm,repeat]{\poster{repeat:\\ loops after Play}}{media/test-pattern.mp4}
+\end{frame}
+
+\begin{frame}{Palindrome}
+  \centering
+  \movie[width=6.4cm,height=3.6cm,autostart,palindrome]{\poster{autostart, palindrome:\\ loops forward}}{media/test-pattern.mp4}
+\end{frame}
+
+\begin{frame}{Start and duration}
+  \centering
+  \movie[width=6.4cm,height=3.6cm,autostart,start=1s,duration=2s]{\poster{autostart, start=1s, duration=2s:\\ plays seconds 1 to 3 once}}{media/test-pattern.mp4}
+\end{frame}
+
+\begin{frame}{Video over several steps}
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \begin{itemize}[<+->]
+        \item First step
+        \item Second step
+        \item Third step
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \movie[width=5cm,height=2.8125cm,autostart,loop]{\fbox{\parbox[c][2.6cm][c]{4.8cm}{\centering autostart, loop\\ on all three steps}}}{media/test-pattern.mp4}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Last slide}
+  \centering
+  \Large Last slide
+\end{frame}
+
+\end{document}

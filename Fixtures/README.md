@@ -17,15 +17,17 @@ Sample LaTeX Beamer documents for prototypes, tests and manual checks. The `.tex
 | `keyword-mixed.pdf` | 4 | Notes on the left, Keywords entry `Beamer, SP-Left` (one string in the PDF). PDFKit splits the string at the comma and trims the spaces, so `SP-Left` is detected (checked by `SplitNotesTests`, NOTES-03) | NOTES-03 |
 | `links.pdf` | 5 | Internal links (`\hyperlink`, Beamer navigation symbols), `https` and `mailto` URL links | NAV-05 |
 | `media.pdf` | 4 | Page 2: `\movie` (multimedia package) with `media/test-pattern.mp4`. Page 3: `\href{run:…}` to the video and to `plain-slides.pdf` | NAV-06, NAV-07 |
+| `video-options.pdf` | 11 | `\movie` playback options with `media/test-pattern.mp4`, one per slide: page 2 none, 3 `autostart`, 4 `autostart,loop`, 5 `repeat`, 6 `autostart,palindrome`, 7 `autostart,start=1s,duration=2s`; pages 8–10 are three overlay steps of one frame with the same `autostart,loop` video at the same place. Each poster says what to expect | NAV-07 |
 | `rotated.pdf` | 6 | Pages with `/Rotate` 0, 90, 180, 270 (pages 2–5), no notes. The arrow points to the top edge of the unrotated page | – |
 | `large-deck.pdf` | 320 | Simple pages with a large page number, for render cache measurements | – |
-| `media/test-pattern.mp4` | – | 4 s, 320×180, 15 fps, H.264 + quiet 440 Hz AAC tone. Generated with ffmpeg (`testsrc2`), so there are no licensing questions | NAV-06, NAV-07 |
+| `media/test-pattern.mp4` | – | 4 s, 320×180, 15 fps, H.264 + quiet 440 Hz AAC tone. Generated with ffmpeg (`testsrc2`), so there are no licensing questions. Used by `media.pdf` and `video-options.pdf` | NAV-06, NAV-07 |
 
-Paths in `media.pdf` are relative to the PDF, so keep the folder layout when copying the fixtures (for example to an iPad).
+Paths in `media.pdf` and `video-options.pdf` are relative to the PDF, so keep the folder layout when copying the fixtures (for example to an iPad).
 
 ### What the PDFs contain
 
 - `\movie` creates a `/Movie` annotation whose `/Movie` dictionary has `/F (media/test-pattern.mp4)`.
+- `\movie` options go into the annotation's activation dictionary `/A` (`/Mode /Repeat` for `loop` and `repeat`, `/Mode /Palindrome`, `/Start [128 128]` and `/Duration [256 128]` in 1/128 s). `autostart` adds a hidden widget whose `/AA /PO` action plays the movie by its title `/T`.
 - `\href{run:…}` creates link annotations with a `/Launch` action and a relative `/F` path.
 - URL links are `/URI` actions, internal links are `/GoTo` actions.
 - Split-notes decks: each PDF page holds the slide and its notes side by side (left/right: 725.7 × 272.1 pt) or stacked (top/bottom: 362.8 × 544.3 pt). The normal page size is 362.8 × 272.1 pt (4:3).
