@@ -71,7 +71,7 @@ private struct CompanionFileModifier: ViewModifier {
                 let settings = await companion.open(pdfAt: fileURL, pageCount: session.cache.info.pageCount)
                 guard !Task.isCancelled else { return }
                 if let settings {
-                    apply(settings)
+                    session.applyStoredSettings(settings)
                 }
                 session.layout.onChange = { [companion] layout in
                     companion.updateSettings { $0.layout = layout }
@@ -103,7 +103,7 @@ private struct CompanionFileModifier: ViewModifier {
                 Button("Use Data") {
                     Task {
                         if let settings = await companion.takeOverOrphan() {
-                            apply(settings)
+                            session.applyStoredSettings(settings)
                         }
                     }
                 }
@@ -159,23 +159,28 @@ private struct CompanionFileModifier: ViewModifier {
         }
         #endif
     }
+}
 
-    private func apply(_ settings: DocumentSettings) {
+extension PresentationSession {
+    /// Shows the stored per-document settings (SET-02): at the end of opening, after taking
+    /// over orphaned data (NOTES-12) and after importing a `.slidepilot` file (NOTES-11).
+    func applyStoredSettings(_ settings: DocumentSettings) {
         if let layout = settings.layout {
-            session.layout.applyStoredLayout(layout)
+            self.layout.applyStoredLayout(layout)
         }
         if let isNavigatorDisplayed = settings.isNavigatorDisplayed {
-            session.isNavigatorDisplayed = isNavigatorDisplayed
+            self.isNavigatorDisplayed = isNavigatorDisplayed
         }
         if let isPointerDisplayed = settings.isPointerDisplayed {
-            session.pointer.isShown = isPointerDisplayed
+            pointer.isShown = isPointerDisplayed
         }
         if let pointerAppearance = settings.pointerAppearance {
-            session.pointer.appearance = pointerAppearance
+            pointer.appearance = pointerAppearance
         }
-        session.applyStoredNotesDisplay(mode: settings.notesMode, position: settings.notesPosition)
+        applyStoredNotesDisplay(mode: settings.notesMode, position: settings.notesPosition)
     }
 }
+
 
 #if os(iOS)
 /// The identifier of a background task, shared by the save and the expiration handler.

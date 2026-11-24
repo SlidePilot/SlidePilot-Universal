@@ -37,14 +37,19 @@ private struct LinkedFilesModifier: ViewModifier {
             } message: {
                 Text("This PDF contains videos or links to files next to it. To play and open them, choose the folder that contains the PDF. SlidePilot remembers it for all PDFs in that folder.")
             }
-            .fileImporter(isPresented: $linkedFiles.isPickingFolder, allowedContentTypes: [.folder]) { result in
-                if case .success(let folder) = result {
-                    linkedFiles.grantAccess(to: folder)
-                }
+            // On a view of its own: the dialog texts are environment values and would
+            // otherwise reach every open and save panel of the window.
+            .background {
+                Color.clear
+                    .fileImporter(isPresented: $linkedFiles.isPickingFolder, allowedContentTypes: [.folder]) { result in
+                        if case .success(let folder) = result {
+                            linkedFiles.grantAccess(to: folder)
+                        }
+                    }
+                    .fileDialogDefaultDirectory(linkedFiles.documentFolder)
+                    .fileDialogMessage(Text("Choose the folder that contains the PDF and its videos."))
+                    .fileDialogConfirmationLabel(Text("Allow Access"))
             }
-            .fileDialogDefaultDirectory(linkedFiles.documentFolder)
-            .fileDialogMessage(Text("Choose the folder that contains the PDF and its videos."))
-            .fileDialogConfirmationLabel(Text("Allow Access"))
             .alert(
                 problemTitle,
                 isPresented: Binding(get: { linkedFiles.problem != nil }, set: { if !$0 { linkedFiles.problem = nil } }),

@@ -36,7 +36,7 @@ fi
 
 destination="$storage/SlidePilot Fixtures"
 mkdir -p "$destination/media"
-cp Fixtures/*.pdf Fixtures/*.rtf "$destination/"
+cp Fixtures/*.pdf Fixtures/*.rtf Fixtures/*.slidepilot "$destination/"
 # media.pdf links to media/ relative to itself.
 cp Fixtures/media/* "$destination/media/"
 echo "Copied fixtures to On My iPad/SlidePilot Fixtures on $udid."
