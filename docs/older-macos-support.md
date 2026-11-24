@@ -1,6 +1,9 @@
 # Older macOS versions: analysis
 
-Analysis for issue #84. ADR 0001 sets the deployment target to macOS 26 and iPadOS 26. This document shows what it would take to support older macOS versions, so users there are not limited to SlidePilot 1.8. It changes nothing; a new target needs the product owner's approval and an ADR that supersedes ADR 0001. iPadOS is out of scope.
+Analysis for issue #84. ADR 0001 sets the deployment target to macOS 26 and iPadOS 26. This document shows what it would take to support older macOS versions, so users there are not limited to SlidePilot 1.8. iPadOS is out of scope.
+
+## Decision
+The product owner decided to **keep macOS 26 and iOS/iPadOS 26** as the minimum (ADR 0001 unchanged). Reasons: a moderate, shrinking gain (users below macOS 26 keep SlidePilot 1.8, and remote would be missing on macOS 15 anyway) against lasting costs (availability checks in new code, an extra CI job, a manual check in a macOS 15 VM per release) and unknown runtime behavior shortly before the release. iPad and iPhone never had an older SlidePilot, so no users are left behind there. The analysis below stays as the reference if the question comes up again.
 
 ## Method
 The Mac app and all three packages were built locally with `MACOSX_DEPLOYMENT_TARGET=15.0` and `14.0` (Xcode 27.2, macOS 27.2 SDK, `-continue-building-after-errors`). Each availability error was temporarily patched or marked `@available` until the build had no new errors; the patches were not committed. The build covers the macOS code paths only; nothing was run on an older system.
