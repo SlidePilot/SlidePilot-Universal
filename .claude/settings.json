@@ -17,6 +17,7 @@
       "Bash(git merge-base *)",
       "Bash(git fetch origin *)",
       "Bash(git pull origin *)",
+      "Bash(git push origin *)",
       "Bash(git push -u origin *)",
       "Bash(xcodebuild -version)",
       "Bash(xcodebuild -project SlidePilot.xcodeproj *)",
@@ -52,7 +53,9 @@
       "Bash(gh run watch *)"
     ],
     "ask": [
-      "Bash(gh api *)"
+      "Bash(gh api *)",
+      "Bash(gh * --repo*)",
+      "Bash(gh * -R *)"
     ],
     "deny": [
       "Bash(screencapture *)",
@@ -94,8 +97,6 @@
       "Bash(gh * --template*)",
       "Bash(gh * -T *)",
       "Bash(gh * --recover*)",
-      "Bash(gh * --repo*)",
-      "Bash(gh * -R *)",
       "Bash(gh * --attach=*)",
       "Bash(gh * --attach /*)",
       "Bash(gh * --attach '/*)",
@@ -158,6 +159,7 @@
       "xcrun simctl io * screenshot *",
       "git fetch origin *",
       "git pull origin *",
+      "git push origin *",
       "git push -u origin *",
       "gh issue view *",
       "gh issue list *",
