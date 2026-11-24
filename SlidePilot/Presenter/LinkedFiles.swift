@@ -42,8 +42,7 @@ final class LinkedFiles {
 
     @ObservationIgnored private let folderStore: FolderAccessStore?
     @ObservationIgnored private var accessedFolders: [URL] = []
-    @ObservationIgnored private var players: [URL: MoviePlayback] = [:]
-    @ObservationIgnored private var activePage: Int?
+    @ObservationIgnored private var players = SlideVideoPlayers<MoviePlayback>()
     @ObservationIgnored private var hasAsked = false
     /// The local files the PDF refers to, checked again after a grant.
     @ObservationIgnored private var referencedFiles: [URL] = []
@@ -55,7 +54,7 @@ final class LinkedFiles {
     }
 
     isolated deinit {
-        for playback in players.values { playback.stop() }
+        for playback in players.removeAll() { playback.stop() }
         stopAccessingFolders()
     }
 
@@ -136,18 +135,28 @@ final class LinkedFiles {
     /// although the presenter and the presentation both show it (#139). Two videos of one
     /// file on the same page share a player, so the first one's activation applies.
     func player(for url: URL, page: Int, activation: MovieActivation) -> AVPlayer {
-        showPage(page)
-        if let playback = players[url] { return playback.player }
-        let playback = MoviePlayback(url: url, activation: activation)
-        players[url] = playback
+        let (playback, dropped) = players.player(for: url, on: page) {
+            MoviePlayback(url: url, activation: activation)
+        }
+        for playback in dropped { playback.stop() }
         return playback.player
     }
 
     func showPage(_ page: Int) {
-        guard page != activePage else { return }
-        activePage = page
-        for playback in players.values { playback.stop() }
-        players.removeAll()
+        for playback in players.show(page: page) { playback.stop() }
+    }
+
+    /// After a reload (DOC-08) the current page may no longer show a video or show another
+    /// file: those players stop, in every window. Videos still on the page play on (#138).
+    func reloaded(page: Int, cache: RenderCache) async {
+        let movies = await cache.movies(page: page)
+        guard !Task.isCancelled else { return }
+        let files = Set(movies.compactMap { url(for: $0.reference) })
+        let dropped = players.reloaded(page: page, showing: files)
+        for playback in dropped { playback.stop() }
+        if !dropped.isEmpty {
+            linkedFilesLog.info("Stopped \(dropped.count, privacy: .public) video(s) that a reload removed from page \(page + 1, privacy: .public)")
+        }
     }
 
     // MARK: - Run links

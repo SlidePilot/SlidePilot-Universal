@@ -26,7 +26,10 @@ private struct LinkedFilesModifier: ViewModifier {
             .environment(linkedFiles)
             // Again after a recompile: the new PDF may refer to other files (DOC-08).
             .task(id: Prepare(fileURL: fileURL, cache: ObjectIdentifier(session.cache))) {
+                // First: `reloaded` resolves the videos against the document URL set here.
                 await linkedFiles.prepare(documentURL: fileURL, cache: session.cache)
+                guard !Task.isCancelled else { return }
+                await linkedFiles.reloaded(page: session.currentPage, cache: session.cache)
             }
             .onChange(of: session.currentPage, initial: true) { _, page in
                 linkedFiles.showPage(page)
