@@ -44,6 +44,8 @@ final class LinkedFiles {
     @ObservationIgnored private var accessedFolders: [URL] = []
     @ObservationIgnored private var players = SlideVideoPlayers<MoviePlayback>()
     @ObservationIgnored private var hasAsked = false
+    /// Reads the shown page's videos after a step; replaced by the next page change.
+    @ObservationIgnored private var settling: Task<Void, Never>?
     /// The local files the PDF refers to, checked again after a grant.
     @ObservationIgnored private var referencedFiles: [URL] = []
     /// Changes whenever access was granted, so views check their files again.
@@ -54,6 +56,7 @@ final class LinkedFiles {
     }
 
     isolated deinit {
+        settling?.cancel()
         for playback in players.removeAll() { playback.stop() }
         stopAccessingFolders()
     }
@@ -128,22 +131,34 @@ final class LinkedFiles {
 
     // MARK: - Players
 
-    /// The shared player for a video on `page`. A new page stops and drops the players of
-    /// the previous one, like the old app did when the slide changed.
+    /// The shared player for `movie` on `page`. A jump stops and drops the players of the
+    /// previous page, like the old app did when the slide changed; a step keeps a video that
+    /// the new page shows again at the same place (overlay build steps, #140).
     ///
     /// The player is set up here, not in a view, so a video that autostarts plays once
     /// although the presenter and the presentation both show it (#139). Two videos of one
     /// file on the same page share a player, so the first one's activation applies.
-    func player(for url: URL, page: Int, activation: MovieActivation) -> AVPlayer {
-        let (playback, dropped) = players.player(for: url, on: page) {
-            MoviePlayback(url: url, activation: activation)
+    func player(for movie: SlideMovie, url: URL, page: Int) -> AVPlayer {
+        let video = SlideVideo(file: url, area: movie.bounds, autostarts: movie.activation.autostarts)
+        let (playback, changes) = players.player(for: video, on: page) {
+            MoviePlayback(url: url, activation: movie.activation)
         }
-        for playback in dropped { playback.stop() }
+        apply(changes)
         return playback.player
     }
 
-    func showPage(_ page: Int) {
-        for playback in players.show(page: page) { playback.stop() }
+    /// Shows `page`. After a step, the previous page's players wait until this page's
+    /// videos are read; the ones it shows again at the same place play on (#140).
+    func showPage(_ page: Int, change: PageChange, cache: RenderCache) {
+        for playback in players.show(page: page, change: change) { playback.stop() }
+        settling?.cancel()
+        settling = nil
+        guard players.hasCandidates else { return }
+        settling = Task { [weak self] in
+            let movies = await cache.movies(page: page)
+            guard !Task.isCancelled, let self else { return }
+            self.apply(self.players.settle(page: page, showing: self.videos(movies)))
+        }
     }
 
     /// After a reload (DOC-08) the current page may no longer show a video or show another
@@ -151,12 +166,30 @@ final class LinkedFiles {
     func reloaded(page: Int, cache: RenderCache) async {
         let movies = await cache.movies(page: page)
         guard !Task.isCancelled else { return }
-        let files = Set(movies.compactMap { url(for: $0.reference) })
-        let dropped = players.reloaded(page: page, showing: files)
+        // A step just before the reload settles against the new PDF, not the old one.
+        settling?.cancel()
+        settling = nil
+        let shown = videos(movies)
+        let settled = players.settle(page: page, showing: shown)
+        for playback in settled.toStart { playback.start() }
+        let dropped = settled.dropped + players.reloaded(page: page, showing: Set(shown.map(\.file)))
         for playback in dropped { playback.stop() }
         if !dropped.isEmpty {
             linkedFilesLog.info("Stopped \(dropped.count, privacy: .public) video(s) that a reload removed from page \(page + 1, privacy: .public)")
         }
+    }
+
+    private func videos(_ movies: [SlideMovie]) -> [SlideVideo] {
+        movies.compactMap { movie in
+            url(for: movie.reference).map {
+                SlideVideo(file: $0, area: movie.bounds, autostarts: movie.activation.autostarts)
+            }
+        }
+    }
+
+    private func apply(_ changes: SlideVideoPlayers<MoviePlayback>.Changes) {
+        for playback in changes.dropped { playback.stop() }
+        for playback in changes.toStart { playback.start() }
     }
 
     // MARK: - Run links

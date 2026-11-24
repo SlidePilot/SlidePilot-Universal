@@ -24,7 +24,7 @@ struct SlideMovieLayer: View {
                 let size = proxy.size
                 ForEach(Array(movies.enumerated()), id: \.offset) { _, movie in
                     if let rect = movie.unitRect(in: region), let url = linkedFiles.url(for: movie.reference) {
-                        SlideMovieView(url: url, activation: movie.activation, page: page, isPresenter: isPresenter, linkedFiles: linkedFiles)
+                        SlideMovieView(movie: movie, url: url, page: page, isPresenter: isPresenter, linkedFiles: linkedFiles)
                             .frame(width: rect.width * size.width, height: rect.height * size.height)
                             // The player's own view extends into the safe area on iPad.
                             .clipped()
@@ -40,8 +40,8 @@ struct SlideMovieLayer: View {
 
 /// One video: the shared player, or what to do when the file cannot be read.
 private struct SlideMovieView: View {
+    let movie: SlideMovie
     let url: URL
-    let activation: MovieActivation
     let page: Int
     let isPresenter: Bool
     let linkedFiles: LinkedFiles
@@ -68,7 +68,7 @@ private struct SlideMovieView: View {
         }
         .task(id: Load(url: url, page: page, access: linkedFiles.accessGeneration)) {
             if linkedFiles.isAvailable(url) {
-                player = linkedFiles.player(for: url, page: page, activation: activation)
+                player = linkedFiles.player(for: movie, url: url, page: page)
                 isMissing = false
             } else {
                 player = nil
