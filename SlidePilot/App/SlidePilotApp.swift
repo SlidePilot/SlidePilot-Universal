@@ -60,6 +60,7 @@ struct SlidePilotApp: App {
             DrawingsExportCommands()
             SlidePilotFileCommands()
             RemoteControlCommands()
+            HelpCommands()
         }
 
         // A .slidepilot file opened on its own, imported into a PDF (NOTES-11).
@@ -121,6 +122,7 @@ struct SlidePilotApp: App {
             PresentationCommands()
             ModeratorCommands()
             SettingsCommands()
+            HelpCommands()
         }
         .commands {
             LayoutCommands()
