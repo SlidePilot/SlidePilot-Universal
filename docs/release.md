@@ -37,6 +37,16 @@ Remove an old archive first (`rm -rf ./build/SlidePilot-macOS.xcarchive`) if one
 
 After the upload, App Store Connect processes the build (usually 10–30 minutes). Then add it to an internal TestFlight group.
 
+## Free Mac download (outside the App Store)
+The free download (ADR 0011) is the build configuration `FreeDownload` of the same target, built with the scheme `SlidePilot Free Download`. `Config/FreeDownload.xcconfig` gives it its own bundle ID (`$(BUNDLE_ID_PREFIX).SlidePilot.FreeDownload`), limits it to macOS and sets the flag `SLIDEPILOT_FREE_DOWNLOAD`, which turns on the donation hint (DROP-03). It has no update mechanism.
+
+```sh
+xcodebuild -project SlidePilot.xcodeproj -scheme "SlidePilot Free Download" -destination 'generic/platform=macOS' -archivePath ./build/SlidePilot-FreeDownload.xcarchive -allowProvisioningUpdates archive
+xcodebuild -exportArchive -archivePath ./build/SlidePilot-FreeDownload.xcarchive -exportOptionsPlist Config/ExportOptions-DeveloperID.plist -exportPath ./build/export-FreeDownload -allowProvisioningUpdates
+```
+
+With `destination` `upload`, the export signs with Developer ID and sends the app to Apple's notary service. Once Apple has notarized it, `xcodebuild -exportNotarizedApp -archivePath ./build/SlidePilot-FreeDownload.xcarchive -exportPath ./build/notarized-FreeDownload` writes the stapled app. Alternatively, archive the scheme in Xcode and use Distribute App ▸ Direct Distribution in the Organizer. Zip that `SlidePilot.app` (`ditto -c -k --keepParent`) and attach it to the GitHub release.
+
 ## What each build contains
 - **App icon:** `SlidePilot/Resources/AppIcon.icon` (Icon Composer; design notes in [`design/app-icon`](design/app-icon/README.md)).
 - **Export compliance:** `ITSAppUsesNonExemptEncryption = NO` in the generated Info.plist. The app only uses encryption provided by the OS. Revisit this if the remote protocol adds its own encryption.
