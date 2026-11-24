@@ -19,6 +19,9 @@ struct MoviePlayerView: NSViewRepresentable {
         let view = SlideMoviePlayerView()
         view.videoGravity = .resizeAspect
         view.allowsPictureInPicturePlayback = false
+        // A slide video is part of the talk, not media playback: it must not show in Now
+        // Playing, take the media keys or claim the audio route (old bug SlidePilot-macOS#95).
+        view.updatesNowPlayingInfoCenter = false
         update(view)
         return view
     }
