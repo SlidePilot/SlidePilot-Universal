@@ -18,8 +18,26 @@ struct MoviePlayerView: UIViewControllerRepresentable {
         controller.videoGravity = .resizeAspect
         controller.allowsPictureInPicturePlayback = false
         controller.canStartPictureInPictureAutomaticallyFromInline = false
+        // A slide video is part of the talk, not media playback: it must not show in
+        // Control Center or on the Lock Screen (old bug SlidePilot-macOS#95).
+        controller.updatesNowPlayingInfoCenter = false
+        Self.configureAudioSession()
         update(controller)
         return controller
+    }
+
+    /// Plays a video's sound even in Silent Mode, but mixed with other audio: a video
+    /// without sound does not stop the music of another app, and a mixable session is
+    /// never the Now Playing app.
+    private static func configureAudioSession() {
+        let session = AVAudioSession.sharedInstance()
+        guard session.category != .playback || session.mode != .moviePlayback
+            || session.categoryOptions != [.mixWithOthers] else { return }
+        do {
+            try session.setCategory(.playback, mode: .moviePlayback, options: [.mixWithOthers])
+        } catch {
+            linkedFilesLog.error("Could not set the audio session category: \(error, privacy: .public)")
+        }
     }
 
     func updateUIViewController(_ controller: AVPlayerViewController, context: Context) {
