@@ -23,6 +23,7 @@ extension View {
 
 private struct ExternalDisplayHintModifier: ViewModifier {
     @Environment(\.presenterToolbarFocus) private var focus
+    @Environment(\.presenterMakesRoomForDrawing) private var makesRoomForDrawing
 
     func body(content: Content) -> some View {
         content
@@ -32,8 +33,8 @@ private struct ExternalDisplayHintModifier: ViewModifier {
                 }
             }
             .safeAreaInset(edge: .top) {
-                // Drawing in a compact window keeps the room for the slide (#152).
-                if focus != .drawing {
+                // Drawing keeps the room for the slide (#152).
+                if !makesRoomForDrawing {
                     TipView(ExternalDisplayTip())
                         .padding(.horizontal)
                 }

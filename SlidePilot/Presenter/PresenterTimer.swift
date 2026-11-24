@@ -31,15 +31,15 @@ private struct PresenterTimeDisplayModifier: ViewModifier {
     // previews without settings use the default.
     @Environment(AppSettings.self) private var settings: AppSettings?
     @Environment(\.isCompactHeight) private var isCompactHeight
-    @Environment(\.presenterToolbarFocus) private var focus
+    @Environment(\.presenterMakesRoomForDrawing) private var makesRoomForDrawing
 
     private var size: TimeDisplaySize { settings?.timeDisplaySize ?? .default }
 
     func body(content: Content) -> some View {
         content
             .safeAreaInset(edge: .top, spacing: 0) {
-                // Drawing in a compact window gives the slide the room of the clock (#152).
-                if size != .hidden, focus != .drawing {
+                // Drawing on iPhone and iPad gives the slide the room of the clock (#152).
+                if size != .hidden, !makesRoomForDrawing {
                     TimeDisplay(timer: session.timer, size: size)
                         // Aligned with the slides' 30 pt padding; the old app's top margin,
                         // the small one in compact height like the smaller display there.
