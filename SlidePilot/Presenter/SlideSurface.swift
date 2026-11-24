@@ -121,7 +121,12 @@ struct SlideSurface: View {
             }
             // After the slide's own accessibility element, so VoiceOver reaches the players.
             .overlay {
-                SlideMovieLayer(movies: movies, region: region, page: page, isPresenter: role == .current)
+                SlideMovieLayer(
+                    movies: shownMovies?.movies ?? [],
+                    region: region,
+                    page: shownMovies?.page ?? page,
+                    isPresenter: role == .current
+                )
             }
     }
 
@@ -133,12 +138,15 @@ struct SlideSurface: View {
         return pageLinks.links.filter { $0.unitRect(in: region) != nil }
     }
 
-    /// The videos of the shown page. The next-slide preview shows only the PDF's poster.
-    private var movies: [SlideMovie] {
+    /// The videos to show and the page they belong to. The next-slide preview shows only
+    /// the PDF's poster. Right after a change to the neighbouring page the previous page's
+    /// videos stay until the new page's are read, so a video that plays on across overlay
+    /// build steps keeps its player view and never flashes the poster (#140).
+    private var shownMovies: PageMovies? {
         guard role != .next, role != .notes, let pageMovies,
-              pageMovies.cache == ObjectIdentifier(cache), pageMovies.page == page
-        else { return [] }
-        return pageMovies.movies
+              pageMovies.cache == ObjectIdentifier(cache), abs(pageMovies.page - page) <= 1
+        else { return nil }
+        return pageMovies
     }
 
     private func follow(_ link: SlideLink) {
