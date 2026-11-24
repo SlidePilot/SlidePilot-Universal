@@ -167,8 +167,8 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 
 | ID | Feature | Old source | Docs | iPad notes | Native replacement | Milestone | Status |
 |---|---|---|---|---|---|---|---|
-| L10N-01 | Languages English (development), German, French in a String Catalog | `en.lproj`, `de.lproj`, `fr.lproj` (53 keys each in `Localizable.strings`, plus storyboard and xib strings) | `master` | Same | String Catalog (`Localizable.xcstrings`) | P4 | planned |
-| L10N-02 | All old UI texts are translated; existing translations are reused as a starting point | `*/Localizable.strings`; `*/Main.strings`; xib `.strings` | – | Same | – | P4 | planned |
+| L10N-01 | Languages English (development), German, French in a String Catalog | `en.lproj`, `de.lproj`, `fr.lproj` (53 keys each in `Localizable.strings`, plus storyboard and xib strings) | `master` | Same | String Catalog (`Localizable.xcstrings`, plus `InfoPlist.xcstrings` for the Info.plist texts); every key has German and French translations | P4 | done |
+| L10N-02 | All old UI texts are translated; existing translations are reused as a starting point. Each feature added its strings with en, de and fr as it was built. The product owner accepted the current texts as they are; no separate comparison with the old app's translations was done | `*/Localizable.strings`; `*/Main.strings`; xib `.strings` | – | Same | – | P4 | done |
 
 ## 12. Dropped or deferred
 
