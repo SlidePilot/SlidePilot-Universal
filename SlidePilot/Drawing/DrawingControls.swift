@@ -90,11 +90,14 @@ extension View {
 
 private struct DrawingControlsModifier: ViewModifier {
     let session: PresentationSession
+    @Environment(\.presenterToolbarFocus) private var focus
 
     func body(content: Content) -> some View {
         content
             .toolbar {
-                DrawingToolbar(session: session)
+                // The drawing tools are the focused task's own items while drawing; while
+                // the notes are edited in a compact bar, Draw makes room for Done (#152).
+                DrawingToolbar(session: session, placement: focus == .notes ? focus.placement() : .automatic)
             }
     }
 }
@@ -104,11 +107,12 @@ private struct DrawingControlsModifier: ViewModifier {
 /// which the full iPad toolbar would push into its overflow menu.
 private struct DrawingToolbar: ToolbarContent {
     let session: PresentationSession
+    let placement: ToolbarItemPlacement
 
     private var model: DrawingModel { session.drawing }
 
     var body: some ToolbarContent {
-        ToolbarItemGroup {
+        ToolbarItemGroup(placement: placement) {
             Toggle("Draw", systemImage: "pencil.tip.crop.circle", isOn: isDrawing)
                 .help(model.isActive ? Text("Stop drawing") : Text("Draw on the current slide"))
             if model.isActive {

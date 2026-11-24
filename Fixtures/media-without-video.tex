@@ -1,0 +1,34 @@
+% media.pdf without the video on page 2, for testing a reload that removes a video
+% (DOC-08, #138): copy it over an opened media.pdf while the video plays.
+% All paths are relative to this PDF, so keep the folder layout.
+\documentclass{beamer}
+\input{common/preamble}
+\usepackage{multimedia}
+\title{Media}
+\subtitle{SlidePilot test fixture (video removed)}
+\hypersetup{pdftitle={Media}}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Embedded video removed}
+  \centering
+  \fbox{\parbox[c][3.4cm][c]{6.2cm}{\centering No video on this slide}}
+\end{frame}
+
+\begin{frame}{Run links (\textbackslash href\{run:\})}
+  \begin{itemize}
+    \item \href{run:media/test-pattern.mp4}{Open the video in the default app}
+    \item \href{run:plain-slides.pdf}{Open another document (plain-slides.pdf)}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Last slide}
+  \centering
+  \Large Last slide
+\end{frame}
+
+\end{document}

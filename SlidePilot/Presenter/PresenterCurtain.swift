@@ -25,6 +25,7 @@ extension View {
 
 private struct PresenterCurtainModifier: ViewModifier {
     let session: PresentationSession
+    @Environment(\.presenterToolbarFocus) private var focus
 
     func body(content: Content) -> some View {
         content
@@ -36,7 +37,7 @@ private struct PresenterCurtainModifier: ViewModifier {
                     // A status, not a button: no glass capsule around it.
                     .sharedBackgroundVisibility(.hidden)
                 }
-                ToolbarItemGroup {
+                ToolbarItemGroup(placement: focus.placement()) {
                     CurtainToggle(curtain: .black, session: session)
                         .help(Text("Cover the presentation with a black screen"))
                     CurtainToggle(curtain: .white, session: session)
