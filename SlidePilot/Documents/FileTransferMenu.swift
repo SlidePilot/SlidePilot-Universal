@@ -1,9 +1,10 @@
 #if os(iOS)
 import SwiftUI
 
-/// Import Notes…, Export Notes…, Export Drawings… and the `.slidepilot` file (NOTES-11) in one toolbar menu on iPad, where the
-/// menu bar is hidden until it is pulled down (NOTES-06, DRAW-10). One menu keeps the
-/// toolbar short and names each command next to its symbol.
+/// Import Notes…, Export Notes…, Export Drawings… and the `.slidepilot` file (NOTES-11) in
+/// one toolbar menu on iPad and iPhone: the iPad hides its menu bar until it is pulled down,
+/// the iPhone has none (NOTES-06, DRAW-10). One menu keeps the toolbar short and names each
+/// command next to its symbol.
 struct FileTransferMenu: View {
     // From the environment: focused values do not reach a toolbar menu on iPad.
     @Environment(\.notesFile) private var notesFile

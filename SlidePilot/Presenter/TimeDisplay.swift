@@ -12,15 +12,24 @@ struct TimeDisplay: View {
     // step away. Scaled with Dynamic Type relative to the largest text style.
     @ScaledMetric(relativeTo: .largeTitle) private var normalFontSize: CGFloat = 70
     @ScaledMetric(relativeTo: .largeTitle) private var smallFontSize: CGFloat = 55
+    @Environment(\.isCompactHeight) private var isCompactHeight
+
+    private var fontSize: CGFloat {
+        let size = size == .small ? smallFontSize : normalFontSize
+        // In compact height (e.g. a phone in landscape) the full size would take about a
+        // third of the screen from the slides.
+        return isCompactHeight ? size / 2 : size
+    }
 
     var body: some View {
         // Like the old app: two equal halves, the timer centered in the left one and the
-        // clock in the right one, so neither moves when the other's width changes.
+        // clock in the right one, so neither moves when the other's width changes. The
+        // padding keeps a gap between them when narrow windows shrink both to their halves.
         HStack(spacing: 0) {
-            timerValue.frame(maxWidth: .infinity)
-            clock.frame(maxWidth: .infinity)
+            timerValue.padding(.horizontal).frame(maxWidth: .infinity)
+            clock.padding(.horizontal).frame(maxWidth: .infinity)
         }
-        .font(.system(size: size == .small ? smallFontSize : normalFontSize, weight: .light))
+        .font(.system(size: fontSize, weight: .light))
         .monospacedDigit()
         .lineLimit(1)
         // Shrinks instead of truncating in narrow windows and at large text sizes.
@@ -47,6 +56,18 @@ struct TimeDisplay: View {
             // Stopped: the value does not depend on the time.
             TimerValueText(timer: timer, now: .now)
         }
+    }
+}
+
+extension EnvironmentValues {
+    /// Whether the window has a compact height, like a phone in landscape. Never on the Mac,
+    /// which has no size classes.
+    var isCompactHeight: Bool {
+        #if os(iOS)
+        verticalSizeClass == .compact
+        #else
+        false
+        #endif
     }
 }
 

@@ -168,7 +168,7 @@ private struct NotesFileTransferModifier: ViewModifier {
                     companion.updateSettings { $0.declinedLegacyNotes = true }
                 }
             } message: { notesFile in
-                Text("SlidePilot found the notes file “\(notesFile.lastPathComponent)” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder. Import Notes… in the File menu stays available.")
+                Text("SlidePilot found the notes file “\(notesFile.lastPathComponent)” next to this PDF. To import it, allow SlidePilot to read the PDF’s folder. You only need to do this once per folder. Import Notes… stays available.")
             }
             .alert(
                 Text("Replace the Notes of This PDF?"),

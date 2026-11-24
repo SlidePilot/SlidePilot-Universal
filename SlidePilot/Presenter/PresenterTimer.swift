@@ -30,6 +30,7 @@ private struct PresenterTimeDisplayModifier: ViewModifier {
     // TIME-06: global, set in the Layout settings (LAY-04). Optional, so snapshots and
     // previews without settings use the default.
     @Environment(AppSettings.self) private var settings: AppSettings?
+    @Environment(\.isCompactHeight) private var isCompactHeight
 
     private var size: TimeDisplaySize { settings?.timeDisplaySize ?? .default }
 
@@ -38,9 +39,10 @@ private struct PresenterTimeDisplayModifier: ViewModifier {
             .safeAreaInset(edge: .top, spacing: 0) {
                 if size != .hidden {
                     TimeDisplay(timer: session.timer, size: size)
-                        // Aligned with the slides' 30 pt padding; the old app's top margin.
+                        // Aligned with the slides' 30 pt padding; the old app's top margin,
+                        // the small one in compact height like the smaller display there.
                         .padding(.horizontal, 30)
-                        .padding(.top, size == .small ? 5 : 20)
+                        .padding(.top, size == .small || isCompactHeight ? 5 : 20)
                 }
             }
     }
