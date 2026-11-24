@@ -1,6 +1,7 @@
 import CoreGraphics
 import Foundation
 import PDFKit
+import SlidePilotCore
 
 /// A video placed on a page with Beamer's `\movie` (NAV-07).
 public struct SlideMovie: Sendable, Hashable {
@@ -8,10 +9,13 @@ public struct SlideMovie: Sendable, Hashable {
     public let unitRect: CGRect
     /// The file as written in the PDF, usually relative to the PDF (see `LinkedFile`).
     public let reference: String
+    /// Autostart, loop, start and duration.
+    public let activation: MovieActivation
 
-    public init(unitRect: CGRect, reference: String) {
+    public init(unitRect: CGRect, reference: String, activation: MovieActivation = MovieActivation()) {
         self.unitRect = unitRect
         self.reference = reference
+        self.activation = activation
     }
 
     /// The video's area as a fraction of `region`, origin top left. Not clipped, so the video
@@ -37,8 +41,8 @@ public struct SlideMovie: Sendable, Hashable {
 enum RawAnnotationReader {
     struct Entry {
         enum Kind: Equatable {
-            /// A `Movie` annotation and its file.
-            case movie(String)
+            /// A `Movie` annotation, its file and how it plays.
+            case movie(String, MovieActivation)
             /// A `Link` annotation with a `/Launch` action and its file.
             case launch(String)
         }
@@ -50,20 +54,25 @@ enum RawAnnotationReader {
 
     static func entries(of page: CGPDFPage) -> [Entry] {
         guard let pageDictionary = page.dictionary else { return [] }
-        var annotations: CGPDFArrayRef?
-        guard CGPDFDictionaryGetArray(pageDictionary, "Annots", &annotations), let annotations else { return [] }
-        return (0..<CGPDFArrayGetCount(annotations)).compactMap { index in
+        var annotationArray: CGPDFArrayRef?
+        guard CGPDFDictionaryGetArray(pageDictionary, "Annots", &annotationArray), let annotationArray else { return [] }
+        let annotations: [CGPDFDictionaryRef] = (0..<CGPDFArrayGetCount(annotationArray)).compactMap { index in
             var annotation: CGPDFDictionaryRef?
-            guard CGPDFArrayGetDictionary(annotations, index, &annotation), let annotation,
-                  let bounds = rect(annotation, "Rect")
-            else { return nil }
+            guard CGPDFArrayGetDictionary(annotationArray, index, &annotation) else { return nil }
+            return annotation
+        }
+        let autostart = autostartTargets(page: pageDictionary, annotations: annotations)
+        return annotations.compactMap { annotation in
+            guard let bounds = rect(annotation, "Rect") else { return nil }
             switch name(annotation, "Subtype") {
             case "Movie":
                 var movie: CGPDFDictionaryRef?
                 guard CGPDFDictionaryGetDictionary(annotation, "Movie", &movie), let movie,
                       let file = fileSpecification(movie, "F")
                 else { return nil }
-                return Entry(bounds: bounds, kind: .movie(file))
+                var activation = activation(of: annotation)
+                activation.autostarts = autostart.contains(annotation: annotation, title: string(annotation, "T"))
+                return Entry(bounds: bounds, kind: .movie(file, activation))
             case "Link":
                 var action: CGPDFDictionaryRef?
                 guard CGPDFDictionaryGetDictionary(annotation, "A", &action), let action,
@@ -76,6 +85,115 @@ enum RawAnnotationReader {
             }
         }
     }
+
+    // MARK: - Movie activation
+
+    /// The movies that the page plays when it opens, by title or by annotation.
+    struct AutostartTargets {
+        var titles: Set<String> = []
+        var annotations: [CGPDFDictionaryRef] = []
+
+        func contains(annotation: CGPDFDictionaryRef, title: String?) -> Bool {
+            if let title, titles.contains(title) { return true }
+            return annotations.contains(annotation)
+        }
+    }
+
+    /// Movie actions with the operation Play that run when the page opens: Beamer puts one
+    /// in a hidden widget's `/AA /PO` (pdfTeX), the pdfmark route in the page's `/AA /O`.
+    static func autostartTargets(page: CGPDFDictionaryRef, annotations: [CGPDFDictionaryRef]) -> AutostartTargets {
+        var targets = AutostartTargets()
+        var actions: [CGPDFDictionaryRef] = []
+        if let action = additionalAction(page, "O") { actions.append(action) }
+        actions += annotations.compactMap { additionalAction($0, "PO") }
+        for action in actions {
+            collectPlayActions(action, depth: 0, into: &targets)
+        }
+        return targets
+    }
+
+    /// The action under `/AA /<trigger>`.
+    private static func additionalAction(_ dictionary: CGPDFDictionaryRef, _ trigger: String) -> CGPDFDictionaryRef? {
+        var additional: CGPDFDictionaryRef?
+        guard CGPDFDictionaryGetDictionary(dictionary, "AA", &additional), let additional else { return nil }
+        var action: CGPDFDictionaryRef?
+        guard CGPDFDictionaryGetDictionary(additional, trigger, &action) else { return nil }
+        return action
+    }
+
+    /// Adds the movie that `action` plays, then follows `/Next` (a dictionary or an array).
+    /// The depth limit guards against cyclic chains.
+    private static func collectPlayActions(_ action: CGPDFDictionaryRef, depth: Int, into targets: inout AutostartTargets) {
+        guard depth < 8 else { return }
+        // An omitted operation means Play; Stop, Pause and Resume do not start a video.
+        if name(action, "S") == "Movie", (name(action, "Operation") ?? "Play") == "Play" {
+            var annotation: CGPDFDictionaryRef?
+            if CGPDFDictionaryGetDictionary(action, "Annotation", &annotation), let annotation {
+                targets.annotations.append(annotation)
+            } else if let title = string(action, "T") {
+                targets.titles.insert(title)
+            }
+        }
+        var next: CGPDFDictionaryRef?
+        if CGPDFDictionaryGetDictionary(action, "Next", &next), let next {
+            collectPlayActions(next, depth: depth + 1, into: &targets)
+            return
+        }
+        var nextArray: CGPDFArrayRef?
+        guard CGPDFDictionaryGetArray(action, "Next", &nextArray), let nextArray else { return }
+        for index in 0..<CGPDFArrayGetCount(nextArray) {
+            var element: CGPDFDictionaryRef?
+            if CGPDFArrayGetDictionary(nextArray, index, &element), let element {
+                collectPlayActions(element, depth: depth + 1, into: &targets)
+            }
+        }
+    }
+
+    /// The movie activation dictionary `/A`: `/Mode`, `/Start` and `/Duration`. It may also be
+    /// a boolean, which carries none of these.
+    static func activation(of annotation: CGPDFDictionaryRef) -> MovieActivation {
+        var result = MovieActivation()
+        var activation: CGPDFDictionaryRef?
+        guard CGPDFDictionaryGetDictionary(annotation, "A", &activation), let activation else { return result }
+        result.mode = switch name(activation, "Mode") {
+        case "Open": .open
+        case "Repeat": .repeat
+        case "Palindrome": .palindrome
+        default: .once
+        }
+        result.start = time(activation, "Start")
+        result.duration = time(activation, "Duration")
+        return result
+    }
+
+    /// A PDF time in seconds: a number, an 8-byte big-endian integer string, or an array of
+    /// one of these and a time scale (units per second). Beamer writes `[<value> 128]`.
+    private static func time(_ dictionary: CGPDFDictionaryRef, _ key: String) -> TimeInterval? {
+        var object: CGPDFObjectRef?
+        guard CGPDFDictionaryGetObject(dictionary, key, &object), let object else { return nil }
+        if let value = timeValue(object) { return MovieActivation.seconds(value) }
+        var array: CGPDFArrayRef?
+        guard CGPDFObjectGetValue(object, .array, &array), let array, CGPDFArrayGetCount(array) == 2 else { return nil }
+        var valueObject: CGPDFObjectRef?
+        var scale: CGPDFReal = 0
+        guard CGPDFArrayGetObject(array, 0, &valueObject), let valueObject, let value = timeValue(valueObject),
+              CGPDFArrayGetNumber(array, 1, &scale)
+        else { return nil }
+        return MovieActivation.seconds(value, scale: Double(scale))
+    }
+
+    private static func timeValue(_ object: CGPDFObjectRef) -> Double? {
+        var number: CGPDFReal = 0
+        if CGPDFObjectGetValue(object, .real, &number) { return Double(number) }
+        var string: CGPDFStringRef?
+        guard CGPDFObjectGetValue(object, .string, &string), let string,
+              CGPDFStringGetLength(string) == 8, let bytes = CGPDFStringGetBytePtr(string)
+        else { return nil }
+        let value = (0..<8).reduce(UInt64(0)) { ($0 << 8) | UInt64(bytes[$1]) }
+        return Double(value)
+    }
+
+    // MARK: - Helpers
 
     /// `/F`, or the platform entries `/Unix` and `/Mac` of older writers.
     private static func launchFile(_ action: CGPDFDictionaryRef) -> String? {
@@ -133,10 +251,10 @@ enum MovieExtractor {
         let mediaBox = page.bounds(for: .mediaBox)
         guard mediaBox.width > 0, mediaBox.height > 0, let pageRef = page.pageRef else { return [] }
         return RawAnnotationReader.entries(of: pageRef).compactMap { entry in
-            guard case .movie(let reference) = entry.kind else { return nil }
+            guard case .movie(let reference, let activation) = entry.kind else { return nil }
             let rect = LinkExtractor.displayedUnitRect(of: entry.bounds, mediaBox: mediaBox, rotation: page.rotation)
             guard rect.width > 0, rect.height > 0 else { return nil }
-            return SlideMovie(unitRect: rect, reference: reference)
+            return SlideMovie(unitRect: rect, reference: reference, activation: activation)
         }
     }
 }

@@ -1,6 +1,7 @@
 import CoreGraphics
 import Foundation
 import PDFKit
+import SlidePilotCore
 import Testing
 @testable import SlidePilotRendering
 
@@ -16,15 +17,17 @@ private func fixtureData(_ name: String, filePath: String = #filePath) throws ->
 }
 
 /// A one-page PDF of 400 × 300 pt written by hand, so tests control the raw annotation
-/// dictionaries that LaTeX writes and PDFKit does not describe.
-private func rawPDF(rotation: Int = 0, annotations: [String]) throws -> Data {
+/// dictionaries that LaTeX writes and PDFKit does not describe. Annotations are objects 4,
+/// 5, …; `extraObjects` follow them, and `pageEntries` go into the page dictionary.
+private func rawPDF(rotation: Int = 0, pageEntries: String = "", annotations: [String], extraObjects: [String] = []) throws -> Data {
     let annotationRefs = annotations.indices.map { "\($0 + 4) 0 R" }.joined(separator: " ")
     var objects = [
         "<< /Type /Catalog /Pages 2 0 R >>",
         "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-        "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Rotate \(rotation) /Annots [\(annotationRefs)] >>",
+        "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 400 300] /Rotate \(rotation) /Annots [\(annotationRefs)] \(pageEntries) >>",
     ]
     objects += annotations.map { "<< /Type /Annot \($0) >>" }
+    objects += extraObjects
     var pdf = "%PDF-1.4\n"
     var offsets: [Int] = []
     for (index, object) in objects.enumerated() {
@@ -129,5 +132,95 @@ private func isClose(_ first: CGRect, _ second: CGRect) -> Bool {
         #expect(movie.unitRect(in: .rightHalf) == CGRect(x: -0.5, y: 0.25, width: 1, height: 0.5))
         let notesSide = SlideMovie(unitRect: CGRect(x: 0.6, y: 0.1, width: 0.3, height: 0.3), reference: "a.mp4")
         #expect(notesSide.unitRect(in: .leftHalf) == nil)
+    }
+
+    // MARK: - Activation (#139)
+
+    /// Beamer's `autostart`, `loop`, `repeat`, `palindrome`, `start` and `duration`.
+    @Test func readsTheActivationOfTheFixture() async throws {
+        let cache = try cache(try fixtureData("video-options.pdf"))
+        func activation(_ page: Int) async throws -> MovieActivation {
+            let movies = await cache.movies(page: page)
+            #expect(movies.count == 1)
+            return try #require(movies.first).activation
+        }
+        #expect(try await activation(1) == MovieActivation())
+        #expect(try await activation(2) == MovieActivation(autostarts: true))
+        #expect(try await activation(3) == MovieActivation(mode: .repeat, autostarts: true))
+        #expect(try await activation(4) == MovieActivation(mode: .repeat))
+        #expect(try await activation(5) == MovieActivation(mode: .palindrome, autostarts: true))
+        #expect(try await activation(6) == MovieActivation(start: 1, duration: 2, autostarts: true))
+        // The video over three overlay steps autostarts and loops on each of them.
+        for page in 7...9 {
+            #expect(try await activation(page) == MovieActivation(mode: .repeat, autostarts: true))
+        }
+        #expect(await cache.movies(page: 1).first?.reference == "media/test-pattern.mp4")
+        #expect(await cache.linkedFileReferences() == ["media/test-pattern.mp4"])
+    }
+
+    /// pdfTeX route: a hidden widget runs the movie action when the page opens.
+    @Test func autostartsFromAWidgetPageOpenAction() async throws {
+        let data = try rawPDF(annotations: [
+            "/Subtype /Movie /T (clip) /Rect [0 0 200 150] /Movie << /F (a.mp4) >> /A << >>",
+            "/Subtype /Movie /T (other) /Rect [200 0 400 150] /Movie << /F (b.mp4) >>",
+            "/Subtype /Widget /FT /Btn /Rect [0 0 0 0] /T (wid@clip) /AA << /PO 7 0 R >>",
+        ], extraObjects: ["<< /S /Movie /T (clip) /Operation /Play >>"])
+        let movies = try await cache(data).movies(page: 0)
+        #expect(movies.map(\.activation.autostarts) == [true, false])
+    }
+
+    /// pdfmark route: the page's own open action; an omitted operation means Play.
+    @Test func autostartsFromThePageOpenAction() async throws {
+        let data = try rawPDF(
+            pageEntries: "/AA << /O << /S /Movie /T (clip) >> >>",
+            annotations: ["/Subtype /Movie /T (clip) /Rect [0 0 200 150] /Movie << /F (a.mp4) >>"]
+        )
+        #expect(try await cache(data).movies(page: 0).first?.activation.autostarts == true)
+    }
+
+    /// A movie action may name its annotation instead of a title, and may follow another
+    /// action through `/Next`.
+    @Test func autostartsByAnnotationReferenceAndNextAction() async throws {
+        let data = try rawPDF(
+            pageEntries: "/AA << /O << /S /JavaScript /JS () /Next [<< /S /Movie /Annotation 4 0 R >>] >> >>",
+            annotations: [
+                "/Subtype /Movie /Rect [0 0 200 150] /Movie << /F (a.mp4) >>",
+                "/Subtype /Movie /Rect [200 0 400 150] /Movie << /F (b.mp4) >>",
+            ]
+        )
+        let movies = try await cache(data).movies(page: 0)
+        #expect(movies.map(\.activation.autostarts) == [true, false])
+    }
+
+    /// Stop, Pause and Resume on page open do not start a video, and an action for another
+    /// title leaves the movie alone.
+    @Test(arguments: ["/Operation /Stop", "/Operation /Pause", "/Operation /Resume", "/T (else) /Operation /Play"])
+    func otherOperationsDoNotAutostart(_ entries: String) async throws {
+        let title = entries.contains("/T ") ? "" : "/T (clip)"
+        let data = try rawPDF(
+            pageEntries: "/AA << /O << /S /Movie \(title) \(entries) >> >>",
+            annotations: ["/Subtype /Movie /T (clip) /Rect [0 0 200 150] /Movie << /F (a.mp4) >>"]
+        )
+        #expect(try await cache(data).movies(page: 0).first?.activation.autostarts == false)
+    }
+
+    @Test(arguments: [
+        ("/A << /Mode /Once >>", MovieActivation()),
+        ("/A << /Mode /Open >>", MovieActivation(mode: .open)),
+        ("/A << /Mode /Repeat >>", MovieActivation(mode: .repeat)),
+        ("/A << /Mode /Palindrome >>", MovieActivation(mode: .palindrome)),
+        ("/A << /Mode /Unknown >>", MovieActivation()),
+        ("/A true", MovieActivation()),
+        ("", MovieActivation()),
+        // Beamer: start=5s, duration=2.5s.
+        ("/A << /Start [640 128] /Duration [320 128] >>", MovieActivation(start: 5, duration: 2.5)),
+        // A plain number, and an 8-byte integer string with a scale of 10 (3 s).
+        ("/A << /Start 2 /Duration [<000000000000001E> 10] >>", MovieActivation(start: 2, duration: 3)),
+        // Malformed times are ignored.
+        ("/A << /Start [1 2 3] /Duration (x) >>", MovieActivation()),
+    ])
+    func readsModeStartAndDuration(_ entries: String, expected: MovieActivation) async throws {
+        let data = try rawPDF(annotations: ["/Subtype /Movie /Rect [0 0 200 150] /Movie << /F (a.mp4) >> \(entries)"])
+        #expect(try await cache(data).movies(page: 0).first?.activation == expected)
     }
 }
