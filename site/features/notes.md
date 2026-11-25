@@ -25,11 +25,9 @@ Open a notes file by pressing **⌘ + ⇧ + O** or select *Notes* → *Open Note
 
 Create a new notes file by pressing **⌘ + N** or select *Notes* → *New Notes*
 
-{% hint style="info" %}
-*When your notes file has a filename like* `<pdf-name>-notes.rtf`*, SlidePilot will automatically open this notes file with your PDF named* `<pdf-name>.pdf`*.*
-
-*Notes files with the filename like* `<pdf-name>-( |_|-)(notes|Notes|Notizen)` *are also recognized by SlidePilot.*
-{% endhint %}
+> *When your notes file has a filename like* `<pdf-name>-notes.rtf`*, SlidePilot will automatically open this notes file with your PDF named* `<pdf-name>.pdf`*.*
+>
+> *Notes files with the filename like* `<pdf-name>-( |_|-)(notes|Notes|Notizen)` *are also recognized by SlidePilot.*
 
 ### Editing and Styling
 
