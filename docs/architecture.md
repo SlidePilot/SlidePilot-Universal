@@ -37,10 +37,10 @@ Dependencies only point downward. Core never imports SwiftUI, AppKit, UIKit or P
 
 | Module | Contents | Must not contain |
 |---|---|---|
-| **SlidePilotCore** | Value-type models: layout configuration, notes position/mode, pointer configuration, drawing model (relative strokes), timer logic (wall-clock based), per-document settings, companion file format and its store (`CompanionStore` actor: one JSON file per PDF, matched by bookmark through `PDFLocator`), the `.slidepilot` export format (`SlidePilotFileFormat`, ADR 0019), legacy notes page format and file names, keyboard command definitions | UI frameworks, PDFKit, file system watching |
+| **SlidePilotCore** | Value-type models: layout configuration, notes position/mode, pointer configuration, drawing model (relative strokes), timer logic (wall-clock based), per-document settings, companion file format and its store (`CompanionStore` actor: one JSON file per PDF, matched by bookmark through `PDFLocator`), the `.slidepilot` export format (`SlidePilotFileFormat`, ADR 0019), legacy notes page format and file names, keyboard command definitions, SlidePilot Pro rules and the trial timer (ADR 0020) | UI frameworks, PDFKit, file system watching |
 | **SlidePilotRendering** | PDF loading, page geometry for split notes (half-page rects incl. rotation), render cache actor, thumbnail rendering, drawing rasterization and export into PDF annotations, link and movie annotation extraction (videos stored inside the PDF are written to temporary files through `EmbeddedFileStore` from Core), legacy notes RTF read/write and the RTF pages of the companion notes (RTF needs the AppKit/UIKit attributed-string extensions), watching and reloading the opened PDF (`PDFFileObserver`, it validates new versions with PDFKit) | SwiftUI views, app state |
 | **SlidePilotRemoteProtocol** | Codable message types, framing, protocol versioning, pairing, key derivation and encryption, the per-connection state machine `RemoteConnection` (ADR 0017), the `RemoteSession` actor that runs it over any byte stream, and the `TrustStore` protocol | Network sockets and the Keychain (the app owns those) |
-| **App target** | SwiftUI scenes and views, `@Observable` state, menus/commands, settings UI, folder access requests, platform-specific code | Business logic that could be tested in a package |
+| **App target** | SwiftUI scenes and views, `@Observable` state, menus/commands, settings UI, folder access requests, StoreKit 2 (ADR 0020), platform-specific code | Business logic that could be tested in a package |
 
 Logic that can be unit-tested belongs in a package. The app target stays thin.
 
@@ -88,6 +88,7 @@ Drawing ([ADR 0016](decisions/0016-drawing-engine.md)): `DocumentDrawings` (Core
 
 - Bundle identifier, team and version come from `Config/*.xcconfig`. No code assumes a specific bundle ID. That keeps a later split into two App Store apps (free Mac, paid iPad) possible.
 - Features that differ between products (e.g. the donation hint, free Mac download only, ADR 0011) are behind a compile-time flag set in the xcconfig, not behind `#if os(...)`.
+- **SlidePilot Pro (ADR 0020):** the App Store build is free; the in-app purchase SlidePilot Pro lifts the 3-minute trial of audience output and remote control. The rules (Pro status, what is limited, the trial timer with an injectable clock) live in SlidePilotCore and are tested without StoreKit. StoreKit 2 (entitlements, purchase, restore) lives only in the app target and is compiled out of the free Mac download by `SLIDEPILOT_FREE_DOWNLOAD`; that build treats every feature as unlimited. The product ID is a build setting in `Config/Shared.xcconfig` that reaches the code through the Info.plist. Each instance checks only its own Pro status; the remote protocol carries none.
 
 ## Testing
 

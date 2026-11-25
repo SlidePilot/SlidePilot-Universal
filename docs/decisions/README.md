@@ -12,15 +12,16 @@
 | [0008](0008-ci-as-build-feedback.md) | GitHub Actions as build feedback | Accepted |
 | [0009](0009-drop-touch-bar.md) | Drop Touch Bar support | Accepted |
 | [0010](0010-native-design-first.md) | Native design first | Accepted |
-| [0011](0011-universal-purchase-and-direct-download.md) | Universal purchase and free Mac download | Accepted (signing IDs: 0014) |
+| [0011](0011-universal-purchase-and-direct-download.md) | Universal purchase and free Mac download | Accepted (signing IDs: 0014; price: 0020) |
 | [0012](0012-companion-file-location.md) | Companion file in the app container, folder access on demand | Accepted |
 | [0013](0013-pdf-change-detection.md) | Detect PDF changes with a file presenter | Accepted |
 | [0014](0014-commit-signing-ids.md) | Commit the bundle ID prefix and development team | Accepted |
-| [0015](0015-iphone-and-remote-mode.md) | iPhone support and remote as a mode of the app, both in 2.0 | Accepted |
+| [0015](0015-iphone-and-remote-mode.md) | iPhone support and remote as a mode of the app, both in 2.0 | Accepted (pricing: 0020) |
 | [0016](0016-drawing-engine.md) | Drawing: shared relative model, PencilKit input on iPad, own toolbar | Accepted |
 | [0017](0017-remote-wire-format-and-pairing.md) | Remote wire format, versioning, pairing and encryption | Accepted |
 | [0018](0018-mac-test-host.md) | Mac test host: capture and drive only the SlidePilot test build | Accepted |
 | [0019](0019-slidepilot-file.md) | The `.slidepilot` file: export and import of a PDF's stored data | Accepted |
+| [0020](0020-free-app-with-pro-purchase.md) | Free App Store app with the in-app purchase SlidePilot Pro | Accepted |
 
 ## Process
 1. Propose the decision in chat with the product owner (context, options, recommendation).
