@@ -179,6 +179,18 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 | DROP-02 | Sparkle updater (Check for Updates…) | `Sparkle.framework`; `Info.plist:52-55` | App Store distribution; the free Mac download has no updater (ADR 0011) | dropped |
 | DROP-03 | Donation alert after the 5th launch (`AppStartCount`, `AlreadyDisplayedDonationAlert`). Replaced by a donation hint **in the free Mac download only** (outside the App Store, build configuration `FreeDownload`); the App Store version (Mac and iPad) has none. **Product-owner decision 2026-11-24:** the same one-time alert after the 5th launch (same keys, counted up to 6, same donation page) plus "Support SlidePilot" in the app menu below About. The decline button says "Not Now" instead of "No, I don't like it!" | `Helpers/AppStartTracker.swift`; `PresenterViewController.swift:143-162` | Pricing model (ADR 0011) | done |
 
+## 13. SlidePilot Pro (beyond parity)
+
+The old app had no in-app purchase. These items are new, approved by the product owner (2026-11-25) and decided in ADR 0020. They apply to the App Store build on Mac, iPad and iPhone; the free Mac download (`FreeDownload`) has none of them.
+
+| ID | Feature | Old source | Docs | iPad notes | Native replacement | Milestone | Status |
+|---|---|---|---|---|---|---|---|
+| PRO-01 | Rules: without Pro, everything on the own device is unlimited (open, presenter view, notes, timer, pointer, drawing, curtain, settings); audience output and remote control are a trial. A trial session lasts at most 3 minutes, ends for good, and a new one needs a new connection. Buying Pro lifts a running trial at once. Planned in #197 | – | – | Same | – (Core) | P5 | planned |
+| PRO-02 | StoreKit 2: the non-consumable "SlidePilot Pro" (7.99 EUR, Family Sharing), entitlements, purchase and restore; product ID from the xcconfig; StoreKit configuration file for local tests; no StoreKit code in the free Mac download. Planned in #198 | – | – | Same | StoreKit 2 | P5 | planned |
+| PRO-03 | Trial of the audience output: external display or AirPlay (iPad, iPhone), every presentation window (Mac), including pointer, drawing and curtain there. Permanent "SlidePilot – Trial Version" banner on the audience screen; after 3 minutes the deck disappears there and the presenter shows "Trial Ended" with the purchase offer; a new trial only after connecting again (Mac: starting the presentation again). The purchase offer appears when the output starts. Planned in #199 | – | – | External display scene | Banner is part of the slide surface; offer as a sheet with StoreKit views | P5 | planned |
+| PRO-04 | Trial of remote control in both directions: the connection closes after 3 minutes with "Trial Ended" and the purchase offer; automatic reconnects start no new trial. Each App Store installation checks its own Pro status; the protocol carries none. The purchase offer appears when remote mode starts or this device is first controlled. Planned in #200 | – | – | Same | Sheet with StoreKit views | P5 | planned |
+| PRO-05 | While Pro is missing, a subtle hint at the top of the library and the presenter ("Trial Version – Presenting and remote limited to 3 minutes. Unlock Pro") opens the purchase offer and disappears after the purchase. Settings has a Pro section with the offer and Restore Purchases. Planned in #201 | – | – | Same; library = document browser | StoreKit `ProductView` / `StoreView`; standard `Form` section in Settings | P5 | planned |
+
 ---
 
 ## Keyboard shortcuts

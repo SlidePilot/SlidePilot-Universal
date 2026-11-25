@@ -1,6 +1,6 @@
 # 0015 – iPhone support and remote as a mode of the app, both in 2.0
 
-- Status: Accepted
+- Status: Accepted (pricing: [0020](0020-free-app-with-pro-purchase.md))
 - Date: 2026-11-16
 - Partially supersedes: [0001](0001-minimum-os.md) (iPhone is a target), [0006](0006-remote-protocol.md) (remote ships with 2.0, no separate remote app, symmetric roles)
 
