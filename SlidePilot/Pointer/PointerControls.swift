@@ -1,8 +1,8 @@
 import SlidePilotCore
 import SwiftUI
 
-/// Show Pointer (**C**), Pointer Appearance (**⌘1…⌘7**) and Edit Pointer… (**⌃⌥C**) in the
-/// Presentation menu (PTR-01, PTR-02, PTR-04).
+/// Show Pointer (**C**), Pointer Appearance (**⌘1…⌘8**, the laser pointer last) and Edit
+/// Pointer… (**⌃⌥C**) in the Presentation menu (PTR-01, PTR-02, PTR-04, PTR-08).
 struct PointerMenuItems: View {
     @FocusedValue(\.slideNavigation) private var session
     // `nil` while the Set Timer sheet is open, so typing C there does not toggle the
@@ -81,7 +81,8 @@ private struct PointerAppearancePicker: View {
     var body: some View {
         Picker(selection: Binding { pointer?.appearance ?? .cursor } set: { pointer?.appearance = $0 }) {
             ForEach(PointerAppearance.allCases, id: \.self) { appearance in
-                if appearance == .individual {
+                // The custom pointer and the laser, which draws, each stand apart.
+                if appearance == .individual || appearance == .laser {
                     Divider()
                 }
                 Label(appearance.title, systemImage: appearance.systemImage)
@@ -119,6 +120,7 @@ extension PointerAppearance {
         case .targetBlack: "Target Black"
         case .targetRed: "Target Red"
         case .individual: "Individual"
+        case .laser: "Laser"
         }
     }
 
@@ -130,6 +132,7 @@ extension PointerAppearance {
         case .circle: "circle"
         case .targetBlack, .targetRed: "scope"
         case .individual: "slider.horizontal.3"
+        case .laser: "scribble.variable"
         }
     }
 }

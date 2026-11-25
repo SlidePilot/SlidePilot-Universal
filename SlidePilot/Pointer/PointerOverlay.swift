@@ -63,7 +63,8 @@ private struct PointerMark: View {
 
 extension View {
     /// Moves the pointer with the mouse, trackpad or Apple Pencil hovering over the
-    /// presenter's current slide and, on iPad, with a double tap and hold (PTR-01).
+    /// presenter's current slide and, on iPad, with a double tap and hold (PTR-01). With
+    /// the laser pointer, dragging draws strokes that fade out (PTR-08).
     /// Apply it to the `SlideSurface` itself, so the location is relative to the slide.
     func presenterPointer(_ session: PresentationSession) -> some View {
         modifier(PresenterPointer(session: session))
@@ -95,6 +96,8 @@ private struct PresenterPointer: ViewModifier {
     let session: PresentationSession
     @Environment(AppSettings.self) private var settings: AppSettings?
     @State private var size = CGSize.zero
+    /// Resets when a drag ends or is cancelled, which ends the laser stroke.
+    @GestureState private var isLaserDragging = false
     #if os(iOS)
     @State private var linkTaps = LinkTapDelay()
     private let tip = TouchPointerTip()
@@ -102,11 +105,36 @@ private struct PresenterPointer: ViewModifier {
 
     private var pointer: PointerState { session.pointer }
     private var isDrawing: Bool { session.drawing.isActive }
+    /// Draw mode keeps the mouse and fingers for the drawing.
+    private var drawsLaser: Bool { pointer.isLaserActive && !isDrawing }
+
+    /// A laser stroke: begins where the drag started, then follows it.
+    private var laserDrag: some Gesture {
+        DragGesture(minimumDistance: 1)
+            .updating($isLaserDragging) { _, isDragging, _ in isDragging = true }
+            .onChanged { value in
+                pointer.laserDragged(from: value.startLocation, to: value.location, inSlideOfSize: size, time: Date.now.laserTime)
+                // The dot rides on the stroke's tip.
+                pointer.presenterMoved(to: value.location, inSlideOfSize: size)
+            }
+    }
 
     func body(content: Content) -> some View {
         let configuration = session.pointerConfiguration(settings: settings)
         content
             .onGeometryChange(for: CGSize.self) { $0.size } action: { size = $0 }
+            .laserOverlay(pointer)
+            .onChange(of: isLaserDragging) { _, isDragging in
+                guard !isDragging else { return }
+                pointer.laserEnded(time: Date.now.laserTime)
+                #if os(iOS)
+                // A lifted finger no longer points; a hovering Pencil sets the dot again.
+                pointer.presenterEnded()
+                #endif
+            }
+            // Draw mode or a layout change can remove the slide mid-drag; the gesture
+            // then never ends, so end the stroke here.
+            .onDisappear { pointer.laserEnded(time: Date.now.laserTime) }
             .onContinuousHover { phase in
                 switch phase {
                 case .active(let location): pointer.presenterMoved(to: location, inSlideOfSize: size)
@@ -114,11 +142,15 @@ private struct PresenterPointer: ViewModifier {
                 }
             }
             #if os(iOS)
+            // With the laser, a finger or Pencil drag on the current slide draws (PTR-08);
+            // swipes on the rest of the presenter still change slides.
+            .gesture(laserDrag, isEnabled: drawsLaser)
             // Double tap and hold points, whether or not the pointer is shown; a one-finger
-            // swipe always changes slides. Off in draw mode, where a finger draws.
+            // swipe always changes slides. Off in draw mode, where a finger draws, and while
+            // the laser draws.
             .gesture(
                 TouchPointerGesture(
-                    isEnabled: !isDrawing,
+                    isEnabled: !isDrawing && !drawsLaser,
                     began: {
                         linkTaps.pointingBegan()
                         tip.invalidate(reason: .actionPerformed)
@@ -154,8 +186,10 @@ private struct PresenterPointer: ViewModifier {
             .simultaneousGesture(
                 DragGesture(minimumDistance: 1)
                     .onChanged { pointer.presenterMoved(to: $0.location, inSlideOfSize: size) },
-                isEnabled: pointer.isShown
+                isEnabled: pointer.isShown && !drawsLaser
             )
+            // With the laser, press and drag draws (PTR-08); also simultaneous, for links.
+            .simultaneousGesture(laserDrag, isEnabled: drawsLaser)
             // Like the old app, the mouse pointer over the current slide looks like the
             // pointer the audience sees; in draw mode the canvas keeps its own.
             .pointerStyle(pointer.isShown && !isDrawing ? PointerCursor.style(for: configuration) : nil)

@@ -5,8 +5,8 @@ import SwiftUI
 typealias SessionRegistry = PresentationRegistry<PresentationSession>
 
 /// What the audience sees: the current slide on black (DOC-04). Shown by the Mac
-/// presentation window and the iPad external display. The drawing lies below the curtain;
-/// the pointer stays above it, like in the old app (PTR-01).
+/// presentation window and the iPad external display. The drawing and the laser strokes lie
+/// below the curtain; the pointer stays above it, like in the old app (PTR-01, PTR-08).
 struct PresentationView: View {
     let session: PresentationSession
     /// Where the slide is, for the pointer above the curtain.
@@ -27,6 +27,8 @@ struct PresentationView: View {
             )
             // Read-only and live while it is drawn (DRAW-01).
             .drawingOverlay(session.drawing.drawings, page: session.currentPage, region: session.audienceRegion, isOutlined: false)
+            // Below the curtain like the drawing (PTR-08).
+            .laserOverlay(session.pointer)
             .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.space)) } action: { slideFrame = $0 }
             // Opaque, so it also hides the drawing (DRAW-09) and blocks clicks on the
             // slide's links while shown.

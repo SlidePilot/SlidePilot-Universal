@@ -22,7 +22,12 @@ final class PresentationSession: Identifiable {
     /// Temporary files of the videos stored inside the PDF, shared by the caches of all
     /// versions of the PDF; removed when the document closes (#142).
     @ObservationIgnored private let embeddedFiles = EmbeddedFileStore()
-    private(set) var position: DeckPosition
+    private(set) var position: DeckPosition {
+        didSet {
+            // Laser strokes belong to the slide they were drawn on (PTR-08).
+            if position.page != oldValue.page { pointer.clearLaser() }
+        }
+    }
     /// Stopwatch/timer of this document; starts in stopwatch mode (TIME-02 to TIME-05).
     var timer = PresentationTimer()
     /// Counts reloads, so the remote knows the slide images changed (REM-04).

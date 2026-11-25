@@ -217,10 +217,20 @@ struct DoubleTapHoldGestureTests {
 
 @Suite
 struct PointerAppearanceTests {
-    // PTR-02: the old menu's order defines ⌘1…⌘7.
+    // PTR-02: the old menu's order defines ⌘1…⌘7; the laser pointer follows as ⌘8 (PTR-08).
     @Test func menuOrderAndShortcuts() {
-        #expect(PointerAppearance.allCases == [.cursor, .hand, .dot, .circle, .targetBlack, .targetRed, .individual])
-        #expect(PointerAppearance.allCases.map(\.shortcutDigit) == Array(1...7))
+        #expect(PointerAppearance.allCases == [
+            .cursor, .hand, .dot, .circle, .targetBlack, .targetRed, .individual, .laser,
+        ])
+        #expect(PointerAppearance.allCases.map(\.shortcutDigit) == Array(1...8))
+    }
+
+    // PTR-08: the laser hovers as a red dot in the strokes' color.
+    @Test func laserHoversAsARedDot() {
+        let laser = PointerAppearance.laser.configuration(individual: .defaultIndividual)
+        #expect(laser.shape == .dot)
+        #expect(laser.color == LaserTrail.color)
+        #expect(PointerDrawing(laser) != nil)
     }
 
     @Test func presetsMatchTheOldApp() {
@@ -338,7 +348,7 @@ struct PointerSettingsTests {
     }
 
     @Test func unknownAppearanceFallsBackToNotSaved() throws {
-        let json = Data(#"{"isPointerDisplayed": true, "pointerAppearance": "laser", "isNavigatorDisplayed": true}"#.utf8)
+        let json = Data(#"{"isPointerDisplayed": true, "pointerAppearance": "spotlight", "isNavigatorDisplayed": true}"#.utf8)
         let decoded = try JSONDecoder().decode(DocumentSettings.self, from: json)
         #expect(decoded.pointerAppearance == nil)
         #expect(decoded.isPointerDisplayed == true)

@@ -1,4 +1,5 @@
 import CoreGraphics
+import Foundation
 import Observation
 
 /// The shapes a pointer can have (PTR-03, PTR-04). Cursor and hand are the system's
@@ -71,13 +72,16 @@ public struct PointerConfiguration: Codable, Sendable, Hashable {
     public static let dot = PointerConfiguration(
         shape: .dot, size: 10, color: .black, borderWidth: 5, borderColor: .white, shadowWidth: 10
     )
+    /// The laser pointer's dot while it hovers (PTR-08), in the strokes' color.
+    public static let laserDot = PointerConfiguration(shape: .dot, size: 12, color: LaserTrail.color, shadowWidth: 4)
     /// The custom pointer until the user edits it (PTR-05).
     public static let defaultIndividual = target
 }
 
-/// The entries of Pointer Appearance (PTR-02), in the old menu's order (⌘1…⌘7).
+/// The entries of Pointer Appearance (PTR-02), in the old menu's order (⌘1…⌘7), then the
+/// laser pointer (⌘8, PTR-08).
 public enum PointerAppearance: String, Codable, Sendable, CaseIterable {
-    case cursor, hand, dot, circle, targetBlack, targetRed, individual
+    case cursor, hand, dot, circle, targetBlack, targetRed, individual, laser
 
     /// The pointer of this appearance. `individual` is the custom pointer of the pointer
     /// editor (PTR-04, PTR-05).
@@ -90,10 +94,11 @@ public enum PointerAppearance: String, Codable, Sendable, CaseIterable {
         case .targetBlack: .target
         case .targetRed: .targetRed
         case .individual: individual
+        case .laser: .laserDot
         }
     }
 
-    /// The digit of its ⌘ shortcut, 1…7.
+    /// The digit of its ⌘ shortcut, 1…8.
     public var shortcutDigit: Int {
         Self.allCases.firstIndex(of: self)! + 1
     }
@@ -110,14 +115,23 @@ public final class PointerState {
     /// the double tap and hold gesture either way (PTR-01).
     public var isShown: Bool {
         didSet {
-            if !isShown { presenterEnded() }
+            if !isShown {
+                presenterEnded()
+                removeLaserStrokes()
+            }
         }
     }
     /// Whether a finger holds the pointer with the double tap and hold gesture. The pointer
     /// is visible then, also while `isShown` is off.
     public private(set) var isTouchPointing = false
     /// The old app starts with the system cursor.
-    public var appearance: PointerAppearance
+    public var appearance: PointerAppearance {
+        didSet {
+            if appearance != .laser { removeLaserStrokes() }
+        }
+    }
+    /// The laser pointer's strokes (PTR-08). Never saved.
+    public private(set) var laser = LaserTrail()
     /// Where the presenter points on the current slide, 0…1 with the origin top left;
     /// `nil` while the mouse or finger is not on the slide.
     public private(set) var presenterLocation: CGPoint?
@@ -168,6 +182,67 @@ public final class PointerState {
     public func presenterEnded() {
         guard !isTouchPointing else { return }
         clearLocation()
+    }
+
+    // MARK: Laser pointer (PTR-08)
+
+    /// Whether the presenter draws laser strokes: the pointer is shown with Laser.
+    public var isLaserActive: Bool { isShown && appearance == .laser }
+
+    /// Whether the current drag was cut off by `clearLaser()`; it draws nothing more until
+    /// it ends, so a slide change mid-drag leaves the new slide clean.
+    @ObservationIgnored private var isLaserDragInterrupted = false
+
+    /// The presenter's mouse, finger or Pencil drags from `start` to `point` in a slide of
+    /// `size` (slide coordinates, origin top left). The drag's first change starts a stroke
+    /// at `start`; later ones continue it. Points beyond the slide's edge are kept, so a
+    /// stroke may leave the slide and come back.
+    public func laserDragged(from start: CGPoint, to point: CGPoint, inSlideOfSize size: CGSize, time: TimeInterval) {
+        guard isLaserActive, !isLaserDragInterrupted, size.width > 0, size.height > 0 else { return }
+        func relative(_ point: CGPoint) -> RelativePoint {
+            RelativePoint(x: point.x / size.width, y: point.y / size.height)
+        }
+        if !laser.isDrawing {
+            laser.begin(at: relative(start), time: time)
+        }
+        laser.extend(to: relative(point))
+    }
+
+    /// A drag that starts and stays at `point`, e.g. in tests.
+    public func laserMoved(to point: CGPoint, inSlideOfSize size: CGSize, time: TimeInterval) {
+        laserDragged(from: point, to: point, inSlideOfSize: size, time: time)
+    }
+
+    /// The drag ended or was cancelled, or its view went away; the strokes fade after a
+    /// moment. The next drag draws again.
+    public func laserEnded(time: TimeInterval) {
+        isLaserDragInterrupted = false
+        guard laser.isDrawing else { return }
+        laser.end(time: time)
+    }
+
+    /// Removes the strokes at once on a slide change. A drag in progress draws nothing
+    /// more until it ends.
+    public func clearLaser() {
+        // A second slide change in the same drag keeps it cut off.
+        let interrupts = laser.isDrawing || isLaserDragInterrupted
+        removeLaserStrokes()
+        isLaserDragInterrupted = interrupts
+    }
+
+    /// Pointer hidden or another appearance: the laser's gesture turns off, so no drag
+    /// goes on to be cut off.
+    private func removeLaserStrokes() {
+        isLaserDragInterrupted = false
+        if !laser.isEmpty || laser.isDrawing {
+            laser.clear()
+        }
+    }
+
+    /// Drops strokes that have faded out.
+    public func removeExpiredLaser(at time: TimeInterval) {
+        guard let removalTime = laser.removalTime, time >= removalTime else { return }
+        laser.removeExpired(at: time)
     }
 
     /// Where the audience sees the pointer: the presenter's, else a remote controller's.

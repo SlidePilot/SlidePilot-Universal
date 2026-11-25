@@ -2041,6 +2041,22 @@
         }
       }
     },
+    "Laser" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laser"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laser"
+          }
+        }
+      }
+    },
     "Last opened %@" : {
       "localizations" : {
         "de" : {

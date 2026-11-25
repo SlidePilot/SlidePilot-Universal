@@ -99,6 +99,27 @@ struct MacSnapshots {
         try await WindowSnapshot.record(view, name: "pointer-\(pointerAppearance.rawValue)", size: CGSize(width: 960, height: 600), appearance: .light)
     }
 
+    // PTR-08: laser strokes being drawn on the presentation, with the dot on the tip. The
+    // presentation ignores the appearance setting, so light only.
+    @Test func laserStrokes() async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        let session = PresentationSession(data: document.data, info: document.info, page: 1, layoutStore: InMemoryPresenterLayoutStore())
+        session.pointer.isShown = true
+        session.pointer.appearance = .laser
+        let slide = CGSize(width: 100, height: 100)
+        let now = Date.now.timeIntervalSinceReferenceDate
+        for (x, y) in [(20.0, 30.0), (35, 50), (50, 30), (65, 50), (80, 30)] {
+            session.pointer.laserMoved(to: CGPoint(x: x, y: y), inSlideOfSize: slide, time: now)
+        }
+        session.pointer.laserEnded(time: now)
+        for (x, y) in [(25.0, 70.0), (75, 72)] {
+            session.pointer.laserMoved(to: CGPoint(x: x, y: y), inSlideOfSize: slide, time: now)
+        }
+        session.pointer.presenterMoved(to: CGPoint(x: 75, y: 72), inSlideOfSize: slide)
+        let view = PresentationView(session: session).environment(AppSettings(store: InMemorySettingsStore()))
+        try await WindowSnapshot.record(view, name: "laser-presentation", size: CGSize(width: 960, height: 600), appearance: .light)
+    }
+
     // TIME-01 to TIME-03, TIME-06: clock with a running stopwatch (normal size) and a timer
     // in overtime (small size).
     @Test(arguments: WindowSnapshot.Appearance.allCases)
