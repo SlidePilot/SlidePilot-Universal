@@ -14,6 +14,7 @@ The app must look and feel as native as possible on macOS 26 and iPadOS 26.
 
 ## Privacy (public repository)
 Never commit personal data of the product owner or anyone else: e-mail addresses, device names, local paths containing user names, phone numbers, addresses, signing material (certificates, keys, profiles, API keys). The owner's name in LICENSE/CONTRIBUTING is accepted.
+- Exception: the app's public support address `info@slidepilotapp.com` may appear in the user docs (`site/`, `docs/legacy-user-docs/`). It belongs to the product, not to a person.
 - Exception (ADR 0014): the app's own bundle ID prefix and development team are committed in `Config/Shared.xcconfig`. They are public anyway (code signature, App Store). Never add other App IDs or team IDs.
 - Commits use the GitHub noreply address (`git config user.email` is set per repo; check it before committing in a new clone or cloud session).
 - Screenshots in PRs must not show personal data (file paths, user names, device names). Don't launch other apps.

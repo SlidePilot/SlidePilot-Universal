@@ -10,7 +10,7 @@ Of course! New ideas which improve SlidePilot are always welcome. Feel free to s
 
 ## How can I contact you?
 
-Feel free to ask questions via email to the support e-mail address (removed from this copy).
+Feel free to ask questions via email to [info@slidepilotapp.com](mailto:info@slidepilotapp.com).
 
 ## How do I install SlidePilot?
 

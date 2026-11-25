@@ -4,4 +4,4 @@ A copy of the old app's user documentation, taken from GitBook (`slidepilot.gitb
 
 **Do not update these pages.** The current user documentation is in [`site/`](../../site/) and published at docs.slidepilotapp.com.
 
-Changes against GitBook: the GitBook banner is removed, links between pages and images point to the local copies, and the support e-mail address is left out.
+Changes against GitBook: the GitBook banner is removed, and links between pages and images point to the local copies.
