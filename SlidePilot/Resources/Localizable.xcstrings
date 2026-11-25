@@ -4879,18 +4879,18 @@
         }
       }
     },
-    "To control another device from this one, choose File ▸ Control Another Device…." : {
+    "To control another device from this one, choose File ▸ Control Another Device." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle Ablage ▸ Anderes Gerät steuern …"
+            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle Ablage ▸ Anderes Gerät steuern."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour contrôler un autre appareil depuis celui-ci, choisissez Fichier ▸ Contrôler un autre appareil…."
+            "value" : "Pour contrôler un autre appareil depuis celui-ci, choisissez Fichier ▸ Contrôler un autre appareil."
           }
         }
       }
