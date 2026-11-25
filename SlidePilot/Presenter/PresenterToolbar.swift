@@ -1,3 +1,4 @@
+import SlidePilotCore
 import SwiftUI
 
 /// The presenter's toolbar items in one place, so their order and groups are fixed
@@ -8,7 +9,7 @@ import SwiftUI
 /// - Live tools: Pointer, Curtain and Draw, with the drawing tools in draw mode.
 /// - Mac: the Layout menu (arrangement, slot contents, notes mode), then Start Presentation,
 ///   always last.
-/// - iPhone, iPad: the external display status, then Layout, Import and Export, and Settings
+/// - iPhone, iPad: the external display hint (only while no display is connected), then Layout, Import and Export, and Settings
 ///   in one group at the trailing end or, in compact sizes, as the last section of the
 ///   overflow menu.
 ///
@@ -21,6 +22,9 @@ struct PresenterToolbar: ToolbarContent {
     let session: PresentationSession
     let focus: PresenterToolbarFocus
     @Binding var isSettingTimer: Bool
+    #if os(iOS)
+    @Environment(ExternalDisplayStatus.self) private var externalDisplay
+    #endif
 
     var body: some ToolbarContent {
         navigationItems
@@ -107,12 +111,15 @@ struct PresenterToolbar: ToolbarContent {
             StartPresentationButton()
         }
         #else
-        if focus.isInBar(isLessImportant: true) {
-            ToolbarSpacer(.fixed)
-        }
-        ToolbarItem(placement: focus.placement(isLessImportant: true)) {
-            // How to present on a second screen (#82); the Mac needs no hint.
-            ExternalDisplayStatusButton()
+        // How to present on a second screen (#82); the Mac needs no hint, and neither does a
+        // device that already presents on one.
+        if !externalDisplay.isConnected {
+            if focus.isInBar(isLessImportant: true) {
+                ToolbarSpacer(.fixed)
+            }
+            ToolbarItem(placement: focus.placement(isLessImportant: true)) {
+                ExternalDisplayStatusButton()
+            }
         }
         documentItems
         #endif
