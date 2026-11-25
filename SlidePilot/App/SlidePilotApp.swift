@@ -170,6 +170,10 @@ struct SlidePilotApp: App {
                 .environment(remote)
                 .environment(settings)
                 .environment(pro)
+        } overlayAccessoryView: { _ in
+            // The trial hint and the Unlock Pro action while Pro is missing (PRO-05).
+            LibraryTrialHint()
+                .environment(pro)
         }
 
         #endif

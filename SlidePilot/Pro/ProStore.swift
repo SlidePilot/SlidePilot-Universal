@@ -22,6 +22,7 @@ final class ProStore {
 
 #else
 
+import OSLog
 import StoreKit
 
 /// The Pro status of this App Store installation and the purchase of SlidePilot Pro (PRO-02,
@@ -41,11 +42,39 @@ final class ProStore {
     @ObservationIgnored private var product: Product?
     @ObservationIgnored private var updatesTask: Task<Void, Never>?
     @ObservationIgnored private var refreshTask: Task<Void, Never>?
-    @ObservationIgnored private var refreshGeneration = 0
+    @ObservationIgnored private var latestRead: Task<[ProEntitlement], Never>?
+    /// Transactions that an update reported as revoked (refunds, ended family sharing). Right
+    /// after a refund StoreKit can still list them as current entitlements.
+    @ObservationIgnored private var revokedTransactionIDs: Set<UInt64> = []
+    /// The entitlements of the newest finished read, so a revocation can lock at once.
+    @ObservationIgnored private var entitlements: [ProEntitlement] = []
+    private static let log = Logger(subsystem: "SlidePilot", category: "Pro")
 
+    #if DEBUG
+    /// Debug builds only: a status fixed without StoreKit, for the simulator (which never
+    /// answers StoreKit outside Xcode) and the Mac snapshots, so the hint, the offer and
+    /// Settings can be checked there. Set at launch with `-SlidePilotProStatus locked` (or
+    /// `unlocked`).
+    @ObservationIgnored private let fixedStatus: ProStatus?
+
+    init(bundle: Bundle = .main, fixedStatus: ProStatus? = ProStore.launchArgumentStatus) {
+        productID = ProProductID.from(infoPlistValue: bundle.object(forInfoDictionaryKey: ProProductID.infoPlistKey))
+        self.fixedStatus = fixedStatus
+        if let fixedStatus { status = fixedStatus }
+    }
+
+    static var launchArgumentStatus: ProStatus? {
+        switch UserDefaults.standard.string(forKey: "SlidePilotProStatus") {
+        case "locked": .locked
+        case "unlocked": .unlocked
+        default: nil
+        }
+    }
+    #else
     init(bundle: Bundle = .main) {
         productID = ProProductID.from(infoPlistValue: bundle.object(forInfoDictionaryKey: ProProductID.infoPlistKey))
     }
+    #endif
 
     isolated deinit {
         updatesTask?.cancel()
@@ -56,6 +85,9 @@ final class ProStore {
     /// no transaction (e.g. an approved Ask to Buy) is missed. Calling it again does nothing.
     func start() {
         guard updatesTask == nil else { return }
+        #if DEBUG
+        if fixedStatus != nil { return }
+        #endif
         // Also delivers, once after launch, the transactions an earlier launch did not finish.
         updatesTask = Task { [weak self] in
             for await update in Transaction.updates {
@@ -71,15 +103,30 @@ final class ProStore {
     /// Derives the status from StoreKit's current entitlements again. `currentEntitlements`
     /// leaves out refunded and revoked purchases; the Core rule checks the revocation as well.
     func refreshStatus() async {
-        // Overlapping checks (launch, update, purchase) finish in any order; only the one that
-        // started last may set the status, so an older answer never undoes a newer one.
-        refreshGeneration += 1
-        let generation = refreshGeneration
+        #if DEBUG
+        if fixedStatus != nil { return }
+        #endif
         // Read in a task of the store's own: a caller cancelled after a purchase (e.g. a closed
         // sheet) must not cut the list short and lock Pro again.
-        let entitlements = await Task { await Self.currentEntitlements() }.value
-        guard generation == refreshGeneration else { return }
-        status = ProStatus(entitlements: entitlements, productID: productID)
+        var read = Task { await Self.currentEntitlements() }
+        latestRead = read
+        // Overlapping checks (launch, update, purchase, restore) finish in any order; only the
+        // newest read may set the status, so an older answer never undoes a newer one. Every
+        // caller waits for that newest read, so the status is current when this returns (e.g.
+        // for Restore's "No Purchase Found").
+        while true {
+            let entitlements = await read.value
+            guard let newest = latestRead, newest != read else {
+                self.entitlements = entitlements
+                updateStatus()
+                return
+            }
+            read = newest
+        }
+    }
+
+    private func updateStatus() {
+        status = ProStatus(entitlements: entitlements, productID: productID, revokedTransactionIDs: revokedTransactionIDs)
     }
 
     private static func currentEntitlements() async -> [ProEntitlement] {
@@ -102,7 +149,18 @@ final class ProStore {
     ///   error.
     func purchase() async throws -> ProPurchaseOutcome {
         let product = try await loadProduct()
-        switch try await product.purchase() {
+        return try await complete(product.purchase())
+    }
+
+    /// Finishes a purchase that StoreKit's own views made (`ProductView`), like `purchase()`.
+    /// The offer handles their completion itself (`onInAppPurchaseCompletion`), so it passes
+    /// each result here to verify, finish and check the entitlements.
+    func completePurchase(_ result: Result<Product.PurchaseResult, any Error>) async throws -> ProPurchaseOutcome {
+        try await complete(result.get())
+    }
+
+    private func complete(_ result: Product.PurchaseResult) async throws -> ProPurchaseOutcome {
+        switch result {
         case .success(let result):
             guard case .verified(let transaction) = result else { throw ProStoreError.unverified }
             await transaction.finish()
@@ -121,6 +179,10 @@ final class ProStore {
     /// in) and checks the entitlements again. Entitlements usually arrive by themselves; this is
     /// for the user who asks for it.
     func restore() async throws {
+        #if DEBUG
+        // The simulator's StoreKit never answers outside Xcode; the button would stay disabled.
+        if fixedStatus != nil { return }
+        #endif
         try await AppStore.sync()
         await refreshStatus()
     }
@@ -137,7 +199,17 @@ final class ProStore {
     private func handle(_ update: VerificationResult<Transaction>) async {
         // Unverified updates are not finished, so StoreKit offers them again.
         if case .verified(let transaction) = update {
+            Self.log.info("Transaction update \(transaction.id) for \(transaction.productID), revoked: \(transaction.revocationDate != nil)")
+            // A refund or revocation locks with this update, without waiting for the next
+            // entitlement read, which can still list the purchase right after the refund.
+            if transaction.revocationDate != nil {
+                revokedTransactionIDs.insert(transaction.id)
+                revokedTransactionIDs.insert(transaction.originalID)
+                updateStatus()
+            }
             await transaction.finish()
+        } else {
+            Self.log.error("Unverified transaction update")
         }
         await refreshStatus()
     }
@@ -148,7 +220,8 @@ private extension ProEntitlement {
         self.init(
             productID: transaction.productID,
             ownership: transaction.ownershipType == .familyShared ? .familyShared : .purchased,
-            revocationDate: transaction.revocationDate
+            revocationDate: transaction.revocationDate,
+            transactionID: transaction.id
         )
     }
 }

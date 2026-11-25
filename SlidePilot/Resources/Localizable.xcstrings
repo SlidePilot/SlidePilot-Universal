@@ -837,6 +837,22 @@
         }
       }
     },
+    "Control and be controlled by other devices without a time limit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Zeitlimit andere Geräte steuern und dich steuern lassen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contrôler d’autres appareils et être contrôlé par eux sans limite de temps"
+          }
+        }
+      }
+    },
     "Control Another Device…" : {
       "localizations" : {
         "de" : {
@@ -2013,6 +2029,22 @@
         }
       }
     },
+    "Included in SlidePilot Pro" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In SlidePilot Pro enthalten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inclus dans SlidePilot Pro"
+          }
+        }
+      }
+    },
     "Individual" : {
       "localizations" : {
         "de" : {
@@ -2367,6 +2399,22 @@
         }
       }
     },
+    "No Purchase Found" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Kauf gefunden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun achat trouvé"
+          }
+        }
+      }
+    },
     "No Stored Data" : {
       "localizations" : {
         "de" : {
@@ -2379,6 +2427,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aucune donnée enregistrée"
+          }
+        }
+      }
+    },
+    "No trial banner on the audience screen" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kein Probeversions-Banner auf dem Publikumsbildschirm"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucune bannière d’essai sur l’écran du public"
           }
         }
       }
@@ -2644,6 +2708,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Activé"
+          }
+        }
+      }
+    },
+    "One purchase for Mac, iPad and iPhone, shared with your family." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Kauf für Mac, iPad und iPhone, mit deiner Familie geteilt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un seul achat pour Mac, iPad et iPhone, partagé avec votre famille."
           }
         }
       }
@@ -3148,6 +3228,22 @@
         }
       }
     },
+    "Present on external displays, AirPlay and presentation windows without a time limit" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Zeitlimit auf externen Bildschirmen, mit AirPlay und in Präsentationsfenstern präsentieren"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Présenter sans limite de temps sur écrans externes, via AirPlay et dans les fenêtres de présentation"
+          }
+        }
+      }
+    },
     "Presentation" : {
       "localizations" : {
         "de" : {
@@ -3208,6 +3304,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diapositive précédente"
+          }
+        }
+      }
+    },
+    "Purchase Failed" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kauf fehlgeschlagen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Échec de l’achat"
+          }
+        }
+      }
+    },
+    "Purchase Pending" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kauf ausstehend"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achat en attente"
           }
         }
       }
@@ -3416,6 +3544,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Réinitialiser le temps"
+          }
+        }
+      }
+    },
+    "Restore Purchases" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Käufe wiederherstellen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurer les achats"
           }
         }
       }
@@ -3788,6 +3932,22 @@
         }
       }
     },
+    "Shows the offer of SlidePilot Pro." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt das Angebot von SlidePilot Pro."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche l’offre de SlidePilot Pro."
+          }
+        }
+      }
+    },
     "Single Slide" : {
       "localizations" : {
         "de" : {
@@ -4043,6 +4203,70 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SlidePilot a besoin d’accéder au dossier de ce PDF pour lire « %@ »."
+          }
+        }
+      }
+    },
+    "SlidePilot Pro" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot Pro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot Pro"
+          }
+        }
+      }
+    },
+    "SlidePilot Pro cannot be bought in this build." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot Pro kann in diesem Build nicht gekauft werden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot Pro ne peut pas être acheté dans cette version."
+          }
+        }
+      }
+    },
+    "SlidePilot Pro is unlocked. Thank you!" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot Pro ist freigeschaltet. Vielen Dank!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot Pro est débloqué. Merci !"
+          }
+        }
+      }
+    },
+    "SlidePilot Pro unlocks as soon as the purchase is approved." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot Pro wird freigeschaltet, sobald der Kauf bestätigt ist."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot Pro sera débloqué dès que l’achat sera approuvé."
           }
         }
       }
@@ -4396,6 +4620,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Texte"
+          }
+        }
+      }
+    },
+    "The 3 minutes of presenting are over. Unlock SlidePilot Pro to present without a time limit." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die 3 Minuten Präsentation sind vorbei. Schalte SlidePilot Pro frei, um ohne Zeitlimit zu präsentieren."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les 3 minutes de présentation sont écoulées. Débloquez SlidePilot Pro pour présenter sans limite de temps."
+          }
+        }
+      }
+    },
+    "The 3 minutes of remote control are over. Unlock SlidePilot Pro to control without a time limit." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die 3 Minuten Fernsteuerung sind vorbei. Schalte SlidePilot Pro frei, um ohne Zeitlimit zu steuern."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les 3 minutes de contrôle à distance sont écoulées. Débloquez SlidePilot Pro pour contrôler sans limite de temps."
           }
         }
       }
@@ -4801,6 +5057,22 @@
         }
       }
     },
+    "This Apple Account has not bought SlidePilot Pro." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit diesem Apple Account wurde SlidePilot Pro nicht gekauft."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot Pro n’a pas été acheté avec ce compte Apple."
+          }
+        }
+      }
+    },
     "This PDF contains videos or links to files next to it. To play and open them, choose the folder that contains the PDF. SlidePilot remembers it for all PDFs in that folder." : {
       "comment" : "Message of the alert that asks for access to the PDF's folder",
       "localizations" : {
@@ -4994,6 +5266,74 @@
         }
       }
     },
+    "Trial Ended" : {
+      "comment" : "Title of the purchase offer's reason line when a trial is over.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probezeit beendet"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essai terminé"
+          }
+        }
+      }
+    },
+    "Trial Version" : {
+      "comment" : "Title of the purchase offer's reason line when a trial starts.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probeversion"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version d’essai"
+          }
+        }
+      }
+    },
+    "Trial Version – Presenting and remote limited to 3 minutes." : {
+      "comment" : "Trial hint at the top of the document browser; the Unlock Pro button is below the app name.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probeversion – Präsentieren und Fernsteuerung auf 3 Minuten begrenzt."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version d’essai – Présentation et contrôle à distance limités à 3 minutes."
+          }
+        }
+      }
+    },
+    "Trial Version – Presenting and remote limited to 3 minutes. %@" : {
+      "comment" : "Trial hint at the top of the presenter; the argument is the link-styled \"Unlock Pro\".",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probeversion – Präsentieren und Fernsteuerung auf 3 Minuten begrenzt. %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Version d’essai – Présentation et contrôle à distance limités à 3 minutes. %@"
+          }
+        }
+      }
+    },
     "Trusted" : {
       "localizations" : {
         "de" : {
@@ -5102,6 +5442,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Souligné"
+          }
+        }
+      }
+    },
+    "Unlock Pro" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro freischalten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Débloquer Pro"
           }
         }
       }
@@ -5281,6 +5637,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "^[%lld diapositive](inflect: true)"
+          }
+        }
+      }
+    },
+    "Without SlidePilot Pro, each remote connection lasts 3 minutes." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne SlidePilot Pro dauert jede Fernsteuerungsverbindung 3 Minuten."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans SlidePilot Pro, chaque connexion de contrôle à distance dure 3 minutes."
+          }
+        }
+      }
+    },
+    "Without SlidePilot Pro, the audience sees the slides for 3 minutes each time you start presenting." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne SlidePilot Pro sieht das Publikum die Folien bei jedem Präsentationsstart 3 Minuten lang."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans SlidePilot Pro, le public voit les diapositives pendant 3 minutes à chaque début de présentation."
           }
         }
       }

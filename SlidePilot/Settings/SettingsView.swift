@@ -23,6 +23,8 @@ struct SettingsView: View {
         TabView(selection: $selection) {
             Tab("General", systemImage: "gearshape", value: .general) {
                 SettingsPane {
+                    // The offer and Restore Purchases (PRO-05); nothing in the free download.
+                    ProSettingsSection()
                     GeneralSettingsView()
                     StoredDataSection()
                 }
@@ -40,6 +42,8 @@ struct SettingsView: View {
         #else
         NavigationStack(path: $path) {
             Form {
+                // The offer and Restore Purchases (PRO-05).
+                ProSettingsSection()
                 GeneralSettingsView()
                 Section {
                     NavigationLink(value: SettingsTab.layout) {
