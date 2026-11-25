@@ -58,7 +58,9 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
                 .modifier(slidesChrome)
                 .modifier(chrome)
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
+                    // The overflow menu: the leading edge of a compact bar belongs to Time,
+                    // Curtain and Draw (#207).
+                    ToolbarItem(placement: .secondaryAction) {
                         Button("Show Navigator", systemImage: "rectangle.grid.1x2") {
                             session.isNavigatorDisplayed = true
                         }
