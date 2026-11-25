@@ -25,7 +25,7 @@ For every parity ID touched:
 - Nothing from "Known defects – do not replicate" was reproduced.
 - Deviations are either covered by `changed`/`dropped` + ADR/decision, or flagged.
 - iPad notes from the parity row are addressed or explicitly deferred.
-- The parity doc status was updated in the diff (`done` only if everything matches).
+- The parity doc status was updated in the diff (`done` only if everything matches). An item that stays `planned` names an open issue for the rest ("Planned in #N"), not the issue this PR closes.
 - Look and feel is **not** a parity criterion (ADR 0010): a native replacement for an old custom control is correct, not a deviation.
 
 ## Output
