@@ -31,11 +31,11 @@ struct SlidePilotApp: App {
         _settings = State(initialValue: settings)
         _displayAwakeKeeper = State(initialValue: DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker()))
         _appearanceKeeper = State(initialValue: AppearanceKeeper(settings: settings, applier: AppearanceApplier()))
-        _remote = State(initialValue: RemoteService.live(settings: settings, registry: registry))
         // Listens for transactions from launch on, so none is missed (PRO-02).
         let pro = ProStore()
         pro.start()
         _pro = State(initialValue: pro)
+        _remote = State(initialValue: RemoteService.live(settings: settings, registry: registry, pro: pro))
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
         CompanionStore.cleanUpAtLaunch()

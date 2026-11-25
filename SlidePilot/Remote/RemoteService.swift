@@ -16,6 +16,9 @@ import SlidePilotRemoteProtocol
 /// (REM-04, REM-05); `RemoteHostState` decides what to send and which commands to apply.
 /// The protocol and socket I/O run in `RemoteSession` actors; this class keeps the state
 /// the UI shows and carries out the host state's actions.
+///
+/// Without Pro, being controlled is a 3-minute trial per controller (PRO-04): `hostTrials`
+/// decides which connection continues a trial and which one must close.
 @MainActor
 @Observable
 final class RemoteService {
@@ -79,6 +82,9 @@ final class RemoteService {
     private(set) var trustedDevices: [TrustedDevice] = []
     private(set) var pairingRequests: [PairingRequest] = []
     var problem: Problem?
+    /// The purchase offer that `remoteAlerts()` shows: when a controller starts a trial on
+    /// this device, and when that trial ends (PRO-04).
+    var offer: ProOfferReason?
 
     /// Hosts found by the browsers of the open remote mode windows.
     private var nearbyHosts: [NearbyHost] = []
@@ -103,8 +109,17 @@ final class RemoteService {
     @ObservationIgnored private var nextImageSequence = 0
     /// Watches the open presentations for changes the controllers need.
     @ObservationIgnored private var contentTask: Task<Void, Never>?
+    /// The trial of each controller, by device (PRO-04).
+    @ObservationIgnored private let hostTrials: RemoteTrials<InstanceID>
+    /// Applies the Pro status to the trials and ends them in time.
+    @ObservationIgnored private var trialTask: Task<Void, Never>?
+    /// Controllers whose trial ended while they were away; their next attempt shows the end.
+    @ObservationIgnored private var unannouncedTrialEnds: Set<InstanceID> = []
+    /// A trial started before StoreKit answered; the start offer shows once it is known.
+    @ObservationIgnored private var offersTrialStartWhenKnown = false
 
-    init(settings: AppSettings, identity: LocalIdentity, trustStore: any TrustStore, registry: SessionRegistry) {
+    init(settings: AppSettings, identity: LocalIdentity, trustStore: any TrustStore, registry: SessionRegistry, pro: ProStore) {
+        hostTrials = RemoteTrials(reconnects: .within(RemoteTrialBook<InstanceID>.hostReconnectGap), status: pro.status)
         self.settings = settings
         self.identity = identity
         self.trustStore = trustStore
@@ -118,10 +133,19 @@ final class RemoteService {
                 carryOut(hostState.update(presentations))
             }
         }
+        trialTask = Task { [weak self, hostTrials] in
+            async let enforced: Void = hostTrials.run { ended in self?.hostTrialsEnded(ended) }
+            for await status in Observations({ pro.status }) {
+                hostTrials.statusChanged(status)
+                self?.offerDelayedTrialStart(status)
+            }
+            await enforced
+        }
     }
 
     isolated deinit {
         contentTask?.cancel()
+        trialTask?.cancel()
         listenerTask?.cancel()
     }
 
@@ -207,6 +231,9 @@ final class RemoteService {
                 // Never advertise twice: wait until the previous listener is gone.
                 await previous?.value
                 while !Task.isCancelled {
+                    // Controllers could not reach this device until now; that pause is no
+                    // sign that the user connects again (PRO-04).
+                    self?.hostTrials.becameReachable()
                     try? await RemoteNetwork.listen(as: identity) { @MainActor connection in
                         await self?.serveController(over: connection)
                     }
@@ -242,6 +269,11 @@ final class RemoteService {
         async let delivered: Void = deliver(queue, over: session, token: token)
         var peer: PeerIdentity?
         var hasShownCode = false
+        /// The controller whose trial this connection counts for.
+        var admittedController: InstanceID?
+        defer {
+            if let admittedController { hostTrials.connectionClosed(by: admittedController) }
+        }
         for await event in session.events {
             switch event {
             case .peerIdentified(let identified):
@@ -267,6 +299,26 @@ final class RemoteService {
                     await session.close()
                     continue
                 }
+                switch hostTrials.connectionOpened(by: verified.instanceID) {
+                case .refused:
+                    // Its trial ended; the controller's retries must not start a new one.
+                    if unannouncedTrialEnds.remove(verified.instanceID) != nil {
+                        offer = .trialEnded(.remoteControl)
+                    }
+                    await session.close()
+                    continue
+                case .newTrial:
+                    unannouncedTrialEnds.remove(verified.instanceID)
+                    let status = hostTrials.book.status
+                    if status.showsTrialHint {
+                        offer = .remoteControlStarted
+                    } else if status == .unknown {
+                        offersTrialStartWhenKnown = true
+                    }
+                case .continued, .unlimited:
+                    break
+                }
+                admittedController = verified.instanceID
                 connectedControllers[token] = verified
                 carryOut(hostState.controllerVerified(token))
             case .message(let message):
@@ -307,6 +359,33 @@ final class RemoteService {
     private func endHosting(_ token: SessionToken) {
         latestImages[token] = nil
         carryOut(hostState.controllerLeft(token))
+    }
+
+    /// Closes the connections of controllers whose trial ended and shows the offer (PRO-04).
+    private func hostTrialsEnded(_ ended: [InstanceID]) {
+        let tokens = connectedControllers.filter { ended.contains($0.value.instanceID) }.map(\.key)
+        // A controller that is away when its trial ends learns it when it comes back.
+        let connected = Set(tokens.compactMap { connectedControllers[$0]?.instanceID })
+        unannouncedTrialEnds.formUnion(ended.filter { !connected.contains($0) })
+        guard !tokens.isEmpty else { return }
+        for token in tokens {
+            // No more content or commands, also for messages already received.
+            endHosting(token)
+            connectedControllers[token] = nil
+            if let session = hostSessions[token] {
+                Task { await session.close() }
+            }
+        }
+        offer = .trialEnded(.remoteControl)
+    }
+
+    /// Shows the start offer that waited for the Pro status, if a controller is still there.
+    private func offerDelayedTrialStart(_ status: ProStatus) {
+        guard offersTrialStartWhenKnown, status != .unknown else { return }
+        offersTrialStartWhenKnown = false
+        if status.showsTrialHint, !connectedControllers.isEmpty, offer == nil {
+            offer = .remoteControlStarted
+        }
     }
 
     /// Sends one controller's queue in order. Images are rendered here, so a status never

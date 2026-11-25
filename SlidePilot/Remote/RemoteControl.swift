@@ -2,6 +2,7 @@ import CoreGraphics
 import Foundation
 import ImageIO
 import Observation
+import SlidePilotCore
 import SlidePilotRemoteProtocol
 import SwiftUI
 
@@ -11,6 +12,9 @@ import SwiftUI
 /// The protocol runs in a `ControllerSession` actor; `RemoteControllerState` decides what
 /// to send. While the window is open, a lost connection is retried, so the controller
 /// reconnects when both apps are active again (REM-02).
+///
+/// Without Pro, each connection the user starts is a 3-minute trial (PRO-04); the retries
+/// continue it, and when it ends remote mode goes back to the device list with the offer.
 @MainActor
 @Observable
 final class RemoteControl {
@@ -57,8 +61,13 @@ final class RemoteControl {
     /// The notes text of the current slide.
     private(set) var notes: AttributedString?
     var ending: Ending?
+    /// The purchase offer to show: when remote mode starts and when a trial ends (PRO-04).
+    var offer: ProOfferReason?
 
     @ObservationIgnored private let remote: RemoteService
+    /// The trial of each device this window connects to; `connect(to:)` starts it over.
+    @ObservationIgnored private let trials: RemoteTrials<InstanceID>
+    @ObservationIgnored private var hasOfferedPro = false
     /// Changes with every `connect` and `disconnect`; the window restarts `keepConnected()`
     /// for it, so the connection lives exactly as long as the window and its device choice.
     private(set) var connectionID = UUID()
@@ -70,8 +79,10 @@ final class RemoteControl {
     /// Tells the newest decoded images from older ones that finish later.
     @ObservationIgnored private var imageSequence = 0
 
-    init(remote: RemoteService) {
+    init(remote: RemoteService, proStatus: ProStatus) {
         self.remote = remote
+        trials = RemoteTrials(reconnects: .untilStartedOver, status: proStatus)
+        proStatusChanged(proStatus)
     }
 
     isolated deinit {
@@ -109,6 +120,8 @@ final class RemoteControl {
     /// Connects to a trusted nearby device; pairs first if the device asks for it.
     func connect(to device: RemoteService.Device) {
         disconnect()
+        // Connecting again starts a new trial; the retries of `keepConnected()` do not.
+        trials.startOver(with: device.id)
         deviceID = device.id
         deviceName = device.name
         connection = .connecting
@@ -179,6 +192,8 @@ final class RemoteControl {
 
         var end = SessionEnd.retry
         var wasVerified = false
+        /// The device whose trial this connection counts for.
+        var admittedDevice: InstanceID?
         var hasShownCode = false
         for await event in session.events {
             // Events still buffered when the user went back or picked another device
@@ -203,6 +218,15 @@ final class RemoteControl {
             case .paired:
                 remote.trustDidChange()
             case .verified:
+                guard let id = deviceID else { break }
+                if trials.connectionOpened(by: id) == .refused {
+                    // Its trial ended while this connection was set up.
+                    offer = .trialEnded(.remoteControl)
+                    end = .stop
+                    await session.close()
+                    continue
+                }
+                admittedDevice = id
                 wasVerified = true
                 outgoing = continuation
                 outgoingOwner = owner
@@ -222,6 +246,11 @@ final class RemoteControl {
             outgoing = nil
             outgoingOwner = nil
         }
+        // A cancelled connection was replaced by `connect` or `disconnect`; a new trial's
+        // record must not count its close.
+        if let admittedDevice, !Task.isCancelled {
+            trials.connectionClosed(by: admittedDevice)
+        }
         continuation.finish()
         await sent
         let error = await result
@@ -240,6 +269,27 @@ final class RemoteControl {
             return nil
         } catch {
             return error
+        }
+    }
+
+    // MARK: - Trial
+
+    /// Applies the Pro status; offers Pro once per remote mode window, when it starts.
+    func proStatusChanged(_ status: ProStatus) {
+        trials.statusChanged(status)
+        if !hasOfferedPro, status.showsTrialHint {
+            hasOfferedPro = true
+            offer = .remoteControlStarted
+        }
+    }
+
+    /// Ends the connection when its trial is over, until the calling task is cancelled. The
+    /// window runs it for as long as it is open.
+    func enforceTrials() async {
+        await trials.run { ended in
+            guard let deviceID, ended.contains(deviceID) else { return }
+            disconnect()
+            offer = .trialEnded(.remoteControl)
         }
     }
 
