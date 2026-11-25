@@ -70,18 +70,28 @@ private struct PresenterTimerModifier: ViewModifier {
     }
 }
 
-/// The Time button in the presenter's toolbar (TIME-02 to TIME-04; product-owner decision
-/// 2026-11-25, #189): a click or tap starts or stops the time, its menu resets it and sets or
+/// The Time controls in the presenter's toolbar (TIME-02 to TIME-04; product-owner decision
+/// 2026-11-25, #189): a click or tap starts or stops the time, a menu resets it and sets or
 /// turns off the timer. The clock above the slides shows whether the timer is on.
 ///
-/// In compact sizes (iPhone, a narrow iPad window) it is a plain Time menu with Start/Stop as
-/// its first item, the same in the bar and in the overflow menu (same decision).
+/// - Mac: one split button, Start/Stop on the left, the menu behind the chevron.
+/// - iPad: the same as two buttons, `TimeStartStopButton` and this menu with the chevron, since
+///   a long press is hard to discover (same decision).
+/// - Compact sizes (iPhone, a narrow iPad window): a plain Time menu with Start/Stop as its
+///   first item, the same in the bar and in the overflow menu, which drops a primary action.
 struct TimeToolbarMenu: View {
+    enum Style {
+        /// Start/Stop as the primary action (Mac).
+        case split
+        /// Only the menu, behind a chevron, next to `TimeStartStopButton` (iPad).
+        case options
+        /// A Time menu with Start/Stop as its first item (compact sizes).
+        case compact
+    }
+
     let session: PresentationSession
     @Binding var isSettingTimer: Bool
-    /// A compact bar: the system moves the item into the overflow menu when space runs out,
-    /// where it drops a primary action, so the menu is the same everywhere.
-    var isCompact = false
+    let style: Style
 
     var body: some View {
         let isRunning = session.timer.isRunning
@@ -89,24 +99,30 @@ struct TimeToolbarMenu: View {
         // body's observation, so a timer set later left Turn Off Timer disabled (iOS).
         let hasTimer = session.timer.mode == .timer
         Group {
-            if isCompact {
+            switch style {
+            case .split:
+                Menu {
+                    items(isRunning: isRunning, hasTimer: hasTimer)
+                } label: {
+                    TimeStartStopButton.label(isRunning: isRunning)
+                } primaryAction: {
+                    session.timer.toggle()
+                }
+                .help(TimeStartStopButton.help(isRunning: isRunning))
+            case .options:
+                Menu {
+                    items(isRunning: isRunning, hasTimer: hasTimer)
+                } label: {
+                    // The chevron of the Mac's split button; VoiceOver reads "Time".
+                    Label("Time", systemImage: "chevron.down")
+                }
+                .help(Text("Time"))
+            case .compact:
                 Menu {
                     items(isRunning: isRunning, hasTimer: hasTimer)
                 } label: {
                     Label("Time", systemImage: "stopwatch")
                 }
-            } else {
-                Menu {
-                    items(isRunning: isRunning, hasTimer: hasTimer)
-                } label: {
-                    Label(
-                        isRunning ? "Stop Time" : "Start Time",
-                        systemImage: isRunning ? "pause.fill" : "play.fill"
-                    )
-                } primaryAction: {
-                    session.timer.toggle()
-                }
-                .help(isRunning ? Text("Stop Time") : Text("Start Time"))
             }
         }
         // The Mac builds the toolbar menu once and keeps the items' enabled state; a new
@@ -115,12 +131,11 @@ struct TimeToolbarMenu: View {
     }
 
     @ViewBuilder private func items(isRunning: Bool, hasTimer: Bool) -> some View {
-        if Self.listsStartStop || isCompact {
-            Button(
-                isRunning ? "Stop Time" : "Start Time",
-                systemImage: isRunning ? "pause.fill" : "play.fill"
-            ) {
+        if style == .compact {
+            Button {
                 session.timer.toggle()
+            } label: {
+                TimeStartStopButton.label(isRunning: isRunning)
             }
             Divider()
         }
@@ -137,14 +152,32 @@ struct TimeToolbarMenu: View {
         }
         .disabled(!hasTimer)
     }
+}
 
-    #if os(iOS)
-    /// A long press opens the menu on the iPad too; Start/Stop is listed there as well, so
-    /// the menu offers every time command wherever it is opened.
-    private static let listsStartStop = true
-    #else
-    private static let listsStartStop = false
-    #endif
+/// Starts or stops the time (TIME-02), left of `TimeToolbarMenu` on the iPad.
+struct TimeStartStopButton: View {
+    let session: PresentationSession
+
+    var body: some View {
+        let isRunning = session.timer.isRunning
+        Button {
+            session.timer.toggle()
+        } label: {
+            Self.label(isRunning: isRunning)
+        }
+        .help(Self.help(isRunning: isRunning))
+    }
+
+    static func label(isRunning: Bool) -> Label<Text, Image> {
+        Label(
+            isRunning ? "Stop Time" : "Start Time",
+            systemImage: isRunning ? "pause.fill" : "play.fill"
+        )
+    }
+
+    static func help(isRunning: Bool) -> Text {
+        isRunning ? Text("Stop Time") : Text("Start Time")
+    }
 }
 
 /// Back to the stopwatch (TIME-04, changed), in the Moderator menu.

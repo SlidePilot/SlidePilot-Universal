@@ -6,7 +6,7 @@ import SwiftUI
 /// - Navigation: the sidebar button and Go Back.
 /// - View: the Layout menu (arrangement, slot contents, notes mode), hidden in draw mode
 ///   (DRAW-05).
-/// - Time: start or stop with a click, more in its menu.
+/// - Time: start or stop with a click, more in its menu (`TimeToolbarMenu`).
 /// - Live tools: Pointer, Curtain and Draw, with the drawing tools in draw mode.
 /// - Output: Start Presentation (Mac, always last) or the external display status (iPhone,
 ///   iPad).
@@ -42,9 +42,7 @@ struct PresenterToolbar: ToolbarContent {
             }
         }
 
-        ToolbarItem(placement: focus.placement()) {
-            TimeToolbarMenu(session: session, isSettingTimer: $isSettingTimer, isCompact: focus != .none)
-        }
+        timeItems
         if focus.isInBar() {
             ToolbarSpacer(.fixed)
         }
@@ -79,6 +77,28 @@ struct PresenterToolbar: ToolbarContent {
         ToolbarItem(placement: focus.placement(Self.goBackPlacement, isLessImportant: true)) {
             GoBackButton(session: session)
         }
+    }
+
+    @ToolbarContentBuilder private var timeItems: some ToolbarContent {
+        #if os(macOS)
+        ToolbarItem(placement: focus.placement()) {
+            TimeToolbarMenu(session: session, isSettingTimer: $isSettingTimer, style: .split)
+        }
+        #else
+        if focus == .none {
+            // Two items in one glass capsule, like the Mac's split button (#189).
+            ToolbarItem {
+                TimeStartStopButton(session: session)
+            }
+            ToolbarItem {
+                TimeToolbarMenu(session: session, isSettingTimer: $isSettingTimer, style: .options)
+            }
+        } else {
+            ToolbarItem(placement: focus.placement()) {
+                TimeToolbarMenu(session: session, isSettingTimer: $isSettingTimer, style: .compact)
+            }
+        }
+        #endif
     }
 
     @ToolbarContentBuilder private var outputItems: some ToolbarContent {
