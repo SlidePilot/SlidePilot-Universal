@@ -36,8 +36,15 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: site/package-lock.json
+      - name: Generate lockfile (temporary)
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          echo LOCKFILE-BEGIN
+          gzip -9c package-lock.json | base64 -w0
+          echo
+          echo LOCKFILE-END
+          npm ci --ignore-scripts=false
+          npx astro build
       - name: Install dependencies
         run: npm ci
       - name: Build with Astro
