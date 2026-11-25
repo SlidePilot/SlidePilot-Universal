@@ -81,7 +81,8 @@ struct MacSnapshots {
         let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
         let session = PresentationSession(data: document.data, info: document.info, page: 1, layoutStore: InMemoryPresenterLayoutStore())
         session.curtain = .white
-        let presenter = PresenterLayoutView(session: session).presenterCurtain(session)
+        let presenter = PresenterLayoutView(session: session)
+            .toolbar { PresenterToolbar(session: session, focus: .none, isSettingTimer: .constant(false)) }
         try await WindowSnapshot.record(presenter, name: "curtain-presenter", size: CGSize(width: 1200, height: 700), appearance: appearance)
         try await WindowSnapshot.record(PresentationView(session: session).environment(AppSettings(store: InMemorySettingsStore())), name: "curtain-presentation", size: CGSize(width: 960, height: 600), appearance: appearance)
     }

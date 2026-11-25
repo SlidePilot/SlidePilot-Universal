@@ -1,19 +1,38 @@
 import SwiftUI
 
-/// The task the presenter's toolbar is focused on. In compact sizes (a phone, a narrow iPad
-/// window) the bar has room for a few items only: while the notes are edited or the presenter
-/// draws, the other presenter items move to the overflow menu, so Done and the drawing tools
-/// stay in the bar (#152). Regular sizes and the Mac keep every item in place; their bar has
-/// room for the drawing tools.
+/// How much room the presenter's toolbar has and which task it is focused on. In compact
+/// sizes (a phone, a narrow iPad window) the bar has room for a few items only: the less
+/// important items (Go Back, Layout, Pointer, the external display status) live in the
+/// overflow menu, and while the notes are edited or the presenter draws, every other item
+/// moves there too, so Done and the drawing tools stay in the bar (#152, #189). Regular sizes
+/// and the Mac keep every item in place.
 enum PresenterToolbarFocus {
+    /// Regular size: every item in the bar.
     case none
+    /// Compact size without a focused task: the less important items in the overflow menu.
+    case compact
     case notes
     case drawing
 
     /// Where an item that is not part of the focused task goes: its usual `placement`, or
-    /// the overflow menu while a task is focused.
-    func placement(_ placement: ToolbarItemPlacement = .automatic) -> ToolbarItemPlacement {
-        self == .none ? placement : .secondaryAction
+    /// the overflow menu while a task is focused or, for a less important item, while the
+    /// bar is compact.
+    func placement(_ placement: ToolbarItemPlacement = .automatic, isLessImportant: Bool = false) -> ToolbarItemPlacement {
+        switch self {
+        case .none: placement
+        case .compact: isLessImportant ? .secondaryAction : placement
+        case .notes, .drawing: .secondaryAction
+        }
+    }
+
+    /// Whether an item keeps its own place in the bar, so a group separator next to it makes
+    /// sense.
+    func isInBar(isLessImportant: Bool = false) -> Bool {
+        switch self {
+        case .none: true
+        case .compact: !isLessImportant
+        case .notes, .drawing: false
+        }
     }
 }
 
@@ -58,7 +77,9 @@ private struct PresenterToolbarFocusModifier: ViewModifier {
         guard horizontalSizeClass == .compact || verticalSizeClass == .compact else { return .none }
         if session.drawing.isActive { return .drawing }
         if session.notes.isEditing { return .notes }
-        #endif
+        return .compact
+        #else
         return .none
+        #endif
     }
 }

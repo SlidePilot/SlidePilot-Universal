@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Black Screen (B) and White Screen (W) in the Presentation menu (CUR-01). The old app's
 /// hidden "." alternate for the black screen is a key press of the presenter and the
-/// presentation, see `presenterCurtain(_:)`.
+/// presentation, see `blackCurtainKey(_:)`.
 struct CurtainMenuItems: View {
     @FocusedValue(\.slideNavigation) private var session
     // `nil` while the Set Timer sheet is open, so typing B or W there does not toggle the

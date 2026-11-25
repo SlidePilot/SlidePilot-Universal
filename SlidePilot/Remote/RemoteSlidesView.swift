@@ -11,6 +11,8 @@ struct RemoteSlidesView: View {
     @Environment(AppSettings.self) private var settings
     let control: RemoteControl
     @FocusState private var hasKeyboardFocus: Bool
+    /// The host's curtain and the color the Curtain button shows next (CUR-01).
+    @State private var curtainState = CurtainState()
 
     private static let previousKeys: Set<KeyEquivalent> = [.leftArrow, .upArrow, .pageUp]
     private static let nextKeys: Set<KeyEquivalent> = [.rightArrow, .downArrow, .pageDown]
@@ -79,6 +81,9 @@ struct RemoteSlidesView: View {
             }
         }
         .disabled(control.connection != .connected)
+        .onChange(of: curtain, initial: true) { _, newCurtain in
+            curtainState.shown = Curtain(newCurtain)
+        }
         // Clickers and keyboards: the presenter's keys (NAV-01) and B, W and "." for the
         // curtain (CUR-01).
         .focusable()
@@ -107,45 +112,31 @@ struct RemoteSlidesView: View {
 
     private var curtain: RemoteCurtain { control.state.status?.curtain ?? .none }
 
-    /// One tap opens the choices, one more picks off, black or white (REM-07).
+    /// Like the presenter's Curtain button (CUR-01, REM-07; product-owner decision
+    /// 2026-11-25, #189): a tap shows the curtain in the color shown last or hides it, the
+    /// menu picks black or white. The color shown last is the one the host reported last,
+    /// so a color chosen on the host counts too.
     private var curtainMenu: some View {
         Menu {
-            Picker("Curtain", selection: curtainBinding) {
-                Label("Off", systemImage: "rectangle.dashed")
-                    .tag(RemoteCurtain.none)
-                Label("Black Screen", systemImage: "rectangle.fill")
-                    .tag(RemoteCurtain.black)
-                Label("White Screen", systemImage: "rectangle")
-                    .tag(RemoteCurtain.white)
-            }
-            .pickerStyle(.inline)
+            curtainToggle(.black, title: "Black Screen")
+            curtainToggle(.white, title: "White Screen")
         } label: {
-            Label("Curtain", systemImage: curtainSymbol)
+            Label("Curtain", systemImage: curtainState.color.curtainSymbol)
+        } primaryAction: {
+            control.perform(.setCurtain(RemoteCurtain(curtainState.toggled)))
         }
-        .accessibilityValue(curtainDescription)
+        .help(curtainState.helpText)
+        .accessibilityHint(curtainState.helpText)
+        .accessibilityValue(curtainState.accessibilityValue)
     }
 
-    private var curtainSymbol: String {
-        switch curtain {
-        case .none: "rectangle.dashed"
-        case .black: "rectangle.fill"
-        case .white: "rectangle"
-        }
-    }
-
-    private var curtainDescription: Text {
-        switch curtain {
-        case .none: Text("Off")
-        case .black: Text("Black Screen")
-        case .white: Text("White Screen")
-        }
-    }
-
-    private var curtainBinding: Binding<RemoteCurtain> {
-        Binding {
-            curtain
-        } set: { newCurtain in
-            control.perform(.setCurtain(newCurtain))
+    private func curtainToggle(_ color: Curtain, title: LocalizedStringKey) -> some View {
+        Toggle(isOn: Binding {
+            curtainState.shown == color
+        } set: { isOn in
+            control.perform(.setCurtain(RemoteCurtain(isOn ? color : .none)))
+        }) {
+            Label(title, systemImage: color.curtainSymbol)
         }
     }
 

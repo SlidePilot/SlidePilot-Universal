@@ -145,7 +145,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zugriff zum Abspielen erlauben …"
+            "value" : "Zugriff zum Abspielen erlauben …"
           }
         },
         "fr" : {
@@ -178,7 +178,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zugriff erlauben …"
+            "value" : "Zugriff erlauben …"
           }
         },
         "fr" : {
@@ -613,7 +613,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PDF auswählen …"
+            "value" : "PDF auswählen …"
           }
         },
         "fr" : {
@@ -824,7 +824,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verbinden …"
+            "value" : "Verbinden …"
           }
         },
         "fr" : {
@@ -856,7 +856,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anderes Gerät steuern …"
+            "value" : "Anderes Gerät steuern …"
           }
         },
         "fr" : {
@@ -1144,7 +1144,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nicht gefundene löschen …"
+            "value" : "Nicht gefundene löschen …"
           }
         },
         "fr" : {
@@ -1266,7 +1266,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Löschen …"
+            "value" : "Löschen …"
           }
         },
         "fr" : {
@@ -1564,7 +1564,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Layout bearbeiten …"
+            "value" : "Layout bearbeiten …"
           }
         },
         "fr" : {
@@ -1580,7 +1580,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeiger bearbeiten …"
+            "value" : "Zeiger bearbeiten …"
           }
         },
         "fr" : {
@@ -1629,7 +1629,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeichnungen exportieren …"
+            "value" : "Zeichnungen exportieren …"
           }
         },
         "fr" : {
@@ -1645,7 +1645,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notizen exportieren …"
+            "value" : "Notizen exportieren …"
           }
         },
         "fr" : {
@@ -1661,7 +1661,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SlidePilot-Datei exportieren …"
+            "value" : "SlidePilot-Datei exportieren …"
           }
         },
         "fr" : {
@@ -1693,7 +1693,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Exportieren …"
+            "value" : "Exportieren …"
           }
         },
         "fr" : {
@@ -1967,7 +1967,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notizen importieren …"
+            "value" : "Notizen importieren …"
           }
         },
         "fr" : {
@@ -1983,7 +1983,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SlidePilot-Datei importieren …"
+            "value" : "SlidePilot-Datei importieren …"
           }
         },
         "fr" : {
@@ -2193,7 +2193,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Liste …"
+            "value" : "Liste …"
           }
         },
         "fr" : {
@@ -3248,7 +3248,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verbindung wird wiederhergestellt …"
+            "value" : "Verbindung wird wiederhergestellt …"
           }
         },
         "fr" : {
@@ -3568,7 +3568,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timer stellen …"
+            "value" : "Timer stellen …"
           }
         },
         "fr" : {
@@ -3600,7 +3600,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Einstellungen …"
+            "value" : "Einstellungen …"
           }
         },
         "fr" : {
@@ -3767,6 +3767,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Afficher le navigateur de diapositives"
+          }
+        }
+      }
+    },
+    "Show the slides again" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folien wieder zeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher à nouveau les diapositives"
           }
         }
       }
@@ -4001,7 +4017,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SlidePilot hat neben diesem PDF die Notizdatei „%@“ gefunden. Erlaube SlidePilot, den Ordner des PDFs zu lesen, um sie zu importieren. Das ist nur einmal pro Ordner nötig. „Notizen importieren …“ bleibt verfügbar."
+            "value" : "SlidePilot hat neben diesem PDF die Notizdatei „%@“ gefunden. Erlaube SlidePilot, den Ordner des PDFs zu lesen, um sie zu importieren. Das ist nur einmal pro Ordner nötig. „Notizen importieren …“ bleibt verfügbar."
           }
         },
         "fr" : {
@@ -4115,7 +4131,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abstand …"
+            "value" : "Abstand …"
           }
         },
         "fr" : {
@@ -4291,7 +4307,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gespeicherte Dokumentdaten …"
+            "value" : "Gespeicherte Dokumentdaten …"
           }
         },
         "fr" : {
@@ -4881,6 +4897,22 @@
         }
       }
     },
+    "Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temps"
+          }
+        }
+      }
+    },
     "Timer" : {
       "localizations" : {
         "de" : {
@@ -4902,7 +4934,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle Ablage ▸ Anderes Gerät steuern …"
+            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle Ablage ▸ Anderes Gerät steuern …"
           }
         },
         "fr" : {
@@ -4918,7 +4950,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle „Anderes Gerät steuern …“ im Dokument-Browser."
+            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle „Anderes Gerät steuern …“ im Dokument-Browser."
           }
         },
         "fr" : {
@@ -4934,7 +4966,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um die Notizen, Zeichnungen und Einstellungen eines PDFs zu behalten, wähle vor dem Löschen „Exportieren …“ im Kontextmenü."
+            "value" : "Um die Notizen, Zeichnungen und Einstellungen eines PDFs zu behalten, wähle vor dem Löschen „Exportieren …“ im Kontextmenü."
           }
         },
         "fr" : {
@@ -5030,7 +5062,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vertrauenswürdige Geräte …"
+            "value" : "Vertrauenswürdige Geräte …"
           }
         },
         "fr" : {
@@ -5520,6 +5552,102 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Temps restant à partir duquel le minuteur change de couleur. Uniquement en mode minuteur, pas pour le chronomètre."
+          }
+        }
+      }
+    },
+    "Hide Navigator" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navigator ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer le navigateur"
+          }
+        }
+      }
+    },
+    "Hide the slide navigator" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folien-Navigator ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer le navigateur de diapositives"
+          }
+        }
+      }
+    },
+    "Curtain Color" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorhangfarbe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleur du rideau"
+          }
+        }
+      }
+    },
+    "Undo" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Widerrufen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuler"
+          }
+        }
+      }
+    },
+    "Redo" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiederholen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rétablir"
+          }
+        }
+      }
+    },
+    "Hide the curtain and show the slides" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorhang ausblenden und Folien zeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer le rideau et afficher les diapositives"
           }
         }
       }

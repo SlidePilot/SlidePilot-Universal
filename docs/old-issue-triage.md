@@ -25,7 +25,7 @@ Before the 2.0 release, every open issue of [SlidePilot-macOS](https://github.co
 | [74](https://github.com/SlidePilot/SlidePilot-macOS/issues/74) | Keyboard back to the slides after Return in the navigator | Request | Not at all: the page field keeps the keyboard after Return, like in the old app; ⌃⌘←/→ change slides meanwhile (NAV-02) and Esc closes the navigator | – |
 | [75](https://github.com/SlidePilot/SlidePilot-macOS/issues/75) | Navigate by PDF outline | Request | 2.1 | [#170](https://github.com/SlidePilot/SlidePilot-Universal/issues/170) |
 | [76](https://github.com/SlidePilot/SlidePilot-macOS/issues/76) | Resize the navigator | Solved by the rewrite | The navigator is a resizable sidebar (LAY-06) | – |
-| [77](https://github.com/SlidePilot/SlidePilot-macOS/issues/77) | Timer controls by double click and right click | Solved by the rewrite | Timer toggle, Set Timer and Start/Stop in the toolbar (TIME-02 to TIME-04) | – |
+| [77](https://github.com/SlidePilot/SlidePilot-macOS/issues/77) | Timer controls by double click and right click | Solved by the rewrite | Start/Stop, Set Timer and Turn Off Timer in the toolbar's Time button (TIME-02 to TIME-04) | – |
 | [78](https://github.com/SlidePilot/SlidePilot-macOS/issues/78) | Toolbar | Solved by the rewrite | Same as 64 | – |
 | [80](https://github.com/SlidePilot/SlidePilot-macOS/issues/80) | Change slides with a mouse or trackpad swipe (Mac) | Request | 2.1 | [#174](https://github.com/SlidePilot/SlidePilot-Universal/issues/174) |
 | [83](https://github.com/SlidePilot/SlidePilot-macOS/issues/83) | One note for all build steps of a frame | Request | 2.1 | [#168](https://github.com/SlidePilot/SlidePilot-Universal/issues/168) |

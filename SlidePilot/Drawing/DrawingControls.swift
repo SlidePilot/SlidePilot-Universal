@@ -73,11 +73,6 @@ struct DrawingMenuItems: View {
 }
 
 extension View {
-    /// The Draw button, and in draw mode the drawing tools in the window's toolbar (DRAW-03).
-    func drawingControls(_ session: PresentationSession) -> some View {
-        modifier(DrawingControlsModifier(session: session))
-    }
-
     /// Esc leaves draw mode (DRAW-01). Apply it outside the view that takes the keyboard.
     func drawingEscapeKey(_ session: PresentationSession) -> some View {
         onKeyPress(.escape) {
@@ -88,44 +83,65 @@ extension View {
     }
 }
 
-private struct DrawingControlsModifier: ViewModifier {
-    let session: PresentationSession
-    @Environment(\.presenterToolbarFocus) private var focus
-
-    func body(content: Content) -> some View {
-        content
-            .toolbar {
-                // The drawing tools are the focused task's own items while drawing; while
-                // the notes are edited in a compact bar, Draw makes room for Done (#152).
-                DrawingToolbar(session: session, placement: focus == .notes ? focus.placement() : .automatic)
-            }
-    }
-}
-
-/// Draw, and in draw mode color, Clear and the white canvas (DRAW-03, DRAW-04). Draw is a
-/// toggle that stays in place and ends draw mode too, so the tools need no Done button,
-/// which the full iPad toolbar would push into its overflow menu.
-private struct DrawingToolbar: ToolbarContent {
+/// Draw, and in draw mode color, Undo and Redo (iOS, DRAW-08), Clear and the white canvas
+/// (DRAW-03, DRAW-04), in the
+/// presenter's toolbar (`PresenterToolbar`). Draw is a toggle that stays in place and ends
+/// draw mode too, so the tools need no Done button, which the full iPad toolbar would push
+/// into its overflow menu.
+struct DrawingToolbar: ToolbarContent {
     let session: PresentationSession
     let placement: ToolbarItemPlacement
 
     private var model: DrawingModel { session.drawing }
 
     var body: some ToolbarContent {
-        ToolbarItemGroup(placement: placement) {
-            Toggle("Draw", systemImage: "pencil.tip.crop.circle", isOn: isDrawing)
-                .help(model.isActive ? Text("Stop drawing") : Text("Draw on the current slide"))
-            if model.isActive {
-                ColorButton(model: model)
-                Button("Clear Drawings", systemImage: "eraser") {
-                    model.clear(page: session.currentPage)
-                }
-                .help(Text("Remove all strokes from the slide"))
-                // One toggle instead of a segmented picker: on iPad a segmented control
-                // looks like a second toolbar inside the toolbar.
-                Toggle("White Canvas", systemImage: "square.dashed", isOn: isWhiteCanvas)
-                    .help(Text("White Canvas"))
+        #if os(macOS)
+        // One item, not an item group: the Mac gives the active Draw toggle and the color
+        // swatch capsules of their own, and Draw, Color, Clear and White Canvas belong in
+        // one group (product-owner decision 2026-11-25, #189).
+        ToolbarItem(placement: placement) {
+            HStack {
+                tools
             }
+            .toggleStyle(.button)
+            .labelStyle(.iconOnly)
+        }
+        #else
+        // An item group: iOS drops a custom item from a full bar instead of moving it into
+        // the overflow menu, so the tools stay separate items there.
+        ToolbarItemGroup(placement: placement) {
+            tools
+        }
+        #endif
+    }
+
+    @ViewBuilder private var tools: some View {
+        Toggle("Draw", systemImage: "pencil.tip.crop.circle", isOn: isDrawing)
+            .help(model.isActive ? Text("Stop drawing") : Text("Draw on the current slide"))
+        if model.isActive {
+            ColorButton(model: model)
+            #if os(iOS)
+            // A keyboard is not always attached to an iPad or iPhone (product-owner
+            // decision 2026-11-25, #189); the Mac has Edit ▸ Undo and ⌘Z.
+            Button("Undo", systemImage: "arrow.uturn.backward") {
+                model.undo()
+            }
+            .disabled(!model.canUndo)
+            .help(Text("Undo"))
+            Button("Redo", systemImage: "arrow.uturn.forward") {
+                model.redo()
+            }
+            .disabled(!model.canRedo)
+            .help(Text("Redo"))
+            #endif
+            Button("Clear Drawings", systemImage: "eraser") {
+                model.clear(page: session.currentPage)
+            }
+            .help(Text("Remove all strokes from the slide"))
+            // One toggle instead of a segmented picker: on iPad a segmented control
+            // looks like a second toolbar inside the toolbar.
+            Toggle("White Canvas", systemImage: "square.dashed", isOn: isWhiteCanvas)
+                .help(Text("White Canvas"))
         }
     }
 

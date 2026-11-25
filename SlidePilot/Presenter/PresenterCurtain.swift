@@ -2,12 +2,6 @@ import SlidePilotCore
 import SwiftUI
 
 extension View {
-    /// The curtain's toolbar buttons and "Screen is hidden" warning in the presenter
-    /// (CUR-01, CUR-02), and the "." key.
-    func presenterCurtain(_ session: PresentationSession) -> some View {
-        modifier(PresenterCurtainModifier(session: session))
-    }
-
     /// The old app's hidden "." shortcut for the black screen (CUR-01); presentation
     /// clickers send it. A key press instead of a menu item, since SwiftUI cannot hide a
     /// menu item and keep its shortcut. Must wrap `slideNavigationKeys(_:)`, which holds
@@ -23,52 +17,125 @@ extension View {
     }
 }
 
-private struct PresenterCurtainModifier: ViewModifier {
+/// The Curtain button in the presenter's toolbar (CUR-01; product-owner decision
+/// 2026-11-25, #189): a click or tap shows the curtain in the color shown last, black until
+/// white is chosen, or hides it.
+///
+/// Its menu differs per platform (same decision): on iPad and iPhone it shows or hides
+/// black or white. On the Mac the split button's two halves split the jobs: the left one
+/// shows and hides, the menu only picks the color, with a checkmark on the current one.
+struct CurtainToolbarMenu: View {
     let session: PresentationSession
-    @Environment(\.presenterToolbarFocus) private var focus
 
-    func body(content: Content) -> some View {
-        content
-            .toolbar {
-                if session.curtain.isShown {
-                    ToolbarItem(placement: Self.warningPlacement) {
-                        HiddenScreenWarning()
-                    }
-                    // A status, not a button: no glass capsule around it.
-                    .sharedBackgroundVisibility(.hidden)
-                }
-                ToolbarItemGroup(placement: focus.placement()) {
-                    CurtainToggle(curtain: .black, session: session)
-                        .help(Text("Cover the presentation with a black screen"))
-                    CurtainToggle(curtain: .white, session: session)
-                        .help(Text("Cover the presentation with a white screen"))
-                }
+    var body: some View {
+        let state = session.curtainState
+        Menu {
+            #if os(macOS)
+            Picker("Curtain Color", selection: colorBinding(state)) {
+                Label("Black Screen", systemImage: Curtain.black.curtainSymbol).tag(Curtain.black)
+                Label("White Screen", systemImage: Curtain.white.curtainSymbol).tag(Curtain.white)
             }
-            .blackCurtainKey(session)
+            .pickerStyle(.inline)
+            .labelsHidden()
+            #else
+            CurtainToggle(curtain: .black, session: session)
+            CurtainToggle(curtain: .white, session: session)
+            #endif
+        } label: {
+            Label("Curtain", systemImage: state.color.curtainSymbol)
+        } primaryAction: {
+            session.curtainState.toggle()
+        }
+        .help(state.helpText)
+        // VoiceOver on iOS does not read the help text: the hint says what a tap does.
+        .accessibilityHint(state.helpText)
+        // The symbol shows the color; the warning next to the title shows that it is on.
+        .accessibilityValue(state.accessibilityValue)
     }
 
     #if os(macOS)
-    // The center of the title bar.
-    private static let warningPlacement = ToolbarItemPlacement.status
-    #else
-    // The iPad has no status area in its top toolbar; next to the document title.
-    private static let warningPlacement = ToolbarItemPlacement.topBarLeading
+    private func colorBinding(_ state: CurtainState) -> Binding<Curtain> {
+        Binding { state.color } set: { session.curtainState.setColor($0) }
+    }
     #endif
 }
 
 /// Tells the presenter that the audience sees a curtain instead of the slide (CUR-02).
 /// Replaces the old app's custom warning banner.
-private struct HiddenScreenWarning: View {
+/// A click or tap hides the curtain (product-owner decision 2026-11-25, #189).
+struct HiddenScreenWarning: View {
+    let session: PresentationSession
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    #endif
+
     var body: some View {
-        // Toolbars show labels icon-only on iPad (also with .titleAndIcon); the warning
-        // needs its text. Only the icon is orange: orange text is too faint in light mode.
-        HStack {
-            Image(systemName: "eye.slash")
-                .foregroundStyle(.orange)
-            Text("Screen is hidden")
+        Button {
+            session.curtain = .none
+        } label: {
+            // Toolbars show labels icon-only on iPad (also with .titleAndIcon); the warning
+            // needs its text. Only the icon is orange: orange text is too faint in light mode.
+            HStack {
+                Image(systemName: "eye.slash")
+                    .foregroundStyle(.orange)
+                if showsText {
+                    Text("Screen is hidden")
+                }
+            }
+            .fixedSize()
         }
-        .fixedSize()
-        .accessibilityElement(children: .combine)
+        // A status that can be clicked, not a toolbar button: no bezel around it.
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Screen is hidden"))
+        .accessibilityHint(Text("Hide the curtain and show the slides"))
+        .help(Text("Hide the curtain and show the slides"))
+    }
+
+    /// A compact bar (iPhone, narrow iPad window) has no room for the text: the crossed-out
+    /// eye alone.
+    private var showsText: Bool {
+        #if os(iOS)
+        sizeClass != .compact
+        #else
+        true
+        #endif
+    }
+
+    #if os(macOS)
+    /// The center of the title bar.
+    static let placement = ToolbarItemPlacement.status
+    #else
+    /// The iPad has no status area in its top toolbar; next to the document title.
+    static let placement = ToolbarItemPlacement.topBarLeading
+    #endif
+}
+
+extension Curtain {
+    /// The symbol of a curtain color, shared by the presenter and the remote (CUR-01, REM-07).
+    var curtainSymbol: String {
+        switch self {
+        case .none: "rectangle.dashed"
+        case .black: "rectangle.fill"
+        case .white: "rectangle"
+        }
+    }
+}
+
+extension CurtainState {
+    var helpText: Text {
+        switch toggled {
+        case .none: Text("Show the slides again")
+        case .black: Text("Cover the presentation with a black screen")
+        case .white: Text("Cover the presentation with a white screen")
+        }
+    }
+
+    var accessibilityValue: Text {
+        switch shown {
+        case .none: Text("Off")
+        case .black: Text("Black Screen")
+        case .white: Text("White Screen")
+        }
     }
 }
 

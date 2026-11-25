@@ -45,6 +45,7 @@ final class DrawingModel {
         isColorPaletteShown = false
         drawings.stopDrawing(onPage: page)
         undoManager.removeAllActions()
+        historyRevision += 1
     }
 
     /// Deletes all drawings and their undo history, when "Save drawings" is turned off
@@ -52,6 +53,7 @@ final class DrawingModel {
     func deleteAll() {
         drawings.deleteAll()
         undoManager.removeAllActions()
+        historyRevision += 1
     }
 
     // MARK: - Changes
@@ -82,6 +84,33 @@ final class DrawingModel {
 
     // MARK: - Undo (DRAW-08)
 
+    /// Changes with every step of the undo history: `UndoManager` is not observable, so the
+    /// toolbar's Undo and Redo buttons read this to update.
+    private var historyRevision = 0
+
+    var canUndo: Bool {
+        _ = historyRevision
+        return undoManager.canUndo
+    }
+
+    var canRedo: Bool {
+        _ = historyRevision
+        return undoManager.canRedo
+    }
+
+    /// The toolbar's Undo button (iPad, iPhone): a keyboard is not always attached.
+    func undo() {
+        guard undoManager.canUndo else { return }
+        undoManager.undo()
+        historyRevision += 1
+    }
+
+    func redo() {
+        guard undoManager.canRedo else { return }
+        undoManager.redo()
+        historyRevision += 1
+    }
+
     /// Registers one step of `page`'s history. Undoing it registers the redo and the other
     /// way round, so the undo manager mirrors the page's history.
     private func registerUndo(onPage page: Int, name: String, isUndo: Bool = true) {
@@ -97,9 +126,12 @@ final class DrawingModel {
         if needsGroup {
             undoManager.endUndoGrouping()
         }
+        historyRevision += 1
     }
 
     private func step(onPage page: Int, name: String, isUndo: Bool) {
+        // Also reached through ⌘Z and the iPad undo gestures.
+        historyRevision += 1
         let didStep = isUndo ? drawings.undo(onPage: page) : drawings.redo(onPage: page)
         guard didStep else { return }
         registerUndo(onPage: page, name: name, isUndo: !isUndo)

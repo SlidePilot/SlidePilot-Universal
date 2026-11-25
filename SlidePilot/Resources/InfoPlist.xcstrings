@@ -1,22 +1,76 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "SlidePilot"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "SlidePilot"
+          }
+        }
+      }
+    },
     "NSLocalNetworkUsageDescription" : {
       "comment" : "Reason shown in the system's local network permission prompt (remote, REM-02)",
       "extractionState" : "extracted_with_value",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot findet deine anderen Geräte im lokalen Netzwerk, damit sie deine Präsentationen steuern können und du ihre." } },
-        "en" : { "stringUnit" : { "state" : "new", "value" : "SlidePilot finds your other devices on the local network, so they can control your presentations and you can control theirs." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot trouve vos autres appareils sur le réseau local, pour qu’ils puissent contrôler vos présentations et vous les leurs." } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot findet deine anderen Geräte im lokalen Netzwerk, damit sie deine Präsentationen steuern können und du ihre."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "SlidePilot finds your other devices on the local network, so they can control your presentations and you can control theirs."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot trouve vos autres appareils sur le réseau local, pour qu’ils puissent contrôler vos présentations et vous les leurs."
+          }
+        }
       }
     },
     "SlidePilot File" : {
       "comment" : "Kind of a .slidepilot file in Finder and Files (document type and exported type name, NOTES-11)",
       "extractionState" : "manual",
       "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot-Datei" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "SlidePilot File" } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fichier SlidePilot" } }
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot-Datei"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot File"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fichier SlidePilot"
+          }
+        }
       }
     }
   },

@@ -36,7 +36,7 @@ struct FileTransferMenu: View {
                 }
             }
         } label: {
-            Label("Import and Export", systemImage: "arrow.up.arrow.down.square")
+            Label("Import and Export", systemImage: "tray.2")
         }
     }
 }

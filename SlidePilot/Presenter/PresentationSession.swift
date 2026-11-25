@@ -31,8 +31,15 @@ final class PresentationSession: Identifiable {
     /// when it does not point (REM-05). The pointer overlay (PTR-01) shows it only while
     /// the pointer is shown (DEF-14).
     var remotePointerLocation: CGPoint?
-    /// Black or white cover on the presentation (CUR-01); never persisted (CUR-03).
-    var curtain = Curtain.none
+    /// Black or white cover on the presentation and the color the curtain button shows next
+    /// (CUR-01); never persisted (CUR-03).
+    var curtainState = CurtainState()
+
+    /// What covers the presentation now (CUR-01).
+    var curtain: Curtain {
+        get { curtainState.shown }
+        set { curtainState.shown = newValue }
+    }
     /// The bytes on screen; the file observer compares changes with them.
     @ObservationIgnored private(set) var data: Data
     /// The presenter's arrangement and slots (LAY-01 to LAY-05).
