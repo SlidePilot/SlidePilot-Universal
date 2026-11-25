@@ -66,6 +66,26 @@ private final class NotesUITextView: UITextView {
 
     override var undoManager: UndoManager? { notesUndoManager }
 
+    /// Escape on a hardware keyboard finishes editing, like ⌘↩ and tapping outside
+    /// (NOTES-04, changed). The text view handles the key, so no other Escape action runs.
+    override var keyCommands: [UIKeyCommand]? {
+        let finish = UIKeyCommand(input: UIKeyCommand.inputEscape, modifierFlags: [], action: #selector(finishEditing))
+        finish.wantsPriorityOverSystemBehavior = true
+        return [finish] + (super.keyCommands ?? [])
+    }
+
+    /// Escape while composing (e.g. Japanese input) stays with the input method.
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if action == #selector(finishEditing) {
+            return isFirstResponder && markedTextRange == nil
+        }
+        return super.canPerformAction(action, withSender: sender)
+    }
+
+    @objc private func finishEditing() {
+        resignFirstResponder()
+    }
+
     /// `* ` or `- ` at the start of a line starts a list; Return on an empty list item
     /// ends it. The space is typed first, so Undo right after the conversion brings back
     /// the typed characters.

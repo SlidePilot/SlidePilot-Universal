@@ -227,6 +227,8 @@ struct PresentationWindowContent: View {
         if let id, let session = registry.session(for: id) {
             PresentationView(session: session)
                 .background(WindowBridge { newWindow in
+                    // The audience sees a dark window whatever the Appearance setting (SET-05).
+                    newWindow.appearance = NSAppearance(named: .darkAqua)
                     window = newWindow
                     windows.attachPresentation(newWindow, for: id)
                 })

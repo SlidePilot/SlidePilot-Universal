@@ -185,4 +185,15 @@ struct IndividualPointerSettingTests {
         let settings = AppSettings(store: InMemorySettingsStore(values: ["individualPointerKey": stored]))
         #expect(settings.individualPointer.size == 150)
     }
+
+    // SET-05: the appearance follows the system by default and is kept across launches.
+    @Test func appearanceDefaultsToSystemAndIsStored() {
+        let store = InMemorySettingsStore()
+        let settings = AppSettings(store: store)
+        #expect(settings.appearance == .system)
+        settings.appearance = .dark
+        #expect(store.values["appearance"] as? String == "dark")
+        #expect(AppSettings(store: store).appearance == .dark)
+        #expect(AppSettings(store: InMemorySettingsStore(values: ["appearance": "sepia"])).appearance == .system)
+    }
 }

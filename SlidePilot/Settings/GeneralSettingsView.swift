@@ -1,7 +1,7 @@
 import SlidePilotCore
 import SwiftUI
 
-/// The General pane (SET-05): Keep awake, Crossfade slides and Save drawings.
+/// The General pane (SET-05): Appearance, Keep awake, Crossfade slides and Save drawings.
 ///
 /// The pane only provides form sections; `SettingsView` puts it into a form on each platform.
 struct GeneralSettingsView: View {
@@ -12,6 +12,11 @@ struct GeneralSettingsView: View {
     var body: some View {
         @Bindable var settings = settings
         Section {
+            Picker("Appearance", selection: $settings.appearance) {
+                ForEach(AppAppearance.allCases, id: \.self) { appearance in
+                    Text(appearance.title).tag(appearance)
+                }
+            }
             Toggle(isOn: $settings.keepsDisplayAwake) {
                 Text("Keep display awake")
                 Text("The display does not dim or sleep while SlidePilot is open.")
@@ -51,6 +56,16 @@ struct GeneralSettingsView: View {
             } else if settings.savesDrawings {
                 confirmsDeletingDrawings = true
             }
+        }
+    }
+}
+
+private extension AppAppearance {
+    var title: LocalizedStringResource {
+        switch self {
+        case .system: LocalizedStringResource("Appearance.System", defaultValue: "System")
+        case .light: LocalizedStringResource("Appearance.Light", defaultValue: "Light")
+        case .dark: LocalizedStringResource("Appearance.Dark", defaultValue: "Dark")
         }
     }
 }

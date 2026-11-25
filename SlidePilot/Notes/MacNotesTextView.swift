@@ -196,6 +196,15 @@ final class NotesTextCoordinator: NSObject, NSTextViewDelegate, NSTextStorageDel
         undoManager
     }
 
+    /// Escape finishes editing, like ⌘↩ and clicking outside (NOTES-04, changed). Handling
+    /// it here keeps NSTextView's completion list from opening and stops the key, so no
+    /// other Escape action runs. Escape while composing stays with the input method.
+    func textView(_ textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
+        guard commandSelector == #selector(NSResponder.cancelOperation(_:)), !textView.hasMarkedText() else { return false }
+        model.finishEditing()
+        return true
+    }
+
     func textDidChange(_ notification: Notification) {
         guard !isLoading, let page, let textView = notification.object as? NSTextView else { return }
         model.setText(textView.attributedString(), forPage: page)

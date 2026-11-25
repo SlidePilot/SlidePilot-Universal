@@ -46,6 +46,7 @@ public final class AppSettings {
         public static let remoteShowsProgress = "remoteShowsProgress"
         public static let remoteLastDeviceID = "remoteLastDeviceID"
         public static let individualPointer = "individualPointerKey"
+        public static let appearance = "appearance"
         public static let timerFirstWarningMinutes = "timerFirstWarningMinutes"
         public static let timerSecondWarningMinutes = "timerSecondWarningMinutes"
     }
@@ -53,6 +54,11 @@ public final class AppSettings {
     /// Keep the display awake while the app runs (SET-04, SET-05). Default off.
     public var keepsDisplayAwake: Bool {
         didSet { store.set(keepsDisplayAwake, forKey: Key.keepsDisplayAwake) }
+    }
+
+    /// The look of the app's windows (SET-05). Default: follows the system.
+    public var appearance: AppAppearance {
+        didSet { store.set(appearance.rawValue, forKey: Key.appearance) }
     }
 
     /// Crossfade between slides on the presentation window (LAY-07, SET-05). Default off.
@@ -123,6 +129,8 @@ public final class AppSettings {
         self.store = store
         keepsDisplayAwake = store.object(forKey: Key.keepsDisplayAwake) as? Bool ?? false
         crossfadesSlides = store.object(forKey: Key.crossfadesSlides) as? Bool ?? false
+        appearance = (store.object(forKey: Key.appearance) as? String)
+            .flatMap(AppAppearance.init(rawValue:)) ?? .default
         savesDrawings = store.object(forKey: Key.savesDrawings) as? Bool ?? false
         allowsRemoteControl = store.object(forKey: Key.allowsRemoteControl) as? Bool ?? true
         layoutPadding = (store.object(forKey: Key.layoutPadding) as? Int)
