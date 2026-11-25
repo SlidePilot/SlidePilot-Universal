@@ -227,6 +227,31 @@ extension MacSnapshots {
         try await WindowSnapshot.record(view, name: "settings-general", size: CGSize(width: 500, height: 160), appearance: appearance)
     }
 
+    // PRO-05: the trial hint above the presenter while Pro is missing.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func trialHint(appearance: WindowSnapshot.Appearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        let view = DocumentView(document: document, layoutStore: InMemoryPresenterLayoutStore()).snapshotScene(pro: .locked)
+        try await WindowSnapshot.record(view, name: "trial-hint", appearance: appearance)
+    }
+
+    // PRO-05, PRO-03: the purchase offer at the end of a trial. StoreKit has no product in the
+    // snapshot test, so the product view shows its placeholder.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func proOffer(appearance: WindowSnapshot.Appearance) async throws {
+        let view = ProOfferView(reason: .trialEnded(.audienceOutput)).environment(ProStore(fixedStatus: .locked))
+        try await WindowSnapshot.record(view, name: "pro-offer", size: CGSize(width: 480, height: 620), appearance: appearance)
+    }
+
+    // PRO-05: the Pro section of the General pane, locked and unlocked.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func settingsPro(appearance: WindowSnapshot.Appearance) async throws {
+        for status in [ProStatus.locked, .unlocked] {
+            let view = SettingsPane { ProSettingsSection() }.environment(ProStore(fixedStatus: status))
+            try await WindowSnapshot.record(view, name: "settings-pro-\(status)", size: CGSize(width: 500, height: 220), appearance: appearance)
+        }
+    }
+
     // NOTES-11: a .slidepilot file opened on its own, with one open PDF to import into.
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func slidePilotFile(appearance: WindowSnapshot.Appearance) async throws {
@@ -247,8 +272,9 @@ extension MacSnapshots {
 }
 
 private extension View {
-    /// The environment the app's scenes provide.
-    func snapshotScene() -> some View {
-        environment(SessionRegistry()).environment(MacPresentationWindows())
+    /// The environment the app's scenes provide. Pro is unlocked unless a snapshot shows the
+    /// trial hint or the offer (PRO-05).
+    func snapshotScene(pro: ProStatus = .unlocked) -> some View {
+        environment(SessionRegistry()).environment(MacPresentationWindows()).environment(ProStore(fixedStatus: pro))
     }
 }

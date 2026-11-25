@@ -122,5 +122,7 @@ private struct PresenterChrome: ViewModifier {
             // The Mac has the Settings window instead (SET-01).
             .settingsSheet()
             #endif
+            // Above the tips: "Trial Version – … Unlock Pro" while Pro is missing (PRO-05).
+            .trialHint()
     }
 }
