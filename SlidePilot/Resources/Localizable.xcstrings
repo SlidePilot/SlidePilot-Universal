@@ -929,6 +929,38 @@
         }
       }
     },
+    "Current · %lld / %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuell · %1$lld / %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actuelle · %1$lld / %2$lld"
+          }
+        }
+      }
+    },
+    "Current, Slide %lld of %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuell, Folie %1$lld von %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actuelle, diapositive %1$lld sur %2$lld"
+          }
+        }
+      }
+    },
     "Cursor" : {
       "localizations" : {
         "de" : {
@@ -1473,6 +1505,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modifier le pointeur…"
+          }
+        }
+      }
+    },
+    "End of Presentation" : {
+      "comment" : "Title above the next-slide preview after the last slide.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ende der Präsentation"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fin de la présentation"
           }
         }
       }
@@ -2133,6 +2182,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appareils à proximité"
+          }
+        }
+      }
+    },
+    "Next" : {
+      "comment" : "Title above the next-slide preview in the presenter.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächste"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suivante"
           }
         }
       }

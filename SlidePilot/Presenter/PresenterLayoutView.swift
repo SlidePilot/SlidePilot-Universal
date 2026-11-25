@@ -65,12 +65,14 @@ struct PresenterLayoutView: View {
             }
             // The audience still sees where the presenter is about to draw (PTR-01).
             .presenterPointer(session)
+            .presenterSlotTitle(.current, position: session.position)
             .padding(padding)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func slot(_ kind: PresenterSlot) -> some View {
         PresenterSlotView(session: session, kind: kind)
+            .presenterSlotTitle(kind, position: session.position)
             .padding(padding)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             // The Mac columns host their own views, outside the window's tap area.
@@ -81,11 +83,13 @@ struct PresenterLayoutView: View {
     private func stack(_ top: PresenterSlot, _ bottom: PresenterSlot) -> some View {
         VStack(spacing: 0) {
             PresenterSlotView(session: session, kind: top)
+                .presenterSlotTitle(top, position: session.position)
                 .padding([.horizontal, .top], padding)
                 .padding(.bottom, padding / 2)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .finishesNotesEditingOnTap(session.notes)
             PresenterSlotView(session: session, kind: bottom)
+                .presenterSlotTitle(bottom, position: session.position)
                 .padding([.horizontal, .bottom], padding)
                 .padding(.top, padding / 2)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
