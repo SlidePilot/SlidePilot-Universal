@@ -51,59 +51,66 @@ private struct ExternalDisplayHintModifier: ViewModifier {
     }
 }
 
-/// Shows whether the presentation is on an external display; tapping it explains how to
-/// connect one, so the hint can be found again after the tip is gone.
+/// Explains how to connect an external display, so the hint can be found again after the
+/// tip is gone. `PresenterToolbar` hides it while a display is connected.
 struct ExternalDisplayStatusButton: View {
     /// The symbol Control Center uses for Screen Mirroring, so users recognize it.
     /// Nonisolated, because the tip's requirements are.
     nonisolated static let mirroringSymbol = "rectangle.on.rectangle"
 
-    @Environment(ExternalDisplayStatus.self) private var status
     @State private var showsExplanation = false
     private let tip = ExternalDisplayTip()
 
     var body: some View {
-        Button {
+        Button("External Display", systemImage: Self.mirroringSymbol) {
             tip.invalidate(reason: .actionPerformed)
             showsExplanation = true
-        } label: {
-            Label("External Display", systemImage: status.isConnected ? "rectangle.fill.on.rectangle.fill" : Self.mirroringSymbol)
         }
-        .accessibilityValue(status.isConnected
-            ? Text("Connected", comment: "Accessibility value of the external display button")
-            : Text("Not connected", comment: "Accessibility value of the external display button"))
         .popover(isPresented: $showsExplanation) {
-            ExternalDisplayExplanation(isConnected: status.isConnected)
+            ExternalDisplayExplanation()
         }
     }
 }
 
+/// A popover in regular sizes, a sheet as tall as its text in compact ones. Never a forced
+/// compact popover: there the button sits in the overflow menu, which is gone once the
+/// button is tapped, and a popover without its anchor crashes.
 private struct ExternalDisplayExplanation: View {
-    let isConnected: Bool
     @ScaledMetric(relativeTo: .body) private var idealWidth = 320
+    /// The text's height, so the compact sheet fits it.
+    @State private var height: CGFloat = 0
+    /// Room for the sheet's drag indicator.
+    @ScaledMetric(relativeTo: .body) private var dragIndicatorRoom = 20
+    /// Between the title and the message.
+    @ScaledMetric(relativeTo: .body) private var titleSpacing = 4
 
     var body: some View {
-        Group {
-            if isConnected {
-                Label("The presentation is shown on the external display.", systemImage: "checkmark.circle")
-            } else {
-                // The same text as the tip.
-                Label {
-                    VStack(alignment: .leading) {
-                        ExternalDisplayTip().title
-                            .font(.headline)
-                        ExternalDisplayTip().message
-                            .foregroundStyle(.secondary)
-                    }
-                } icon: {
-                    Image(systemName: ExternalDisplayStatusButton.mirroringSymbol)
-                }
+        // Scrolls when the text is taller than the sheet can get (large text, landscape).
+        ScrollView {
+            content
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height = $0 }
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .frame(idealWidth: idealWidth, idealHeight: height)
+        // Popovers ignore detents.
+        .presentationDetents(height > 0 ? [.height(height + dragIndicatorRoom)] : [.medium])
+        .presentationDragIndicator(.visible)
+    }
+
+    private var content: some View {
+        // The same text as the tip.
+        Label {
+            VStack(alignment: .leading, spacing: titleSpacing) {
+                ExternalDisplayTip().title
+                    .font(.headline)
+                ExternalDisplayTip().message
+                    .foregroundStyle(.secondary)
             }
+        } icon: {
+            Image(systemName: ExternalDisplayStatusButton.mirroringSymbol)
         }
         .fixedSize(horizontal: false, vertical: true)
         .padding()
-        .frame(idealWidth: idealWidth)
-        .presentationCompactAdaptation(.popover)
     }
 }
 #endif

@@ -805,23 +805,6 @@
         }
       }
     },
-    "Connected" : {
-      "comment" : "Accessibility value of the external display button; status of a remote device",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verbunden"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connecté"
-          }
-        }
-      }
-    },
     "Connecting…" : {
       "localizations" : {
         "de" : {
@@ -2477,23 +2460,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Plus tard"
-          }
-        }
-      }
-    },
-    "Not connected" : {
-      "comment" : "Accessibility value of the external display button",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nicht verbunden"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non connecté"
           }
         }
       }
@@ -4783,22 +4749,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Le jumelage a été annulé. Réessayez et confirmez le même code sur les deux appareils."
-          }
-        }
-      }
-    },
-    "The presentation is shown on the external display." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die Präsentation wird auf dem externen Bildschirm gezeigt."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La présentation est affichée sur l’écran externe."
           }
         }
       }
