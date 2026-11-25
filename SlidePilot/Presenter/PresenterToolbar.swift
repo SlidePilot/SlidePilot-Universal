@@ -61,6 +61,13 @@ struct PresenterToolbar: ToolbarContent {
         DrawingToolbar(session: session, placement: focus == .notes ? focus.placement() : .automatic)
 
         #if os(iOS)
+        outputItems
+        #endif
+    }
+
+    #if os(iOS)
+    // Its own builder: a ToolbarContentBuilder takes at most ten items.
+    @ToolbarContentBuilder private var outputItems: some ToolbarContent {
         if focus.isInBar(isLessImportant: true) {
             ToolbarSpacer(.fixed)
         }
@@ -72,8 +79,8 @@ struct PresenterToolbar: ToolbarContent {
         ToolbarItem(placement: .secondaryAction) {
             FileTransferMenu()
         }
-        #endif
     }
+    #endif
 
     #if os(macOS)
     private static let goBackPlacement = ToolbarItemPlacement.navigation
