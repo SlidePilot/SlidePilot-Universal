@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ %@" : {
+      "shouldTranslate" : false
+    },
     "%@, stopped" : {
       "localizations" : {
         "de" : {
@@ -893,7 +896,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couvrir la présentation d'un écran noir"
+            "value" : "Couvrir la présentation d’un écran noir"
           }
         }
       }
@@ -909,7 +912,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couvrir la présentation d'un écran blanc"
+            "value" : "Couvrir la présentation d’un écran blanc"
           }
         }
       }
@@ -2262,7 +2265,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Moderator"
+            "value" : "Modérateur"
           }
         }
       }
@@ -2871,6 +2874,22 @@
         }
       }
     },
+    "Overtime" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überzogen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dépassement"
+          }
+        }
+      }
+    },
     "Overtime %@" : {
       "localizations" : {
         "de" : {
@@ -3358,13 +3377,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote"
+            "value" : "Fernsteuerung"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote"
+            "value" : "Contrôle à distance"
           }
         }
       }
@@ -3588,7 +3607,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'écran est couvert"
+            "value" : "L’écran est couvert"
           }
         }
       }
@@ -3764,7 +3783,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afficher la diapositive courante"
+            "value" : "Afficher la diapositive actuelle"
           }
         }
       }
@@ -4813,12 +4832,12 @@
         }
       }
     },
-    "The drawings in the file aren’t imported because Save Drawings is off." : {
+    "The drawings in the file aren’t imported because Save drawings is off." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Zeichnungen in der Datei werden nicht importiert, weil „Zeichnungen sichern“ aus ist."
+            "value" : "Die Zeichnungen in der Datei werden nicht importiert, weil „Zeichnungen speichern“ aus ist."
           }
         },
         "fr" : {
@@ -5151,18 +5170,18 @@
         }
       }
     },
-    "To control another device from this one, choose File ▸ Control Another Device…." : {
+    "To control another device from this one, choose File ▸ Control Another Device." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle Ablage ▸ Anderes Gerät steuern …"
+            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle Ablage ▸ Anderes Gerät steuern."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour contrôler un autre appareil depuis celui-ci, choisissez Fichier ▸ Contrôler un autre appareil…."
+            "value" : "Pour contrôler un autre appareil depuis celui-ci, choisissez Fichier ▸ Contrôler un autre appareil."
           }
         }
       }

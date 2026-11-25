@@ -47,7 +47,7 @@ struct RemoteSettingsPane: View {
             }
         } footer: {
             #if os(macOS)
-            Text("To control another device from this one, choose File ▸ Control Another Device….")
+            Text("To control another device from this one, choose File ▸ Control Another Device.")
             #else
             Text("To control another device from this one, choose “Control Another Device…” in the document browser.")
             #endif
