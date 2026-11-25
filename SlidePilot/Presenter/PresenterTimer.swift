@@ -18,10 +18,10 @@ extension View {
         modifier(PresenterTimeDisplayModifier(session: session))
     }
 
-    /// The timer's toolbar controls, the Set Timer sheet and the menu commands. Separate
-    /// from the display because on iPad the navigator puts them on another view (LAY-06).
-    func presenterTimerControls(_ session: PresentationSession) -> some View {
-        modifier(PresenterTimerModifier(session: session))
+    /// The Set Timer sheet and the menu commands. The toolbar's Time button opens the same
+    /// sheet through `isSettingTimer` (`PresenterToolbar`).
+    func presenterTimerControls(_ session: PresentationSession, isSettingTimer: Binding<Bool>) -> some View {
+        modifier(PresenterTimerModifier(session: session, isSettingTimer: isSettingTimer))
     }
 }
 
@@ -52,14 +52,10 @@ private struct PresenterTimeDisplayModifier: ViewModifier {
 
 private struct PresenterTimerModifier: ViewModifier {
     let session: PresentationSession
-    @State private var isSettingTimer = false
-    @Environment(\.presenterToolbarFocus) private var focus
+    @Binding var isSettingTimer: Bool
 
     func body(content: Content) -> some View {
         content
-            .toolbar {
-                TimerToolbar(session: session, isSettingTimer: $isSettingTimer, placement: focus.placement())
-            }
             .sheet(isPresented: $isSettingTimer) {
                 SetTimerSheet(duration: session.timer.timerDuration) { seconds in
                     session.timer.setTimer(seconds: seconds)
@@ -74,43 +70,53 @@ private struct PresenterTimerModifier: ViewModifier {
     }
 }
 
-/// Timer toggle, Start/Stop and Reset in the presenter's toolbar (TIME-02 to TIME-04).
-private struct TimerToolbar: ToolbarContent {
+/// The Time button in the presenter's toolbar (TIME-02 to TIME-04; product-owner decision
+/// 2026-11-25, #189): a click or tap starts or stops the time, its menu resets it and sets or
+/// turns off the timer. The clock above the slides shows whether the timer is on.
+struct TimeToolbarMenu: View {
     let session: PresentationSession
     @Binding var isSettingTimer: Bool
-    let placement: ToolbarItemPlacement
-
-    var body: some ToolbarContent {
-        ToolbarItemGroup(placement: placement) {
-            TimerToggle(session: session, isSettingTimer: $isSettingTimer)
-            StartStopTimeButton(session: session)
-            ResetTimeButton(session: session)
-        }
-    }
-}
-
-/// Shows whether the timer is on (TIME-04, changed). Switching it on asks for the time;
-/// the timer is on once a time above zero is set. Switching it off goes back to the stopwatch.
-/// Moderator > Set Timer… (T) changes a running timer without switching it off; toolbar
-/// items get no context menu (a right click or long press shows the toolbar's own menu or
-/// acts as a tap).
-private struct TimerToggle: View {
-    let session: PresentationSession
-    @Binding var isSettingTimer: Bool
+    /// In the overflow menu the system shows the menu as a submenu without its primary
+    /// action, so Start/Stop becomes its first item and the submenu is called Time.
+    var isInOverflow = false
 
     var body: some View {
-        let isOn = session.timer.mode == .timer
-        Toggle("Timer", systemImage: "timer", isOn: Binding(
-            get: { isOn },
-            set: { turnOn in
-                if turnOn {
-                    isSettingTimer = true
-                } else {
-                    session.timer.turnOffTimer()
+        let isRunning = session.timer.isRunning
+        Menu {
+            if isInOverflow {
+                Button(
+                    isRunning ? "Stop Time" : "Start Time",
+                    systemImage: isRunning ? "pause.fill" : "play.fill"
+                ) {
+                    session.timer.toggle()
                 }
+                Divider()
             }
-        ))
-        .help(isOn ? Text("Turn Off Timer") : Text("Set Timer…"))
+            Button("Reset Time", systemImage: "arrow.counterclockwise") {
+                session.timer.reset()
+            }
+            Divider()
+            // Also changes a running timer without switching it off (TIME-04).
+            Button("Set Timer…", systemImage: "timer") {
+                isSettingTimer = true
+            }
+            Button("Turn Off Timer", systemImage: "stopwatch") {
+                session.timer.turnOffTimer()
+            }
+            .disabled(session.timer.mode != .timer)
+        } label: {
+            if isInOverflow {
+                Label("Time", systemImage: "stopwatch")
+            } else {
+                Label(
+                    isRunning ? "Stop Time" : "Start Time",
+                    systemImage: isRunning ? "pause.fill" : "play.fill"
+                )
+            }
+        } primaryAction: {
+            session.timer.toggle()
+        }
+        .help(isRunning ? Text("Stop Time") : Text("Start Time"))
     }
 }
 
@@ -123,31 +129,5 @@ struct TurnOffTimerButton: View {
             session.timer.turnOffTimer()
         }
         .disabled(session.timer.mode != .timer)
-    }
-}
-
-struct StartStopTimeButton: View {
-    let session: PresentationSession
-
-    var body: some View {
-        let isRunning = session.timer.isRunning
-        Button {
-            session.timer.toggle()
-        } label: {
-            Label(
-                isRunning ? "Stop Time" : "Start Time",
-                systemImage: isRunning ? "pause.fill" : "play.fill"
-            )
-        }
-    }
-}
-
-struct ResetTimeButton: View {
-    let session: PresentationSession
-
-    var body: some View {
-        Button("Reset Time", systemImage: "arrow.counterclockwise") {
-            session.timer.reset()
-        }
     }
 }

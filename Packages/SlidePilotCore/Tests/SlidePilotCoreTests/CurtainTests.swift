@@ -54,3 +54,54 @@ struct CurtainTests {
         #expect(curtain == .none)
     }
 }
+
+@Suite
+struct CurtainStateTests {
+    @Test func buttonStartsWithBlack() {
+        var state = CurtainState()
+        #expect(state.color == .black)
+        #expect(state.toggled == .black)
+        state.toggle()
+        #expect(state.shown == .black)
+        state.toggle()
+        #expect(state.shown == .none)
+    }
+
+    // Once white was chosen, the button keeps showing white (CUR-01, changed 2026-11-25).
+    @Test func buttonKeepsTheColorChosenLast() {
+        var state = CurtainState()
+        state.shown = .white
+        state.toggle()
+        #expect(state.shown == .none)
+        #expect(state.color == .white)
+        state.toggle()
+        #expect(state.shown == .white)
+        state.toggle()
+        state.toggle()
+        #expect(state.shown == .white)
+    }
+
+    @Test func choosingBlackAgainSwitchesBack() {
+        var state = CurtainState(shown: .white)
+        state.shown.toggle(.black)
+        #expect(state.shown == .black)
+        state.toggle()
+        state.toggle()
+        #expect(state.shown == .black)
+    }
+
+    // Hiding the curtain never changes the remembered color.
+    @Test func hidingKeepsTheColor() {
+        var state = CurtainState(shown: .white)
+        state.shown = .none
+        #expect(state.color == .white)
+        state.shown.set(.black, shown: false)
+        #expect(state.color == .white)
+    }
+
+    @Test func initFromShownCurtain() {
+        #expect(CurtainState(shown: .white).color == .white)
+        #expect(CurtainState(shown: .none).color == .black)
+        #expect(CurtainState(shown: .white).toggled == .none)
+    }
+}

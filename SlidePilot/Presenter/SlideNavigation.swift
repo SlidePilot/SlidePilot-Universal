@@ -124,21 +124,24 @@ extension View {
     }
 }
 
+/// The toolbar's back button (NAV-03), in `PresenterToolbar`.
+struct GoBackButton: View {
+    let session: PresentationSession
+
+    var body: some View {
+        Button("Go Back", systemImage: "arrow.uturn.backward.circle") {
+            session.goBack()
+        }
+        .help(Text("Go back to the previously viewed slide"))
+        .disabled(!session.canGoBack)
+    }
+}
+
 private struct PresenterNavigation: ViewModifier {
     let session: PresentationSession
-    @Environment(\.presenterToolbarFocus) private var focus
 
     func body(content: Content) -> some View {
         content
-            .toolbar {
-                ToolbarItem(placement: focus.placement(.navigation)) {
-                    Button("Go Back", systemImage: "arrow.uturn.backward.circle") {
-                        session.goBack()
-                    }
-                    .help(Text("Go back to the previously viewed slide"))
-                    .disabled(!session.canGoBack)
-                }
-            }
             #if os(iOS)
             .contentShape(.rect)
             // Off while the notes are edited, so dragging in the text never changes slides.

@@ -13,8 +13,8 @@ struct ExternalDisplayTip: Tip {
 }
 
 extension View {
-    /// Adds the external-display status button to the presenter's toolbar and the tips above
-    /// the slides (this one, then the pointer gesture's, PTR-01). Inline, because a popover
+    /// Adds the tips above the slides (this one, then the pointer gesture's, PTR-01); the
+    /// external-display status button is in `PresenterToolbar`. Inline, because a popover
     /// tip on a toolbar item of a document window is never shown (iPadOS 27 simulator) and a
     /// popover on the slide would swallow the first swipe; a tip takes no space once it is
     /// invalidated.
@@ -24,18 +24,12 @@ extension View {
 }
 
 private struct ExternalDisplayHintModifier: ViewModifier {
-    @Environment(\.presenterToolbarFocus) private var focus
     @Environment(\.presenterMakesRoomForDrawing) private var makesRoomForDrawing
     /// Whether the display tip is gone, so the pointer tip may show (one tip at a time).
     @State private var displayTipIsDone = false
 
     func body(content: Content) -> some View {
         content
-            .toolbar {
-                ToolbarItem(placement: focus.placement(.primaryAction)) {
-                    ExternalDisplayStatusButton()
-                }
-            }
             .safeAreaInset(edge: .top) {
                 // Drawing keeps the room for the slide (#152).
                 if !makesRoomForDrawing {

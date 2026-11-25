@@ -15,20 +15,16 @@ struct NotesModeMenuItems: View {
     }
 }
 
-/// The Notes Mode and Split Position submenus, shared by the View menu and the toolbar.
-private struct NotesModeMenus: View {
+/// The Notes Mode and Split Position submenus, shared by the View menu and the toolbar's
+/// Layout menu.
+struct NotesModeMenus: View {
     let session: PresentationSession?
     /// Only the menu bar declares ⌥⌘0…4, so the shortcuts exist once.
     var assignsShortcuts = false
-    /// The toolbar menu lists the modes inline; it already carries the Notes Mode title.
-    var showsModesInline = false
 
     var body: some View {
-        if showsModesInline {
-            modePicker.pickerStyle(.inline)
-        } else {
-            modePicker.pickerStyle(.menu)
-        }
+        modePicker
+            .pickerStyle(.menu)
         Picker(selection: position) {
             ForEach(Array(NotesPosition.allCases.enumerated()), id: \.element) { index, position in
                 Label(position.title, systemImage: position.systemImage)
@@ -75,45 +71,13 @@ private struct NotesModeMenus: View {
     }
 }
 
-/// The Notes menu in the presenter's toolbar (NOTES-01, NOTES-02).
-private struct NotesModeToolbar: ToolbarContent {
-    let session: PresentationSession
-    let placement: ToolbarItemPlacement
-
-    var body: some ToolbarContent {
-        ToolbarItem(placement: placement) {
-            Menu {
-                NotesModeMenus(session: session, showsModesInline: true)
-            } label: {
-                Label("Notes Mode", systemImage: "note.text")
-            }
-            .help(Text("Notes Mode"))
-        }
-    }
-}
-
 extension View {
-    /// Adds the Notes menu to the toolbar (hidden in draw mode, DRAW-05) and shows the right
-    /// half when the notes slot appears in Split mode without a position (NOTES-02).
+    /// Shows the right half when the notes slot appears in Split mode without a position
+    /// (NOTES-02). The Notes Mode menu is part of the toolbar's Layout menu.
     func notesModeControls(_ session: PresentationSession) -> some View {
-        modifier(NotesModeControlsModifier(session: session))
-    }
-}
-
-private struct NotesModeControlsModifier: ViewModifier {
-    let session: PresentationSession
-    @Environment(\.presenterToolbarFocus) private var focus
-
-    func body(content: Content) -> some View {
-        content
-            .toolbar {
-                if !session.drawing.isActive {
-                    NotesModeToolbar(session: session, placement: focus.placement())
-                }
-            }
-            .onChange(of: session.layout.isVisible(.notes)) { _, isVisible in
-                if isVisible { session.notesSlotDidShow() }
-            }
+        onChange(of: session.layout.isVisible(.notes)) { _, isVisible in
+            if isVisible { session.notesSlotDidShow() }
+        }
     }
 }
 

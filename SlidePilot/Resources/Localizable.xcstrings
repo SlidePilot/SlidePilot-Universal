@@ -3771,6 +3771,22 @@
         }
       }
     },
+    "Show the slides again" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folien wieder zeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher à nouveau les diapositives"
+          }
+        }
+      }
+    },
     "Shown when the pointer appearance is Individual." : {
       "localizations" : {
         "de" : {
@@ -4877,6 +4893,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Affichage de l’heure"
+          }
+        }
+      }
+    },
+    "Time" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temps"
           }
         }
       }

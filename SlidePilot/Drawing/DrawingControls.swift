@@ -73,11 +73,6 @@ struct DrawingMenuItems: View {
 }
 
 extension View {
-    /// The Draw button, and in draw mode the drawing tools in the window's toolbar (DRAW-03).
-    func drawingControls(_ session: PresentationSession) -> some View {
-        modifier(DrawingControlsModifier(session: session))
-    }
-
     /// Esc leaves draw mode (DRAW-01). Apply it outside the view that takes the keyboard.
     func drawingEscapeKey(_ session: PresentationSession) -> some View {
         onKeyPress(.escape) {
@@ -88,24 +83,11 @@ extension View {
     }
 }
 
-private struct DrawingControlsModifier: ViewModifier {
-    let session: PresentationSession
-    @Environment(\.presenterToolbarFocus) private var focus
-
-    func body(content: Content) -> some View {
-        content
-            .toolbar {
-                // The drawing tools are the focused task's own items while drawing; while
-                // the notes are edited in a compact bar, Draw makes room for Done (#152).
-                DrawingToolbar(session: session, placement: focus == .notes ? focus.placement() : .automatic)
-            }
-    }
-}
-
-/// Draw, and in draw mode color, Clear and the white canvas (DRAW-03, DRAW-04). Draw is a
-/// toggle that stays in place and ends draw mode too, so the tools need no Done button,
-/// which the full iPad toolbar would push into its overflow menu.
-private struct DrawingToolbar: ToolbarContent {
+/// Draw, and in draw mode color, Clear and the white canvas (DRAW-03, DRAW-04), in the
+/// presenter's toolbar (`PresenterToolbar`). Draw is a toggle that stays in place and ends
+/// draw mode too, so the tools need no Done button, which the full iPad toolbar would push
+/// into its overflow menu.
+struct DrawingToolbar: ToolbarContent {
     let session: PresentationSession
     let placement: ToolbarItemPlacement
 

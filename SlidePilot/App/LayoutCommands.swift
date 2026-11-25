@@ -37,27 +37,28 @@ private struct LayoutMenuItems: View {
     }
 }
 
-/// The Arrangement menu in the presenter's toolbar (LAY-01, LAY-04). The slot toggles stay
-/// in the View menu only, since next to this menu they made the toolbar confusing
-/// (product-owner decision 2026-11-19); the menu still reaches every layout.
-struct PresenterLayoutToolbar: ToolbarContent {
-    let layout: PresenterLayoutModel
-    var placement: ToolbarItemPlacement = .automatic
+/// The Layout menu in the presenter's toolbar: arrangement, slot contents and notes mode in
+/// one menu (LAY-01, LAY-04, NOTES-01; product-owner decision 2026-11-25, #189). The slot
+/// toggles stay in the View menu only, since next to this menu they made the toolbar
+/// confusing (product-owner decision 2026-11-19); the menu still reaches every layout.
+struct PresenterLayoutMenu: View {
+    let session: PresentationSession
 
-    var body: some ToolbarContent {
-        ToolbarItem(placement: placement) {
-            Menu {
-                ArrangementMenuContent(layout: layout)
-            } label: {
-                Label("Arrangement", systemImage: layout.arrangement.systemImage)
-            }
-            .help(Text("Arrangement"))
+    var body: some View {
+        Menu {
+            ArrangementMenuContent(layout: session.layout)
+            Divider()
+            NotesModeMenus(session: session)
+        } label: {
+            // The remote's Layout button uses the same symbol (REM-07).
+            Label("Layout", systemImage: "rectangle.3.group")
         }
+        .help(Text("Layout"))
     }
 }
 
 /// The arrangement and, for each visible slot, which slide it shows (LAY-01, LAY-04): in
-/// View ▸ Arrangement and in the toolbar's Arrangement menu. The slot pickers replace the
+/// View ▸ Arrangement and in the toolbar's Layout menu. The slot pickers replace the
 /// old layout editor's drag and drop (product-owner decision 2026-11-18).
 private struct ArrangementMenuContent: View {
     let layout: PresenterLayoutModel?
@@ -224,25 +225,9 @@ extension UserDefaultsPresenterLayoutStore {
 }
 
 extension View {
-    /// Adds the Arrangement menu to the toolbar and the layout menu commands of this window.
-    /// While `isLocked` (draw mode, DRAW-05) the toolbar item is hidden and the menu items off.
+    /// The layout menu commands of this window, off while `isLocked` (draw mode, DRAW-05).
+    /// The toolbar's Layout menu is hidden then too (`PresenterToolbar`).
     func presenterLayoutControls(_ layout: PresenterLayoutModel, isLocked: Bool = false) -> some View {
-        modifier(PresenterLayoutControlsModifier(layout: layout, isLocked: isLocked))
-    }
-}
-
-private struct PresenterLayoutControlsModifier: ViewModifier {
-    let layout: PresenterLayoutModel
-    let isLocked: Bool
-    @Environment(\.presenterToolbarFocus) private var focus
-
-    func body(content: Content) -> some View {
-        content
-            .toolbar {
-                if !isLocked {
-                    PresenterLayoutToolbar(layout: layout, placement: focus.placement())
-                }
-            }
-            .focusedSceneValue(\.presenterLayout, isLocked ? nil : layout)
+        focusedSceneValue(\.presenterLayout, isLocked ? nil : layout)
     }
 }

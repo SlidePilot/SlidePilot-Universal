@@ -23,3 +23,34 @@ public enum Curtain: String, Sendable, Equatable, CaseIterable {
         }
     }
 }
+
+/// The curtain with the color its button shows (CUR-01, changed 2026-11-25): one button
+/// shows and hides the curtain in the color shown last, black until white is chosen. Only
+/// choosing the other color changes it; hiding the curtain keeps it.
+public struct CurtainState: Sendable, Equatable {
+    /// What covers the presentation now.
+    public var shown: Curtain {
+        didSet {
+            if shown.isShown { color = shown }
+        }
+    }
+
+    /// The color the button shows next: `.black` or `.white`, never `.none`.
+    public private(set) var color: Curtain
+
+    public init(shown: Curtain = .none) {
+        self.shown = shown
+        color = shown.isShown ? shown : .black
+    }
+
+    /// What one press of the curtain button shows: the remembered color, or no curtain
+    /// while one is shown. The remote asks the host for it (REM-07).
+    public var toggled: Curtain {
+        shown.isShown ? .none : color
+    }
+
+    /// The curtain button: shows the remembered color or hides the curtain.
+    public mutating func toggle() {
+        shown = toggled
+    }
+}
