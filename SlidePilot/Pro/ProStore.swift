@@ -56,6 +56,7 @@ final class ProStore {
     /// no transaction (e.g. an approved Ask to Buy) is missed. Calling it again does nothing.
     func start() {
         guard updatesTask == nil else { return }
+        // Also delivers, once after launch, the transactions an earlier launch did not finish.
         updatesTask = Task { [weak self] in
             for await update in Transaction.updates {
                 guard let self else { return }
@@ -63,12 +64,6 @@ final class ProStore {
             }
         }
         refreshTask = Task { [weak self] in
-            // Transactions that an earlier launch did not get to finish.
-            for await unfinished in Transaction.unfinished {
-                if case .verified(let transaction) = unfinished {
-                    await transaction.finish()
-                }
-            }
             await self?.refreshStatus()
         }
     }
@@ -80,14 +75,21 @@ final class ProStore {
         // started last may set the status, so an older answer never undoes a newer one.
         refreshGeneration += 1
         let generation = refreshGeneration
+        // Read in a task of the store's own: a caller cancelled after a purchase (e.g. a closed
+        // sheet) must not cut the list short and lock Pro again.
+        let entitlements = await Task { await Self.currentEntitlements() }.value
+        guard generation == refreshGeneration else { return }
+        status = ProStatus(entitlements: entitlements, productID: productID)
+    }
+
+    private static func currentEntitlements() async -> [ProEntitlement] {
         var entitlements: [ProEntitlement] = []
         for await result in Transaction.currentEntitlements {
             // An unverified transaction never unlocks Pro.
             guard case .verified(let transaction) = result else { continue }
             entitlements.append(ProEntitlement(transaction))
         }
-        guard generation == refreshGeneration else { return }
-        status = ProStatus(entitlements: entitlements, productID: productID)
+        return entitlements
     }
 
     /// Buys SlidePilot Pro with the system's purchase sheet.
