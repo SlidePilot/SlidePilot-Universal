@@ -16,7 +16,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     /// Keeps the display awake while the app runs, if the setting is on (SET-04).
     private lazy var displayAwakeKeeper = DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker())
     /// Advertises this instance and keeps pairing state (REM-02); one per app.
-    private(set) lazy var remote = RemoteService.live(settings: settings, registry: registry)
+    private(set) lazy var remote = RemoteService.live(settings: settings, registry: registry, pro: pro)
     /// The Pro status and purchase (PRO-02); one per app, also read by the external display.
     let pro = ProStore()
     private lazy var windows = AppWindowTracker(registry: registry)

@@ -34,10 +34,11 @@ struct RemoteControlCommands: Commands {
 struct ControlAnotherDeviceButton: View {
     @Environment(RemoteService.self) private var remote
     @Environment(AppSettings.self) private var settings
+    @Environment(ProStore.self) private var pro
 
     var body: some View {
         Button("Control Another Device…", systemImage: "appletvremote.gen4") {
-            RemoteControlPresenter.present(remote: remote, settings: settings)
+            RemoteControlPresenter.present(remote: remote, settings: settings, pro: pro)
         }
     }
 }
@@ -47,6 +48,7 @@ struct ControlAnotherDeviceButton: View {
 /// navigation stack so Back leaves each step; Escape does too on the slides.
 struct RemoteControlView: View {
     @Environment(RemoteService.self) private var remote
+    @Environment(ProStore.self) private var pro
     @State private var control: RemoteControl?
     /// Ends remote mode where it is shown over another view (iPad); `nil` in its own window.
     var close: (() -> Void)?
@@ -55,6 +57,7 @@ struct RemoteControlView: View {
         Group {
             if let control {
                 RemoteControlStack(control: control, close: close)
+                    .onChange(of: pro.status, initial: true) { _, status in control.proStatusChanged(status) }
             } else {
                 // An empty group would never appear, so the control would never be made.
                 Color.clear
@@ -62,7 +65,7 @@ struct RemoteControlView: View {
         }
         .onAppear {
             if control == nil {
-                control = RemoteControl(remote: remote)
+                control = RemoteControl(remote: remote, proStatus: pro.status)
             }
         }
         // Nearby devices are found while remote mode is shown.
@@ -96,6 +99,9 @@ private struct RemoteControlStack: View {
         }
         // Cancelled when the window closes, so the connection never outlives it.
         .task(id: control.connectionID) { await control.keepConnected() }
+        // Closes the connection when its trial ends (PRO-04).
+        .task { await control.enforceTrials() }
+        .proOffer(reason: $control.offer)
         .alert(
             endingTitle,
             isPresented: Binding(get: { control.ending != nil }, set: { if !$0 { control.ending = nil } }),

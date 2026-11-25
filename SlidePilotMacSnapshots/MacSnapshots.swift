@@ -243,6 +243,13 @@ extension MacSnapshots {
         try await WindowSnapshot.record(view, name: "pro-offer", size: CGSize(width: 480, height: 620), appearance: appearance)
     }
 
+    // PRO-04: the offer when a remote control trial ends.
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func remoteTrialEnded(appearance: WindowSnapshot.Appearance) async throws {
+        let view = ProOfferView(reason: .trialEnded(.remoteControl)).environment(ProStore(fixedStatus: .locked))
+        try await WindowSnapshot.record(view, name: "remote-trial-ended", size: CGSize(width: 480, height: 620), appearance: appearance)
+    }
+
     // PRO-05: the Pro section of the General pane, locked and unlocked.
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func settingsPro(appearance: WindowSnapshot.Appearance) async throws {

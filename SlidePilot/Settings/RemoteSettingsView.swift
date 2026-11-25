@@ -132,7 +132,8 @@ struct TrustedDevicesList: View {
 }
 
 extension View {
-    /// The pairing code and pairing problem alerts of the remote (REM-02).
+    /// The pairing code and pairing problem alerts of the remote (REM-02), and the purchase
+    /// offer when this device is controlled without Pro (PRO-04).
     func remoteAlerts() -> some View {
         modifier(RemoteAlertsModifier())
     }
@@ -150,6 +151,11 @@ private struct RemoteAlertsModifier: ViewModifier {
         content
             .onAppear { remote.alertPresenterAppeared(id) }
             .onDisappear { remote.alertPresenterWentAway(id) }
+            // Being controlled without Pro: the trial's start and end (PRO-04).
+            .proOffer(reason: Binding(
+                get: { showsAlerts ? remote.offer : nil },
+                set: { remote.offer = $0 }
+            ))
             .alert(
                 Text("Pair with “\(remote.pairingRequests.first?.deviceName ?? "")”?"),
                 isPresented: Binding(
