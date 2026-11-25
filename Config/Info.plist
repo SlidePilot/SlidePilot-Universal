@@ -77,6 +77,10 @@
 	<array>
 		<string>_slidepilot._tcp</string>
 	</array>
+	<!-- SlidePilot Pro (PRO-02): the in-app purchase's product ID, from Config/Shared.xcconfig.
+	     Empty in the free Mac download. -->
+	<key>SlidePilotProProductID</key>
+	<string>$(SLIDEPILOT_PRO_PRODUCT_ID)</string>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>UISupportsDocumentBrowser</key>
