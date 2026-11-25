@@ -252,6 +252,10 @@ struct PresentationWindowContent: View {
     @Environment(MacPresentationWindows.self) private var windows
     @Environment(\.dismiss) private var dismiss
     @State private var window: NSWindow?
+    /// SwiftUI keeps a closed window and its views alive, and the bridge reports the window
+    /// again when the trial changes their content (e.g. the trial stops on close). Such a
+    /// late report must not make the closed window the session's presentation again.
+    @State private var isClosed = false
 
     var body: some View {
         if let id, let session = registry.session(for: id) {
@@ -259,12 +263,16 @@ struct PresentationWindowContent: View {
                 // Banner and end of the trial (PRO-03).
                 .audienceTrial(windows.trial(for: id))
                 .background(WindowBridge { newWindow in
+                    guard !isClosed else { return }
                     // The audience sees a dark window whatever the Appearance setting (SET-05).
                     newWindow.appearance = NSAppearance(named: .darkAqua)
                     window = newWindow
                     windows.attachPresentation(newWindow, for: id)
                 })
-                .onDisappear { windows.presentationDidClose(id, window: window) }
+                .onDisappear {
+                    isClosed = true
+                    windows.presentationDidClose(id, window: window)
+                }
                 // After a click into the presentation, ⌥⌘P still works and hands the
                 // keyboard back to the presenter.
                 .focusedSceneValue(\.startPresentation, StartPresentationAction {
