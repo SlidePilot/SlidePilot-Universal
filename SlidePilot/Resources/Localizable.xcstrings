@@ -4850,6 +4850,22 @@
         }
       }
     },
+    "Three Slides, Large Bottom" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drei Folien, groß unten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trois diapositives, grande en bas"
+          }
+        }
+      }
+    },
     "Three Slides, Large Left" : {
       "localizations" : {
         "de" : {
@@ -4878,6 +4894,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trois diapositives, grande à droite"
+          }
+        }
+      }
+    },
+    "Three Slides, Large Top" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drei Folien, groß oben"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trois diapositives, grande en haut"
           }
         }
       }
