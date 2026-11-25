@@ -49,6 +49,14 @@ final class NotesModel {
         return (try? TextNotes(companion.notes)) == nil
     }
 
+    /// Whether `page` has no notes, so the editor shows its placeholder.
+    func isEmpty(page: Int) -> Bool {
+        !(stored?.hasNotes(onPage: page) ?? false)
+    }
+
+    /// Whether the document has no notes at all, so the editor points to Import Notes….
+    var isEmpty: Bool { stored?.isEmpty ?? true }
+
     /// The notes of a page; `nil` if they cannot be shown.
     func text(forPage page: Int) -> NSAttributedString? {
         try? textNotes?.page(page)

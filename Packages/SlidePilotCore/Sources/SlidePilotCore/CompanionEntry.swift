@@ -115,6 +115,11 @@ public struct CompanionNotes: Codable, Sendable, Equatable {
     }
 
     public var isEmpty: Bool { pages.allSatisfy(\.isEmpty) }
+
+    /// Whether `page` has notes; `false` for pages past the stored ones.
+    public func hasNotes(onPage page: Int) -> Bool {
+        pages.indices.contains(page) && !pages[page].isEmpty
+    }
 }
 
 /// Everything SlidePilot stores for one PDF: one entry per companion file in the app

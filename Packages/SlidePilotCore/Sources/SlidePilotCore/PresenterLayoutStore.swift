@@ -71,6 +71,11 @@ public final class PresenterLayoutModel {
     @ObservationIgnored private let store: any PresenterLayoutStore
     @ObservationIgnored private var isApplyingStoredLayout = false
 
+    /// Whether the window currently stacks the columns top and bottom (iPad portrait,
+    /// `PresenterSplit.stacksVertically`), so the slot pickers name the places by it
+    /// (LAY-04). Set by the presenter view; not saved.
+    public var isStacked = false
+
     public init(store: any PresenterLayoutStore) {
         self.store = store
         layout = store.lastUsedLayout() ?? .default

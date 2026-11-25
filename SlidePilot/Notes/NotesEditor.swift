@@ -16,6 +16,11 @@ struct NotesEditor: View {
             )
         } else {
             NotesTextView(model: notes, page: session.currentPage, actions: actions)
+                .overlay(alignment: .topLeading) {
+                    if let lines = notes.placeholder(forPage: session.currentPage) {
+                        NotesPlaceholder(lines: lines, fontSize: notes.fontSize(forPage: session.currentPage))
+                    }
+                }
                 .clipShape(.rect(cornerRadius: 8))
                 #if os(macOS)
                 // The Mac text background matches the window's, so the area needs an edge.
@@ -28,6 +33,47 @@ struct NotesEditor: View {
                 // The plain-letter shortcuts are off while typing notes.
                 .focusedSceneValue(\.isEditingText, notes.isEditing ? true : nil)
         }
+    }
+}
+
+extension NotesModel {
+    /// The placeholder of an empty page, one string per line; `nil` once the page has
+    /// notes or while they cannot be edited. In a document without any notes it also points
+    /// to Import Notes… (UI review P1, #206). The text views give it to VoiceOver too.
+    func placeholder(forPage page: Int) -> [String]? {
+        guard isAvailable, isEmpty(page: page) else { return nil }
+        let add = String(localized: "Add notes for this slide")
+        guard isEmpty else { return [add] }
+        #if os(macOS)
+        return [add, String(localized: "To use a notes file, choose File ▸ Import Notes.")]
+        #else
+        return [add, String(localized: "To use a notes file, choose Import and Export ▸ Import Notes.")]
+        #endif
+    }
+}
+
+/// Shows `NotesModel.placeholder(forPage:)` where the first line of text starts, in the
+/// size new text gets (NOTES-05). Custom UI (ADR 0010): `NSTextView` and `UITextView` have
+/// no placeholder. Taps and clicks go through to the text view; VoiceOver reads the text
+/// view's own placeholder instead.
+private struct NotesPlaceholder: View {
+    let lines: [String]
+    let fontSize: CGFloat
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            ForEach(lines, id: \.self) { line in
+                Text(verbatim: line)
+            }
+        }
+        .font(.system(size: fontSize))
+        .foregroundStyle(.placeholder)
+        .padding(NotesTextView.textInsets)
+        // Wraps like the text would in a short notes slot (compact height) instead of
+        // truncating each line; the editor's clip shape cuts off what does not fit.
+        .fixedSize(horizontal: false, vertical: true)
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }
 

@@ -92,12 +92,15 @@ struct TimeToolbarMenu: View {
     let session: PresentationSession
     @Binding var isSettingTimer: Bool
     let style: Style
+    /// Optional, so snapshots and previews without settings leave out the timer warnings.
+    @Environment(AppSettings.self) private var settings: AppSettings?
 
     var body: some View {
         let isRunning = session.timer.isRunning
         // Read here, not in the menu's content: the system builds the content outside the
         // body's observation, so a timer set later left Turn Off Timer disabled (iOS).
         let hasTimer = session.timer.mode == .timer
+        let warnings = settings?.timerWarnings ?? .default
         Group {
             switch style {
             case .split:
@@ -125,9 +128,9 @@ struct TimeToolbarMenu: View {
                 }
             }
         }
-        // The Mac builds the toolbar menu once and keeps the items' enabled state; a new
-        // identity rebuilds it when the timer is set or turned off.
-        .id(hasTimer)
+        // The Mac builds the toolbar menu once and keeps the items' state; a new identity
+        // rebuilds it when the timer is set or turned off or a warning changes.
+        .id([hasTimer ? 1 : 0, warnings.firstMinutes, warnings.secondMinutes])
     }
 
     @ViewBuilder private func items(isRunning: Bool, hasTimer: Bool) -> some View {
@@ -151,6 +154,9 @@ struct TimeToolbarMenu: View {
             session.timer.turnOffTimer()
         }
         .disabled(!hasTimer)
+        if let settings {
+            TimerWarningPickers(settings: settings)
+        }
     }
 }
 

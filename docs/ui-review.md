@@ -45,7 +45,7 @@ None of these changes parity behavior.
 | # | Rank | Problem | Suggested change | Parity |
 |---|---|---|---|---|
 | P1 | medium | An empty notes slot is a blank box with no hint. New users don't see that they can type there or import notes. | Show a placeholder in the empty editor ("Add notes for this slide") and, in the Notes slot of a document without any notes, a hint to File ▸ Import Notes… . | New UI, no behavior change. |
-| P2 | medium | Moderator ▸ Edit Layout… (⌃⌥L) opens Settings ▸ Layout, which holds padding, time display size and timer warnings, not the arrangement. Users looking for layouts find them in the toolbar's Layout menu instead. | Rename the menu item to "Layout Settings…", so it says what it opens. | Changes the old menu title (LAY-04); the shortcut table and SET-01 need the new title too. |
+| P2 | medium | Moderator ▸ Edit Layout… (⌃⌥L) opens Settings ▸ Layout, which holds padding, time display size and timer warnings, not the arrangement. Users looking for layouts find them in the toolbar's Layout menu instead. | Rename the menu item to "Layout Settings…", so it says what it opens. Superseded in #206: the item was removed and the timer warnings moved to the Time menus. | Changes the old menu title (LAY-04); the shortcut table and SET-01 need the new title too. |
 | P3 | medium | In iPad portrait the two columns stack top and bottom (`PresenterSplit.stacksVertically`), but the Layout menu still calls the slots "Left" and "Right". | Name the places by orientation ("Top" / "Bottom") while the split is stacked. | Changes the LAY-04 note on slot names in stacked windows; needs a parity-doc update. |
 | P4 | low | Notes mode "Split" (de „PDF spalten“) does not say what is split. | "Split PDF Page" / „PDF-Seite teilen“ / « Scinder la page PDF ». | Wording only. |
 | P5 | low | The menu is named "Moderator" in en, while the rest of the app says "presenter" (Presenter window, presenter display). | Keep "Moderator" (old app, users know it) or rename to "Presenter". Recommended: keep. | Old menu name. |
@@ -81,7 +81,7 @@ None of these changes parity behavior.
 
 - **Wording:** the same commands use the same titles on Mac and iPad (Layout, Time, Curtain, Draw, Import and Export). Exceptions: the navigator symbol in compact width (P9) and "Moderator" (P5), which exists only in the Mac and iPad menu bars.
 - **Placement:** Layout sits next to Start Presentation on the Mac and with Import/Export and Settings on iPad and iPhone; both follow the decision in #189. Settings are a window on the Mac and a sheet on iPad and iPhone, as the platforms expect.
-- **Shortcuts:** the Mac and iPad menus share all shortcuts (plain letters for the timer, ⌥⌘0…4 for split position, ⌃⌥L for layout settings). The iPhone has no menu bar; every command is reachable from the toolbar or its overflow menu.
+- **Shortcuts:** the Mac and iPad menus share all shortcuts (plain letters for the timer, ⌥⌘0…4 for split position; ⌃⌥L for layout settings was removed in #206). The iPhone has no menu bar; every command is reachable from the toolbar or its overflow menu.
 - **Icons:** all from SF Symbols; only the compact-width navigator symbol differs (P9).
 
 ## Discoverability
