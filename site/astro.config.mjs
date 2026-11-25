@@ -9,8 +9,6 @@ export default defineConfig({
     starlight({
       title: 'SlidePilot Documentation',
       description: 'How to present PDF slides with SlidePilot on Mac, iPad and iPhone.',
-      defaultLocale: 'root',
-      locales: { root: { label: 'English', lang: 'en' } },
       social: [
         { icon: 'github', label: 'SlidePilot on GitHub', href: 'https://github.com/SlidePilot/SlidePilot-Universal' },
       ],
