@@ -1309,6 +1309,22 @@
         }
       }
     },
+    "Double-tap and hold the current slide to show the pointer to the audience. Drag to move it, lift your finger to hide it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe zweimal auf die aktuelle Folie und halte den Finger, um dem Publikum den Zeiger zu zeigen. Ziehe, um ihn zu bewegen, und hebe den Finger, um ihn auszublenden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez deux fois la diapositive actuelle et maintenez le doigt pour montrer le pointeur au public. Faites glisser pour le déplacer, levez le doigt pour le masquer."
+          }
+        }
+      }
+    },
     "Draw" : {
       "localizations" : {
         "de" : {
@@ -2915,6 +2931,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Plus"
+          }
+        }
+      }
+    },
+    "Point with your finger" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit dem Finger zeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pointer avec le doigt"
           }
         }
       }

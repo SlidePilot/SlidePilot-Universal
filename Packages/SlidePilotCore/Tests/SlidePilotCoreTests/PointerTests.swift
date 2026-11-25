@@ -69,6 +69,150 @@ struct PointerStateTests {
         pointer.presenterMoved(to: CGPoint(x: 200, y: 150), inSlideOfSize: slide)
         #expect(pointer.visibleLocation(remote: CGPoint(x: 0.1, y: 0.1)) == CGPoint(x: 0.5, y: 0.5))
     }
+
+    // PTR-01 (product-owner decision 2026-11-25): a finger points with double tap and
+    // hold whether or not the pointer is shown; lifting it hides the pointer again.
+    @Test func touchPointsWhileTheToggleIsOff() {
+        let pointer = PointerState()
+        pointer.touchMoved(to: CGPoint(x: 100, y: 150), inSlideOfSize: slide)
+        #expect(pointer.isTouchPointing)
+        #expect(pointer.visibleLocation(remote: nil) == CGPoint(x: 0.25, y: 0.5))
+        pointer.touchMoved(to: CGPoint(x: 200, y: 150), inSlideOfSize: slide)
+        #expect(pointer.visibleLocation(remote: nil) == CGPoint(x: 0.5, y: 0.5))
+        pointer.touchEnded()
+        #expect(!pointer.isTouchPointing)
+        #expect(pointer.visibleLocation(remote: nil) == nil)
+        #expect(!pointer.isShown)
+    }
+
+    @Test func touchHidesOutsideTheSlideUntilItComesBack() {
+        let pointer = PointerState()
+        pointer.touchMoved(to: CGPoint(x: 500, y: 150), inSlideOfSize: slide)
+        #expect(pointer.isTouchPointing)
+        #expect(pointer.visibleLocation(remote: nil) == nil)
+        pointer.touchMoved(to: CGPoint(x: 0, y: 0), inSlideOfSize: slide)
+        #expect(pointer.visibleLocation(remote: nil) == .zero)
+    }
+
+    @Test func touchWinsOverHoverAndRemote() {
+        let pointer = PointerState(isShown: true)
+        pointer.touchMoved(to: CGPoint(x: 200, y: 150), inSlideOfSize: slide)
+        // Hover reports (Pencil, trackpad) do not move or end a held pointer.
+        pointer.presenterMoved(to: CGPoint(x: 0, y: 0), inSlideOfSize: slide)
+        pointer.presenterEnded()
+        #expect(pointer.visibleLocation(remote: CGPoint(x: 0.1, y: 0.1)) == CGPoint(x: 0.5, y: 0.5))
+        pointer.touchEnded()
+        #expect(pointer.visibleLocation(remote: CGPoint(x: 0.1, y: 0.1)) == CGPoint(x: 0.1, y: 0.1))
+    }
+
+    @Test func touchKeepsPointingWhenTheToggleTurnsOff() {
+        let pointer = PointerState(isShown: true)
+        pointer.touchMoved(to: CGPoint(x: 200, y: 150), inSlideOfSize: slide)
+        pointer.isShown = false
+        #expect(pointer.visibleLocation(remote: nil) == CGPoint(x: 0.5, y: 0.5))
+        // The remote's pointer stays hidden while the toggle is off (DEF-14).
+        pointer.touchMoved(to: CGPoint(x: 500, y: 150), inSlideOfSize: slide)
+        #expect(pointer.visibleLocation(remote: CGPoint(x: 0.1, y: 0.1)) == nil)
+    }
+}
+
+@Suite("Double tap and hold (PTR-01, REM-07)")
+struct DoubleTapHoldGestureTests {
+    private let point = CGPoint(x: 100, y: 100)
+
+    private func tap(_ gesture: inout DoubleTapHoldGesture, at point: CGPoint, time: Double) {
+        gesture.began(at: point, time: time)
+        gesture.ended(at: point, time: time + 0.1)
+    }
+
+    @Test func aSingleTouchDoesNotHold() {
+        var gesture = DoubleTapHoldGesture()
+        let result1 = gesture.began(at: point, time: 0)
+        #expect(!result1)
+        #expect(!gesture.isHolding)
+        #expect(gesture.isTracking)
+        gesture.ended(at: point, time: 0.1)
+        #expect(!gesture.isTracking)
+    }
+
+    @Test func secondTouchAfterATapHolds() {
+        var gesture = DoubleTapHoldGesture()
+        tap(&gesture, at: point, time: 0)
+        let result2 = gesture.began(at: CGPoint(x: 110, y: 95), time: 0.4)
+        #expect(result2)
+        #expect(gesture.isHolding)
+        gesture.ended(at: CGPoint(x: 400, y: 300), time: 3)
+        #expect(!gesture.isHolding)
+    }
+
+    @Test func doubleTapTimingLimits() {
+        var gesture = DoubleTapHoldGesture()
+        // The second touch starts at most `doubleTapInterval` after the first tap ended.
+        tap(&gesture, at: point, time: 0)
+        let result3 = gesture.began(at: point, time: 0.1 + DoubleTapHoldGesture.doubleTapInterval)
+        #expect(result3)
+        gesture.ended(at: point, time: 1)
+
+        tap(&gesture, at: point, time: 2)
+        let result4 = gesture.began(at: point, time: 2.1 + DoubleTapHoldGesture.doubleTapInterval + 0.01)
+        #expect(!result4)
+    }
+
+    @Test func aLongFirstTouchIsNoTap() {
+        var gesture = DoubleTapHoldGesture()
+        gesture.began(at: point, time: 0)
+        gesture.ended(at: point, time: DoubleTapHoldGesture.tapDuration + 0.01)
+        let result5 = gesture.began(at: point, time: 0.4)
+        #expect(!result5)
+    }
+
+    @Test func aMovedFirstTouchIsNoTap() {
+        var gesture = DoubleTapHoldGesture()
+        // A swipe is no first tap, so a swipe followed by a touch does not point.
+        gesture.began(at: point, time: 0)
+        gesture.ended(at: CGPoint(x: 100 + DoubleTapHoldGesture.tapMovement, y: 100), time: 0.1)
+        let result6 = gesture.began(at: point, time: 0.2)
+        #expect(!result6)
+    }
+
+    @Test func aDistantSecondTouchDoesNotHold() {
+        var gesture = DoubleTapHoldGesture()
+        tap(&gesture, at: point, time: 0)
+        let result7 = gesture.began(at: CGPoint(x: 100, y: 100 + DoubleTapHoldGesture.doubleTapDistance + 1), time: 0.2)
+        #expect(!result7)
+    }
+
+    @Test func aTripleTapHoldsOnlyOnce() {
+        var gesture = DoubleTapHoldGesture()
+        tap(&gesture, at: point, time: 0)
+        tap(&gesture, at: point, time: 0.2)
+        let result8 = gesture.began(at: point, time: 0.4)
+        #expect(!result8)
+    }
+
+    @Test func cancelEndsTheHoldAndForgetsTheTap() {
+        var gesture = DoubleTapHoldGesture()
+        tap(&gesture, at: point, time: 0)
+        gesture.began(at: point, time: 0.2)
+        let result9 = gesture.cancel()
+        #expect(result9)
+        #expect(!gesture.isHolding)
+        #expect(!gesture.isTracking)
+        let result10 = gesture.cancel()
+        #expect(!result10)
+        gesture.ended(at: point, time: 0.25)
+        let result11 = gesture.began(at: point, time: 0.3)
+        #expect(!result11)
+
+        // A cancelled first tap is no tap either.
+        gesture.ended(at: point, time: 0.35)
+        gesture.began(at: point, time: 1)
+        let result12 = gesture.cancel()
+        #expect(!result12)
+        gesture.ended(at: point, time: 1.05)
+        let result13 = gesture.began(at: point, time: 1.1)
+        #expect(!result13)
+    }
 }
 
 @Suite

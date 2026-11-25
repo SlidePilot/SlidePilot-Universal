@@ -10,6 +10,9 @@ struct SlideLinkLayer: View {
     let links: [SlideLink]
     let region: PageRegion
     let follow: (SlideLink) -> Void
+    #if os(iOS)
+    @Environment(\.linkTapDelay) private var delay
+    #endif
 
     var body: some View {
         GeometryReader { proxy in
@@ -22,11 +25,22 @@ struct SlideLinkLayer: View {
                         .contentShape(.rect)
                         .frame(width: rect.width * size.width, height: rect.height * size.height)
                         .linkPointer()
-                        .onTapGesture { follow(link) }
+                        .onTapGesture { tapped(link) }
                         .position(x: rect.midX * size.width, y: rect.midY * size.height)
                 }
             }
         }
+    }
+
+    private func tapped(_ link: SlideLink) {
+        #if os(iOS)
+        // On the current slide a double tap and hold points instead (PTR-01).
+        if let delay {
+            delay.follow { follow(link) }
+            return
+        }
+        #endif
+        follow(link)
     }
 }
 
