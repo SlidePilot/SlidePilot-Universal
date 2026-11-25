@@ -5313,6 +5313,118 @@
           }
         }
       }
+    },
+    "%@, first warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, erste Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, premier avertissement"
+          }
+        }
+      }
+    },
+    "%@, second warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, zweite Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, deuxième avertissement"
+          }
+        }
+      }
+    },
+    "First warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erste Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premier avertissement"
+          }
+        }
+      }
+    },
+    "Second warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zweite Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deuxième avertissement"
+          }
+        }
+      }
+    },
+    "The timer turns orange." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Timer wird orange."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le minuteur devient orange."
+          }
+        }
+      }
+    },
+    "The timer turns purple. In overtime it is red." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Timer wird lila. Überzogen ist er rot."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le minuteur devient violet. En dépassement, il est rouge."
+          }
+        }
+      }
+    },
+    "Remaining time at which the timer changes color. Only in timer mode, not for the stopwatch." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restzeit, ab der der Timer seine Farbe ändert. Nur im Timer-Modus, nicht für die Stoppuhr."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temps restant à partir duquel le minuteur change de couleur. Uniquement en mode minuteur, pas pour le chronomètre."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

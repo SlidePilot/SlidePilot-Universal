@@ -40,7 +40,7 @@ private struct PresenterTimeDisplayModifier: ViewModifier {
             .safeAreaInset(edge: .top, spacing: 0) {
                 // Drawing on iPhone and iPad gives the slide the room of the clock (#152).
                 if size != .hidden, !makesRoomForDrawing {
-                    TimeDisplay(timer: session.timer, size: size)
+                    TimeDisplay(timer: session.timer, size: size, warnings: settings?.timerWarnings ?? .default)
                         // Aligned with the slides' 30 pt padding; the old app's top margin,
                         // the small one in compact height like the smaller display there.
                         .padding(.horizontal, 30)
