@@ -17,7 +17,26 @@ The screenshots are attached to the PR that added this file (fixtures only). Mac
 | low | Layout menu (fr) | "Afficher la diapositive courante"; everywhere else "actuelle". | "actuelle". |
 | low | Curtain (fr) | Straight apostrophes in three strings; the rest of the catalog uses ’. | Typographic apostrophes. |
 
+| low | Remote settings (Mac) | "…choose File ▸ Control Another Device…." ended with "…." (P12). | The ellipsis is dropped in running text. |
+
 None of these changes parity behavior.
+
+## Decisions (2026-11-25)
+
+| # | Decision | Where |
+|---|---|---|
+| P1 | Accepted. | #206 |
+| P2 | Changed: remove Moderator ▸ Edit Layout… (⌃⌥L) and Edit Pointer… (⌃⌥C) altogether; both only open a Settings tab, which Settings already reaches. | #206 |
+| P3 | Accepted. | #206 |
+| P4 | Rejected. | – |
+| P5 | Keep "Moderator". | – |
+| P6 | Accepted as: move Go Back to the overflow menu in iPad portrait. | #207 |
+| P7 | Rejected. | – |
+| P8 | Accepted. | #207 |
+| P9, P10, P11 | Rejected. | – |
+| P12 | Accepted, fixed in the review PR. | #208 |
+| – | Added: move the two timer warnings from Settings ▸ Layout into the Time menu, next to Set Timer and Turn Off Timer. | #206 |
+| – | Bug found by the maintainer: no color selection while drawing on iPhone. | #207 |
 
 ## Proposals
 
