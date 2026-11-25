@@ -7,6 +7,8 @@ import SwiftUI
 struct TimeDisplay: View {
     let timer: PresentationTimer
     let size: TimeDisplaySize
+    /// When the timer turns to its warning colors (TIME-08).
+    var warnings = TimerWarningThresholds.default
 
     // TIME-06: the old app's 70 pt (normal) and 55 pt (small) presenter time, readable from a
     // step away. Scaled with Dynamic Type relative to the largest text style.
@@ -50,11 +52,11 @@ struct TimeDisplay: View {
     @ViewBuilder private var timerValue: some View {
         if let anchor = timer.tickAnchor {
             TimelineView(.periodic(from: anchor, by: 1)) { context in
-                TimerValueText(timer: timer, now: context.date)
+                TimerValueText(timer: timer, warnings: warnings, now: context.date)
             }
         } else {
             // Stopped: the value does not depend on the time.
-            TimerValueText(timer: timer, now: .now)
+            TimerValueText(timer: timer, warnings: warnings, now: .now)
         }
     }
 }
@@ -71,25 +73,46 @@ extension EnvironmentValues {
     }
 }
 
-/// The stopwatch or timer value, `- HH:MM:SS` in system red in overtime (TIME-03).
+/// The stopwatch or timer value, `- HH:MM:SS` in system red in overtime (TIME-03), in the
+/// warning colors as the timer's end comes closer (TIME-08).
 private struct TimerValueText: View {
     let timer: PresentationTimer
+    let warnings: TimerWarningThresholds
     let now: Date
 
     var body: some View {
         let seconds = timer.displayedSeconds(at: now)
-        let isOvertime = timer.isOvertime(at: now)
+        let stage = timer.stage(at: now, thresholds: warnings)
         Text(verbatim: TimerValueFormat.string(seconds: seconds))
-            .foregroundStyle(isOvertime ? AnyShapeStyle(.red) : AnyShapeStyle(.primary))
+            .foregroundStyle(stage.style)
             .accessibilityLabel(timer.mode == .stopwatch ? Text("Stopwatch") : Text("Timer"))
-            .accessibilityValue(accessibilityValue(seconds: seconds, isOvertime: isOvertime))
+            .accessibilityValue(accessibilityValue(seconds: seconds, stage: stage))
     }
 
-    /// Spoken as words ("1 minute, 5 seconds"), not as digits with colons.
-    private func accessibilityValue(seconds: Int, isOvertime: Bool) -> String {
+    /// Spoken as words ("1 minute, 5 seconds"), not as digits with colons. The warning
+    /// stage is said too, so it is not shown by color alone.
+    private func accessibilityValue(seconds: Int, stage: TimerStage) -> String {
         let duration = Duration.seconds(abs(seconds))
             .formatted(.units(allowed: [.hours, .minutes, .seconds], width: .wide))
-        let value = isOvertime ? String(localized: "Overtime \(duration)") : duration
+        let value = switch stage {
+        case .normal: duration
+        case .firstWarning: String(localized: "\(duration), first warning")
+        case .secondWarning: String(localized: "\(duration), second warning")
+        case .overtime: String(localized: "Overtime \(duration)")
+        }
         return timer.isRunning ? value : String(localized: "\(value), stopped")
+    }
+}
+
+private extension TimerStage {
+    /// Orange, then purple, so the second warning stays apart from the overtime red. The
+    /// orange is an asset color: system orange has too little contrast on a light background.
+    var style: AnyShapeStyle {
+        switch self {
+        case .normal: AnyShapeStyle(.primary)
+        case .firstWarning: AnyShapeStyle(Color(.timerFirstWarning))
+        case .secondWarning: AnyShapeStyle(.purple)
+        case .overtime: AnyShapeStyle(.red)
+        }
     }
 }

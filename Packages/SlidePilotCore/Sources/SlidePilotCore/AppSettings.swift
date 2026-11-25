@@ -47,6 +47,8 @@ public final class AppSettings {
         public static let remoteLastDeviceID = "remoteLastDeviceID"
         public static let individualPointer = "individualPointerKey"
         public static let appearance = "appearance"
+        public static let timerFirstWarningMinutes = "timerFirstWarningMinutes"
+        public static let timerSecondWarningMinutes = "timerSecondWarningMinutes"
     }
 
     /// Keep the display awake while the app runs (SET-04, SET-05). Default off.
@@ -113,6 +115,14 @@ public final class AppSettings {
         }
     }
 
+    /// When the timer turns to its warning colors (TIME-08). Default 5 and 1 minutes left.
+    public var timerWarnings: TimerWarningThresholds {
+        didSet {
+            store.set(timerWarnings.firstMinutes, forKey: Key.timerFirstWarningMinutes)
+            store.set(timerWarnings.secondMinutes, forKey: Key.timerSecondWarningMinutes)
+        }
+    }
+
     @ObservationIgnored private let store: any SettingsStore
 
     public init(store: any SettingsStore) {
@@ -134,5 +144,18 @@ public final class AppSettings {
         individualPointer = (store.object(forKey: Key.individualPointer) as? Data)
             .flatMap { try? JSONDecoder().decode(PointerConfiguration.self, from: $0) }?
             .clampedForEditor() ?? .defaultIndividual
+        timerWarnings = TimerWarningThresholds(
+            firstMinutes: Self.warningMinutes(in: store, key: Key.timerFirstWarningMinutes)
+                ?? TimerWarningThresholds.default.firstMinutes,
+            secondMinutes: Self.warningMinutes(in: store, key: Key.timerSecondWarningMinutes)
+                ?? TimerWarningThresholds.default.secondMinutes
+        )
+    }
+
+    /// Only values the settings offer; anything else falls back to the default.
+    private static func warningMinutes(in store: any SettingsStore, key: String) -> Int? {
+        guard let minutes = store.object(forKey: key) as? Int,
+              TimerWarningThresholds.choices.contains(minutes) else { return nil }
+        return minutes
     }
 }

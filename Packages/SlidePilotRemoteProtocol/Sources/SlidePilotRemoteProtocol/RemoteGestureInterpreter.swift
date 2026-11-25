@@ -1,4 +1,6 @@
+import CoreGraphics
 import Foundation
+import SlidePilotCore
 
 /// Turns single-finger touches (or mouse drags) on the controller's slide into commands
 /// (REM-07): a horizontal swipe changes the slide, and a double tap whose second touch is
@@ -16,78 +18,52 @@ public struct RemoteGestureInterpreter: Sendable {
             self.y = y
         }
 
-        func distance(to other: Point) -> Double {
-            hypot(other.x - x, other.y - y)
-        }
+        var cgPoint: CGPoint { CGPoint(x: x, y: y) }
     }
 
     /// The shortest horizontal movement that counts as a swipe.
     public static let swipeDistance = 50.0
     /// A touch that moves less than this is a tap.
-    public static let tapMovement = 12.0
-    /// A tap lasts at most this long (seconds).
-    public static let tapDuration = 0.3
-    /// The second touch of a double tap starts within this time after the first tap ends.
-    public static let doubleTapInterval = 0.35
-    /// … and this close to it.
-    public static let doubleTapDistance = 40.0
+    public static let tapMovement = DoubleTapHoldGesture.tapMovement
 
-    private struct Touch: Sendable, Equatable {
-        let start: Point
-        let startTime: Double
-        let movesPointer: Bool
-        var isCancelled = false
-    }
-
-    private struct Tap: Sendable, Equatable {
-        let point: Point
-        let time: Double
-    }
-
-    private var touch: Touch?
-    private var lastTap: Tap?
+    /// Double tap timing and hold, shared with the presenter's touch pointer (PTR-01).
+    private var doubleTap = DoubleTapHoldGesture()
+    /// Where the current touch started; a new start is a new touch.
+    private var touchStart: Point?
 
     public init() {}
 
     /// Whether the current touch moves the pointer.
-    public var isMovingPointer: Bool { touch?.movesPointer == true && touch?.isCancelled == false }
+    public var isMovingPointer: Bool { doubleTap.isHolding }
 
     /// The touch started at `start` and is now at `location`. `slidePosition` is `location`
     /// relative to the slide (0…1, origin top left).
     public mutating func moved(
         start: Point, location: Point, time: Double, slidePosition: PointerPosition
     ) -> [ControllerCommand] {
-        if touch == nil || touch?.start != start {
-            touch = Touch(start: start, startTime: time, movesPointer: isSecondTap(at: start, time: time))
-            lastTap = nil
+        if touchStart != start {
+            touchStart = start
+            doubleTap.began(at: start.cgPoint, time: time)
         }
-        guard let touch, !touch.isCancelled, touch.movesPointer else { return [] }
-        return [.pointerMoved(slidePosition)]
+        return doubleTap.isHolding ? [.pointerMoved(slidePosition)] : []
     }
 
     /// The touch ended at `location`.
     public mutating func ended(start: Point, location: Point, time: Double) -> [ControllerCommand] {
-        defer { touch = nil }
-        guard let touch, !touch.isCancelled else {
-            // A cancelled touch already finished its pointer.
-            lastTap = nil
-            return []
-        }
-        if touch.movesPointer {
-            lastTap = nil
+        defer { touchStart = nil }
+        // A cancelled touch already finished its pointer.
+        let isTracking = doubleTap.isTracking && touchStart == start
+        let wasHolding = doubleTap.isHolding
+        doubleTap.ended(at: location.cgPoint, time: time)
+        guard isTracking else { return [] }
+        if wasHolding {
             return [.pointerFinished]
         }
         let dx = location.x - start.x
         let dy = location.y - start.y
         if abs(dx) >= Self.swipeDistance, abs(dx) > abs(dy) {
-            lastTap = nil
             // Swiping to the left brings the next slide, like turning a page.
             return [dx < 0 ? .nextSlide : .previousSlide]
-        }
-        if start.distance(to: location) < Self.tapMovement, time - touch.startTime <= Self.tapDuration {
-            lastTap = Tap(point: location, time: time)
-        } else {
-            lastTap = nil
         }
         return []
     }
@@ -95,15 +71,6 @@ public struct RemoteGestureInterpreter: Sendable {
     /// A pinch started: the current touch is neither a swipe nor a tap. A pointer it moved
     /// is finished.
     public mutating func cancel() -> [ControllerCommand] {
-        lastTap = nil
-        guard var touch, !touch.isCancelled else { return [] }
-        touch.isCancelled = true
-        self.touch = touch
-        return touch.movesPointer ? [.pointerFinished] : []
-    }
-
-    private func isSecondTap(at point: Point, time: Double) -> Bool {
-        guard let lastTap else { return false }
-        return time - lastTap.time <= Self.doubleTapInterval && point.distance(to: lastTap.point) <= Self.doubleTapDistance
+        doubleTap.cancel() ? [.pointerFinished] : []
     }
 }

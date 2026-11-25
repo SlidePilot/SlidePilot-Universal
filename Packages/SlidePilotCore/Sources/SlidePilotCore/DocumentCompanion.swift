@@ -33,6 +33,10 @@ public final class DocumentCompanion {
     @ObservationIgnored private var delayedSave: Task<Void, Never>?
     /// Counts edits, so a save only clears `isEdited` when no edit came in meanwhile.
     @ObservationIgnored private var editCount = 0
+    /// Called when the stored data was deleted (SET-07), after the entry was emptied, so the
+    /// window also drops what it keeps itself, such as the drawings (DRAW-07). Changes it
+    /// makes then go to the empty entry and are not written back.
+    @ObservationIgnored public var onStoredDataDeleted: (@MainActor () -> Void)?
     /// Settings changes made before the entry was loaded; applied to it when it arrives.
     @ObservationIgnored private var changesBeforeLoad: [(inout DocumentSettings) -> Void] = []
 
@@ -192,9 +196,10 @@ public final class DocumentCompanion {
 
     /// Deletes the stored entry of this document from the stored data overview (SET-07).
     ///
-    /// The document continues with empty notes and settings that are not stored, so a later
-    /// save does not write the deleted data back; new changes are stored as a new entry.
-    /// The settings already applied in the window stay on screen until they change.
+    /// The document continues with empty notes, drawings and settings that are not stored, so
+    /// a later save does not write the deleted data back; new changes are stored as a new
+    /// entry. The settings already applied in the window stay on screen until they change;
+    /// the window clears its drawings in `onStoredDataDeleted`.
     public func deleteStoredData() async {
         guard let store, let current = entry else { return }
         delayedSave?.cancel()
@@ -203,6 +208,7 @@ public final class DocumentCompanion {
         isStored = false
         editCount += 1
         isEdited = false
+        onStoredDataDeleted?()
         // In the save chain, so a save that is already writing finishes before the delete.
         let previous = saveChain
         let link = Task {

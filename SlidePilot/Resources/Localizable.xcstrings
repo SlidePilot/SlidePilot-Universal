@@ -1011,6 +1011,38 @@
         }
       }
     },
+    "Current · %lld / %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuell · %1$lld / %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actuelle · %1$lld / %2$lld"
+          }
+        }
+      }
+    },
+    "Current, Slide %lld of %lld" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktuell, Folie %1$lld von %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actuelle, diapositive %1$lld sur %2$lld"
+          }
+        }
+      }
+    },
     "Cursor" : {
       "localizations" : {
         "de" : {
@@ -1391,6 +1423,22 @@
         }
       }
     },
+    "Double-tap and hold the current slide to show the pointer to the audience. Drag to move it, lift your finger to hide it." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe zweimal auf die aktuelle Folie und halte den Finger, um dem Publikum den Zeiger zu zeigen. Ziehe, um ihn zu bewegen, und hebe den Finger, um ihn auszublenden."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez deux fois la diapositive actuelle et maintenez le doigt pour montrer le pointeur au public. Faites glisser pour le déplacer, levez le doigt pour le masquer."
+          }
+        }
+      }
+    },
     "Draw" : {
       "localizations" : {
         "de" : {
@@ -1539,6 +1587,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Modifier le pointeur…"
+          }
+        }
+      }
+    },
+    "End of Presentation" : {
+      "comment" : "Title above the next-slide preview after the last slide.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ende der Präsentation"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fin de la présentation"
           }
         }
       }
@@ -2199,6 +2264,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Appareils à proximité"
+          }
+        }
+      }
+    },
+    "Next" : {
+      "comment" : "Title above the next-slide preview in the presenter.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächste"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suivante"
           }
         }
       }
@@ -2997,6 +3079,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Plus"
+          }
+        }
+      }
+    },
+    "Point with your finger" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit dem Finger zeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pointer avec le doigt"
           }
         }
       }
@@ -5294,6 +5392,118 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "« %@ » a été exporté par une version plus récente de SlidePilot. Mettez SlidePilot à jour pour l’importer."
+          }
+        }
+      }
+    },
+    "%@, first warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, erste Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, premier avertissement"
+          }
+        }
+      }
+    },
+    "%@, second warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, zweite Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, deuxième avertissement"
+          }
+        }
+      }
+    },
+    "First warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erste Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premier avertissement"
+          }
+        }
+      }
+    },
+    "Second warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zweite Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deuxième avertissement"
+          }
+        }
+      }
+    },
+    "The timer turns orange." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Timer wird orange."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le minuteur devient orange."
+          }
+        }
+      }
+    },
+    "The timer turns purple. In overtime it is red." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Timer wird lila. Überzogen ist er rot."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le minuteur devient violet. En dépassement, il est rouge."
+          }
+        }
+      }
+    },
+    "Remaining time at which the timer changes color. Only in timer mode, not for the stopwatch." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restzeit, ab der der Timer seine Farbe ändert. Nur im Timer-Modus, nicht für die Stoppuhr."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temps restant à partir duquel le minuteur change de couleur. Uniquement en mode minuteur, pas pour le chronomètre."
           }
         }
       }

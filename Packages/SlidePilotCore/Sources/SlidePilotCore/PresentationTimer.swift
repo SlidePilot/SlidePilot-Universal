@@ -180,3 +180,49 @@ public enum TimeDisplaySize: Int, Sendable, CaseIterable {
     public static let defaultsKey = "timeSize"
     public static let `default` = TimeDisplaySize.normal
 }
+
+/// How close the timer is to its end (TIME-08). The display shows each stage in its own
+/// color and says it to VoiceOver.
+public enum TimerStage: Sendable, Equatable {
+    /// More time left than the first warning, or the stopwatch.
+    case normal
+    case firstWarning
+    case secondWarning
+    /// Past zero (TIME-03).
+    case overtime
+}
+
+/// When the timer warns that its end comes closer (TIME-08): whole minutes of remaining
+/// time, `0` for off. App-wide settings, not per document.
+public struct TimerWarningThresholds: Sendable, Equatable {
+    public var firstMinutes: Int
+    public var secondMinutes: Int
+
+    public init(firstMinutes: Int, secondMinutes: Int) {
+        self.firstMinutes = firstMinutes
+        self.secondMinutes = secondMinutes
+    }
+
+    public static let `default` = TimerWarningThresholds(firstMinutes: 5, secondMinutes: 1)
+
+    /// The minutes the settings offer; `0` is off.
+    public static let choices = [0, 1, 2, 3, 5, 10, 15, 20, 30]
+
+    /// The stage of a timer value in whole seconds. A warning starts when the remaining
+    /// time reaches its threshold (5 min: at 00:05:00) and lasts through 00:00:00. If the
+    /// second threshold is not below the first, the second wins where both apply.
+    public func stage(remainingSeconds seconds: Int) -> TimerStage {
+        if seconds < 0 { return .overtime }
+        if secondMinutes > 0, seconds <= secondMinutes * 60 { return .secondWarning }
+        if firstMinutes > 0, seconds <= firstMinutes * 60 { return .firstWarning }
+        return .normal
+    }
+}
+
+extension PresentationTimer {
+    /// The stage shown at `now` (TIME-08). The stopwatch has no end, so it is always normal.
+    public func stage(at now: Date, thresholds: TimerWarningThresholds) -> TimerStage {
+        guard mode == .timer else { return .normal }
+        return thresholds.stage(remainingSeconds: displayedSeconds(at: now))
+    }
+}

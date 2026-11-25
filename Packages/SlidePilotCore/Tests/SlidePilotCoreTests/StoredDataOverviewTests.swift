@@ -153,6 +153,42 @@ struct StoredDataOverviewTests {
         #expect(await store.storedData().map(\.kinds) == [[.notes]])
     }
 
+    // The open document's drawings are cleared with their undo history and not written back
+    // (#178). The drawings are wired to the companion as the app does with "Save drawings".
+    @Test func deletingAnOpenDocumentClearsItsDrawings() async throws {
+        let store = makeStore()
+        let companion = DocumentCompanion(store: store, saveDelay: .milliseconds(10))
+        await companion.open(pdfAt: locator.add("drawn.pdf"), pageCount: 2)
+        let drawings = DocumentDrawings()
+        drawings.keepsDrawings = true
+        drawings.onPagesChange = { companion.setDrawings(CompanionDrawings(pages: $0)) }
+        companion.onStoredDataDeleted = { [weak drawings] in drawings?.deleteAll() }
+        drawings.startDrawing(onPage: 1)
+        drawings.beginLiveStroke(onPage: 1, at: [RelativePoint(x: 0.1, y: 0.2), RelativePoint(x: 0.3, y: 0.4)])
+        drawings.commitLiveStroke()
+        await companion.flush()
+        #expect(await store.storedData().map(\.kinds) == [[.drawings]])
+        // A change made after the last save must not be written back either.
+        drawings.setBackground(.white, onPage: 0)
+
+        let overview = StoredDataOverview(store: store, openCompanions: { [companion] })
+        await overview.reload()
+        try await overview.delete([#require(overview.items?.first?.id)])
+
+        #expect(drawings.pages.isEmpty)
+        #expect(companion.drawings == nil)
+        #expect(!drawings.canUndo(onPage: 0))
+        #expect(!drawings.canUndo(onPage: 1))
+        #expect(!drawings.undo(onPage: 1))
+        await companion.flush()
+        #expect(storedFiles().isEmpty)
+
+        // New drawings after the delete are stored again.
+        drawings.setBackground(.white, onPage: 1)
+        await companion.flush()
+        #expect(await store.storedData().map(\.kinds) == [[.drawings]])
+    }
+
     // A document that loaded its entry just before the delete cannot write it back.
     @Test func deletedEntriesAreNeverWrittenAgain() async throws {
         let store = makeStore()

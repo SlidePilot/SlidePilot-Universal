@@ -1,9 +1,9 @@
 import SlidePilotCore
 import SwiftUI
 
-/// The Layout pane (LAY-04, TIME-06): padding around the presenter's slots and the size of
-/// the time display. Both are global (LAY-05). Replaces the old drag-and-drop layout editor
-/// with standard pickers (ADR 0010).
+/// The Layout pane (LAY-04, TIME-06, TIME-08): padding around the presenter's slots, the
+/// size of the time display and the timer warnings. All are global (LAY-05). Replaces the
+/// old drag-and-drop layout editor with standard pickers (ADR 0010).
 ///
 /// The pane only provides form sections; `SettingsView` puts it into a form on each platform.
 struct LayoutSettingsView: View {
@@ -28,6 +28,42 @@ struct LayoutSettingsView: View {
                 Text("Time display")
                 Text("Size of the clock and timer above the slides.")
             }
+        }
+        // TIME-08: the timer changes color as its end comes closer.
+        Section {
+            WarningPicker(minutes: $settings.timerWarnings.firstMinutes) {
+                Text("First warning")
+                Text("The timer turns orange.")
+            }
+            WarningPicker(minutes: $settings.timerWarnings.secondMinutes) {
+                Text("Second warning")
+                Text("The timer turns purple. In overtime it is red.")
+            }
+        } header: {
+            Text("Timer")
+        } footer: {
+            Text("Remaining time at which the timer changes color. Only in timer mode, not for the stopwatch.")
+        }
+    }
+}
+
+/// Minutes of remaining time for one timer warning, or Off.
+private struct WarningPicker<Label: View>: View {
+    @Binding var minutes: Int
+    @ViewBuilder let label: Label
+
+    var body: some View {
+        Picker(selection: $minutes) {
+            ForEach(TimerWarningThresholds.choices, id: \.self) { choice in
+                if choice == 0 {
+                    Text("Off").tag(choice)
+                } else {
+                    Text(Duration.seconds(choice * 60).formatted(.units(allowed: [.minutes], width: .abbreviated)))
+                        .tag(choice)
+                }
+            }
+        } label: {
+            label
         }
     }
 }

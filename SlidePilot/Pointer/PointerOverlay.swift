@@ -63,7 +63,7 @@ private struct PointerMark: View {
 
 extension View {
     /// Moves the pointer with the mouse, trackpad or Apple Pencil hovering over the
-    /// presenter's current slide and, on iPad, with a finger dragged over it (PTR-01).
+    /// presenter's current slide and, on iPad, with a double tap and hold (PTR-01).
     /// Apply it to the `SlideSurface` itself, so the location is relative to the slide.
     func presenterPointer(_ session: PresentationSession) -> some View {
         modifier(PresenterPointer(session: session))
@@ -95,6 +95,10 @@ private struct PresenterPointer: ViewModifier {
     let session: PresentationSession
     @Environment(AppSettings.self) private var settings: AppSettings?
     @State private var size = CGSize.zero
+    #if os(iOS)
+    @State private var linkTaps = LinkTapDelay()
+    private let tip = TouchPointerTip()
+    #endif
 
     private var pointer: PointerState { session.pointer }
     private var isDrawing: Bool { session.drawing.isActive }
@@ -110,20 +114,35 @@ private struct PresenterPointer: ViewModifier {
                 }
             }
             #if os(iOS)
-            // While the pointer is shown a finger points instead of swiping (the swipe
-            // still works around the slide). Off in draw mode, where a finger draws.
-            // A small distance, so taps still reach links and videos.
+            // Double tap and hold points, whether or not the pointer is shown; a one-finger
+            // swipe always changes slides. Off in draw mode, where a finger draws.
             .gesture(
-                DragGesture(minimumDistance: 2)
-                    .onChanged { pointer.presenterMoved(to: $0.location, inSlideOfSize: size) }
-                    .onEnded { _ in pointer.presenterEnded() },
-                isEnabled: pointer.isShown && !isDrawing
+                TouchPointerGesture(
+                    isEnabled: !isDrawing,
+                    began: {
+                        linkTaps.pointingBegan()
+                        tip.invalidate(reason: .actionPerformed)
+                    },
+                    moved: { pointer.touchMoved(to: $0, inSlideOfSize: size) },
+                    ended: {
+                        linkTaps.pointingEnded()
+                        pointer.touchEnded()
+                    }
+                )
             )
+            .environment(\.linkTapDelay, linkTaps)
+            // A link tapped on the previous slide or before drawing must not follow later.
+            .onChange(of: session.currentPage) { linkTaps.cancel() }
+            .onChange(of: isDrawing) { linkTaps.cancel() }
+            .onDisappear {
+                linkTaps.cancel()
+                pointer.touchEnded()
+            }
             // iPad has no cursor image to swap (PTR-06), so the presenter sees the pointer
             // drawn under the finger, Pencil or trackpad pointer.
             .overlay {
                 PointerMark(
-                    location: pointer.isShown ? pointer.presenterLocation : nil,
+                    location: pointer.visibleLocation(remote: nil),
                     configuration: configuration,
                     slideFrame: CGRect(origin: .zero, size: size)
                 )
