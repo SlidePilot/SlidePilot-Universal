@@ -134,6 +134,7 @@ struct SlidePilotApp: App {
                 .remoteAlerts()
                 .environment(registry)
                 .environment(appDelegate.externalDisplays)
+                .environment(appDelegate.audienceTrial)
                 .environment(appDelegate.companions)
                 .environment(settings)
                 .environment(remote)

@@ -59,6 +59,8 @@ struct DocumentView: View {
             #if os(iOS)
             // The iPad external display shows the document of the active window.
             .onAppWindowChange { registry.register(session, inWindow: $0) }
+            // The purchase offer for the external display's trial (PRO-03).
+            .externalDisplayTrialOffer(session)
             #endif
             #if os(macOS)
             .presenterWindow(for: session)
