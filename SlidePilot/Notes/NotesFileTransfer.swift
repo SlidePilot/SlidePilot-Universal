@@ -106,8 +106,10 @@ private struct NotesFileTransferModifier: ViewModifier {
     private var companion: DocumentCompanion { session.companion }
     private var pageCount: Int { session.cache.info.pageCount }
 
+    /// Off in draw mode, like the rest of the Notes menu (DRAW-05): an import would change
+    /// the locked layout.
     private var notesFileCommands: FocusedNotesFile? {
-        session.notes.isAvailable ? FocusedNotesFile(
+        session.notes.isAvailable && !session.drawing.isActive ? FocusedNotesFile(
             importNotes: { pick(.notesFile) },
             exportNotes: { Task { await export() } }
         ) : nil

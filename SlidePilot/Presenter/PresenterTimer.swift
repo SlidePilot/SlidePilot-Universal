@@ -62,11 +62,13 @@ private struct PresenterTimerModifier: ViewModifier {
                 }
             }
             // While the sheet is open, the plain-letter shortcuts must not fire from its
-            // text fields, so the menu commands are off.
+            // text fields: the timer commands are off, and `isEditingText` turns off the
+            // other plain-letter shortcuts (layout, navigator, draw).
             .focusedSceneValue(\.presenterTimer, isSettingTimer ? nil : FocusedPresenterTimer(
                 session: session,
                 showSetTimer: { isSettingTimer = true }
             ))
+            .focusedSceneValue(\.isEditingText, isSettingTimer ? true : nil)
     }
 }
 
