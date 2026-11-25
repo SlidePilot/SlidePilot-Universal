@@ -880,7 +880,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couvrir la présentation d'un écran noir"
+            "value" : "Couvrir la présentation d’un écran noir"
           }
         }
       }
@@ -896,7 +896,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couvrir la présentation d'un écran blanc"
+            "value" : "Couvrir la présentation d’un écran blanc"
           }
         }
       }
@@ -2233,7 +2233,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Moderator"
+            "value" : "Modérateur"
           }
         }
       }
@@ -3249,13 +3249,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote"
+            "value" : "Fernsteuerung"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote"
+            "value" : "Contrôle à distance"
           }
         }
       }
@@ -3463,7 +3463,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'écran est couvert"
+            "value" : "L’écran est couvert"
           }
         }
       }
@@ -3639,7 +3639,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afficher la diapositive courante"
+            "value" : "Afficher la diapositive actuelle"
           }
         }
       }
@@ -4576,12 +4576,12 @@
         }
       }
     },
-    "The drawings in the file aren’t imported because Save Drawings is off." : {
+    "The drawings in the file aren’t imported because Save drawings is off." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Zeichnungen in der Datei werden nicht importiert, weil „Zeichnungen sichern“ aus ist."
+            "value" : "Die Zeichnungen in der Datei werden nicht importiert, weil „Zeichnungen speichern“ aus ist."
           }
         },
         "fr" : {
