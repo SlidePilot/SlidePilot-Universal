@@ -78,9 +78,14 @@ struct ExternalDisplayStatusButton: View {
     }
 }
 
+/// A popover in regular sizes, a sheet as tall as its text in compact ones. Never a forced
+/// compact popover: there the button sits in the overflow menu, which is gone once the
+/// button is tapped, and a popover without its anchor crashes.
 private struct ExternalDisplayExplanation: View {
     let isConnected: Bool
     @ScaledMetric(relativeTo: .body) private var idealWidth = 320
+    /// The text's height, so the compact sheet fits it.
+    @State private var height: CGFloat = 0
 
     var body: some View {
         Group {
@@ -103,7 +108,10 @@ private struct ExternalDisplayExplanation: View {
         .fixedSize(horizontal: false, vertical: true)
         .padding()
         .frame(idealWidth: idealWidth)
-        .presentationCompactAdaptation(.popover)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height = $0 }
+        // Popovers ignore detents; the sheet's drag indicator needs a little room.
+        .presentationDetents(height > 0 ? [.height(height + 20)] : [.medium])
+        .presentationDragIndicator(.visible)
     }
 }
 #endif
