@@ -105,12 +105,17 @@ public enum PointerAppearance: String, Codable, Sendable, CaseIterable {
 @MainActor
 @Observable
 public final class PointerState {
-    /// Hidden when a document opens (the old app's default).
+    /// Hidden when a document opens (the old app's default). On touch devices it only
+    /// controls hover pointing (trackpad, mouse, Apple Pencil hover); a finger points with
+    /// the double tap and hold gesture either way (PTR-01).
     public var isShown: Bool {
         didSet {
             if !isShown { presenterEnded() }
         }
     }
+    /// Whether a finger holds the pointer with the double tap and hold gesture. The pointer
+    /// is visible then, also while `isShown` is off.
+    public private(set) var isTouchPointing = false
     /// The old app starts with the system cursor.
     public var appearance: PointerAppearance
     /// Where the presenter points on the current slide, 0…1 with the origin top left;
@@ -125,23 +130,51 @@ public final class PointerState {
     /// The presenter's pointer moved to `point` in a slide of `size` (both in the slide's
     /// own coordinates, origin top left). Outside the slide the pointer hides.
     public func presenterMoved(to point: CGPoint, inSlideOfSize size: CGSize) {
-        guard isShown else { return }
+        guard isShown, !isTouchPointing else { return }
+        moveLocation(to: point, inSlideOfSize: size)
+    }
+
+    /// A finger holding the pointer (double tap and hold) moved to `point`; it points
+    /// whether or not the pointer is shown. Outside the slide the pointer hides until the
+    /// finger comes back.
+    public func touchMoved(to point: CGPoint, inSlideOfSize size: CGSize) {
+        if !isTouchPointing {
+            isTouchPointing = true
+        }
+        moveLocation(to: point, inSlideOfSize: size)
+    }
+
+    /// The finger holding the pointer lifted, or the touch was cancelled.
+    public func touchEnded() {
+        guard isTouchPointing else { return }
+        isTouchPointing = false
+        clearLocation()
+    }
+
+    private func clearLocation() {
+        if presenterLocation != nil {
+            presenterLocation = nil
+        }
+    }
+
+    private func moveLocation(to point: CGPoint, inSlideOfSize size: CGSize) {
         let location = Self.relativeLocation(of: point, inSlideOfSize: size)
         if location != presenterLocation {
             presenterLocation = location
         }
     }
 
-    /// The mouse or finger left the slide.
+    /// The mouse or Pencil left the slide. A finger holding the pointer keeps it.
     public func presenterEnded() {
-        if presenterLocation != nil {
-            presenterLocation = nil
-        }
+        guard !isTouchPointing else { return }
+        clearLocation()
     }
 
     /// Where the audience sees the pointer: the presenter's, else a remote controller's.
-    /// Nothing while the pointer is hidden, also not the remote's (DEF-14).
+    /// Nothing while the pointer is hidden, also not the remote's (DEF-14); a finger
+    /// holding the pointer shows only its own location.
     public func visibleLocation(remote: CGPoint?) -> CGPoint? {
+        if isTouchPointing { return presenterLocation }
         guard isShown else { return nil }
         return presenterLocation ?? remote.flatMap { Self.isOnSlide($0) ? $0 : nil }
     }
