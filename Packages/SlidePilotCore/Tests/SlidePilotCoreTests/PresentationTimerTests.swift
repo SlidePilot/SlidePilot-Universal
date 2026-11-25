@@ -37,6 +37,29 @@ struct PresentationTimerTests {
         #expect(timer.displayedSeconds(at: at(3_600)) == 3_600)
     }
 
+    // Release check (#41): a long day of teaching with breaks, and a timer far into
+    // overtime, still shows the exact time (docs/performance.md).
+    @Test func longPresentationWithBreaksStaysExact() {
+        var timer = PresentationTimer()
+        var now: TimeInterval = 0
+        var running: TimeInterval = 0
+        // Eight 90-minute blocks with a 15.4-second remainder and breaks in between.
+        for _ in 0..<8 {
+            timer.toggle(at: at(now))
+            now += 5_415.4
+            running += 5_415.4
+            timer.toggle(at: at(now))
+            now += 900.3
+        }
+        #expect(timer.displayedSeconds(at: at(now)) == Int(running))
+
+        var countdown = PresentationTimer()
+        countdown.setTimer(seconds: 45 * 60)
+        countdown.toggle(at: at(0))
+        #expect(countdown.displayedSeconds(at: at(10 * 3_600)) == 45 * 60 - 10 * 3_600)
+        #expect(countdown.isOvertime(at: at(10 * 3_600)))
+    }
+
     @Test func stopKeepsValueAndStartContinues() {
         var timer = PresentationTimer()
         timer.toggle(at: at(0))
