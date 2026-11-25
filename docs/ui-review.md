@@ -81,7 +81,7 @@ None of these changes parity behavior.
 
 - **Wording:** the same commands use the same titles on Mac and iPad (Layout, Time, Curtain, Draw, Import and Export). Exceptions: the navigator symbol in compact width (P9) and "Moderator" (P5), which exists only in the Mac and iPad menu bars.
 - **Placement:** Layout sits next to Start Presentation on the Mac and with Import/Export and Settings on iPad and iPhone; both follow the decision in #189. Settings are a window on the Mac and a sheet on iPad and iPhone, as the platforms expect.
-- **Shortcuts:** the Mac and iPad menus share all shortcuts (plain letters for the timer, ⌥⌘0…4 for split position, ⌃⌥L for layout settings). The iPhone has no menu bar; every command is reachable from the toolbar or its overflow menu.
+- **Shortcuts:** the Mac and iPad menus share all shortcuts (plain letters for the timer, ⌥⌘0…4 for split position; ⌃⌥L for layout settings was removed in #206). The iPhone has no menu bar; every command is reachable from the toolbar or its overflow menu.
 - **Icons:** all from SF Symbols; only the compact-width navigator symbol differs (P9).
 
 ## Discoverability

@@ -62,6 +62,7 @@ struct NotesTextView: NSViewRepresentable {
         guard let textView = scrollView.documentView as? NSTextView else { return }
         let coordinator = context.coordinator
         textView.isEditable = model.isAvailable
+        textView.setAccessibilityPlaceholderValue(model.placeholder(forPage: page)?.joined(separator: " "))
         if coordinator.page != page || coordinator.loadedNotes != model.stored {
             coordinator.load(into: textView, page: page)
         }

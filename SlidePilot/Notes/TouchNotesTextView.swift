@@ -42,6 +42,8 @@ struct NotesTextView: UIViewRepresentable {
     func updateUIView(_ textView: UITextView, context: Context) {
         let coordinator = context.coordinator
         textView.isEditable = model.isAvailable
+        // UITextView has no placeholder for VoiceOver; the hint reads it after "Notes".
+        textView.accessibilityHint = model.placeholder(forPage: page)?.joined(separator: " ")
         if coordinator.page != page || coordinator.loadedNotes != model.stored {
             coordinator.load(into: textView, page: page)
         }
