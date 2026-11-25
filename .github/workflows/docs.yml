@@ -26,7 +26,7 @@ jobs:
   # the session that wrote this PR has no Node. Removed in the next commit.
   lockfile:
     name: Generate lockfile (temporary)
-    if: github.event_name == 'pull_request' && hashFiles('site/package-lock.json') == ''
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
