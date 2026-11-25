@@ -8,6 +8,7 @@ struct SlidePilotApp: App {
     private var registry: SessionRegistry { appDelegate.registry }
     private var settings: AppSettings { appDelegate.settings }
     private var remote: RemoteService { appDelegate.remote }
+    private var pro: ProStore { appDelegate.pro }
     #else
     @NSApplicationDelegateAdaptor(MacAppDelegate.self) private var appDelegate
     @State private var registry: SessionRegistry
@@ -20,6 +21,8 @@ struct SlidePilotApp: App {
     @State private var appearanceKeeper: AppearanceKeeper
     /// Advertises this instance and keeps pairing state (REM-02); one per app.
     @State private var remote: RemoteService
+    /// The Pro status and purchase (PRO-02); one per app.
+    @State private var pro: ProStore
 
     init() {
         let settings = AppSettings(store: UserDefaults.standard)
@@ -29,6 +32,10 @@ struct SlidePilotApp: App {
         _displayAwakeKeeper = State(initialValue: DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker()))
         _appearanceKeeper = State(initialValue: AppearanceKeeper(settings: settings, applier: AppearanceApplier()))
         _remote = State(initialValue: RemoteService.live(settings: settings, registry: registry))
+        // Listens for transactions from launch on, so none is missed (PRO-02).
+        let pro = ProStore()
+        pro.start()
+        _pro = State(initialValue: pro)
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
         CompanionStore.cleanUpAtLaunch()
@@ -54,6 +61,7 @@ struct SlidePilotApp: App {
                 // Padding and time display size of the presenter (LAY-04, TIME-06).
                 .environment(settings)
                 .environment(remote)
+                .environment(pro)
         }
         .commands {
             PresentationCommands()
@@ -86,6 +94,7 @@ struct SlidePilotApp: App {
             RemoteControlView()
                 .environment(remote)
                 .environment(settings)
+                .environment(pro)
                 .frame(minWidth: 480, minHeight: 360)
         }
         .restorationBehavior(.disabled)
@@ -99,6 +108,7 @@ struct SlidePilotApp: App {
                 .environment(registry)
                 .environment(presentationWindows)
                 .environment(settings)
+                .environment(pro)
         }
         .windowStyle(.hiddenTitleBar)
         .restorationBehavior(.disabled)
@@ -111,6 +121,7 @@ struct SlidePilotApp: App {
             SettingsView()
                 .environment(settings)
                 .environment(remote)
+                .environment(pro)
                 .environment(appDelegate.companions)
         }
         #else
@@ -126,6 +137,7 @@ struct SlidePilotApp: App {
                 .environment(appDelegate.companions)
                 .environment(settings)
                 .environment(remote)
+                .environment(pro)
         }
         .commands {
             PresentationCommands()
@@ -157,6 +169,7 @@ struct SlidePilotApp: App {
             ControlAnotherDeviceButton()
                 .environment(remote)
                 .environment(settings)
+                .environment(pro)
         }
 
         #endif

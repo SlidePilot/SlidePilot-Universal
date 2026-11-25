@@ -10,5 +10,8 @@ SLIDEPILOT_EDITION_FLAGS = SLIDEPILOT_FREE_DOWNLOAD
 // with the App Store version (ADR 0011).
 PRODUCT_BUNDLE_IDENTIFIER = $(BUNDLE_ID_PREFIX).SlidePilot.FreeDownload$(SLIDEPILOT_BUNDLE_ID_SUFFIX)
 
+// No in-app purchase and no StoreKit code in this build (ADR 0020).
+SLIDEPILOT_PRO_PRODUCT_ID =
+
 // Mac only: the iPad app exists in the App Store only.
 SUPPORTED_PLATFORMS = macosx

@@ -1,0 +1,58 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "5C1D9E2A",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "7.99",
+      "familyShareable" : true,
+      "internalID" : "6740000001",
+      "localizations" : [
+        {
+          "description" : "Unlimited presenting on external displays and remote control",
+          "displayName" : "SlidePilot Pro",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "Unbegrenzt präsentieren auf externen Bildschirmen und mit der Fernsteuerung",
+          "displayName" : "SlidePilot Pro",
+          "locale" : "de_DE"
+        },
+        {
+          "description" : "Présentation illimitée sur écrans externes et contrôle à distance",
+          "displayName" : "SlidePilot Pro",
+          "locale" : "fr_FR"
+        }
+      ],
+      "productID" : "de.pascalbraband.SlidePilot.pro",
+      "referenceName" : "SlidePilot Pro",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "de_DE",
+    "_storefront" : "DEU",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

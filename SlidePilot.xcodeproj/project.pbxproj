@@ -28,6 +28,7 @@
 		5A0000000000000000000102 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
 		5A0000000000000000000109 /* FreeDownload.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = FreeDownload.xcconfig; sourceTree = "<group>"; };
 		5A0000000000000000000103 /* Local.xcconfig.example */ = {isa = PBXFileReference; lastKnownFileType = text; path = Local.xcconfig.example; sourceTree = "<group>"; };
+		5A000000000000000000010A /* SlidePilot.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = SlidePilot.storekit; sourceTree = "<group>"; };
 		5A0000000000000000000104 /* SlidePilotCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SlidePilotCore; sourceTree = "<group>"; };
 		5A0000000000000000000105 /* SlidePilotRendering */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SlidePilotRendering; sourceTree = "<group>"; };
 		5A0000000000000000000106 /* SlidePilotRemoteProtocol */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = SlidePilotRemoteProtocol; sourceTree = "<group>"; };
@@ -96,6 +97,7 @@
 				5A0000000000000000000102 /* Shared.xcconfig */,
 				5A0000000000000000000109 /* FreeDownload.xcconfig */,
 				5A0000000000000000000103 /* Local.xcconfig.example */,
+				5A000000000000000000010A /* SlidePilot.storekit */,
 			);
 			path = Config;
 			sourceTree = "<group>";
