@@ -114,6 +114,12 @@ final class LinkedFiles {
 
     // MARK: - Files
 
+    /// The video's file: the temporary copy of a video stored inside the PDF (#142), else
+    /// the file its reference names.
+    func url(for movie: SlideMovie) -> URL? {
+        movie.embeddedFile ?? url(for: movie.reference)
+    }
+
     /// The URL of a reference in the PDF, or `nil` if it names nothing usable.
     func url(for reference: String) -> URL? {
         guard let documentURL else {
@@ -181,7 +187,7 @@ final class LinkedFiles {
 
     private func videos(_ movies: [SlideMovie]) -> [SlideVideo] {
         movies.compactMap { movie in
-            url(for: movie.reference).map {
+            url(for: movie).map {
                 SlideVideo(file: $0, area: movie.bounds, autostarts: movie.activation.autostarts)
             }
         }

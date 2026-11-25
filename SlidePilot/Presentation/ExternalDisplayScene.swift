@@ -42,6 +42,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         // Fails only if called twice; without it the external-display tip stays hidden.
         try? Tips.configure()
         CompanionStore.cleanUpAtLaunch()
+        // Copies of embedded videos that a crash or force quit left behind (#142).
+        EmbeddedFileStore.removeLeftovers()
         return true
     }
 

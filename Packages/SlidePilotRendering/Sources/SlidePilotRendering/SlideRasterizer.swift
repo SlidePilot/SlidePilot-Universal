@@ -43,20 +43,23 @@ actor SlideRasterizer {
     }
 
     /// The movies on page `index` (NAV-07); empty if the page does not exist.
-    func movies(page index: Int) -> [SlideMovie] {
+    func movies(page index: Int) -> [ExtractedMovie] {
         guard let page = document?.page(at: index) else { return [] }
         return MovieExtractor.movies(on: page)
     }
 
     /// The files of all `\movie` annotations and `run:` links, in page order, each once.
+    /// Videos stored inside the PDF are left out: they need no folder access (#142).
     func linkedFileReferences() -> [String] {
         guard let document else { return [] }
         var references: [String] = []
         for index in 0..<document.pageCount {
             guard let pageRef = document.page(at: index)?.pageRef else { continue }
             for entry in RawAnnotationReader.entries(of: pageRef) {
-                let reference = switch entry.kind {
-                case .movie(let file, _), .launch(let file): file
+                let reference: String
+                switch entry.kind {
+                case .movie(_, _, embedded: .some): continue
+                case .movie(let file, _, embedded: nil), .launch(let file): reference = file
                 }
                 if !references.contains(reference) { references.append(reference) }
             }

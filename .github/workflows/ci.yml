@@ -228,13 +228,26 @@ jobs:
       - name: Check sources
         run: sh scripts/check-no-screen-capture.sh
 
+  # Every planned parity item must name the open issue that implements it, so
+  # none is forgotten on the project board (see docs/feature-parity.md).
+  parity-issues:
+    name: Planned parity items have issues
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check docs/feature-parity.md
+        run: python3 -I scripts/check-parity-issues.py
+
   # Single stable status check for the main branch ruleset. It always runs, so
   # docs-only PRs still report it. A skipped job only counts as passed when the
   # change detection itself succeeded and found no code changes.
   ci-success:
     name: ci-success
     if: always()
-    needs: [changes, packages, macos, ipados, no-screen-capture]
+    needs: [changes, packages, macos, ipados, no-screen-capture, parity-issues]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

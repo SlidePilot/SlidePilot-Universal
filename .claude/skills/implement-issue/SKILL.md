@@ -52,6 +52,9 @@ Run the review agents on the branch diff and fix what they find. Repeat until ea
 3. `concurrency-reviewer`: whenever actors, async code, tasks, rendering, file observation, networking or shared state changed.
 
 Then update `docs/feature-parity.md` (status `done` for fully matched items, notes for partial ones) and, if needed, `docs/architecture.md`.
+- Check every parity ID of the issue: after this PR, each one is `done`, `changed` or `dropped`, or it stays `planned` with "Planned in #N" naming an **open** issue that does the rest. If no such issue exists, create it (milestone, dependencies, see "Dependencies and decisions") and name it in the row. Closing the issue must not leave an item without an issue.
+- A parity row added in this PR (e.g. found while studying the old app) is `planned` with its own new issue, unless this PR implements it.
+- `python3 -I scripts/check-parity-issues.py` must pass (CI runs it).
 
 ## 8. Screenshots
 - iPad simulator: copy the fixtures with `scripts/sim-copy-fixtures.sh <UDID>` and open one from the document browser (see "iPad simulator testing" in `CLAUDE.md`), then `xcrun simctl io <device> screenshot ./.pr-screenshots/<file>.png`. Take light and dark (`xcrun simctl ui <device> appearance dark`).
