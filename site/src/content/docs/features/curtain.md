@@ -1,10 +1,6 @@
 ---
 title: Curtain
-nav_order: 6
-parent: Features
 ---
-
-# Curtain
 
 A curtain covers the presentation with a black or white screen, for example during a discussion. You keep seeing your slides.
 

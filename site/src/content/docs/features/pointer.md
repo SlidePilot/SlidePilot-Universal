@@ -1,10 +1,6 @@
 ---
 title: Pointer
-nav_order: 7
-parent: Features
 ---
-
-# Pointer
 
 The pointer shows the audience what you are talking about, like a laser pointer.
 

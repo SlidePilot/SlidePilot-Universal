@@ -1,10 +1,6 @@
 ---
 title: Timing
-nav_order: 3
-parent: Features
 ---
-
-# Timing
 
 Above the slides, the presenter view shows the **time** of your talk on the left and the **clock** on the right. The clock follows your system's 12- or 24-hour setting.
 

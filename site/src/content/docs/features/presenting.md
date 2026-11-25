@@ -1,10 +1,6 @@
 ---
 title: Presenting
-nav_order: 1
-parent: Features
 ---
-
-# Presenting
 
 SlidePilot shows two things: the **presenter view** for you and the **presentation** for the audience, which shows only the current slide (with the pointer, drawings and curtain).
 
@@ -28,7 +24,7 @@ Connect a display with a cable, or choose an AirPlay receiver (Apple TV, a smart
 - AirPlay shows the presentation only while SlidePilot is in the foreground; otherwise it mirrors your screen again.
 - As long as no display is connected, the **Present on a second screen** button in the toolbar explains how to connect one.
 
-Without SlidePilot Pro, the presentation on a second screen can be tried for 3 minutes at a time; see [SlidePilot Pro](../pro.md).
+Without SlidePilot Pro, the presentation on a second screen can be tried for 3 minutes at a time; see [SlidePilot Pro](/pro/).
 
 ## Changing slides
 
@@ -37,9 +33,9 @@ Without SlidePilot Pro, the presentation on a second screen can be tried for 3 m
 | Next slide | → ↓ Page Down, a presentation clicker, or swipe left on the presenter view |
 | Previous slide | ← ↑ Page Up, or swipe right |
 | Previously viewed slide | **Go Back** in the toolbar or ⌃G; press it again to return |
-| Any slide | The [slide navigator](layout.md#slide-navigator) |
+| Any slide | The [slide navigator](/features/layout/#slide-navigator) |
 
-Most presentation clickers send the arrow or Page keys, so they work without any setup. On iPad and iPhone, the keys work with a hardware keyboard, and a [remote device](remote.md) can change slides too.
+Most presentation clickers send the arrow or Page keys, so they work without any setup. On iPad and iPhone, the keys work with a hardware keyboard, and a [remote device](/features/remote/) can change slides too.
 
 ## Links
 
@@ -47,9 +43,9 @@ Links in the PDF work on the current slide, the next-slide preview and the prese
 
 - **Links to another slide** jump there; **Go Back** returns.
 - **Web links** open in your browser.
-- **Links to files** (`\href{run:…}` in LaTeX) open documents and videos in their app on the Mac and in Quick Look on iPad and iPhone. Programs and scripts are never opened. See [Beamer and LaTeX](beamer.md).
+- **Links to files** (`\href{run:…}` in LaTeX) open documents and videos in their app on the Mac and in Quick Look on iPad and iPhone. Programs and scripts are never opened. See [Beamer and LaTeX](/features/beamer/).
 
-On iPad and iPhone, tap a link to follow it. A tap on a link waits a moment, in case you start the double tap that shows the [pointer](pointer.md).
+On iPad and iPhone, tap a link to follow it. A tap on a link waits a moment, in case you start the double tap that shows the [pointer](/features/pointer/).
 
 ## Keeping the display awake
 

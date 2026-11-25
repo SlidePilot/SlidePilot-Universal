@@ -1,9 +1,6 @@
 ---
 title: SlidePilot Pro
-nav_order: 4
 ---
-
-# SlidePilot Pro
 
 SlidePilot is free to download from the App Store. Everything on your own device is unlimited: opening PDFs, the presenter view, notes, timer, pointer, drawing, curtain and settings.
 

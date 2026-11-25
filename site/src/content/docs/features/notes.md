@@ -1,10 +1,6 @@
 ---
 title: Notes
-nav_order: 4
-parent: Features
 ---
-
-# Notes
 
 Show or hide the notes with **N** or the toolbar's **Layout** menu. SlidePilot has two notes modes, chosen in **Layout ▸ Notes Mode** (Mac: **View ▸ Notes Mode**):
 
@@ -20,7 +16,7 @@ Click or tap into the notes and type. A slide without notes shows "Add notes for
 - **Text size**: **Format ▸ Font ▸ Bigger / Smaller** (⌘+ / ⌘-) changes the size for all slides of the PDF.
 - **Done**: finish editing with **Done**, ⌘↩ or Esc, or by clicking outside the notes. While you edit, the arrow keys move in the text; change slides with ⌃⌘← and ⌃⌘→.
 
-Notes are **saved automatically** with the PDF inside SlidePilot. There is nothing to save, and nothing changes in the PDF. See [Your Data](../your-data.md).
+Notes are **saved automatically** with the PDF inside SlidePilot. There is nothing to save, and nothing changes in the PDF. See [Your Data](/your-data/).
 
 ## Split notes from Beamer
 
@@ -34,7 +30,7 @@ With `\setbeameroption{show notes on second screen=right}`, every PDF page holds
 | Bottom | ⌥⌘3 |
 | Top | ⌥⌘4 |
 
-The audience, the next-slide preview, the navigator and remote devices then show only the slide half. The PDF can choose the position itself; see [Beamer and LaTeX](beamer.md#notes-on-the-second-screen).
+The audience, the next-slide preview, the navigator and remote devices then show only the slide half. The PDF can choose the position itself; see [Beamer and LaTeX](/features/beamer/#notes-on-the-second-screen).
 
 ## Importing and exporting notes
 

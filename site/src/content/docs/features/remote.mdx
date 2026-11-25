@@ -1,14 +1,13 @@
 ---
 title: Remote Control
-nav_order: 8
-parent: Features
 ---
 
-# Remote Control
+import { Image } from 'astro:assets';
+import iphoneRemote from '../../../assets/iphone-remote.png';
 
 Any SlidePilot can control a presentation on another device: your iPhone controls the Mac, an iPad controls another iPad, a Mac controls an iPad. Both devices need to be on the same network. There is no separate remote app.
 
-![SlidePilot on iPhone controlling a presentation on another device](../assets/iphone-remote.png){: width="300"}
+<Image src={iphoneRemote} alt="SlidePilot on iPhone controlling a presentation on another device" width={300} />
 
 ## Connecting
 
@@ -34,4 +33,4 @@ Paired devices trust each other and reconnect on their own the next time. To rem
 
 Your notes are shown too: the notes text, or the notes half of the page in Split mode.
 
-Without SlidePilot Pro, each remote connection lasts 3 minutes; see [SlidePilot Pro](../pro.md).
+Without SlidePilot Pro, each remote connection lasts 3 minutes; see [SlidePilot Pro](/pro/).

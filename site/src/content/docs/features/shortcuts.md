@@ -1,10 +1,6 @@
 ---
 title: Keyboard Shortcuts
-nav_order: 10
-parent: Features
 ---
-
-# Keyboard Shortcuts
 
 The single-letter shortcuts work while you are not typing notes. On iPad and iPhone they work with a hardware keyboard; hold ⌘ to see the list.
 

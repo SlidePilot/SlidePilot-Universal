@@ -17,12 +17,18 @@ GitHub Pages serves a project site at `<org>.github.io/<repository name>`, so a 
 
 ## Decision
 - The user documentation lives in **`site/`** as Markdown and is published with **GitHub Pages** at **`docs.slidepilotapp.com`**. Until the domain is set up it is served at `slidepilot.github.io/SlidePilot-Universal`.
-- The site is built with **Jekyll** through GitHub's own Pages actions (`.github/workflows/docs.yml`): pull requests that touch `site/` build it as a check, pushes to `main` deploy it. There is no `gh-pages` branch, no `CNAME` file and no Gemfile; the custom domain is set in the repository's Pages settings.
-- The theme is **Just the Docs**, loaded as a pinned `remote_theme` (sidebar navigation and search). It is part of the website only, not of the app; this ADR is its approval.
+- The site is built with **Starlight** (Astro) in `.github/workflows/docs.yml` and deployed with GitHub's own Pages actions: pull requests that touch `site/` build it as a check, pushes to `main` deploy it. There is no `gh-pages` branch and no `CNAME` file; the custom domain is set in the repository's Pages settings.
+- `site/` is a small Node project (`package.json`, `package-lock.json`, `astro.config.mjs`); the pages are in `site/src/content/docs/`, the images in `site/src/assets/`, and the sidebar order is set in `astro.config.mjs`. Starlight, Astro and their npm dependencies are part of the website only, not of the app; this ADR is their approval.
 - `site/` starts from the old GitBook pages. Updating them for 2.0 is tracked in its own issue.
 - A **frozen copy of the old GitBook pages** stays in `docs/legacy-user-docs/`. It is the reference for the old behavior (parity reviewer, `implement-issue` skill) and is never updated.
 - `docs/` stays internal developer documentation; nothing in it is published.
 - Changes that only touch `site/` count as docs in CI and skip the macOS and iPad jobs.
+
+## Theme (revised 2026-11-25)
+The site first used Jekyll with the **Just the Docs** theme. It was replaced by **Starlight** before the 2.0 release:
+- Starlight looks current, follows the system's light and dark mode, and has full-text search (Pagefind) and an accessible sidebar and table of contents built in.
+- Just the Docs needed Ruby tooling only in CI, but its look is dated and its dark mode is a fixed scheme.
+- Cost: Node tooling in `site/` (a lockfile and npm dependencies to update now and then). Building locally needs Node; otherwise the Docs workflow in the PR is the check.
 
 ## Consequences
 - Docs and code can change in one PR; Claude updates the pages together with the feature.

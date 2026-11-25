@@ -1,10 +1,6 @@
 ---
 title: Features
-nav_order: 2
-has_children: true
 ---
-
-# Features
 
 Everything SlidePilot does while you present. Each page says how it works on the Mac and on iPad and iPhone; where nothing else is said, it works the same everywhere.
 
