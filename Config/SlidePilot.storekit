@@ -20,17 +20,17 @@
       "internalID" : "6740000001",
       "localizations" : [
         {
-          "description" : "Unlimited presenting on external displays and remote control",
+          "description" : "Unlimited presenting and remote control",
           "displayName" : "SlidePilot Pro",
           "locale" : "en_US"
         },
         {
-          "description" : "Unbegrenzt präsentieren auf externen Bildschirmen und mit der Fernsteuerung",
+          "description" : "Unbegrenzt präsentieren und fernsteuern",
           "displayName" : "SlidePilot Pro",
           "locale" : "de_DE"
         },
         {
-          "description" : "Présentation illimitée sur écrans externes et contrôle à distance",
+          "description" : "Présentation et télécommande illimitées",
           "displayName" : "SlidePilot Pro",
           "locale" : "fr_FR"
         }
