@@ -85,51 +85,70 @@ struct ProOfferView: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
+        #if os(macOS)
+        // A plain macOS sheet: the form and a Close button below it, in one layout. A toolbar
+        // (NavigationStack) loses its bottom bar after StoreKit's purchase sheet closed, which
+        // left no way to close the offer; the button here cannot get lost and the sheet's
+        // height follows the form, also when the purchase makes it shorter.
+        VStack(spacing: 0) {
+            form
+                .scrollBounceBehavior(.basedOnSize)
+            HStack {
+                Spacer()
+                closeButton
+            }
+            .padding()
+        }
+        .frame(minWidth: 420, idealWidth: 480, maxWidth: 560)
+        .presentationSizing(.fitted)
+        #else
         NavigationStack {
-            Form {
-                if let reason, !pro.status.unlocksEverything {
-                    Section {
-                        Label {
-                            VStack(alignment: .leading) {
-                                reason.title
-                                    .font(.headline)
-                                reason.message
-                                    .foregroundStyle(.secondary)
-                            }
-                        } icon: {
-                            Image(systemName: "clock")
-                        }
+            form
+                .navigationTitle("SlidePilot Pro")
+                .navigationBarTitleDisplayMode(.inline)
+                // The document's navigation would otherwise add a back button to the sheet.
+                .navigationBarBackButtonHidden()
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        closeButton
                     }
                 }
-                ProProductSection(style: .large) { EmptyView() } extra: { RestorePurchasesButton() }
-                Section("Included in SlidePilot Pro") {
-                    Label("Present on external displays, AirPlay and presentation windows without a time limit", systemImage: "rectangle.on.rectangle")
-                    Label("Control and be controlled by other devices without a time limit", systemImage: "appletvremote.gen4")
-                    Label("No trial banner on the audience screen", systemImage: "eye.slash")
+        }
+        #endif
+    }
+
+    private var form: some View {
+        Form {
+            if let reason, !pro.status.unlocksEverything {
+                Section {
+                    Label {
+                        VStack(alignment: .leading) {
+                            reason.title
+                                .font(.headline)
+                            reason.message
+                                .foregroundStyle(.secondary)
+                        }
+                    } icon: {
+                        Image(systemName: "clock")
+                    }
                 }
             }
-            .formStyle(.grouped)
-            .navigationTitle("SlidePilot Pro")
-            #if os(iOS)
-            .navigationBarTitleDisplayMode(.inline)
-            // The document's navigation would otherwise add a back button to the sheet.
-            .navigationBarBackButtonHidden()
-            #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .close) {
-                        if let close { close() } else { dismiss() }
-                    }
-                        // Escape closes it with a hardware keyboard.
-                        .keyboardShortcut(.cancelAction)
-                }
+            ProProductSection(style: .large) { EmptyView() } extra: { RestorePurchasesButton() }
+            Section("Included in SlidePilot Pro") {
+                Label("Present on external displays, AirPlay and presentation windows without a time limit", systemImage: "rectangle.on.rectangle")
+                Label("Control and be controlled by other devices without a time limit", systemImage: "appletvremote.gen4")
+                Label("No trial banner on the audience screen", systemImage: "eye.slash")
             }
         }
-        #if os(macOS)
-        // A fixed size: when a purchase replaces the product with "unlocked", a sheet that
-        // follows its content shrinks and cuts off its Close button. The form scrolls instead.
-        .frame(width: 480, height: 620)
-        #endif
+        .formStyle(.grouped)
+    }
+
+    private var closeButton: some View {
+        Button(role: .close) {
+            if let close { close() } else { dismiss() }
+        }
+        // Escape closes it with a hardware keyboard.
+        .keyboardShortcut(.cancelAction)
     }
 }
 
