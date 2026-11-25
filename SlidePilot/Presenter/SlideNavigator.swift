@@ -7,9 +7,9 @@ extension FocusedValues {
     @Entry var slideNavigator: PresentationSession?
 }
 
-/// The presenter with the slide navigator as the sidebar of a split view (LAY-06). The
-/// system provides resizing and, in a narrow iPad window, one column at a time. **O**, Esc,
-/// the menu and the sidebar button all drive `session.isNavigatorDisplayed`.
+/// The presenter with the slide navigator as the sidebar of a split view (LAY-06), or as a
+/// sheet on compact width (iPhone, narrow iPad window). The system provides resizing. **O**,
+/// Esc, the menu and the sidebar or navigator button all drive `session.isNavigatorDisplayed`.
 ///
 /// `slidesChrome` (the clock) and `chrome` (the toolbar items) go on the slides column, so
 /// the sidebar keeps the full window height on the Mac. On iPad the document browser's launch
@@ -27,16 +27,81 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
     #endif
 
     var body: some View {
+        #if os(macOS)
         splitView(detail: detail.modifier(slidesChrome).modifier(chrome))
-            #if os(macOS)
             // Layout changes are locked in draw mode (DRAW-05).
             .toolbar(removing: session.drawing.isActive ? .sidebarToggle : nil)
-            #endif
+        #else
+        Group {
+            if sizeClass == .compact {
+                compactView
+            } else {
+                splitView(detail: detail.modifier(slidesChrome).modifier(chrome))
+            }
+        }
+        // An open sidebar must not turn into a sheet that appears unasked when the window
+        // gets narrow.
+        .onChange(of: sizeClass) { _, newClass in
+            if newClass == .compact {
+                session.isNavigatorDisplayed = false
+            }
+        }
+        #endif
     }
 
+    #if os(iOS)
+    /// On compact width (iPhone, narrow iPad window) a split view collapses into a stack with
+    /// the navigator below the slides. iOS 26 pops a stack with a swipe anywhere on the
+    /// content, which took over the swipe to the previous slide (NAV-01). So the slides are
+    /// the only level here and the navigator is a sheet over them.
+    private var compactView: some View {
+        NavigationStack {
+            detail
+                .modifier(slidesChrome)
+                .modifier(chrome)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Show Navigator", systemImage: "rectangle.grid.1x2") {
+                            session.isNavigatorDisplayed = true
+                        }
+                        .help(Text("Show the slide navigator"))
+                        // Layout changes are locked in draw mode (DRAW-05).
+                        .disabled(session.drawing.isActive)
+                    }
+                }
+        }
+        .sheet(isPresented: sheetBinding) {
+            // No bar of its own: the document scene puts its back button into every bar,
+            // and in the sheet that button only closes the sheet. Swipe down closes it.
+            SlideNavigator(session: session, closesOnSelection: true)
+                // The thumbnails sit on the sheet, not on an inset card.
+                .listStyle(.plain)
+                .padding(.top)
+                // A sheet is its own presentation: the presenter's keys don't reach it, so
+                // Esc and the clicker keys are handled here too (LAY-06, NAV-01).
+                .navigatorEscapeKey(session)
+                .slideChangeKeys(session)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
+        .focusedSceneValue(\.slideNavigator, session)
+    }
+
+    private var sheetBinding: Binding<Bool> {
+        Binding {
+            session.isNavigatorDisplayed && !session.drawing.isActive
+        } set: {
+            // The sheet also goes away when the window gets wide and the sidebar takes over;
+            // that must not close (and save closed) the navigator.
+            guard sizeClass == .compact else { return }
+            session.isNavigatorDisplayed = $0
+        }
+    }
+    #endif
+
     private func splitView(detail: some View) -> some View {
-        NavigationSplitView(columnVisibility: visibility, preferredCompactColumn: compactColumn) {
-            SlideNavigator(session: session, closesOnSelection: isCompact)
+        NavigationSplitView(columnVisibility: visibility) {
+            SlideNavigator(session: session, closesOnSelection: false)
                 // The old navigator was 180 pt wide; now it can be resized (approved deviation).
                 .navigationSplitViewColumnWidth(min: 120, ideal: 180, max: 400)
                 #if os(iOS)
@@ -52,14 +117,6 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
         .focusedSceneValue(\.slideNavigator, session)
     }
 
-    private var isCompact: Bool {
-        #if os(iOS)
-        sizeClass == .compact
-        #else
-        false
-        #endif
-    }
-
     private var visibility: Binding<NavigationSplitViewVisibility> {
         Binding {
             session.isNavigatorDisplayed ? .all : .detailOnly
@@ -67,14 +124,6 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
             // Layout changes are locked in draw mode (DRAW-05).
             guard !session.drawing.isActive else { return }
             session.isNavigatorDisplayed = $0 != .detailOnly
-        }
-    }
-
-    private var compactColumn: Binding<NavigationSplitViewColumn> {
-        Binding {
-            session.isNavigatorDisplayed ? .sidebar : .detail
-        } set: {
-            session.isNavigatorDisplayed = $0 == .sidebar
         }
     }
 }
@@ -116,7 +165,7 @@ struct NavigatorMenuItems: View {
 /// highlights a thumbnail and Return jumps to it.
 struct SlideNavigator: View {
     let session: PresentationSession
-    /// In a narrow iPad window the navigator covers the slides, so choosing one closes it.
+    /// In the compact sheet the navigator covers the slides, so choosing one closes it.
     let closesOnSelection: Bool
 
     @State private var pageNumber = ""

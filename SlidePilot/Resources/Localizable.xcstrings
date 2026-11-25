@@ -3755,6 +3755,22 @@
         }
       }
     },
+    "Show the slide navigator" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folien-Navigator anzeigen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afficher le navigateur de diapositives"
+          }
+        }
+      }
+    },
     "Shown when the pointer appearance is Individual." : {
       "localizations" : {
         "de" : {

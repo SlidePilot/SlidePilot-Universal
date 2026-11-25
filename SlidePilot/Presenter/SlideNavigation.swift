@@ -57,8 +57,8 @@ private struct SlideNavigationKeys: ViewModifier {
     let session: PresentationSession
     @FocusState private var hasKeyboardFocus: Bool
 
-    private static let previousKeys: Set<KeyEquivalent> = [.leftArrow, .upArrow, .pageUp]
-    private static let nextKeys: Set<KeyEquivalent> = [.rightArrow, .downArrow, .pageDown]
+    static let previousKeys: Set<KeyEquivalent> = [.leftArrow, .upArrow, .pageUp]
+    static let nextKeys: Set<KeyEquivalent> = [.rightArrow, .downArrow, .pageDown]
 
     func body(content: Content) -> some View {
         content
@@ -106,6 +106,21 @@ private struct SlideNavigationKeys: ViewModifier {
                 session.nextSlideCommand()
                 return .handled
             }
+    }
+}
+
+extension View {
+    /// Only the slide-change keys, without taking the keyboard: for a view presented over the
+    /// presenter (the compact navigator sheet), where the presenter's own keys don't arrive.
+    func slideChangeKeys(_ session: PresentationSession) -> some View {
+        onKeyPress(keys: SlideNavigationKeys.previousKeys) { _ in
+            session.showPreviousPage()
+            return .handled
+        }
+        .onKeyPress(keys: SlideNavigationKeys.nextKeys) { _ in
+            session.nextSlideCommand()
+            return .handled
+        }
     }
 }
 
