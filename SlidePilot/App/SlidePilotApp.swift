@@ -67,9 +67,9 @@ struct SlidePilotApp: App {
             HelpCommands()
             DonationCommands()
         }
-        // A new presenter window fills most of the screen; restored windows keep their frame
-        // (DOC-04). DocumentGroup ignores defaultWindowPlacement, so the size is set here and
-        // the system centers the window.
+        // A new presenter window opens at 1400 × 900, or the visible screen if that is smaller;
+        // restored windows keep their frame (DOC-04). DocumentGroup ignores defaultWindowPlacement,
+        // so the size is set here and the system centers the window.
         .defaultSize(PresenterWindowSize.size(forVisibleScreen: NSScreen.main?.visibleFrame.size ?? .zero))
 
         // A .slidepilot file opened on its own, imported into a PDF (NOTES-11).
