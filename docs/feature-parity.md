@@ -14,7 +14,7 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 - **Native replacement:** the system component that replaces an old UI element (ADR 0010). Parity means the same functionality, not the same look. Custom drawing is allowed only for the slide surface, the pointer overlay and the drawing layer; any other custom UI must be justified in its PR. `–` = no UI element.
 - **Milestone:** P1 = Phase 1 – Risk Prototypes, P2 = Presenting, P3 = Notes, Pointer, Drawing, P4 = Remote Protocol, Settings, Localization, P5 = Polish & Release. Remote is implemented in P4 and ships with 2.0 (ADR 0015). The iPhone work is done together at the end of P4 (ADR 0015).
 - **Status:**
-  - `planned`: not yet implemented.
+  - `planned`: not yet implemented. The row names the open issue that implements it as "Planned in #N", so no item is missing from the project board; CI checks this (`scripts/check-parity-issues.py`). A row that is added later, or that a closed issue leaves `planned`, gets its issue in the same PR.
   - `changed`: implemented, but deliberately different from the old app.
   - `dropped`: will not be implemented.
   - `done`: implemented and parity-reviewed.

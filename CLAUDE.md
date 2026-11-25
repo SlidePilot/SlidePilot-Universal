@@ -39,6 +39,7 @@ A from-scratch rewrite of SlidePilot (AppKit macOS PDF presenter for LaTeX Beame
 - Do not reproduce items listed under "Known defects – do not replicate".
 - A new deviation needs the product owner's approval (and an ADR if it is architectural). Then update the item's status and notes in the same PR.
 - When an item is implemented and parity-reviewed, set its status to `done` in the same PR.
+- Every `planned` item names the open issue that implements it ("Planned in #N"; CI checks it). Adding a row, or closing an issue that leaves an item (partly) `planned`, means creating or naming that issue in the same PR; never leave "stays planned until …" without an issue number.
 - New features beyond parity are out of scope unless the product owner asks for them.
 
 ## Architecture rules
