@@ -3,8 +3,6 @@ import SwiftUI
 
 @main
 struct SlidePilotApp: App {
-    /// The app's phase across all scenes; Pro is checked again whenever it becomes active.
-    @Environment(\.scenePhase) private var scenePhase
     #if os(iOS)
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     private var registry: SessionRegistry { appDelegate.registry }
@@ -65,7 +63,6 @@ struct SlidePilotApp: App {
                 .environment(remote)
                 .environment(pro)
         }
-        .onChange(of: scenePhase) { _, phase in refreshPro(when: phase) }
         .commands {
             PresentationCommands()
             LayoutCommands()
@@ -142,7 +139,6 @@ struct SlidePilotApp: App {
                 .environment(remote)
                 .environment(pro)
         }
-        .onChange(of: scenePhase) { _, phase in refreshPro(when: phase) }
         .commands {
             PresentationCommands()
             ModeratorCommands()
@@ -181,12 +177,5 @@ struct SlidePilotApp: App {
         }
 
         #endif
-    }
-
-    /// A refund or a purchase made while the app was in the background (or a transaction
-    /// update it missed) shows up when the app is used again (PRO-02).
-    private func refreshPro(when phase: ScenePhase) {
-        guard phase == .active else { return }
-        Task { await pro.refreshStatus() }
     }
 }

@@ -185,7 +185,8 @@ private struct ProProductSection<Header: View, Extra: View>: View {
                 .accessibilityHidden(true)
         }
         switch style {
-        case .large: view.productViewStyle(.large)
+        // The large style sizes to its content and would sit off center in the row.
+        case .large: view.productViewStyle(.large).frame(maxWidth: .infinity)
         case .compact: view.productViewStyle(.compact)
         }
     }
