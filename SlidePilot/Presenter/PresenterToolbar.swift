@@ -50,7 +50,11 @@ struct PresenterToolbar: ToolbarContent {
         }
         // The drawing tools are the focused task's own items while drawing; while the notes
         // are edited in a compact bar, Draw makes room for Done (#152).
-        DrawingToolbar(session: session, placement: focus == .notes ? focus.placement() : .automatic)
+        DrawingToolbar(
+            session: session,
+            placement: focus == .notes ? focus.placement() : .automatic,
+            isCompact: focus != .none
+        )
 
         outputItems
     }

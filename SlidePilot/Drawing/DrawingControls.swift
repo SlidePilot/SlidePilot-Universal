@@ -91,6 +91,9 @@ extension View {
 struct DrawingToolbar: ToolbarContent {
     let session: PresentationSession
     let placement: ToolbarItemPlacement
+    /// A compact bar (iPhone, a narrow iPad window) moves the tools that do not fit into its
+    /// overflow menu, so Color is a menu there (#207).
+    var isCompact = false
 
     private var model: DrawingModel { session.drawing }
 
@@ -121,8 +124,22 @@ struct DrawingToolbar: ToolbarContent {
     @ViewBuilder private var tools: some View {
         Toggle("Draw", systemImage: "pencil.tip.crop.circle", isOn: isDrawing)
             .help(model.isActive ? Text("Stop drawing") : Text("Draw on the current slide"))
+            #if os(iOS)
+            // The Apple Pencil's palette (DRAW-11) needs an anchor that stays in the bar: the
+            // compact Color menu may sit in the overflow menu, and a menu cannot be opened from
+            // code.
+            .modifier(ColorPalettePopover(model: model, isEnabled: isCompact && model.isActive))
+            #endif
         if model.isActive {
+            #if os(iOS)
+            if isCompact {
+                ColorMenu(model: model)
+            } else {
+                ColorButton(model: model)
+            }
+            #else
             ColorButton(model: model)
+            #endif
             #if os(iOS)
             // A keyboard is not always attached to an iPad or iPhone (product-owner
             // decision 2026-11-25, #189); the Mac has Edit ▸ Undo and ⌘Z.
@@ -185,12 +202,82 @@ private struct ColorButton: View {
         .help(Text("Color"))
         .accessibilityLabel(Text("Color"))
         .accessibilityValue(model.drawings.color.name)
-        .popover(isPresented: $model.isColorPaletteShown) {
-            ColorPalette(model: model)
-                .presentationCompactAdaptation(.popover)
+        .modifier(ColorPalettePopover(model: model))
+    }
+}
+
+/// The six preset colors in a popover (DRAW-03, DRAW-11).
+private struct ColorPalettePopover: ViewModifier {
+    @Bindable var model: DrawingModel
+    var isEnabled = true
+
+    func body(content: Content) -> some View {
+        if isEnabled {
+            content.popover(isPresented: $model.isColorPaletteShown) {
+                ColorPalette(model: model)
+                    .presentationCompactAdaptation(.popover)
+            }
+        } else {
+            content
         }
     }
 }
+
+#if os(iOS)
+/// Color in a compact bar (DRAW-03): a menu with the six preset colors. iOS drops a button
+/// with a custom view from a full bar instead of moving it into the overflow menu, so the
+/// color could not be changed on iPhone; a menu moves there as a submenu (#207).
+private struct ColorMenu: View {
+    let model: DrawingModel
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.displayScale) private var displayScale
+    /// About the size of a toolbar or menu symbol, growing with Dynamic Type.
+    @ScaledMetric(relativeTo: .body) private var swatchSize = 20.0
+
+    var body: some View {
+        Menu {
+            Picker("Color", selection: selection) {
+                ForEach(StrokeColor.presets, id: \.self) { color in
+                    Label {
+                        color.name
+                    } icon: {
+                        swatchImage(color)
+                    }
+                    .tag(color)
+                }
+            }
+            .pickerStyle(.inline)
+        } label: {
+            Label {
+                Text("Color")
+            } icon: {
+                swatchImage(model.drawings.color)
+            }
+        }
+        .help(Text("Color"))
+        .accessibilityValue(model.drawings.color.name)
+    }
+
+    private var selection: Binding<StrokeColor> {
+        Binding {
+            model.drawings.color
+        } set: {
+            model.drawings.selectColor($0)
+        }
+    }
+
+    /// The ring swatch as an image: menus and bars show images only, and draw them in their
+    /// own colors only when the rendering mode is original.
+    private func swatchImage(_ color: StrokeColor) -> Image {
+        let renderer = ImageRenderer(content: ColorSwatch(color: color)
+            .frame(width: swatchSize, height: swatchSize)
+            .environment(\.colorScheme, colorScheme))
+        renderer.scale = displayScale
+        guard let image = renderer.uiImage else { return Image(systemName: "circle.fill") }
+        return Image(uiImage: image.withRenderingMode(.alwaysOriginal)).renderingMode(.original)
+    }
+}
+#endif
 
 /// The current color: a dot inside a ring of the same color. The hairline keeps white
 /// visible on a light bar and black on a dark one.
