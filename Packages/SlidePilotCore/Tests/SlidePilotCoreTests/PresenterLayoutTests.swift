@@ -133,8 +133,8 @@ struct PresenterLayoutTests {
         #expect(places == [
             [.whole],
             [.left, .right],
-            [.largeLeft, .topRight, .bottomRight],
-            [.topLeft, .bottomLeft, .largeRight],
+            [.left, .topRight, .bottomRight],
+            [.topLeft, .bottomLeft, .right],
         ])
         #expect(PresenterArrangement.double.place(ofSlotAt: 2) == nil)
         for arrangement in PresenterArrangement.allCases {
@@ -142,8 +142,8 @@ struct PresenterLayoutTests {
         }
     }
 
-    // LAY-04: while the window stacks the columns (iPad portrait), all slots are in one
-    // column, so the slot pickers name them from top to bottom.
+    // LAY-04: while the window stacks the columns (iPad portrait), the columns become rows
+    // and the pair of small slots sits side by side (#206).
     @Test func stackedSlotPlacesFollowTheColumn() {
         let places = PresenterArrangement.allCases.map { arrangement in
             arrangement.slotIndicesInVisualOrder.map { arrangement.place(ofSlotAt: $0, stacked: true) }
@@ -151,8 +151,8 @@ struct PresenterLayoutTests {
         #expect(places == [
             [.whole],
             [.top, .bottom],
-            [.top, .middle, .bottom],
-            [.top, .middle, .bottom],
+            [.top, .bottomLeft, .bottomRight],
+            [.topLeft, .topRight, .bottom],
         ])
         #expect(PresenterArrangement.tripleLeft.place(ofSlotAt: 2, stacked: true) == .top)
         #expect(PresenterArrangement.double.place(ofSlotAt: 2, stacked: true) == nil)

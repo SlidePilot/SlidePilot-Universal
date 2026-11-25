@@ -2077,38 +2077,6 @@
         }
       }
     },
-    "Large Left" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Groß links"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grande à gauche"
-          }
-        }
-      }
-    },
-    "Large Right" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Groß rechts"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grande à droite"
-          }
-        }
-      }
-    },
     "Last opened %@" : {
       "localizations" : {
         "de" : {
@@ -2202,22 +2170,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Magenta"
-          }
-        }
-      }
-    },
-    "Middle" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mitte"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Au milieu"
           }
         }
       }

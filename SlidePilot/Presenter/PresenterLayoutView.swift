@@ -88,19 +88,26 @@ struct PresenterLayoutView: View {
             .finishesNotesEditingOnTap(session.notes)
     }
 
-    /// Two slots on top of each other, each half the height (LAY-03).
-    private func stack(_ top: PresenterSlot, _ bottom: PresenterSlot) -> some View {
-        VStack(spacing: 0) {
-            PresenterSlotView(session: session, kind: top)
-                .presenterSlotTitle(top, position: session.position)
-                .padding([.horizontal, .top], padding)
-                .padding(.bottom, padding / 2)
+    /// The two small slots of a triple arrangement, each half the column (LAY-03): on top
+    /// of each other in a column, side by side once the window stacks the columns into
+    /// rows, so the slides stay as large as the row allows (#206).
+    private func stack(_ first: PresenterSlot, _ second: PresenterSlot) -> some View {
+        let sideBySide = layout.isStacked
+        let pair = sideBySide ? AnyLayout(HStackLayout(spacing: 0)) : AnyLayout(VStackLayout(spacing: 0))
+        let leadingEdge: Edge.Set = sideBySide ? .leading : .top
+        let trailingEdge: Edge.Set = sideBySide ? .trailing : .bottom
+        let across: Edge.Set = sideBySide ? .vertical : .horizontal
+        return pair {
+            PresenterSlotView(session: session, kind: first)
+                .presenterSlotTitle(first, position: session.position)
+                .padding(across.union(leadingEdge), padding)
+                .padding(trailingEdge, padding / 2)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .finishesNotesEditingOnTap(session.notes)
-            PresenterSlotView(session: session, kind: bottom)
-                .presenterSlotTitle(bottom, position: session.position)
-                .padding([.horizontal, .bottom], padding)
-                .padding(.top, padding / 2)
+            PresenterSlotView(session: session, kind: second)
+                .presenterSlotTitle(second, position: session.position)
+                .padding(across.union(trailingEdge), padding)
+                .padding(leadingEdge, padding / 2)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .finishesNotesEditingOnTap(session.notes)
         }

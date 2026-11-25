@@ -213,15 +213,12 @@ extension PresenterSlotPlace {
         case .whole: "Slide"
         case .left: "Left"
         case .right: "Right"
-        case .largeLeft: "Large Left"
-        case .topRight: "Top Right"
-        case .bottomRight: "Bottom Right"
-        case .topLeft: "Top Left"
-        case .bottomLeft: "Bottom Left"
-        case .largeRight: "Large Right"
         case .top: "Top"
-        case .middle: "Middle"
         case .bottom: "Bottom"
+        case .topLeft: "Top Left"
+        case .topRight: "Top Right"
+        case .bottomLeft: "Bottom Left"
+        case .bottomRight: "Bottom Right"
         }
     }
 }
