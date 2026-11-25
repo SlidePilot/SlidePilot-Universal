@@ -86,8 +86,23 @@ private struct ExternalDisplayExplanation: View {
     @ScaledMetric(relativeTo: .body) private var idealWidth = 320
     /// The text's height, so the compact sheet fits it.
     @State private var height: CGFloat = 0
+    /// Room for the sheet's drag indicator.
+    @ScaledMetric(relativeTo: .body) private var dragIndicatorRoom = 20
 
     var body: some View {
+        // Scrolls when the text is taller than the sheet can get (large text, landscape).
+        ScrollView {
+            content
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height = $0 }
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .frame(idealWidth: idealWidth, idealHeight: height)
+        // Popovers ignore detents.
+        .presentationDetents(height > 0 ? [.height(height + dragIndicatorRoom)] : [.medium])
+        .presentationDragIndicator(.visible)
+    }
+
+    private var content: some View {
         Group {
             if isConnected {
                 Label("The presentation is shown on the external display.", systemImage: "checkmark.circle")
@@ -107,11 +122,6 @@ private struct ExternalDisplayExplanation: View {
         }
         .fixedSize(horizontal: false, vertical: true)
         .padding()
-        .frame(idealWidth: idealWidth)
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height = $0 }
-        // Popovers ignore detents; the sheet's drag indicator needs a little room.
-        .presentationDetents(height > 0 ? [.height(height + 20)] : [.medium])
-        .presentationDragIndicator(.visible)
     }
 }
 #endif
