@@ -2825,6 +2825,22 @@
         }
       }
     },
+    "Overtime" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überzogen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dépassement"
+          }
+        }
+      }
+    },
     "Overtime %@" : {
       "localizations" : {
         "de" : {

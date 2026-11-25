@@ -105,6 +105,9 @@ struct DrawingToolbar: ToolbarContent {
             }
             .toggleStyle(.button)
             .labelStyle(.iconOnly)
+            // Without its own container the toolbar item gives every control the first
+            // control's name, so VoiceOver read "Draw" for Color, Clear and White Canvas.
+            .accessibilityElement(children: .contain)
         }
         #else
         // An item group: iOS drops a custom item from a full bar instead of moving it into
