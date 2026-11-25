@@ -243,6 +243,26 @@ extension MacSnapshots {
         try await WindowSnapshot.record(view, name: "pro-offer", size: CGSize(width: 480, height: 620), appearance: appearance)
     }
 
+    // PRO-03: the audience screen during the trial (banner) and after it (deck gone).
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func audienceTrial(appearance: WindowSnapshot.Appearance) async throws {
+        let document = try PDFFileDocument(data: Fixture.data("plain-slides.pdf"))
+        let session = PresentationSession(data: document.data, info: document.info, page: 1, layoutStore: InMemoryPresenterLayoutStore())
+        let start = ContinuousClock.now
+        var now = start
+        let trial = AudienceOutputTrial(now: { now }, sleep: { _ in try await Task.sleep(for: .seconds(3_600)) })
+        trial.start(status: .locked)
+        let view = PresentationView(session: session)
+            .audienceTrial(trial)
+            .environment(AppSettings(store: InMemorySettingsStore()))
+            .environment(ProStore(fixedStatus: .locked))
+        try await WindowSnapshot.record(view, name: "audience-trial-banner", size: CGSize(width: 960, height: 600), appearance: appearance)
+        now = start + TrialSession.limit
+        trial.coordinator?.refresh()
+        try await WindowSnapshot.record(view, name: "audience-trial-ended", size: CGSize(width: 960, height: 600), appearance: appearance)
+        trial.stop()
+    }
+
     // PRO-04: the offer when a remote control trial ends.
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func remoteTrialEnded(appearance: WindowSnapshot.Appearance) async throws {

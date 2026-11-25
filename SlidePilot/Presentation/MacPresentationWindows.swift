@@ -28,12 +28,29 @@ final class MacPresentationWindows {
         /// The connected screens at that time: moves after a screen change are macOS's, not the user's.
         var screensAtPresenterPlace: [CGDirectDisplayID] = []
         var presenterMoves: Task<Void, Never>?
+        /// The window is closed to open a new one on another screen; the trial goes on.
+        var isReopening = false
     }
+
+    /// The trial of each document's presentation window while Pro is missing (PRO-03).
+    private var trials: [PresentationSession.ID: AudienceOutputTrial] = [:]
 
     @ObservationIgnored private var entries: [PresentationSession.ID: Entry] = [:]
     /// Screens for the presentation windows about to open, consumed in order by their
     /// placement (several documents can open at once).
     @ObservationIgnored private var pendingScreens: [CGDirectDisplayID?] = []
+
+    func trial(for id: PresentationSession.ID) -> AudienceOutputTrial? {
+        trials[id]
+    }
+
+    /// Starts a new trial for a presentation the user starts (PRO-03, ADR 0020): every
+    /// presentation window is audience output, also on a single screen.
+    func startTrial(for id: PresentationSession.ID, status: ProStatus) {
+        let trial = trials[id] ?? AudienceOutputTrial()
+        trials[id] = trial
+        trial.start(status: status)
+    }
 
     func isPresenting(_ id: PresentationSession.ID) -> Bool {
         entries[id]?.isPresenting == true
@@ -60,6 +77,8 @@ final class MacPresentationWindows {
         let presentation = entries[id]?.presentation
         entries[id]?.presenterMoves?.cancel()
         entries[id] = nil
+        trials[id]?.stop()
+        trials[id] = nil
         presentation?.close()
     }
 
@@ -141,6 +160,7 @@ final class MacPresentationWindows {
         guard entries[id]?.presentation !== window else { return }
         entries[id, default: Entry()].presentation = window
         entries[id, default: Entry()].isPresenting = true
+        entries[id, default: Entry()].isReopening = false
         window.tabbingMode = .disallowed
         window.collectionBehavior.insert(.fullScreenPrimary)
         // Deliberately unowned and short-lived: it only finishes setting up this window and
@@ -168,18 +188,28 @@ final class MacPresentationWindows {
         guard let entry = entries[id], window == nil || entry.presentation === window else { return }
         entries[id]?.presentation = nil
         entries[id]?.isPresenting = false
+        // Closed by the user: the session ends; a new start is a new trial.
+        if !entry.isReopening {
+            trials[id]?.stop()
+        }
     }
 
     /// Closes the presentation window and waits until SwiftUI has removed it, so the same
     /// session can open a new one. Returns `false` if the waiting task was cancelled.
     func closePresentation(_ id: PresentationSession.ID) async -> Bool {
+        entries[id]?.isReopening = true
         entries[id]?.presentation?.close()
         for _ in 0..<40 where isPresenting(id) {
             do {
                 try await Task.sleep(for: .milliseconds(50))
             } catch {
+                entries[id]?.isReopening = false
                 return false
             }
+        }
+        // A window that did not close is not replaced; closing it later is the user's.
+        if isPresenting(id) {
+            entries[id]?.isReopening = false
         }
         return !Task.isCancelled
     }
@@ -226,6 +256,8 @@ struct PresentationWindowContent: View {
     var body: some View {
         if let id, let session = registry.session(for: id) {
             PresentationView(session: session)
+                // Banner and end of the trial (PRO-03).
+                .audienceTrial(windows.trial(for: id))
                 .background(WindowBridge { newWindow in
                     // The audience sees a dark window whatever the Appearance setting (SET-05).
                     newWindow.appearance = NSAppearance(named: .darkAqua)
@@ -258,6 +290,7 @@ private struct PresenterWindowModifier: ViewModifier {
     let session: PresentationSession
     @Environment(MacPresentationWindows.self) private var windows
     @Environment(SessionRegistry.self) private var registry
+    @Environment(ProStore.self) private var pro
     @Environment(\.openWindow) private var openWindow
 
     func body(content: Content) -> some View {
@@ -277,11 +310,14 @@ private struct PresenterWindowModifier: ViewModifier {
             // trailing end whatever else the bar shows.
             .environment(\.startPresentation, StartPresentationAction(perform: startPresentation))
             .task(id: session.id) { await followScreenChanges() }
+            // The offer when the presentation starts and when its trial ends (PRO-03).
+            .audienceTrialOffer(windows.trial(for: session.id))
     }
 
     private func startPresentation() {
         guard !windows.showRunningPresentation(session.id) else { return }
         windows.rememberPresenterPlace(session.id)
+        windows.startTrial(for: session.id, status: pro.status)
         windows.prepareToOpen(session.id)
         openWindow(id: PresentationScene.id, value: session.id)
     }

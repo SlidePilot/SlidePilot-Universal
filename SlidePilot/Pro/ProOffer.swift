@@ -21,7 +21,7 @@ enum ProOfferReason: Hashable, Sendable, Identifiable {
         case .audienceOutputStarted, .remoteControlStarted:
             Text("Trial Version", comment: "Title of the purchase offer's reason line when a trial starts.")
         case .trialEnded:
-            Text("Trial Ended", comment: "Title of the purchase offer's reason line when a trial is over.")
+            Text("Trial Ended", comment: "When a trial is over: the title of the purchase offer's reason line, and the message on the audience screen.")
         }
     }
 

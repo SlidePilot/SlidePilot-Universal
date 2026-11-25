@@ -4255,6 +4255,23 @@
         }
       }
     },
+    "SlidePilot – Trial Version" : {
+      "comment" : "Banner on the audience screen while the 3-minute trial of SlidePilot Pro runs.",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot – Probeversion"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SlidePilot – Version d’essai"
+          }
+        }
+      }
+    },
     "Slides fade into each other on the presentation screen." : {
       "localizations" : {
         "de" : {
@@ -5347,7 +5364,7 @@
       }
     },
     "Trial Ended" : {
-      "comment" : "Title of the purchase offer's reason line when a trial is over.",
+      "comment" : "When a trial is over: the title of the purchase offer's reason line, and the message on the audience screen.",
       "localizations" : {
         "de" : {
           "stringUnit" : {

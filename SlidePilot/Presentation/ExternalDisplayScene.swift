@@ -19,6 +19,9 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     private(set) lazy var remote = RemoteService.live(settings: settings, registry: registry, pro: pro)
     /// The Pro status and purchase (PRO-02); one per app, also read by the external display.
     let pro = ProStore()
+    /// The trial of the external display while Pro is missing (PRO-03); one per app, since
+    /// iPadOS swaps the display's scene on window switches.
+    let audienceTrial = AudienceOutputTrial()
     private lazy var windows = AppWindowTracker(registry: registry)
     /// Applies the Appearance setting to all app windows (SET-05).
     private lazy var appearanceKeeper = AppearanceKeeper(settings: settings, applier: AppearanceApplier())
@@ -81,6 +84,8 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
         }
         let registry = app.registry
         app.externalDisplays.connect(session.persistentIdentifier)
+        // A new trial per connection; scene swaps continue the running one (PRO-03).
+        app.audienceTrial.connect(session.persistentIdentifier, status: app.pro.status)
         // Users who connected a display once know how; the tip never comes back (#82).
         ExternalDisplayTip().invalidate(reason: .actionPerformed)
         // iPadOS 27: the accessory of one app window, which shows that window's document.
@@ -91,7 +96,7 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
         }
         #endif
         let window = UIWindow(windowScene: windowScene)
-        let host = UIHostingController(rootView: ExternalDisplayView(appWindow: appWindow).environment(registry).environment(app.settings).environment(app.pro))
+        let host = UIHostingController(rootView: ExternalDisplayView(appWindow: appWindow).environment(registry).environment(app.settings).environment(app.pro).environment(app.audienceTrial))
         host.view.backgroundColor = .black
         window.rootViewController = host
         window.isHidden = false
@@ -100,6 +105,7 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
 
     func sceneDidDisconnect(_ scene: UIScene) {
         AppDelegate.current?.externalDisplays.disconnect(scene.session.persistentIdentifier)
+        AppDelegate.current?.audienceTrial.disconnect(scene.session.persistentIdentifier)
         window = nil
     }
 }
@@ -109,6 +115,7 @@ struct ExternalDisplayView: View {
     /// The app window whose document is shown; `nil` follows the active window.
     var appWindow: String?
     @Environment(SessionRegistry.self) private var registry
+    @Environment(AudienceOutputTrial.self) private var trial: AudienceOutputTrial?
 
     private var session: PresentationSession? {
         if let appWindow { registry.session(inWindow: appWindow) } else { registry.activeSession }
@@ -122,6 +129,8 @@ struct ExternalDisplayView: View {
                 ReadyToPresentView()
             }
         }
+        // Banner, end and Pro status of the trial (PRO-03); the ready screen counts too.
+        .audienceTrial(trial)
         .persistentSystemOverlays(.hidden)
     }
 }
