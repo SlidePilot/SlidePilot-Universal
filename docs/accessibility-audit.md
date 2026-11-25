@@ -41,8 +41,8 @@ Audit for issue #72 before the 2.0 release: the finished app on macOS 26 and iPa
 - **Mac split buttons** (Start Time, Curtain): AppKit names the main segment after its symbol ("play", "rectangle"). The button itself carries the right name and help text; setting a label on the icon does not reach the segment. A system behavior; no app-side fix found.
 - **Notes text size** does not follow Dynamic Type (see 1.4.4); this is the approved NOTES-05 behavior.
 
-## Follow-ups
-- #193: automated `performAccessibilityAudit` in an iPad UI test (needs an ADR for the XCTest exception; cannot run on the Mac outside the test host).
+## Regression checks
+There is no automated accessibility test. An iPad UI test running `performAccessibilityAudit` (#193) was dropped: it would cover only the iPad, need an XCTest target with its own test plan and extra CI time, and its system-UI findings change with each iPadOS version. Instead, repeat the [manual checks](#manual-checks) before every release.
 
 ## Manual checks
 Before the release, on real devices:
