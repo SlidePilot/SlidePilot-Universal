@@ -22,6 +22,7 @@
 | [0018](0018-mac-test-host.md) | Mac test host: capture and drive only the SlidePilot test build | Accepted |
 | [0019](0019-slidepilot-file.md) | The `.slidepilot` file: export and import of a PDF's stored data | Accepted |
 | [0020](0020-free-app-with-pro-purchase.md) | Free App Store app with the in-app purchase SlidePilot Pro | Accepted |
+| [0021](0021-user-docs-on-github-pages.md) | User documentation in this repository, published with GitHub Pages | Accepted |
 
 ## Process
 1. Propose the decision in chat with the product owner (context, options, recommendation).

@@ -1,6 +1,6 @@
 # User documentation for 2.0
 
-The user documentation lives on GitBook (<https://slidepilot.gitbook.io/slidepilot>), outside this repository; the app's Help command opens it (SET-06). This page lists what each GitBook page needs for 2.0, so the site can be updated before the release. Behavior details are in [`feature-parity.md`](feature-parity.md) (IDs in brackets); the pricing rules are in [ADR 0020](decisions/0020-free-app-with-pro-purchase.md).
+The user documentation lives in [`site/`](../site/) and is published at docs.slidepilotapp.com (ADR 0021); the app's Help command (SET-06) switches to it in #225. It starts as a copy of the old GitBook pages. This page lists what each page needs for 2.0 (#225); headings name the old page, the file in `site/` may have a new name. Behavior details are in [`feature-parity.md`](feature-parity.md) (IDs in brackets); the pricing rules are in [ADR 0020](decisions/0020-free-app-with-pro-purchase.md).
 
 ## Whole site
 - SlidePilot 2.0 runs on macOS 26, iPadOS 26 and iOS 26 (iPhone) as one App Store app. Pages that say "Mac" or show only Mac menus need an iPad and iPhone note: the same commands are in the toolbar, its overflow menu and the settings sheet; keyboard shortcuts work with a hardware keyboard.

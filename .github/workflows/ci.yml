@@ -59,7 +59,7 @@ jobs:
               continue
             fi
             case "${file}" in
-              docs/* | .claude/* | .github/ISSUE_TEMPLATE/* | \
+              docs/* | site/* | .claude/* | .github/ISSUE_TEMPLATE/* | \
               .github/pull_request_template.md | LICENSE)
                 kind="docs" ;;
               */*)

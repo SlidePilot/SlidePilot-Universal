@@ -18,7 +18,7 @@ Follow these steps in order. Talk to the user in German; everything written to t
 ## 2. Study the original
 - Read the parity rows for every ID in `docs/feature-parity.md`, including "Native replacement", "Inconsistencies found" and "Known defects – do not replicate".
 - Read the old code at the referenced file:line locations and follow it until the full behavior is clear: `../../../../SlidePilot-macOS/SlidePilot/` (local worktree; `../SlidePilot-macOS/SlidePilot/` from the main checkout) or `/opt/reference/SlidePilot-macOS/SlidePilot/` (cloud).
-- Read the matching docs page: `https://slidepilot.gitbook.io/slidepilot/basic-features/<page>.md`.
+- Read the matching old docs page: `docs/legacy-user-docs/basic-features/<page>.md`. If the change alters what users see or do, update the matching page in `site/` (the current user documentation, ADR 0021) in the same PR.
 - Read the relevant ADRs in `docs/decisions/` and the affected sections of `docs/architecture.md`.
 
 ## 3. Plan

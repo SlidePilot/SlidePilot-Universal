@@ -30,7 +30,8 @@ Never commit personal data of the product owner or anyone else: e-mail addresses
 A from-scratch rewrite of SlidePilot (AppKit macOS PDF presenter for LaTeX Beamer) as **one universal SwiftUI app for macOS 26 and iPadOS 26**, Swift 6.
 
 - Old app (read-only reference, never copy code from it): next to the repository folder, i.e. `../../../../SlidePilot-macOS` from a session worktree (`../SlidePilot-macOS` from the main checkout), or `/opt/reference/SlidePilot-macOS` (cloud sessions). Paths in the parity doc are relative to its `SlidePilot/` folder.
-- Old user docs: <https://slidepilot.gitbook.io/slidepilot> (index: `/llms.txt`, each page available as `.md`).
+- Old user docs: frozen copy in `docs/legacy-user-docs/` (from GitBook, never updated).
+- Current user docs: `site/` (Markdown, Jekyll), published with GitHub Pages at docs.slidepilotapp.com (ADR 0021). Update the affected page in the same PR as a user-visible change.
 - GitHub: `SlidePilot/SlidePilot-Universal`. Milestones: Phase 0 – Foundation … Phase 5 – Polish & Release.
 
 ## Feature-parity rule
@@ -88,7 +89,7 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 - Releases: Xcode Cloud archives and uploads both platforms when started manually; see [`docs/release.md`](docs/release.md).
 - The app target uses `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (Xcode 26 default for apps). Packages use the default (nonisolated); mark UI-facing package types `@MainActor` explicitly.
 
-- CI: `.github/workflows/ci.yml` on `macos-26` with Xcode pinned via `DEVELOPER_DIR` (currently Xcode 26.6, iPad simulator iOS 26.5). The required status check is **`ci-success`**; it only passes if all jobs pass. PRs that only change docs (`docs/`, root `*.md`, `LICENSE`), Claude configuration (`.claude/`) or issue/PR templates skip the macOS and iPad jobs (job `changes`); any other path runs everything. When the runner image changes, update the pinned Xcode and simulator OS in one PR.
+- CI: `.github/workflows/ci.yml` on `macos-26` with Xcode pinned via `DEVELOPER_DIR` (currently Xcode 26.6, iPad simulator iOS 26.5). The required status check is **`ci-success`**; it only passes if all jobs pass. PRs that only change docs (`docs/`, `site/`, root `*.md`, `LICENSE`), Claude configuration (`.claude/`) or issue/PR templates skip the macOS and iPad jobs (job `changes`); any other path runs everything. When the runner image changes, update the pinned Xcode and simulator OS in one PR.
 - Cloud sessions have **no Swift toolchain**. There, GitHub Actions is the only build/test feedback (ADR 0008): push the branch, open a draft PR, and read the results with `gh pr checks` / `gh run view --log-failed`.
 - In local sessions the Xcode MCP tools may be used instead of `xcodebuild` if available.
 
@@ -222,7 +223,8 @@ Tools/TestHost/         SlidePilot Test Host: the only process allowed to captur
 Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
 Fixtures/               sample Beamer PDFs + .tex sources, legacy notes file, test video (see its README)
-docs/                   feature-parity.md, architecture.md, decisions/
+docs/                   feature-parity.md, architecture.md, decisions/, legacy-user-docs/ (frozen old docs); internal only
+site/                   user documentation (Jekyll, GitHub Pages, docs.slidepilotapp.com; ADR 0021)
 .github/                CI workflow, issue templates, PR template
 .claude/                settings.json (permissions, sandbox), agents/ (parity-, design-, concurrency-reviewer),
                         skills/implement-issue (the standard workflow for every issue)
