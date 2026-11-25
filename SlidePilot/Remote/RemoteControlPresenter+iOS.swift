@@ -7,10 +7,10 @@ import UIKit
 /// The document launch scene only runs the action of its buttons and cannot present a
 /// SwiftUI sheet, so this presents a hosting controller from UIKit.
 enum RemoteControlPresenter {
-    static func present(remote: RemoteService, settings: AppSettings) {
+    static func present(remote: RemoteService, settings: AppSettings, pro: ProStore) {
         guard let presenter = LaunchScreenPresenter.topViewController() else { return }
         let host = UIHostingController<PresentedRemoteControl?>(rootView: nil)
-        host.rootView = PresentedRemoteControl(remote: remote, settings: settings) { [weak host] in
+        host.rootView = PresentedRemoteControl(remote: remote, settings: settings, pro: pro) { [weak host] in
             host?.dismiss(animated: true)
         }
         host.modalPresentationStyle = .fullScreen
@@ -38,12 +38,14 @@ enum LaunchScreenPresenter {
 private struct PresentedRemoteControl: View {
     let remote: RemoteService
     let settings: AppSettings
+    let pro: ProStore
     let close: () -> Void
 
     var body: some View {
         RemoteControlView(close: close)
             .environment(remote)
             .environment(settings)
+            .environment(pro)
     }
 }
 #endif
