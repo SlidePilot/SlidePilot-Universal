@@ -18,6 +18,12 @@ SLIDEPILOT_EDITION_FLAGS =
 SLIDEPILOT_BUNDLE_ID_SUFFIX =
 
 PRODUCT_BUNDLE_IDENTIFIER = $(BUNDLE_ID_PREFIX).SlidePilot$(SLIDEPILOT_BUNDLE_ID_SUFFIX)
+
+// The non-consumable in-app purchase "SlidePilot Pro" (ADR 0020, PRO-02). The app reads it
+// from the Info.plist key SlidePilotProProductID; the StoreKit configuration file
+// Config/SlidePilot.storekit and App Store Connect use the same ID. The .storekit file
+// cannot read build settings: a fork with its own BUNDLE_ID_PREFIX changes the ID there too.
+SLIDEPILOT_PRO_PRODUCT_ID = $(BUNDLE_ID_PREFIX).SlidePilot.pro
 MARKETING_VERSION = 0.1.0
 CURRENT_PROJECT_VERSION = 1
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) $(SLIDEPILOT_EDITION_FLAGS)

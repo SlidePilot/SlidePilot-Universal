@@ -54,6 +54,9 @@
                ReferencedContainer = "container:SlidePilot.xcodeproj">
             </BuildableReference>
       </BuildableProductRunnable>
+      <StoreKitConfigurationFileReference
+         identifier = "../../Config/SlidePilot.storekit">
+      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
