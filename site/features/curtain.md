@@ -6,10 +6,17 @@ parent: Features
 
 # Curtain
 
-Sometimes you quickly want to cover the Presentation Window, either because you need to search through your slides, without anyone seeing them or if you use a beamer, you need the wall where the beamer projects the image.
+A curtain covers the presentation with a black or white screen, for example during a discussion. You keep seeing your slides.
 
-SlidePilot offers the curtain feature, which allows you to quickly show and hide a black or white screen on the Presenter Window.
+| Curtain | Key |
+|---|---|
+| Black screen | B or . |
+| White screen | W |
 
-Show the black curtain by pressing **B** or selecting *Presentation* → *Display Black Screen*.
+Press the same key again to show the slides.
 
-Show the white curtain by pressing **W** or selecting *Presentation* → *Display White Screen*.
+The **Curtain** button in the toolbar shows or hides the curtain in the color you used last (black at first). Its menu chooses black or white.
+
+While a curtain is shown, the toolbar says **Screen is hidden**. Click or tap it to show the slides again.
+
+The pointer stays visible above the curtain, so you can still point at something. The curtain belongs to one PDF: with several PDFs open, each has its own.

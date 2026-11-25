@@ -1,42 +1,37 @@
 ---
-title: Remote
+title: Remote Control
 nav_order: 8
 parent: Features
 ---
 
-# Remote
+# Remote Control
 
-Information on how to use the iOS Remote app with SlidePilot
+Any SlidePilot can control a presentation on another device: your iPhone controls the Mac, an iPad controls another iPad, a Mac controls an iPad. Both devices need to be on the same network. There is no separate remote app.
 
-SlidePilot Remote for iOS allows you to control your presentations in SlidePilot on the Mac using your phone. You can download SlidePilot Remote [here](https://apps.apple.com/app/id1535769714)**.**
+![SlidePilot on iPhone controlling a presentation on another device](../assets/iphone-remote.png){: width="300"}
 
 ## Connecting
 
-To connect, open the SlidePilot Remote app on your phone and the SlidePilot app on your Mac. Go to *Preferences* → *Remote*. You are presented with connection instructions and a table of available remote devices. If you've started the app on your phone, it should appear in the list. Click *Connect* and confirm, that the given code is displayed on your remote device.
+1. On the device that presents, open the PDF. **Settings ▸ Remote ▸ Allow remote control** must be on (it is by default).
+2. On the controlling device, open the remote mode:
+   - Mac: **File ▸ Control Another Device…**
+   - iPad and iPhone: **Control Another Device…** in the document browser that SlidePilot shows at launch.
+3. Choose the device. The first time, both devices show a 6-digit code: check that the codes match and confirm on both.
+4. If several PDFs are open there, choose one.
 
-This device is now stored as a trusted device and SlidePilot will automatically connect to it the next time both SlidePilot and SlidePilot Remote are active.
-
-If you want to disconnect a connected device, click the *Disconnect*  button next to the corresponding device. This will also remove the device from the trusted devices list.
-
-To remove a device from the trusted devices list, which is currently not connected, click the *Trusted Devices* button, select the device you want to remove and click the *Remove* button.
+Paired devices trust each other and reconnect on their own the next time. To remove a device, go to **Settings ▸ Remote ▸ Trusted Devices…**. The connection is encrypted, and only paired devices can control a presentation.
 
 ## Controlling
 
-When connected, you can see the current, next and notes slide and notes text, depending on your layout and your SlidePilot presentation. You can show the **next and previous slide** by swiping to the right or to the left. You can pinch to zoom on the presented slide images.
+| Action | How |
+|---|---|
+| Next / previous slide | Swipe left / right, the arrow buttons, or the arrow keys |
+| Zoom into the slide | Pinch, then drag to look around |
+| Pointer | Double-tap and hold on the slide, then drag |
+| Curtain | Tap the Curtain button; touch and hold it to choose black or white. B, W and . work too |
+| What you see | The layout menu: current and next slide, current slide and notes, or current slide only |
+| Progress | The progress button shows "Slide n of m" with a progress bar |
 
-Show a **black or white curtain** by pressing the <img src="../assets/curtain-button.svg" alt="" data-size="line"> button in the top bar. To choose the color of the curtain, do a long press on the button, which will open a context menu. Here you can select either black or white curtain.
+Your notes are shown too: the notes text, or the notes half of the page in Split mode.
 
-You can **control the pointer** on the presentation screen by double tapping, holding and then dragging your finger across the screen.
-
-## Layout
-
-SlidePilot Remote allows you to adjust the layout to your specific needs. Press the layout <img src="../assets/layout-button.svg" alt="" data-size="line"> button to open a list of available layouts. Select the one that best fits your needs and displays the information, you need for your presentation.
-
-By pressing the <img src="../assets/progress-button.svg" alt="" data-size="line"> button, you can show or hide the presentation progress.
-
-## Troubleshooting
-
-If the devices won't connect you can try the following:
-
-* Restart both SlidePilot on the Mac and SlidePilot Remote on your phone
-* Remove the device in question from the trusted devices list
+Without SlidePilot Pro, each remote connection lasts 3 minutes; see [SlidePilot Pro](../pro.md).

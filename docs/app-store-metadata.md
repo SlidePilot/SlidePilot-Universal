@@ -18,7 +18,7 @@ Rules for the texts:
 | In-app purchase | SlidePilot Pro, non-consumable, 7.99 EUR, Family Sharing on (see `docs/release.md`) |
 | Age rating | Every question "None" / "No" → 4+ |
 | Copyright | `2026` followed by the copyright holder named in `LICENSE` |
-| Support URL | https://slidepilot.gitbook.io/slidepilot |
+| Support URL | https://docs.slidepilotapp.com |
 | Marketing URL | https://github.com/SlidePilot/SlidePilot-Universal |
 | Privacy policy URL | https://github.com/SlidePilot/SlidePilot-Universal/blob/main/docs/privacy-policy.md ([text](privacy-policy.md)) |
 

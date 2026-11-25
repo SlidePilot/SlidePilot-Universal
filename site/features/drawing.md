@@ -6,10 +6,33 @@ parent: Features
 
 # Drawing
 
-Using SlidePilot's drawing tools, you can draw on the current slide. To display the drawing tools, press the  **D** key or select *Moderator* → *Draw*.
+Draw on the current slide while the audience watches. Start with **D** or the **Draw** button in the toolbar; end with the same button or Esc.
 
-You can then choose any of the predefined color and draw on the current slide. If you want to draw on a white canvas, press **ctrl + K** or go to *Moderator* → *Canvas Mode*. To clear the drawings on the canvas, press **ctrl + C** go to *Moderator* → *Clear Drawings*.
+![Drawing on a slide on iPad, with the drawing tools in the toolbar](../assets/ipad-drawing.png)
 
-There are **two options** for drawing. By default, once you exit the drawing mode, the drawings will be gone. You can also not change the layout or switch slides when in this mode. To continue your presentation you have to exit the drawing mode.
+While you draw, the presenter view shows only the current slide, and the toolbar shows the drawing tools:
 
-The other option (which can be enabled in *SlidePilot → Preferences → Save Drawings*) saves the drawings when exiting the drawing mode. You can then also change slides while in drawing mode. And furthermore you can export your drawings to a combined PDF with *File → Export Drawings*.
+- **Color**: black, white, blue, green, magenta or orange.
+- **Clear**: removes all strokes from the slide (⌃C).
+- **White Canvas**: draws on a white sheet instead of the slide (⌃⇧K); ⌃K goes back to the slide. Switching clears the strokes.
+- **Undo and Redo**: ⌘Z and ⇧⌘Z, the undo gestures, or the buttons on iPad and iPhone.
+
+Draw with the mouse or trackpad on the Mac, and with a finger or Apple Pencil on iPad and iPhone.
+
+**Apple Pencil**: double-tap (or squeeze an Apple Pencil Pro) does what you chose in the system's Apple Pencil settings: switch to the previous color, or show the colors.
+
+## Keeping drawings
+
+By default, drawings disappear when you stop drawing, and you cannot change slides while drawing. Turn on **Settings ▸ General ▸ Save drawings** to:
+
+- keep each slide's drawing when you change slides or stop drawing,
+- change slides while drawing,
+- store the drawings with the PDF, so they are still there after reopening it.
+
+Turning the setting off again deletes the saved drawings of all PDFs, after asking.
+
+## Exporting drawings
+
+**Export Drawings…** (⌥⌘E) creates a copy of the PDF with your drawings on the slides, for example to share them after a lecture. On the Mac it is in the **File** menu; on iPad and iPhone in the **Import and Export** menu.
+
+A [curtain](curtain.md) hides the drawing from the audience; the drawing is still there when the curtain goes away.
