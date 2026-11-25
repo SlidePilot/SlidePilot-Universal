@@ -21,6 +21,7 @@ GitHub Pages serves a project site at `<org>.github.io/<repository name>`, so a 
 - The theme is **Just the Docs**, loaded as a pinned `remote_theme` (sidebar navigation and search). It is part of the website only, not of the app; this ADR is its approval.
 - `site/` starts from the old GitBook pages. Updating them for 2.0 is tracked in its own issue.
 - A **frozen copy of the old GitBook pages** stays in `docs/legacy-user-docs/`. It is the reference for the old behavior (parity reviewer, `implement-issue` skill) and is never updated.
+  - *Update:* the frozen copy was later removed from the repository. It stays available in git history at commit `34d7287`; the old code remains the reference for behavior.
 - `docs/` stays internal developer documentation; nothing in it is published.
 - Changes that only touch `site/` count as docs in CI and skip the macOS and iPad jobs.
 
