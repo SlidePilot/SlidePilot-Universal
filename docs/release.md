@@ -15,10 +15,10 @@ SlidePilot ships as one universal App Store app for macOS, iPadOS and iPhone (AD
    - Reference name "SlidePilot Pro", product ID `<bundle ID>.pro`, i.e. the value of `SLIDEPILOT_PRO_PRODUCT_ID` in `Config/Shared.xcconfig` (set up in #198).
    - Price **7.99 EUR** (base storefront Germany; App Store Connect fills the other storefronts).
    - **Family Sharing** on (it cannot be turned off again once on).
-   - Display name and description in en, de and fr (en "SlidePilot Pro", "Unlimited presenting on external displays and remote control").
+   - Display name and description in en, de and fr, as in `Config/SlidePilot.storekit` (en "SlidePilot Pro", "Unlimited presenting on external displays and remote control").
    - Review information: a **screenshot of the purchase offer** in the app (from the PR of #201) and a review note saying where the offer appears (Settings ▸ SlidePilot Pro).
 4. **Submission:** the first in-app purchase must be added to the app version (Version ▸ In-App Purchases and Subscriptions) and is reviewed together with it.
-5. **Testing before release:** locally with the StoreKit configuration file of the `SlidePilot` scheme (no App Store Connect needed); in TestFlight the purchase uses the sandbox and costs nothing.
+5. **Testing before release:** locally with the StoreKit configuration file `Config/SlidePilot.storekit` of the `SlidePilot` scheme, run from Xcode (no App Store Connect needed; Debug ▸ StoreKit ▸ Manage Transactions refunds or deletes test purchases); in TestFlight the purchase uses the sandbox and costs nothing.
 
 ## Versions and build numbers
 - `MARKETING_VERSION` in `Config/Shared.xcconfig` is the user-visible version.

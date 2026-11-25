@@ -17,6 +17,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     private lazy var displayAwakeKeeper = DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker())
     /// Advertises this instance and keeps pairing state (REM-02); one per app.
     private(set) lazy var remote = RemoteService.live(settings: settings, registry: registry)
+    /// The Pro status and purchase (PRO-02); one per app, also read by the external display.
+    let pro = ProStore()
     private lazy var windows = AppWindowTracker(registry: registry)
     /// Applies the Appearance setting to all app windows (SET-05).
     private lazy var appearanceKeeper = AppearanceKeeper(settings: settings, applier: AppearanceApplier())
@@ -39,6 +41,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         _ = displayAwakeKeeper
         _ = appearanceKeeper
         _ = remote
+        // Listens for transactions from launch on, so none is missed (PRO-02).
+        pro.start()
         // Fails only if called twice; without it the external-display tip stays hidden.
         try? Tips.configure()
         CompanionStore.cleanUpAtLaunch()
@@ -87,7 +91,7 @@ final class ExternalDisplaySceneDelegate: NSObject, UIWindowSceneDelegate {
         }
         #endif
         let window = UIWindow(windowScene: windowScene)
-        let host = UIHostingController(rootView: ExternalDisplayView(appWindow: appWindow).environment(registry).environment(app.settings))
+        let host = UIHostingController(rootView: ExternalDisplayView(appWindow: appWindow).environment(registry).environment(app.settings).environment(app.pro))
         host.view.backgroundColor = .black
         window.rootViewController = host
         window.isHidden = false
