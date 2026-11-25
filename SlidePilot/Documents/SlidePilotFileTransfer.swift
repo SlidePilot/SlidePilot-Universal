@@ -187,8 +187,9 @@ private struct SlidePilotFileTransferModifier: ViewModifier {
             }
     }
 
+    /// Off in draw mode (DRAW-05): an import would replace the drawing being edited.
     private var slidePilotFileCommands: FocusedSlidePilotFile? {
-        companion.entry != nil ? FocusedSlidePilotFile(
+        companion.entry != nil && !session.drawing.isActive ? FocusedSlidePilotFile(
             importFile: { isImporting = true },
             exportFile: export,
             shareItem: shareItem

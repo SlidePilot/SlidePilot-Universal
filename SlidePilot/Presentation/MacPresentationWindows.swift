@@ -273,7 +273,8 @@ struct PresentationWindowContent: View {
                 // Like the old app, A, P and N also work while the presentation is key
                 // (LAY-02), except in draw mode, which locks the layout (DRAW-05).
                 .focusedSceneValue(\.presenterLayout, session.drawing.isActive ? nil : session.layout)
-                // Start/Stop, Reset and Mode also work after a click into the presentation.
+                // Start/Stop and Reset also work after a click into the presentation; Set Timer… needs
+                // the presenter, which shows its sheet (TIME-03).
                 .focusedSceneValue(\.presenterTimer, FocusedPresenterTimer(session: session, showSetTimer: nil))
         } else {
             // Fallback if the document went away first: close this window. The window
