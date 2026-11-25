@@ -83,7 +83,8 @@ extension View {
     }
 }
 
-/// Draw, and in draw mode color, Clear and the white canvas (DRAW-03, DRAW-04), in the
+/// Draw, and in draw mode color, Undo and Redo (iOS, DRAW-08), Clear and the white canvas
+/// (DRAW-03, DRAW-04), in the
 /// presenter's toolbar (`PresenterToolbar`). Draw is a toggle that stays in place and ends
 /// draw mode too, so the tools need no Done button, which the full iPad toolbar would push
 /// into its overflow menu.
@@ -119,6 +120,20 @@ struct DrawingToolbar: ToolbarContent {
             .help(model.isActive ? Text("Stop drawing") : Text("Draw on the current slide"))
         if model.isActive {
             ColorButton(model: model)
+            #if os(iOS)
+            // A keyboard is not always attached to an iPad or iPhone (product-owner
+            // decision 2026-11-25, #189); the Mac has Edit ▸ Undo and ⌘Z.
+            Button("Undo", systemImage: "arrow.uturn.backward") {
+                model.undo()
+            }
+            .disabled(!model.canUndo)
+            .help(Text("Undo"))
+            Button("Redo", systemImage: "arrow.uturn.forward") {
+                model.redo()
+            }
+            .disabled(!model.canRedo)
+            .help(Text("Redo"))
+            #endif
             Button("Clear Drawings", systemImage: "eraser") {
                 model.clear(page: session.currentPage)
             }

@@ -25,9 +25,9 @@ struct PresenterToolbar: ToolbarContent {
 
         if session.curtain.isShown {
             ToolbarItem(placement: HiddenScreenWarning.placement) {
-                HiddenScreenWarning()
+                HiddenScreenWarning(session: session)
             }
-            // A status, not a button: no glass capsule around it.
+            // A status first: no glass capsule around it.
             .sharedBackgroundVisibility(.hidden)
         }
 

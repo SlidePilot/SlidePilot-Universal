@@ -62,25 +62,33 @@ struct CurtainToolbarMenu: View {
 
 /// Tells the presenter that the audience sees a curtain instead of the slide (CUR-02).
 /// Replaces the old app's custom warning banner.
+/// A click or tap hides the curtain (product-owner decision 2026-11-25, #189).
 struct HiddenScreenWarning: View {
+    let session: PresentationSession
     #if os(iOS)
     @Environment(\.horizontalSizeClass) private var sizeClass
     #endif
 
     var body: some View {
-        // Toolbars show labels icon-only on iPad (also with .titleAndIcon); the warning
-        // needs its text. Only the icon is orange: orange text is too faint in light mode.
-        HStack {
-            Image(systemName: "eye.slash")
-                .foregroundStyle(.orange)
-            if showsText {
-                Text("Screen is hidden")
+        Button {
+            session.curtain = .none
+        } label: {
+            // Toolbars show labels icon-only on iPad (also with .titleAndIcon); the warning
+            // needs its text. Only the icon is orange: orange text is too faint in light mode.
+            HStack {
+                Image(systemName: "eye.slash")
+                    .foregroundStyle(.orange)
+                if showsText {
+                    Text("Screen is hidden")
+                }
             }
+            .fixedSize()
         }
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
+        // A status that can be clicked, not a toolbar button: no bezel around it.
+        .buttonStyle(.plain)
         .accessibilityLabel(Text("Screen is hidden"))
-        .help(Text("Screen is hidden"))
+        .accessibilityHint(Text("Hide the curtain and show the slides"))
+        .help(Text("Hide the curtain and show the slides"))
     }
 
     /// A compact bar (iPhone, narrow iPad window) has no room for the text: the crossed-out

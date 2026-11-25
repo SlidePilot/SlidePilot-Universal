@@ -83,7 +83,7 @@ struct TimeToolbarMenu: View {
     var body: some View {
         let isRunning = session.timer.isRunning
         // Read here, not in the menu's content: the system builds the content outside the
-        // body's observation, so a timer set later left Turn Off Timer disabled.
+        // body's observation, so a timer set later left Turn Off Timer disabled (iOS).
         let hasTimer = session.timer.mode == .timer
         Menu {
             if Self.listsStartStop || isInOverflow {
@@ -120,6 +120,9 @@ struct TimeToolbarMenu: View {
             session.timer.toggle()
         }
         .help(isRunning ? Text("Stop Time") : Text("Start Time"))
+        // The Mac builds the toolbar menu once and keeps the items' enabled state; a new
+        // identity rebuilds it when the timer is set or turned off.
+        .id(hasTimer)
     }
 
     #if os(iOS)
