@@ -35,7 +35,7 @@ struct SlidePilotFileImportCheck {
             paragraphs.append(String(localized: "The file was exported for a PDF with a different number of pages (\(file.pdfPageCount) instead of \(pageCount))."))
         }
         if skipsDrawings {
-            paragraphs.append(String(localized: "The drawings in the file aren’t imported because Save Drawings is off."))
+            paragraphs.append(String(localized: "The drawings in the file aren’t imported because Save drawings is off."))
         }
         confirmationMessage = paragraphs.isEmpty ? nil : paragraphs.joined(separator: "\n\n")
     }
