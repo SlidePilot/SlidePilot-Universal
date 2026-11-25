@@ -16,6 +16,8 @@ struct SlidePilotApp: App {
     @State private var settings: AppSettings
     /// Keeps the display awake while the app runs, if the setting is on (SET-04).
     @State private var displayAwakeKeeper: DisplayAwakeKeeper
+    /// Applies the Appearance setting to all windows while the app runs (SET-05).
+    @State private var appearanceKeeper: AppearanceKeeper
     /// Advertises this instance and keeps pairing state (REM-02); one per app.
     @State private var remote: RemoteService
 
@@ -25,13 +27,11 @@ struct SlidePilotApp: App {
         _registry = State(initialValue: registry)
         _settings = State(initialValue: settings)
         _displayAwakeKeeper = State(initialValue: DisplayAwakeKeeper(settings: settings, blocker: DisplaySleepBlocker()))
+        _appearanceKeeper = State(initialValue: AppearanceKeeper(settings: settings, applier: AppearanceApplier()))
         _remote = State(initialValue: RemoteService.live(settings: settings, registry: registry))
         // Like the old app: the presenter and presentation windows never merge into tabs (DOC-04).
         NSWindow.allowsAutomaticWindowTabbing = false
         CompanionStore.cleanUpAtLaunch()
-        #if DEBUG
-        TestHostAppearance.apply()
-        #endif
     }
     #endif
 
@@ -65,6 +65,10 @@ struct SlidePilotApp: App {
             HelpCommands()
             DonationCommands()
         }
+        // A new presenter window fills most of the screen; restored windows keep their frame
+        // (DOC-04). DocumentGroup ignores defaultWindowPlacement, so the size is set here and
+        // the system centers the window.
+        .defaultSize(PresenterWindowSize.size(forVisibleScreen: NSScreen.main?.visibleFrame.size ?? .zero))
 
         // A .slidepilot file opened on its own, imported into a PDF (NOTES-11).
         DocumentGroup(viewing: SlidePilotFileDocument.self) { file in

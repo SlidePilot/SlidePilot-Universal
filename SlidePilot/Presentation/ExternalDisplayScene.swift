@@ -18,6 +18,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     /// Advertises this instance and keeps pairing state (REM-02); one per app.
     private(set) lazy var remote = RemoteService.live(settings: settings, registry: registry)
     private lazy var windows = AppWindowTracker(registry: registry)
+    /// Applies the Appearance setting to all app windows (SET-05).
+    private lazy var appearanceKeeper = AppearanceKeeper(settings: settings, applier: AppearanceApplier())
 
     /// The only global path to the app-owned registry: UIKit creates scene delegates by
     /// class, so there is no other way to hand it to the external-display scene.
@@ -35,6 +37,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         // Lives as long as the app; the app delegate is never released.
         windows.start()
         _ = displayAwakeKeeper
+        _ = appearanceKeeper
         _ = remote
         // Fails only if called twice; without it the external-display tip stays hidden.
         try? Tips.configure()
