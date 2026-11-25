@@ -34,7 +34,7 @@ Audit for issue #72 before the 2.0 release: the finished app on macOS 26 and iPa
 - **Mac draw-mode tools:** the toolbar item holding Draw, Color, Clear Drawings and White Canvas gave every control the name "Draw". It now has its own accessibility container; each control has its own name.
 - **Navigator page field:** the plain text field had no accessible name on the Mac (only its prompt). It is now "Page Number".
 - **Timer warnings without color:** one exclamation mark for the first warning, two for the second, while Differentiate Without Color is on.
-- **Timer announcements:** VoiceOver says when a warning or overtime starts.
+- **Timer announcements:** VoiceOver says when a warning or overtime starts (high priority, so it is not dropped while VoiceOver reads the notes). Starting a timer that is already inside a warning announces nothing; the spoken value names the stage.
 - **Navigator scroll:** no scroll animation with Reduce Motion.
 
 ## Known limitations

@@ -86,22 +86,26 @@ private struct TimerValueText: View {
         let stage = timer.stage(at: now, thresholds: warnings)
         // Overtime has its minus sign; the two warnings get a mark, so they are not told
         // apart by color alone (WCAG 1.4.1).
-        HStack(spacing: 0) {
-            if differentiatesWithoutColor, let symbol = stage.symbolName {
-                // The spoken value already names the warning.
-                Image(systemName: symbol)
-                    .accessibilityHidden(true)
+        let value = Text(verbatim: TimerValueFormat.string(seconds: seconds))
+        // The mark is part of the text, so it shrinks with the digits in narrow windows. The
+        // label and value below replace its spoken name.
+        let marked = if differentiatesWithoutColor, let symbol = stage.symbolName {
+            Text("\(Image(systemName: symbol)) \(value)")
+        } else {
+            value
+        }
+        marked
+            .accessibilityLabel(timer.mode == .stopwatch ? Text("Stopwatch") : Text("Timer"))
+            .accessibilityValue(accessibilityValue(seconds: seconds, stage: stage))
+            .foregroundStyle(stage.style)
+            // The color change is not the only cue: VoiceOver says when a warning starts,
+            // with high priority so it is not dropped while VoiceOver reads the notes.
+            .onChange(of: stage) { _, newStage in
+                guard timer.isRunning, let text = newStage.announcement else { return }
+                var announcement = AttributedString(text)
+                announcement.accessibilitySpeechAnnouncementPriority = .high
+                AccessibilityNotification.Announcement(announcement).post()
             }
-            Text(verbatim: TimerValueFormat.string(seconds: seconds))
-                .accessibilityLabel(timer.mode == .stopwatch ? Text("Stopwatch") : Text("Timer"))
-                .accessibilityValue(accessibilityValue(seconds: seconds, stage: stage))
-        }
-        .foregroundStyle(stage.style)
-        // The color change is not the only cue: VoiceOver says when a warning starts.
-        .onChange(of: stage) { _, newStage in
-            guard timer.isRunning, let announcement = newStage.announcement else { return }
-            AccessibilityNotification.Announcement(announcement).post()
-        }
     }
 
     /// Spoken as words ("1 minute, 5 seconds"), not as digits with colons. The warning
