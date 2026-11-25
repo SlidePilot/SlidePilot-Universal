@@ -2,7 +2,7 @@ import SwiftUI
 
 /// The online user guide, which the old app opened from Help ▸ SlidePilot Help (SET-06).
 enum HelpWebsite {
-    static let url = URL(string: "https://slidepilot.gitbook.io/slidepilot")!
+    static let url = URL(string: "https://docs.slidepilotapp.com")!
 }
 
 /// Help ▸ SlidePilot Help (⌘?) opens the online user guide (SET-06), in place of the

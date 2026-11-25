@@ -1,24 +1,30 @@
 ---
 title: Troubleshooting
-nav_order: 4
+nav_order: 6
 ---
 
 # Troubleshooting
 
-## Warning when opening SlidePilot for the first time
+## The presentation does not appear on the second screen
 
-When opening SlidePilot for the first time, follow these steps.
+- **Mac**: click **Start Presentation** in the toolbar (⌥⌘P). If the presentation is on the wrong screen, move it there with Mission Control, or disconnect and reconnect the screen.
+- **iPad and iPhone**: check that the display is connected or that Screen Mirroring is on in Control Center. With AirPlay, SlidePilot must be in the foreground.
+- Without SlidePilot Pro, the presentation ends after 3 minutes; see [SlidePilot Pro](pro.md).
 
-1. Hold down the `ctrl`-key, then right-click on the app and select "Open"
-2. A popup will appear with an option to "Open" the app. Press this button
-3. If the popup doesn't show the option "Open", just repeat step 2. It should work now.
+## A video does not play, or a link to a file does nothing
 
-That's it, SlidePilot is ready for your awesome presentations.
+SlidePilot needs access to the folder that contains the PDF and its files. Choose **Allow Access…** when SlidePilot asks, and select the folder of the PDF. Check that the path in the LaTeX source is relative to the PDF. See [Beamer and LaTeX](features/beamer.md).
 
-## Updates don't work
+## I can't change slides while drawing
 
-It is important to move SlidePilot to the `Applications` folder for updates to be installed successfully.
+Turn on **Settings ▸ General ▸ Save drawings**, or stop drawing first. See [Drawing](features/drawing.md#keeping-drawings).
 
-## Added/Removed page from PDF and now notes are off
+## The other device does not appear in the remote list
 
-Please see the [File Format](features/notes.md#file-format) section in the Notes chapter for information on how to fix this problem.
+- Both devices must be on the same network, with SlidePilot open on both.
+- On the presenting device, **Settings ▸ Remote ▸ Allow remote control** must be on.
+- If a device no longer trusts the other one, select it again to pair.
+
+## My notes are on the wrong slides after I changed the PDF
+
+Notes stay with their slide number. After adding or removing slides, move the notes of the following slides. If you keep notes in an RTF file, you can also insert an empty section there and import it again; see [Notes](features/notes.md#importing-and-exporting-notes).

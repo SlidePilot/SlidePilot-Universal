@@ -6,12 +6,34 @@ parent: Features
 
 # Pointer
 
-To show the pointer on the Presentation Window, press the **C** key or select *Presentation* → *Show Pointer*. If you go over the current slide in the Presenter Window with your cursor, the pointer will appear at the same position on the Presentation Window. To hide the pointer, do the same as showing the pointer.
+The pointer shows the audience what you are talking about, like a laser pointer.
 
-**Note:** This works in the normal layout (where notes are not displayed in the Presenter Window) but it also works when the notes are displayed. Therefore, just like before, go with the cursor over the (smaller) current slide preview in the Presenter Window and the pointer will magically appear on the Presentation Window.
+## On the Mac
 
-### Pointer appearance
+Turn the pointer on with **C**, or with the **Pointer** menu in the toolbar. Then move the mouse over the current slide in the presenter window: the pointer moves on the presentation at the same place. It also follows the mouse when you move it over the presentation window itself.
 
-You can change the appearance of the pointer by going to *Presentation* → *Pointer Appearance* and select one of the given options.
+## On iPad and iPhone
 
-By selecting *Individual*, you can use a customized pointer. To customize the pointer, open the *Pointer Editor*.
+**Double-tap and hold** on the current slide: the pointer appears where your finger is. Drag to move it, and lift your finger to hide it. This works whether the pointer is turned on or not, and also with Apple Pencil.
+
+When the pointer is turned on (**C** or the **Pointer** menu), it also follows a trackpad, a mouse or a hovering Apple Pencil.
+
+A single swipe always changes the slide, so the pointer never gets in the way of your slides.
+
+## Appearance
+
+Choose the look in the **Pointer** menu or with ⌘1 to ⌘7:
+
+| Appearance | Shortcut |
+|---|---|
+| Cursor | ⌘1 |
+| Hand | ⌘2 |
+| Dot | ⌘3 |
+| Circle | ⌘4 |
+| Target Black | ⌘5 |
+| Target Red | ⌘6 |
+| Individual | ⌘7 |
+
+**Individual** is your own pointer. Design it in **Settings ▸ Pointer**: choose a shape (target, dot, circle, plus, cross or square), its size, thickness, color, border and shadow. The preview shows the result, and open presentations change right away.
+
+SlidePilot remembers for each PDF whether the pointer is on and which appearance it uses.

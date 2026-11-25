@@ -12,7 +12,7 @@ This repository is a from-scratch rewrite of [SlidePilot for macOS](https://gith
 - [Feature parity inventory](docs/feature-parity.md): the scope of the rewrite
 - [Architecture](docs/architecture.md)
 - [Decisions (ADRs)](docs/decisions/)
-- [User documentation](https://slidepilot.gitbook.io/slidepilot) and [what changes in it for 2.0](docs/user-docs-2.0.md)
+- [User documentation](https://docs.slidepilotapp.com) (source in [site/](site/))
 
 ## Building
 Requires Xcode 26 or later. Open `SlidePilot.xcodeproj` and run the `SlidePilot` scheme on "My Mac" or an iPad simulator. Signed builds use the project's own bundle ID and team from `Config/Shared.xcconfig`. To sign a fork with your own team, copy `Config/Local.xcconfig.example` to `Config/Local.xcconfig` and fill in your bundle ID prefix and team. See [CLAUDE.md](CLAUDE.md#build-and-test) for the exact build and test commands.

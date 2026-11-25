@@ -1,84 +1,79 @@
 ---
-title: Shortcuts
+title: Keyboard Shortcuts
 nav_order: 10
 parent: Features
 ---
 
-# Shortcuts
+# Keyboard Shortcuts
 
-This page gives an overview over all shortcuts.
+The single-letter shortcuts work while you are not typing notes. On iPad and iPhone they work with a hardware keyboard; hold ⌘ to see the list.
 
-### Presentation
+## Slides
 
-| Shortcut                  | Action               |
-| ------------------------- | -------------------- |
-| **←**/**↑/**⇞ (page-up)   | Previous Slide       |
-| **→**/**↓/**⇟ (page-down) | Next Slide           |
-| **ctrl + G**              | Go Back              |
-| **B**                     | Display Black Screen |
-| **W**                     | Display White Screen |
+| Shortcut | Action |
+|---|---|
+| → ↓ Page Down | Next slide |
+| ← ↑ Page Up | Previous slide |
+| ⌃⌘→ / ⌃⌘← | Next / previous slide, also while typing notes |
+| ⌃G | Go back to the previously viewed slide |
+| O | Show the slide navigator (Esc closes it) |
+| ⌥⌘P | Start Presentation (Mac) |
 
-### Moderator
+## Curtain and pointer
 
-| Shortcut         | Action             |
-| ---------------- | ------------------ |
-| **ctrl + ⌥ + L** | Edit Layout        |
-| **O**            | Show Navigator     |
-| **A**            | Show Current Slide |
-| **P**            | Preview Next Slide |
-| **T**            | Set Timer          |
-| **S**            | Start/Stop Timer   |
-| **R**            | Reset Timer        |
+| Shortcut | Action |
+|---|---|
+| B or . | Black screen |
+| W | White screen |
+| C | Show or hide the pointer |
+| ⌘1 … ⌘7 | Pointer appearance: Cursor, Hand, Dot, Circle, Target Black, Target Red, Individual |
 
-### Pointer
+## Layout and notes
 
-| Shortcut         | Action                            |
-| ---------------- | --------------------------------- |
-| **C**            | Show/Hide Pointer                 |
-| **⌘ + 1**        | Pointer Appearance - Cursor       |
-| **⌘ + 2**        | Pointer Appearance - Hand         |
-| **⌘ + 3**        | Pointer Appearance - Dot          |
-| **⌘ + 4**        | Pointer Appearance - Circle       |
-| **⌘ + 5**        | Pointer Appearance - Target Black |
-| **⌘ + 6**        | Pointer Appearance - Target Red   |
-| **⌘ + 7**        | Pointer Appearance - Individual   |
-| **ctrl + ⌥ + L** | Edit Pointer                      |
+| Shortcut | Action |
+|---|---|
+| A | Show or hide the current slide |
+| P | Show or hide the next slide |
+| N | Show or hide the notes |
+| ⌥⌘0 … ⌥⌘4 | Split position: None, Right, Left, Bottom, Top |
+| ⇧⌘O | Import Notes… |
+| ⇧⌘E | Export Notes… |
+| ⌘↩ or Esc | Finish editing the notes |
 
-### Draw
+## Time
 
-| Shortcut     | Action                |
-| ------------ | --------------------- |
-| **D**        | Draw on current slide |
-| **ctrl + C** | Clear Drawings        |
-| **ctrl + K** | Canvas Mode           |
+| Shortcut | Action |
+|---|---|
+| S | Start or stop the time |
+| R | Reset the time |
+| T | Set Timer… |
 
-### Notes
+## Drawing
 
-| Shortcut          | Action                |
-| ----------------- | --------------------- |
-| **N**             | Show Notes            |
-| **⌘ + N**         | New Notes             |
-| **⌘ + ⇧ + O**     | Open Notes            |
-| **⌘ + S**         | Save Notes            |
-| **⌘** + ⌥ + **0** | No Notes Splitting    |
-| **⌘** + ⌥ + **1** | Notes Position Right  |
-| **⌘** + ⌥ + **2** | Notes Position Left   |
-| **⌘** + ⌥ + **3** | Notes Position Bottom |
-| **⌘** + ⌥ + **4** | Notes Position Top    |
+| Shortcut | Action |
+|---|---|
+| D | Draw on the current slide (Esc ends) |
+| ⌃C | Clear the drawing |
+| ⌃⇧K | White canvas |
+| ⌃K | Back to the slide (transparent canvas) |
+| ⌘Z / ⇧⌘Z | Undo / redo |
+| ⌥⌘E | Export Drawings… |
 
-### Formatting
+## Notes text
 
-This is used in the notes text editor.
+| Shortcut | Action |
+|---|---|
+| ⌘B / ⌘I / ⌘U | Bold / italic / underline |
+| ⌘+ / ⌘- | Bigger / smaller text (all slides) |
+| ⌘{ / ⌘\| / ⌘} | Align left / center / right (Mac) |
+| ⌘L | Lists (Mac) |
+| ⌃⌘S | Spacing (Mac) |
 
-| Shortcut         | Action             |
-| ---------------- | ------------------ |
-| **⌘ + B**        | Bold               |
-| **⌘ + I**        | Italic             |
-| **⌘ + U**        | Underline          |
-| **⌘ + +**        | Increase font size |
-| **⌘ + -**        | Decrease font size |
-| **⌘ + {**        | Align text left    |
-| **⌘ + \|**       | Align text center  |
-| **⌘ + }**        | Align text right   |
-| **⌘ + L**        | Open List panel    |
-| **⌘ + ctrl + S** | Open Spacing panel |
+## App
+
+| Shortcut | Action |
+|---|---|
+| ⌘O | Open a PDF |
+| ⌘W | Close the window |
+| ⌘, | Settings |
+| ⌘? | SlidePilot Help |

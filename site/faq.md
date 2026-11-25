@@ -1,50 +1,46 @@
 ---
 title: FAQ
-nav_order: 3
+nav_order: 5
 ---
 
 # FAQ
 
-## How do I report a bug?
+## Why does the presentation stop after 3 minutes?
 
-If you've found a bug, we are more than happy if you report it. You can do so by writing an email or opening an issue in our [GitHub repository](https://github.com/SlidePilot/SlidePilot).
+Without [SlidePilot Pro](pro.md), the presentation for the audience and remote control are trials of 3 minutes. Everything on your own screen keeps working without a limit.
 
-## Can I request a feature?
+## How do I restore my purchase?
 
-Of course! New ideas which improve SlidePilot are always welcome. Feel free to shoot us an email or open an issue in our [GitHub repository](https://github.com/SlidePilot/SlidePilot).
+Go to the **SlidePilot Pro** section in Settings and choose **Restore Purchases**.
 
-## How can I contact you?
+## Where are my notes and drawings?
 
-Feel free to ask questions via email to [info@slidepilotapp.com](mailto:info@slidepilotapp.com).
+Inside SlidePilot, linked to the PDF. See [Your Data](your-data.md).
 
-## How do I install SlidePilot?
+## I renamed or moved my PDF. Are my notes gone?
 
-1. Download the app from the [website](http://slidepilotapp.com).
-2. Unzip the app if not already done automatically
-3. Move the app to the `Applications` folder (otherwise updates won't work)
+No. SlidePilot finds the PDF again. For a copy, SlidePilot asks when you open it whether it should take over the data of the missing PDF.
 
-That's it, enjoy using SlidePilot!
+## Can I use my notes from SlidePilot 1?
 
-## Why does the popup appear?
+Yes. On the Mac, SlidePilot imports a notes file like `<pdf name>-notes.rtf` next to the PDF by itself. Everywhere else, use **Import Notes…**. See [Notes](features/notes.md#importing-and-exporting-notes).
 
-The popup appears because the app is not signed. Signing requires being enrolled in the Apple Developer Program, which costs 99 USD per year. If we can cover these costs by donations, we would be more than happy to officially sign the app.
+## Does SlidePilot work with the old SlidePilot Remote app?
 
-## Is SlidePilot a native macOS App?
+No. Instead, SlidePilot itself can control another device; install it on the iPhone, iPad or Mac you want to use as a remote. See [Remote Control](features/remote.md).
 
-Yes, SlidePilot was explicitly developed for macOS using Swift as the primary language.
+## Where did the pre-rendering settings go?
 
-## What are the requirements?
+SlidePilot renders the current and the next slides ahead by itself and manages its memory, so there is nothing to set.
 
-SlidePilot requires macOS 10.13+.
+## Which languages does SlidePilot support?
 
-## How much does SlidePilot cost?
+English, German and French.
 
-Nothing, the SlidePilot application is available for free. We think that SlidePilot is a fundamental tool and thus should be available for everyone.
+## How do I report a bug or request a feature?
 
-## How can I support SlidePilot?
+Open an issue in the [GitHub repository](https://github.com/SlidePilot/SlidePilot-Universal/issues), or write to [info@slidepilotapp.com](mailto:info@slidepilotapp.com).
 
-If you like SlidePilot we would be happy if you donate a small amount to cover the operating expenses and to support development of future features. You'll find the donate button on the [website](http://slidepilotapp.com).
+## Is SlidePilot open source?
 
-## What languages does SlidePilot support?
-
-SlidePilot is currently available in Englisch and German language. French will follow.
+Yes, under the GNU General Public License v3.0. The source code is on [GitHub](https://github.com/SlidePilot/SlidePilot-Universal).
