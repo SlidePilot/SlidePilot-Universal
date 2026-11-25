@@ -20,13 +20,23 @@ struct PresenterSlotTitleView: View {
                 Text("Notes")
             }
         }
-            .font(.footnote)
+            .font(Self.font)
             .foregroundStyle(.secondary)
             .lineLimit(1)
             .truncationMode(.tail)
             .allowsTightening(true)
             .frame(maxWidth: .infinity)
             .accessibilityAddTraits(.isHeader)
+    }
+
+    /// The Mac's footnote (10 pt) is hard to read next to the slides; callout is a step up.
+    /// The iPad's footnote is already larger and follows Dynamic Type.
+    private static var font: Font {
+        #if os(macOS)
+        .callout
+        #else
+        .footnote
+        #endif
     }
 }
 
