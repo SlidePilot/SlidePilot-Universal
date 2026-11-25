@@ -48,6 +48,21 @@ struct ProEntitlementTests {
         #expect(ProStatus(entitlements: entitlements, productID: pro) == .locked)
     }
 
+    // A refund reported by a transaction update locks, even while the current entitlements
+    // still list the purchase without a revocation date.
+    @Test
+    func purchaseRevokedByUpdateLocks() {
+        let entitlements = [ProEntitlement(productID: pro, ownership: .purchased, transactionID: 7)]
+        #expect(ProStatus(entitlements: entitlements, productID: pro, revokedTransactionIDs: [7]) == .locked)
+    }
+
+    // Buying again after a refund is a new transaction and unlocks.
+    @Test
+    func newPurchaseAfterRevocationUnlocks() {
+        let entitlements = [ProEntitlement(productID: pro, ownership: .purchased, transactionID: 8)]
+        #expect(ProStatus(entitlements: entitlements, productID: pro, revokedTransactionIDs: [7]) == .unlocked)
+    }
+
     @Test
     func missingProductIDNeverUnlocks() {
         let entitlements = [ProEntitlement(productID: pro, ownership: .purchased)]

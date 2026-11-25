@@ -29,7 +29,8 @@ import StoreKit
 ///
 /// The status starts `unknown` and follows StoreKit's current entitlements: at `start()`,
 /// after every transaction update (purchases on other devices, Family Sharing, refunds and
-/// revocations, Ask to Buy approvals), after `purchase()` and after `restore()`.
+/// revocations, Ask to Buy approvals), after `purchase()` and `restore()`, and whenever the
+/// app becomes active (the app calls `refreshStatus()`).
 @MainActor
 @Observable
 final class ProStore {
@@ -42,6 +43,9 @@ final class ProStore {
     @ObservationIgnored private var updatesTask: Task<Void, Never>?
     @ObservationIgnored private var refreshTask: Task<Void, Never>?
     @ObservationIgnored private var latestRead: Task<[ProEntitlement], Never>?
+    /// Transactions that an update reported as revoked (refunds, ended family sharing). Right
+    /// after a refund StoreKit can still list them as current entitlements.
+    @ObservationIgnored private var revokedTransactionIDs: Set<UInt64> = []
 
     #if DEBUG
     /// Debug builds only: a status fixed without StoreKit, for the simulator (which never
@@ -110,7 +114,7 @@ final class ProStore {
         while true {
             let entitlements = await read.value
             guard let newest = latestRead, newest != read else {
-                status = ProStatus(entitlements: entitlements, productID: productID)
+                status = ProStatus(entitlements: entitlements, productID: productID, revokedTransactionIDs: revokedTransactionIDs)
                 return
             }
             read = newest
@@ -187,6 +191,11 @@ final class ProStore {
     private func handle(_ update: VerificationResult<Transaction>) async {
         // Unverified updates are not finished, so StoreKit offers them again.
         if case .verified(let transaction) = update {
+            // The revocation counts from this update on, whatever the next entitlement read says.
+            if transaction.revocationDate != nil {
+                revokedTransactionIDs.insert(transaction.id)
+                revokedTransactionIDs.insert(transaction.originalID)
+            }
             await transaction.finish()
         }
         await refreshStatus()
@@ -198,7 +207,8 @@ private extension ProEntitlement {
         self.init(
             productID: transaction.productID,
             ownership: transaction.ownershipType == .familyShared ? .familyShared : .purchased,
-            revocationDate: transaction.revocationDate
+            revocationDate: transaction.revocationDate,
+            transactionID: transaction.id
         )
     }
 }

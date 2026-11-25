@@ -126,8 +126,9 @@ struct ProOfferView: View {
             }
         }
         #if os(macOS)
-        .frame(width: 480)
-        .frame(minHeight: 520)
+        // A fixed size: when a purchase replaces the product with "unlocked", a sheet that
+        // follows its content shrinks and cuts off its Close button. The form scrolls instead.
+        .frame(width: 480, height: 620)
         #endif
     }
 }
