@@ -66,7 +66,7 @@ struct SlidePilotApp: App {
         .commands {
             PresentationCommands()
             LayoutCommands()
-            ModeratorCommands()
+            ModeratorCommands(settings: settings)
             NotesFormatCommands()
             NotesFileCommands()
             DrawingsExportCommands()
@@ -142,7 +142,7 @@ struct SlidePilotApp: App {
         }
         .commands {
             PresentationCommands()
-            ModeratorCommands()
+            ModeratorCommands(settings: settings)
             SettingsCommands()
             HelpCommands()
         }

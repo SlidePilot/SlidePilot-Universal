@@ -40,18 +40,34 @@ public enum PresenterArrangement: String, Codable, Sendable, CaseIterable {
     }
 
     /// Where the slot at `index` appears in the window, to name it in the slot pickers
-    /// (LAY-04). `nil` for a hidden slot.
-    public func place(ofSlotAt index: Int) -> PresenterSlotPlace? {
-        switch (self, index) {
+    /// (LAY-04). `nil` for a hidden slot. While the window stacks the columns
+    /// (`PresenterSplit.stacksVertically`), the columns become rows and the pair of small
+    /// slots sits side by side, so the leading column is on top.
+    public func place(ofSlotAt index: Int, stacked: Bool = false) -> PresenterSlotPlace? {
+        if stacked {
+            return switch (self, index) {
+            case (.single, 0): .whole
+            case (.double, 0): .top
+            case (.double, 1): .bottom
+            case (.tripleLeft, 0): .bottomLeft
+            case (.tripleLeft, 1): .bottomRight
+            case (.tripleLeft, 2): .top
+            case (.tripleRight, 0): .topLeft
+            case (.tripleRight, 1): .topRight
+            case (.tripleRight, 2): .bottom
+            default: nil
+            }
+        }
+        return switch (self, index) {
         case (.single, 0): .whole
         case (.double, 0): .left
         case (.double, 1): .right
         case (.tripleLeft, 0): .topRight
         case (.tripleLeft, 1): .bottomRight
-        case (.tripleLeft, 2): .largeLeft
+        case (.tripleLeft, 2): .left
         case (.tripleRight, 0): .topLeft
         case (.tripleRight, 1): .bottomLeft
-        case (.tripleRight, 2): .largeRight
+        case (.tripleRight, 2): .right
         default: nil
         }
     }
@@ -70,8 +86,9 @@ public enum PresenterArrangement: String, Codable, Sendable, CaseIterable {
 public enum PresenterSlotPlace: Sendable, CaseIterable {
     case whole
     case left, right
-    case largeLeft, topRight, bottomRight
-    case topLeft, bottomLeft, largeRight
+    case top, bottom
+    case topLeft, topRight
+    case bottomLeft, bottomRight
 }
 
 /// The presenter layout: arrangement, slot order and separator positions (LAY-01 to LAY-03).

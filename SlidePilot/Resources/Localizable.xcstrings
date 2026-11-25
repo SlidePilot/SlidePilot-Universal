@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ %@" : {
+      "shouldTranslate" : false
+    },
     "%@, stopped" : {
       "localizations" : {
         "de" : {
@@ -87,6 +90,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Un PDF nommé « %@ » avec le même nombre de pages est introuvable. Vous pouvez utiliser ses données enregistrées pour ce PDF."
+          }
+        }
+      }
+    },
+    "Add notes for this slide" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notizen zu dieser Folie hinzufügen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter des notes pour cette diapositive"
           }
         }
       }
@@ -893,7 +912,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couvrir la présentation d'un écran noir"
+            "value" : "Couvrir la présentation d’un écran noir"
           }
         }
       }
@@ -909,7 +928,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couvrir la présentation d'un écran blanc"
+            "value" : "Couvrir la présentation d’un écran blanc"
           }
         }
       }
@@ -1558,38 +1577,6 @@
         }
       }
     },
-    "Edit Layout…" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Layout bearbeiten …"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modifier la disposition…"
-          }
-        }
-      }
-    },
-    "Edit Pointer…" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zeiger bearbeiten …"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modifier le pointeur…"
-          }
-        }
-      }
-    },
     "End of Presentation" : {
       "comment" : "Title above the next-slide preview after the last slide.",
       "localizations" : {
@@ -1731,6 +1718,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terminer la modification des notes"
+          }
+        }
+      }
+    },
+    "First Warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erste Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premier avertissement"
           }
         }
       }
@@ -2106,38 +2109,6 @@
         }
       }
     },
-    "Large Left" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Groß links"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grande à gauche"
-          }
-        }
-      }
-    },
-    "Large Right" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Groß rechts"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grande à droite"
-          }
-        }
-      }
-    },
     "Last opened %@" : {
       "localizations" : {
         "de" : {
@@ -2262,7 +2233,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Moderator"
+            "value" : "Modérateur"
           }
         }
       }
@@ -2871,6 +2842,22 @@
         }
       }
     },
+    "Overtime" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überzogen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dépassement"
+          }
+        }
+      }
+    },
     "Overtime %@" : {
       "localizations" : {
         "de" : {
@@ -3358,13 +3345,13 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote"
+            "value" : "Fernsteuerung"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote"
+            "value" : "Contrôle à distance"
           }
         }
       }
@@ -3588,7 +3575,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'écran est couvert"
+            "value" : "L’écran est couvert"
           }
         }
       }
@@ -3605,6 +3592,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recherche d’appareils"
+          }
+        }
+      }
+    },
+    "Second Warning" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zweite Warnung"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deuxième avertissement"
           }
         }
       }
@@ -3764,7 +3767,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afficher la diapositive courante"
+            "value" : "Afficher la diapositive actuelle"
           }
         }
       }
@@ -4830,12 +4833,12 @@
         }
       }
     },
-    "The drawings in the file aren’t imported because Save Drawings is off." : {
+    "The drawings in the file aren’t imported because Save drawings is off." : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Zeichnungen in der Datei werden nicht importiert, weil „Zeichnungen sichern“ aus ist."
+            "value" : "Die Zeichnungen in der Datei werden nicht importiert, weil „Zeichnungen speichern“ aus ist."
           }
         },
         "fr" : {
@@ -5088,6 +5091,22 @@
         }
       }
     },
+    "Three Slides, Large Bottom" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drei Folien, groß unten"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trois diapositives, grande en bas"
+          }
+        }
+      }
+    },
     "Three Slides, Large Left" : {
       "localizations" : {
         "de" : {
@@ -5116,6 +5135,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trois diapositives, grande à droite"
+          }
+        }
+      }
+    },
+    "Three Slides, Large Top" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drei Folien, groß oben"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trois diapositives, grande en haut"
           }
         }
       }
@@ -5168,18 +5203,50 @@
         }
       }
     },
-    "To control another device from this one, choose File ▸ Control Another Device…." : {
+    "Timer turns orange" : {
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle Ablage ▸ Anderes Gerät steuern …"
+            "value" : "Timer wird orange"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour contrôler un autre appareil depuis celui-ci, choisissez Fichier ▸ Contrôler un autre appareil…."
+            "value" : "Le minuteur devient orange"
+          }
+        }
+      }
+    },
+    "Timer turns purple" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Timer wird lila"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le minuteur devient violet"
+          }
+        }
+      }
+    },
+    "To control another device from this one, choose File ▸ Control Another Device." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um von hier aus ein anderes Gerät zu steuern, wähle Ablage ▸ Anderes Gerät steuern."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour contrôler un autre appareil depuis celui-ci, choisissez Fichier ▸ Contrôler un autre appareil."
           }
         }
       }
@@ -5212,6 +5279,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pour conserver les notes, dessins et réglages d’un PDF, choisissez « Exporter… » dans son menu contextuel avant de supprimer ses données."
+          }
+        }
+      }
+    },
+    "To use a notes file, choose File ▸ Import Notes." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um eine Notizdatei zu verwenden, wähle Ablage ▸ Notizen importieren."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour utiliser un fichier de notes, choisissez Fichier ▸ Importer des notes."
+          }
+        }
+      }
+    },
+    "To use a notes file, choose Import and Export ▸ Import Notes." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um eine Notizdatei zu verwenden, wähle Importieren und Exportieren ▸ Notizen importieren."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour utiliser un fichier de notes, choisissez Importer et exporter ▸ Importer des notes."
           }
         }
       }
@@ -5827,86 +5926,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@, deuxième avertissement"
-          }
-        }
-      }
-    },
-    "First warning" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erste Warnung"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premier avertissement"
-          }
-        }
-      }
-    },
-    "Second warning" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zweite Warnung"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deuxième avertissement"
-          }
-        }
-      }
-    },
-    "The timer turns orange." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Timer wird orange."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le minuteur devient orange."
-          }
-        }
-      }
-    },
-    "The timer turns purple. In overtime it is red." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der Timer wird lila. Überzogen ist er rot."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le minuteur devient violet. En dépassement, il est rouge."
-          }
-        }
-      }
-    },
-    "Remaining time at which the timer changes color. Only in timer mode, not for the stopwatch." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restzeit, ab der der Timer seine Farbe ändert. Nur im Timer-Modus, nicht für die Stoppuhr."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temps restant à partir duquel le minuteur change de couleur. Uniquement en mode minuteur, pas pour le chronomètre."
           }
         }
       }

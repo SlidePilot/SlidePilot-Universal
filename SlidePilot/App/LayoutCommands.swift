@@ -84,7 +84,7 @@ private struct SlotContentPicker: View {
     let index: Int
 
     var body: some View {
-        if let place = layout.arrangement.place(ofSlotAt: index) {
+        if let place = layout.arrangement.place(ofSlotAt: index, stacked: layout.isStacked) {
             Picker(selection: selection) {
                 ForEach(PresenterSlot.allCases, id: \.self) { slot in
                     Label(slot.contentTitle, systemImage: slot.systemImage)
@@ -114,7 +114,7 @@ private struct ArrangementPicker: View {
     var body: some View {
         Picker(selection: selection) {
             ForEach(PresenterArrangement.allCases, id: \.self) { arrangement in
-                Label(arrangement.title, systemImage: arrangement.systemImage)
+                Label(arrangement.title(stacked: layout?.isStacked == true), systemImage: arrangement.systemImage)
                     .tag(arrangement)
             }
         } label: {
@@ -154,12 +154,16 @@ private struct SlotToggle: View {
 }
 
 extension PresenterArrangement {
-    var title: LocalizedStringKey {
-        switch self {
-        case .single: "Single Slide"
-        case .double: "Two Slides"
-        case .tripleLeft: "Three Slides, Large Left"
-        case .tripleRight: "Three Slides, Large Right"
+    /// While the window stacks the columns (iPad portrait), the large slot of a triple
+    /// arrangement is on top or at the bottom, so the title says so, like the slot pickers.
+    func title(stacked: Bool) -> LocalizedStringKey {
+        switch (self, stacked) {
+        case (.single, _): "Single Slide"
+        case (.double, _): "Two Slides"
+        case (.tripleLeft, false): "Three Slides, Large Left"
+        case (.tripleRight, false): "Three Slides, Large Right"
+        case (.tripleLeft, true): "Three Slides, Large Top"
+        case (.tripleRight, true): "Three Slides, Large Bottom"
         }
     }
 
@@ -209,12 +213,12 @@ extension PresenterSlotPlace {
         case .whole: "Slide"
         case .left: "Left"
         case .right: "Right"
-        case .largeLeft: "Large Left"
-        case .topRight: "Top Right"
-        case .bottomRight: "Bottom Right"
+        case .top: "Top"
+        case .bottom: "Bottom"
         case .topLeft: "Top Left"
+        case .topRight: "Top Right"
         case .bottomLeft: "Bottom Left"
-        case .largeRight: "Large Right"
+        case .bottomRight: "Bottom Right"
         }
     }
 }

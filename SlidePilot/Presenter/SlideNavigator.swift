@@ -174,6 +174,7 @@ struct SlideNavigator: View {
     @State private var pageNumber = ""
     @FocusState private var isPageFieldFocused: Bool
     @FocusState private var isListFocused: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var pageCount: Int { session.cache.info.pageCount }
 
@@ -221,7 +222,7 @@ struct SlideNavigator: View {
             }
             .onChange(of: highlighted) { _, page in
                 guard let page else { return }
-                withAnimation { proxy.scrollTo(page) }
+                withAnimation(reduceMotion ? nil : .default) { proxy.scrollTo(page) }
             }
         }
         .modifier(PageNumberField(text: $pageNumber, isFocused: $isPageFieldFocused) {
@@ -275,6 +276,9 @@ private struct PageNumberField: ViewModifier {
                 Text("Page Number")
             }
             .textFieldStyle(.plain)
+            // The plain style shows the label nowhere, and the Mac does not pass it on to
+            // VoiceOver, which then reads only the prompt.
+            .accessibilityLabel(Text("Page Number"))
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .glassEffect(.regular.interactive(), in: .capsule)
