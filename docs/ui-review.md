@@ -26,15 +26,17 @@ None of these changes parity behavior.
 | # | Decision | Where |
 |---|---|---|
 | P1 | Accepted. | #206 |
-| P2 | Changed: remove Moderator ▸ Edit Layout… (⌃⌥L) altogether; Settings ▸ Layout stays reachable through the Settings command, and the arrangement through the Layout menu. | #206 |
+| P2 | Changed: remove Moderator ▸ Edit Layout… (⌃⌥L) and Edit Pointer… (⌃⌥C) altogether; both only open a Settings tab, which Settings already reaches. | #206 |
 | P3 | Accepted. | #206 |
 | P4 | Rejected. | – |
 | P5 | Keep "Moderator". | – |
 | P6 | Accepted as: move Go Back to the overflow menu in iPad portrait. | #207 |
-| P7 | Open. | – |
+| P7 | Rejected. | – |
 | P8 | Accepted. | #207 |
 | P9, P10, P11 | Rejected. | – |
-| P12 | Accepted, fixed in the review PR. | #194 |
+| P12 | Accepted, fixed in the review PR. | #208 |
+| – | Added: move the two timer warnings from Settings ▸ Layout into the Time menu, next to Set Timer and Turn Off Timer. | #206 |
+| – | Bug found by the maintainer: no color selection while drawing on iPhone. | #207 |
 
 ## Proposals
 
