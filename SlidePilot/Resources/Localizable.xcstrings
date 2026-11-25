@@ -5555,6 +5555,54 @@
           }
         }
       }
+    },
+    "Hide Navigator" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navigator ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer le navigateur"
+          }
+        }
+      }
+    },
+    "Hide the slide navigator" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folien-Navigator ausblenden"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masquer le navigateur de diapositives"
+          }
+        }
+      }
+    },
+    "Curtain Color" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorhangfarbe"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couleur du rideau"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

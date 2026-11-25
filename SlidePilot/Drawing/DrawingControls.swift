@@ -94,20 +94,39 @@ struct DrawingToolbar: ToolbarContent {
     private var model: DrawingModel { session.drawing }
 
     var body: some ToolbarContent {
-        ToolbarItemGroup(placement: placement) {
-            Toggle("Draw", systemImage: "pencil.tip.crop.circle", isOn: isDrawing)
-                .help(model.isActive ? Text("Stop drawing") : Text("Draw on the current slide"))
-            if model.isActive {
-                ColorButton(model: model)
-                Button("Clear Drawings", systemImage: "eraser") {
-                    model.clear(page: session.currentPage)
-                }
-                .help(Text("Remove all strokes from the slide"))
-                // One toggle instead of a segmented picker: on iPad a segmented control
-                // looks like a second toolbar inside the toolbar.
-                Toggle("White Canvas", systemImage: "square.dashed", isOn: isWhiteCanvas)
-                    .help(Text("White Canvas"))
+        #if os(macOS)
+        // One item, not an item group: the Mac gives the active Draw toggle and the color
+        // swatch capsules of their own, and Draw, Color, Clear and White Canvas belong in
+        // one group (product-owner decision 2026-11-25, #189).
+        ToolbarItem(placement: placement) {
+            HStack {
+                tools
             }
+            .toggleStyle(.button)
+            .labelStyle(.iconOnly)
+        }
+        #else
+        // An item group: iOS drops a custom item from a full bar instead of moving it into
+        // the overflow menu, so the tools stay separate items there.
+        ToolbarItemGroup(placement: placement) {
+            tools
+        }
+        #endif
+    }
+
+    @ViewBuilder private var tools: some View {
+        Toggle("Draw", systemImage: "pencil.tip.crop.circle", isOn: isDrawing)
+            .help(model.isActive ? Text("Stop drawing") : Text("Draw on the current slide"))
+        if model.isActive {
+            ColorButton(model: model)
+            Button("Clear Drawings", systemImage: "eraser") {
+                model.clear(page: session.currentPage)
+            }
+            .help(Text("Remove all strokes from the slide"))
+            // One toggle instead of a segmented picker: on iPad a segmented control
+            // looks like a second toolbar inside the toolbar.
+            Toggle("White Canvas", systemImage: "square.dashed", isOn: isWhiteCanvas)
+                .help(Text("White Canvas"))
         }
     }
 

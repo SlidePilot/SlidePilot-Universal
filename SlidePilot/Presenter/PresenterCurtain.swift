@@ -19,15 +19,28 @@ extension View {
 
 /// The Curtain button in the presenter's toolbar (CUR-01; product-owner decision
 /// 2026-11-25, #189): a click or tap shows the curtain in the color shown last, black until
-/// white is chosen, or hides it. Its menu picks black or white.
+/// white is chosen, or hides it.
+///
+/// Its menu differs per platform (same decision): on iPad and iPhone it shows or hides
+/// black or white. On the Mac the split button's two halves split the jobs: the left one
+/// shows and hides, the menu only picks the color, with a checkmark on the current one.
 struct CurtainToolbarMenu: View {
     let session: PresentationSession
 
     var body: some View {
         let state = session.curtainState
         Menu {
+            #if os(macOS)
+            Picker("Curtain Color", selection: colorBinding(state)) {
+                Label("Black Screen", systemImage: Curtain.black.curtainSymbol).tag(Curtain.black)
+                Label("White Screen", systemImage: Curtain.white.curtainSymbol).tag(Curtain.white)
+            }
+            .pickerStyle(.inline)
+            .labelsHidden()
+            #else
             CurtainToggle(curtain: .black, session: session)
             CurtainToggle(curtain: .white, session: session)
+            #endif
         } label: {
             Label("Curtain", systemImage: state.color.curtainSymbol)
         } primaryAction: {
@@ -39,21 +52,45 @@ struct CurtainToolbarMenu: View {
         // The symbol shows the color; the warning next to the title shows that it is on.
         .accessibilityValue(state.accessibilityValue)
     }
+
+    #if os(macOS)
+    private func colorBinding(_ state: CurtainState) -> Binding<Curtain> {
+        Binding { state.color } set: { session.curtainState.setColor($0) }
+    }
+    #endif
 }
 
 /// Tells the presenter that the audience sees a curtain instead of the slide (CUR-02).
 /// Replaces the old app's custom warning banner.
 struct HiddenScreenWarning: View {
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    #endif
+
     var body: some View {
         // Toolbars show labels icon-only on iPad (also with .titleAndIcon); the warning
         // needs its text. Only the icon is orange: orange text is too faint in light mode.
         HStack {
             Image(systemName: "eye.slash")
                 .foregroundStyle(.orange)
-            Text("Screen is hidden")
+            if showsText {
+                Text("Screen is hidden")
+            }
         }
         .fixedSize()
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Screen is hidden"))
+        .help(Text("Screen is hidden"))
+    }
+
+    /// A compact bar (iPhone, narrow iPad window) has no room for the text: the crossed-out
+    /// eye alone.
+    private var showsText: Bool {
+        #if os(iOS)
+        sizeClass != .compact
+        #else
+        true
+        #endif
     }
 
     #if os(macOS)

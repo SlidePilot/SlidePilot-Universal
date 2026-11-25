@@ -53,4 +53,13 @@ public struct CurtainState: Sendable, Equatable {
     public mutating func toggle() {
         shown = toggled
     }
+
+    /// Chooses the curtain's color without showing or hiding it (the Mac's color menu,
+    /// product-owner decision 2026-11-25): a shown curtain changes to the new color, a hidden
+    /// one shows it next time. `.none` changes nothing.
+    public mutating func setColor(_ newColor: Curtain) {
+        guard newColor.isShown else { return }
+        color = newColor
+        if shown.isShown { shown = newColor }
+    }
 }

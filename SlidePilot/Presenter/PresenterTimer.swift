@@ -82,8 +82,11 @@ struct TimeToolbarMenu: View {
 
     var body: some View {
         let isRunning = session.timer.isRunning
+        // Read here, not in the menu's content: the system builds the content outside the
+        // body's observation, so a timer set later left Turn Off Timer disabled.
+        let hasTimer = session.timer.mode == .timer
         Menu {
-            if isInOverflow {
+            if Self.listsStartStop || isInOverflow {
                 Button(
                     isRunning ? "Stop Time" : "Start Time",
                     systemImage: isRunning ? "pause.fill" : "play.fill"
@@ -103,7 +106,7 @@ struct TimeToolbarMenu: View {
             Button("Turn Off Timer", systemImage: "stopwatch") {
                 session.timer.turnOffTimer()
             }
-            .disabled(session.timer.mode != .timer)
+            .disabled(!hasTimer)
         } label: {
             if isInOverflow {
                 Label("Time", systemImage: "stopwatch")
@@ -118,6 +121,15 @@ struct TimeToolbarMenu: View {
         }
         .help(isRunning ? Text("Stop Time") : Text("Start Time"))
     }
+
+    #if os(iOS)
+    /// The system also moves the menu into the overflow menu when the bar runs out of room
+    /// (a long document title on iPhone), which `isInOverflow` cannot know. Start/Stop is
+    /// then only reachable as an item, so iPhone and iPad always list it.
+    private static let listsStartStop = true
+    #else
+    private static let listsStartStop = false
+    #endif
 }
 
 /// Back to the stopwatch (TIME-04, changed), in the Moderator menu.

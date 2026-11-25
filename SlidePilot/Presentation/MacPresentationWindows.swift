@@ -273,12 +273,9 @@ private struct PresenterWindowModifier: ViewModifier {
             })
             .onDisappear { windows.presenterDidClose(session.id) }
             .focusedSceneValue(\.startPresentation, StartPresentationAction(perform: startPresentation))
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button("Start Presentation", systemImage: "play.rectangle", action: startPresentation)
-                        .help(Text("Show the presentation in full screen"))
-                }
-            }
+            // The toolbar button is the last item of `PresenterToolbar`, so it stays at the
+            // trailing end whatever else the bar shows.
+            .environment(\.startPresentation, StartPresentationAction(perform: startPresentation))
             .task(id: session.id) { await followScreenChanges() }
     }
 

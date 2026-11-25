@@ -99,6 +99,29 @@ struct CurtainStateTests {
         #expect(state.color == .white)
     }
 
+    // The Mac's color menu picks the color without showing the curtain.
+    @Test func choosingTheColorWhileHiddenOnlyRemembersIt() {
+        var state = CurtainState()
+        state.setColor(.white)
+        #expect(state.shown == .none)
+        #expect(state.color == .white)
+        state.toggle()
+        #expect(state.shown == .white)
+    }
+
+    @Test func choosingTheColorWhileShownSwitchesTheCurtain() {
+        var state = CurtainState(shown: .black)
+        state.setColor(.white)
+        #expect(state.shown == .white)
+        #expect(state.color == .white)
+    }
+
+    @Test func choosingNoColorChangesNothing() {
+        var state = CurtainState(shown: .white)
+        state.setColor(.none)
+        #expect(state == CurtainState(shown: .white))
+    }
+
     @Test func initFromShownCurtain() {
         #expect(CurtainState(shown: .white).color == .white)
         #expect(CurtainState(shown: .none).color == .black)

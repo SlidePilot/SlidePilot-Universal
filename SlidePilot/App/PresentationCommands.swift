@@ -13,6 +13,11 @@ extension FocusedValues {
     @Entry var startPresentation: StartPresentationAction?
 }
 
+extension EnvironmentValues {
+    /// The same action for the presenter's toolbar, which focused values do not reliably reach.
+    @Entry var startPresentation: StartPresentationAction?
+}
+
 /// The Presentation menu.
 struct PresentationCommands: Commands {
     var body: some Commands {

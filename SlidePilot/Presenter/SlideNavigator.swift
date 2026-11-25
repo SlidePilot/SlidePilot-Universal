@@ -29,8 +29,6 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
     var body: some View {
         #if os(macOS)
         splitView(detail: detail.modifier(slidesChrome).modifier(chrome))
-            // Layout changes are locked in draw mode (DRAW-05).
-            .toolbar(removing: session.drawing.isActive ? .sidebarToggle : nil)
         #else
         Group {
             if sizeClass == .compact {
@@ -104,7 +102,12 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
             SlideNavigator(session: session, closesOnSelection: false)
                 // The old navigator was 180 pt wide; now it can be resized (approved deviation).
                 .navigationSplitViewColumnWidth(min: 120, ideal: 180, max: 400)
-                #if os(iOS)
+                #if os(macOS)
+                // `PresenterToolbar` has its own sidebar button at the leading end: the
+                // system's lands in the overflow menu while the sidebar is closed. Like the
+                // iPad, the Mac takes this only from the sidebar column.
+                .toolbar(removing: .sidebarToggle)
+                #else
                 // Layout changes are locked in draw mode (DRAW-05). The iPad takes this only
                 // from the sidebar column.
                 .toolbar(removing: session.drawing.isActive ? .sidebarToggle : nil)
