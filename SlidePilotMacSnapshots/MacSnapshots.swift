@@ -118,6 +118,23 @@ struct MacSnapshots {
         try await WindowSnapshot.record(view, name: "time-display", size: CGSize(width: 1000, height: 300), appearance: appearance)
     }
 
+    // TIME-08: the timer in its first and second warning (default 5 and 1 minutes).
+    @Test(arguments: WindowSnapshot.Appearance.allCases)
+    func timerWarnings(appearance: WindowSnapshot.Appearance) async throws {
+        var first = PresentationTimer()
+        first.setTimer(seconds: 4 * 60 + 30)
+        var second = PresentationTimer()
+        second.setTimer(seconds: 45)
+        let view = VStack(alignment: .leading, spacing: 20) {
+            TimeDisplay(timer: first, size: .normal)
+            TimeDisplay(timer: second, size: .normal)
+        }
+        .padding(30)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .background(.background)
+        try await WindowSnapshot.record(view, name: "timer-warnings", size: CGSize(width: 1000, height: 300), appearance: appearance)
+    }
+
     // TIME-03: the Set Timer sheet.
     @Test(arguments: WindowSnapshot.Appearance.allCases)
     func setTimer(appearance: WindowSnapshot.Appearance) async throws {

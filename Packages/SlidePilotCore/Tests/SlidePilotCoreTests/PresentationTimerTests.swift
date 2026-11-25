@@ -243,3 +243,64 @@ struct TimeDisplaySizeTests {
         #expect(TimeDisplaySize.default == .normal)
     }
 }
+
+@Suite
+struct TimerStageTests {
+    private let start = Date(timeIntervalSinceReferenceDate: 1_000_000)
+    private let thresholds = TimerWarningThresholds(firstMinutes: 5, secondMinutes: 1)
+
+    // TIME-08: a warning starts when the remaining time reaches its threshold and lasts
+    // through zero; past zero is overtime.
+    @Test func stagesByRemainingTime() {
+        #expect(thresholds.stage(remainingSeconds: 301) == .normal)
+        #expect(thresholds.stage(remainingSeconds: 300) == .firstWarning)
+        #expect(thresholds.stage(remainingSeconds: 61) == .firstWarning)
+        #expect(thresholds.stage(remainingSeconds: 60) == .secondWarning)
+        #expect(thresholds.stage(remainingSeconds: 0) == .secondWarning)
+        #expect(thresholds.stage(remainingSeconds: -1) == .overtime)
+    }
+
+    @Test func thresholdsCanBeOff() {
+        let firstOff = TimerWarningThresholds(firstMinutes: 0, secondMinutes: 1)
+        #expect(firstOff.stage(remainingSeconds: 120) == .normal)
+        #expect(firstOff.stage(remainingSeconds: 60) == .secondWarning)
+        let bothOff = TimerWarningThresholds(firstMinutes: 0, secondMinutes: 0)
+        #expect(bothOff.stage(remainingSeconds: 0) == .normal)
+        #expect(bothOff.stage(remainingSeconds: -1) == .overtime)
+    }
+
+    // A second threshold at or above the first takes over where both apply.
+    @Test func secondWinsWhenNotBelowFirst() {
+        let swapped = TimerWarningThresholds(firstMinutes: 2, secondMinutes: 5)
+        #expect(swapped.stage(remainingSeconds: 300) == .secondWarning)
+        #expect(swapped.stage(remainingSeconds: 60) == .secondWarning)
+        #expect(swapped.stage(remainingSeconds: 301) == .normal)
+    }
+
+    // A timer set below a threshold starts in that stage, also while stopped.
+    @Test func timerStageFollowsTheDisplayedValue() {
+        var timer = PresentationTimer()
+        timer.setTimer(seconds: 360)
+        #expect(timer.stage(at: start, thresholds: thresholds) == .normal)
+        timer.toggle(at: start)
+        #expect(timer.stage(at: start.addingTimeInterval(60), thresholds: thresholds) == .firstWarning)
+        #expect(timer.stage(at: start.addingTimeInterval(300), thresholds: thresholds) == .secondWarning)
+        #expect(timer.stage(at: start.addingTimeInterval(361), thresholds: thresholds) == .overtime)
+        timer.setTimer(seconds: 30)
+        #expect(timer.stage(at: start, thresholds: thresholds) == .secondWarning)
+    }
+
+    // The stopwatch has no end, so it never warns.
+    @Test func stopwatchStaysNormal() {
+        var timer = PresentationTimer()
+        timer.toggle(at: start)
+        #expect(timer.stage(at: start.addingTimeInterval(10_000), thresholds: thresholds) == .normal)
+    }
+
+    @Test func defaultsAndChoices() {
+        #expect(TimerWarningThresholds.default == TimerWarningThresholds(firstMinutes: 5, secondMinutes: 1))
+        #expect(TimerWarningThresholds.choices.first == 0)
+        #expect(TimerWarningThresholds.choices.contains(5))
+        #expect(TimerWarningThresholds.choices.contains(1))
+    }
+}

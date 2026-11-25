@@ -120,6 +120,26 @@ struct AppSettingsTests {
         #expect(AppSettings(store: defaults).crossfadesSlides)
     }
 
+    // TIME-08: 5 and 1 minutes by default; changes are stored and read back.
+    @Test func timerWarnings() {
+        let store = InMemorySettingsStore()
+        let settings = AppSettings(store: store)
+        #expect(settings.timerWarnings == .default)
+        settings.timerWarnings = TimerWarningThresholds(firstMinutes: 10, secondMinutes: 0)
+        #expect(store.values[AppSettings.Key.timerFirstWarningMinutes] as? Int == 10)
+        #expect(store.values[AppSettings.Key.timerSecondWarningMinutes] as? Int == 0)
+        #expect(AppSettings(store: store).timerWarnings == TimerWarningThresholds(firstMinutes: 10, secondMinutes: 0))
+    }
+
+    // Values the settings do not offer fall back to the default.
+    @Test func unknownTimerWarningsFallBack() {
+        let store = InMemorySettingsStore(values: [
+            AppSettings.Key.timerFirstWarningMinutes: 7,
+            AppSettings.Key.timerSecondWarningMinutes: "1",
+        ])
+        #expect(AppSettings(store: store).timerWarnings == .default)
+    }
+
     // DRAW-06: "Save drawings" is read from and written to the old key.
     @Test func savesDrawingsUsesTheOldKey() {
         let store = InMemorySettingsStore(values: ["saveDrawings": true])
