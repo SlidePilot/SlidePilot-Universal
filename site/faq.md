@@ -13,10 +13,6 @@ Without [SlidePilot Pro](pro.md), the presentation for the audience and remote c
 
 Go to the **SlidePilot Pro** section in Settings and choose **Restore Purchases**.
 
-## Is there a version for the Mac without the App Store?
-
-Yes. A free Mac version is available on the [website](https://slidepilotapp.com) and on [GitHub](https://github.com/SlidePilot/SlidePilot-Universal/releases). It has no time limits and no in-app purchase, but it does not update itself, and it does not share notes and drawings with the App Store version.
-
 ## Where are my notes and drawings?
 
 Inside SlidePilot, linked to the PDF. See [Your Data](your-data.md).
