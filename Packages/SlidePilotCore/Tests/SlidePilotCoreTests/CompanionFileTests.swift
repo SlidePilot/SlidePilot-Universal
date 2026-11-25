@@ -40,6 +40,17 @@ struct CompanionFileFormatTests {
         #expect(!DocumentSettings(isNavigatorDisplayed: false).isEmpty)
     }
 
+    // NOTES-04: the notes editor shows its placeholder on pages without notes (#206).
+    @Test func notesOfAPage() {
+        let notes = CompanionNotes(format: .rtf, pages: [Data(), Data("{\\rtf1 a}".utf8)])
+        #expect(!notes.hasNotes(onPage: 0))
+        #expect(notes.hasNotes(onPage: 1))
+        #expect(!notes.hasNotes(onPage: 2))
+        #expect(!notes.hasNotes(onPage: -1))
+        #expect(!notes.isEmpty)
+        #expect(CompanionNotes(format: .rtf, pages: [Data()]).isEmpty)
+    }
+
     // NOTES-08: a declined legacy notes import round-trips and is optional.
     @Test func declinedLegacyNotesIsOptional() throws {
         var item = entry()

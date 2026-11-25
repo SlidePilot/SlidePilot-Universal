@@ -1,8 +1,8 @@
 import SlidePilotCore
 import SwiftUI
 
-/// Show Pointer (**C**), Pointer Appearance (**⌘1…⌘7**) and Edit Pointer… (**⌃⌥C**) in the
-/// Presentation menu (PTR-01, PTR-02, PTR-04).
+/// Show Pointer (**C**) and Pointer Appearance (**⌘1…⌘7**) in the Presentation menu
+/// (PTR-01, PTR-02). The custom pointer's editor is in Settings ▸ Pointer (PTR-04).
 struct PointerMenuItems: View {
     @FocusedValue(\.slideNavigation) private var session
     // `nil` while the Set Timer sheet is open, so typing C there does not toggle the
@@ -14,34 +14,6 @@ struct PointerMenuItems: View {
         ShowPointerToggle(pointer: session?.pointer)
             .plainKeyShortcut("c")
         PointerAppearancePicker(pointer: session?.pointer, hasShortcuts: true)
-        EditPointerMenuItem()
-    }
-}
-
-/// Opens the Pointer settings with the custom pointer's editor (PTR-04), with the old app's
-/// shortcut ⌃⌥C.
-private struct EditPointerMenuItem: View {
-    #if os(macOS)
-    @Environment(\.openSettings) private var openSettings
-    @AppStorage(SettingsTab.storageKey) private var settingsTab = SettingsTab.general
-    #else
-    @FocusedValue(\.showSettings) private var showSettings
-    #endif
-
-    var body: some View {
-        #if os(macOS)
-        Button("Edit Pointer…") {
-            settingsTab = .pointer
-            openSettings()
-        }
-        .keyboardShortcut("c", modifiers: [.control, .option])
-        #else
-        Button("Edit Pointer…") {
-            showSettings?(.pointer)
-        }
-        .keyboardShortcut("c", modifiers: [.control, .option])
-        .disabled(showSettings == nil)
-        #endif
     }
 }
 

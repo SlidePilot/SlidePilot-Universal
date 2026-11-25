@@ -16,6 +16,11 @@ struct NotesTextView: UIViewRepresentable {
     let page: Int
     let actions: NotesTextActions
 
+    private static let containerInset = UIEdgeInsets(top: 10, left: 6, bottom: 10, right: 6)
+    /// Where the first line of text starts, for the empty notes' placeholder: the container
+    /// inset plus the default line fragment padding (5 pt).
+    static let textInsets = EdgeInsets(top: containerInset.top, leading: containerInset.left + 5, bottom: 0, trailing: containerInset.right + 5)
+
     func makeCoordinator() -> NotesTextCoordinator {
         NotesTextCoordinator(model: model)
     }
@@ -25,7 +30,7 @@ struct NotesTextView: UIViewRepresentable {
         textView.allowsEditingTextAttributes = true
         textView.backgroundColor = .secondarySystemBackground
         textView.textColor = .label
-        textView.textContainerInset = UIEdgeInsets(top: 10, left: 6, bottom: 10, right: 6)
+        textView.textContainerInset = Self.containerInset
         textView.keyboardDismissMode = .interactive
         textView.accessibilityLabel = String(localized: "Notes")
         textView.delegate = context.coordinator

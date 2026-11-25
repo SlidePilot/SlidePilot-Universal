@@ -40,9 +40,19 @@ public enum PresenterArrangement: String, Codable, Sendable, CaseIterable {
     }
 
     /// Where the slot at `index` appears in the window, to name it in the slot pickers
-    /// (LAY-04). `nil` for a hidden slot.
-    public func place(ofSlotAt index: Int) -> PresenterSlotPlace? {
-        switch (self, index) {
+    /// (LAY-04). `nil` for a hidden slot. While the window stacks the columns
+    /// (`PresenterSplit.stacksVertically`), all slots are in one column, so they are named
+    /// from top to bottom.
+    public func place(ofSlotAt index: Int, stacked: Bool = false) -> PresenterSlotPlace? {
+        if stacked, self != .single {
+            guard let row = slotIndicesInVisualOrder.firstIndex(of: index) else { return nil }
+            return switch row {
+            case 0: .top
+            case slotCount - 1: .bottom
+            default: .middle
+            }
+        }
+        return switch (self, index) {
         case (.single, 0): .whole
         case (.double, 0): .left
         case (.double, 1): .right
@@ -72,6 +82,8 @@ public enum PresenterSlotPlace: Sendable, CaseIterable {
     case left, right
     case largeLeft, topRight, bottomRight
     case topLeft, bottomLeft, largeRight
+    /// Slots of a stacked window (iPad portrait), from top to bottom.
+    case top, middle, bottom
 }
 
 /// The presenter layout: arrangement, slot order and separator positions (LAY-01 to LAY-03).

@@ -16,6 +16,11 @@ struct NotesEditor: View {
             )
         } else {
             NotesTextView(model: notes, page: session.currentPage, actions: actions)
+                .overlay(alignment: .topLeading) {
+                    if notes.isAvailable, notes.isEmpty(page: session.currentPage) {
+                        NotesPlaceholder(showsImportHint: notes.isEmpty)
+                    }
+                }
                 .clipShape(.rect(cornerRadius: 8))
                 #if os(macOS)
                 // The Mac text background matches the window's, so the area needs an edge.
@@ -28,6 +33,30 @@ struct NotesEditor: View {
                 // The plain-letter shortcuts are off while typing notes.
                 .focusedSceneValue(\.isEditingText, notes.isEditing ? true : nil)
         }
+    }
+}
+
+/// The empty notes' placeholder, where the first line of text starts. In a document
+/// without any notes it also points to Import Notes… (UI review P1, #206). Taps and clicks
+/// go through to the text view.
+private struct NotesPlaceholder: View {
+    let showsImportHint: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Add notes for this slide")
+            if showsImportHint {
+                #if os(macOS)
+                Text("To use a notes file, choose File ▸ Import Notes.")
+                #else
+                Text("To use a notes file, choose Import and Export ▸ Import Notes.")
+                #endif
+            }
+        }
+        .foregroundStyle(.placeholder)
+        .padding(NotesTextView.textInsets)
+        .allowsHitTesting(false)
+        .accessibilityElement(children: .combine)
     }
 }
 

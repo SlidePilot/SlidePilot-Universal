@@ -49,6 +49,15 @@ struct PresenterLayoutView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        #if os(iOS)
+        // The slot pickers name the places by the stacked columns (LAY-04). The same test
+        // as `TouchSplitView`, which fills this view.
+        .onGeometryChange(for: Bool.self) { proxy in
+            PresenterSplit.stacksVertically(width: proxy.size.width, height: proxy.size.height, separatorWidth: 1)
+        } action: { [layout] isStacked in
+            layout.isStacked = isStacked
+        }
+        #endif
     }
 
     /// The current slide with the editable drawing on top (DRAW-01). Links are off, the

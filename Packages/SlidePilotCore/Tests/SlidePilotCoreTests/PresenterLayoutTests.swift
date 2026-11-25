@@ -142,6 +142,22 @@ struct PresenterLayoutTests {
         }
     }
 
+    // LAY-04: while the window stacks the columns (iPad portrait), all slots are in one
+    // column, so the slot pickers name them from top to bottom.
+    @Test func stackedSlotPlacesFollowTheColumn() {
+        let places = PresenterArrangement.allCases.map { arrangement in
+            arrangement.slotIndicesInVisualOrder.map { arrangement.place(ofSlotAt: $0, stacked: true) }
+        }
+        #expect(places == [
+            [.whole],
+            [.top, .bottom],
+            [.top, .middle, .bottom],
+            [.top, .middle, .bottom],
+        ])
+        #expect(PresenterArrangement.tripleLeft.place(ofSlotAt: 2, stacked: true) == .top)
+        #expect(PresenterArrangement.double.place(ofSlotAt: 2, stacked: true) == nil)
+    }
+
     @Test func setSlotIgnoresSameSlotAndInvalidPosition() {
         var layout = PresenterLayout(arrangement: .tripleRight, slots: [.next, .notes, .current])
         layout.setSlot(.notes, at: 1)

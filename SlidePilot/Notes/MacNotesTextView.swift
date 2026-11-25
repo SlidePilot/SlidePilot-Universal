@@ -15,6 +15,11 @@ struct NotesTextView: NSViewRepresentable {
     let page: Int
     let actions: NotesTextActions
 
+    private static let containerInset = NSSize(width: 6, height: 8)
+    /// Where the first line of text starts, for the empty notes' placeholder: the container
+    /// inset plus the default line fragment padding (5 pt).
+    static let textInsets = EdgeInsets(top: containerInset.height, leading: containerInset.width + 5, bottom: 0, trailing: containerInset.width + 5)
+
     func makeCoordinator() -> NotesTextCoordinator {
         NotesTextCoordinator(model: model)
     }
@@ -30,7 +35,7 @@ struct NotesTextView: NSViewRepresentable {
         textView.drawsBackground = true
         textView.backgroundColor = .textBackgroundColor
         textView.textColor = .textColor
-        textView.textContainerInset = NSSize(width: 6, height: 8)
+        textView.textContainerInset = Self.containerInset
         textView.isVerticallyResizable = true
         textView.isHorizontallyResizable = false
         textView.autoresizingMask = [.width]

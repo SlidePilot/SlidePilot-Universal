@@ -84,7 +84,7 @@ private struct SlotContentPicker: View {
     let index: Int
 
     var body: some View {
-        if let place = layout.arrangement.place(ofSlotAt: index) {
+        if let place = layout.arrangement.place(ofSlotAt: index, stacked: layout.isStacked) {
             Picker(selection: selection) {
                 ForEach(PresenterSlot.allCases, id: \.self) { slot in
                     Label(slot.contentTitle, systemImage: slot.systemImage)
@@ -215,6 +215,9 @@ extension PresenterSlotPlace {
         case .topLeft: "Top Left"
         case .bottomLeft: "Bottom Left"
         case .largeRight: "Large Right"
+        case .top: "Top"
+        case .middle: "Middle"
+        case .bottom: "Bottom"
         }
     }
 }
