@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ %@" : {
+      "shouldTranslate" : false
+    },
     "%@, stopped" : {
       "localizations" : {
         "de" : {
@@ -2787,6 +2790,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "D’autres appareils peuvent trouver cet appareil, se jumeler avec lui et contrôler ses présentations."
+          }
+        }
+      }
+    },
+    "Overtime" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überzogen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dépassement"
           }
         }
       }

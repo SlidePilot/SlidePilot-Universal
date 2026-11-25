@@ -79,14 +79,33 @@ private struct TimerValueText: View {
     let timer: PresentationTimer
     let warnings: TimerWarningThresholds
     let now: Date
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiatesWithoutColor
 
     var body: some View {
         let seconds = timer.displayedSeconds(at: now)
         let stage = timer.stage(at: now, thresholds: warnings)
-        Text(verbatim: TimerValueFormat.string(seconds: seconds))
-            .foregroundStyle(stage.style)
+        // Overtime has its minus sign; the two warnings get a mark, so they are not told
+        // apart by color alone (WCAG 1.4.1).
+        let value = Text(verbatim: TimerValueFormat.string(seconds: seconds))
+        // The mark is part of the text, so it shrinks with the digits in narrow windows. The
+        // label and value below replace its spoken name.
+        let marked = if differentiatesWithoutColor, let symbol = stage.symbolName {
+            Text("\(Image(systemName: symbol)) \(value)")
+        } else {
+            value
+        }
+        marked
             .accessibilityLabel(timer.mode == .stopwatch ? Text("Stopwatch") : Text("Timer"))
             .accessibilityValue(accessibilityValue(seconds: seconds, stage: stage))
+            .foregroundStyle(stage.style)
+            // The color change is not the only cue: VoiceOver says when a warning starts,
+            // with high priority so it is not dropped while VoiceOver reads the notes.
+            .onChange(of: stage) { _, newStage in
+                guard timer.isRunning, let text = newStage.announcement else { return }
+                var announcement = AttributedString(text)
+                announcement.accessibilitySpeechAnnouncementPriority = .high
+                AccessibilityNotification.Announcement(announcement).post()
+            }
     }
 
     /// Spoken as words ("1 minute, 5 seconds"), not as digits with colons. The warning
@@ -113,6 +132,26 @@ private extension TimerStage {
         case .firstWarning: AnyShapeStyle(Color(.timerFirstWarning))
         case .secondWarning: AnyShapeStyle(.purple)
         case .overtime: AnyShapeStyle(.red)
+        }
+    }
+
+    /// The mark shown with Differentiate Without Color: one exclamation mark for the first
+    /// warning, two for the second.
+    var symbolName: String? {
+        switch self {
+        case .firstWarning: "exclamationmark"
+        case .secondWarning: "exclamationmark.2"
+        case .normal, .overtime: nil
+        }
+    }
+
+    /// What VoiceOver says when the stage starts.
+    var announcement: String? {
+        switch self {
+        case .normal: nil
+        case .firstWarning: String(localized: "First warning")
+        case .secondWarning: String(localized: "Second warning")
+        case .overtime: String(localized: "Overtime")
         }
     }
 }
