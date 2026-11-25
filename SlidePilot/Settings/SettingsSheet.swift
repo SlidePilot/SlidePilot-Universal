@@ -15,6 +15,23 @@ extension FocusedValues {
     @Entry var showSettings: ShowSettingsAction?
 }
 
+extension EnvironmentValues {
+    /// For the presenter toolbar's Settings button, which needs the action of its own window.
+    @Entry var showSettings: ShowSettingsAction?
+}
+
+/// Settings in the presenter's toolbar (SET-01, iPhone and iPad); `PresenterToolbar` places it.
+struct SettingsToolbarButton: View {
+    @Environment(\.showSettings) private var showSettings
+
+    var body: some View {
+        Button("Settings", systemImage: "gearshape") {
+            showSettings?()
+        }
+        .disabled(showSettings == nil)
+    }
+}
+
 /// One request to show the settings sheet on a page. Each request is new, so asking for
 /// the same page again still switches back to it.
 struct SettingsTabRequest: Equatable {
@@ -53,7 +70,7 @@ private struct SettingsMenuButton: View {
 }
 
 extension View {
-    /// Adds the Settings toolbar button and the settings sheet to a document window.
+    /// Adds the settings sheet to a document window; `SettingsToolbarButton` opens it.
     func settingsSheet() -> some View {
         modifier(SettingsSheetModifier())
     }
@@ -65,24 +82,19 @@ private struct SettingsSheetModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .toolbar {
-                // Secondary: inline next to the title in regular width, in the overflow
-                // menu when space is short.
-                ToolbarItem(placement: .secondaryAction) {
-                    Button("Settings", systemImage: "gearshape") {
-                        request = SettingsTabRequest(tab: nil)
-                        isShowingSettings = true
-                    }
-                }
-            }
+            .environment(\.showSettings, showSettings)
             .sheet(isPresented: $isShowingSettings) {
                 SettingsView(request: request)
             }
-            .focusedSceneValue(\.showSettings, ShowSettingsAction { tab in
-                // A new request also switches the page while the sheet is open.
-                request = SettingsTabRequest(tab: tab)
-                isShowingSettings = true
-            })
+            .focusedSceneValue(\.showSettings, showSettings)
+    }
+
+    private var showSettings: ShowSettingsAction {
+        ShowSettingsAction { tab in
+            // A new request also switches the page while the sheet is open.
+            request = SettingsTabRequest(tab: tab)
+            isShowingSettings = true
+        }
     }
 }
 #endif

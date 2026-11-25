@@ -73,62 +73,74 @@ private struct PresenterTimerModifier: ViewModifier {
 /// The Time button in the presenter's toolbar (TIME-02 to TIME-04; product-owner decision
 /// 2026-11-25, #189): a click or tap starts or stops the time, its menu resets it and sets or
 /// turns off the timer. The clock above the slides shows whether the timer is on.
+///
+/// In compact sizes (iPhone, a narrow iPad window) it is a plain Time menu with Start/Stop as
+/// its first item, the same in the bar and in the overflow menu (same decision).
 struct TimeToolbarMenu: View {
     let session: PresentationSession
     @Binding var isSettingTimer: Bool
-    /// In the overflow menu the system shows the menu as a submenu without its primary
-    /// action, so Start/Stop becomes its first item and the submenu is called Time.
-    var isInOverflow = false
+    /// A compact bar: the system moves the item into the overflow menu when space runs out,
+    /// where it drops a primary action, so the menu is the same everywhere.
+    var isCompact = false
 
     var body: some View {
         let isRunning = session.timer.isRunning
         // Read here, not in the menu's content: the system builds the content outside the
         // body's observation, so a timer set later left Turn Off Timer disabled (iOS).
         let hasTimer = session.timer.mode == .timer
-        Menu {
-            if Self.listsStartStop || isInOverflow {
-                Button(
-                    isRunning ? "Stop Time" : "Start Time",
-                    systemImage: isRunning ? "pause.fill" : "play.fill"
-                ) {
+        Group {
+            if isCompact {
+                Menu {
+                    items(isRunning: isRunning, hasTimer: hasTimer)
+                } label: {
+                    Label("Time", systemImage: "stopwatch")
+                }
+            } else {
+                Menu {
+                    items(isRunning: isRunning, hasTimer: hasTimer)
+                } label: {
+                    Label(
+                        isRunning ? "Stop Time" : "Start Time",
+                        systemImage: isRunning ? "pause.fill" : "play.fill"
+                    )
+                } primaryAction: {
                     session.timer.toggle()
                 }
-                Divider()
+                .help(isRunning ? Text("Stop Time") : Text("Start Time"))
             }
-            Button("Reset Time", systemImage: "arrow.counterclockwise") {
-                session.timer.reset()
-            }
-            Divider()
-            // Also changes a running timer without switching it off (TIME-04).
-            Button("Set Timer…", systemImage: "timer") {
-                isSettingTimer = true
-            }
-            Button("Turn Off Timer", systemImage: "stopwatch") {
-                session.timer.turnOffTimer()
-            }
-            .disabled(!hasTimer)
-        } label: {
-            if isInOverflow {
-                Label("Time", systemImage: "stopwatch")
-            } else {
-                Label(
-                    isRunning ? "Stop Time" : "Start Time",
-                    systemImage: isRunning ? "pause.fill" : "play.fill"
-                )
-            }
-        } primaryAction: {
-            session.timer.toggle()
         }
-        .help(isRunning ? Text("Stop Time") : Text("Start Time"))
         // The Mac builds the toolbar menu once and keeps the items' enabled state; a new
         // identity rebuilds it when the timer is set or turned off.
         .id(hasTimer)
     }
 
+    @ViewBuilder private func items(isRunning: Bool, hasTimer: Bool) -> some View {
+        if Self.listsStartStop || isCompact {
+            Button(
+                isRunning ? "Stop Time" : "Start Time",
+                systemImage: isRunning ? "pause.fill" : "play.fill"
+            ) {
+                session.timer.toggle()
+            }
+            Divider()
+        }
+        Button("Reset Time", systemImage: "arrow.counterclockwise") {
+            session.timer.reset()
+        }
+        Divider()
+        // Also changes a running timer without switching it off (TIME-04).
+        Button("Set Timer…", systemImage: "timer") {
+            isSettingTimer = true
+        }
+        Button("Turn Off Timer", systemImage: "stopwatch") {
+            session.timer.turnOffTimer()
+        }
+        .disabled(!hasTimer)
+    }
+
     #if os(iOS)
-    /// The system also moves the menu into the overflow menu when the bar runs out of room
-    /// (a long document title on iPhone), which `isInOverflow` cannot know. Start/Stop is
-    /// then only reachable as an item, so iPhone and iPad always list it.
+    /// A long press opens the menu on the iPad too; Start/Stop is listed there as well, so
+    /// the menu offers every time command wherever it is opened.
     private static let listsStartStop = true
     #else
     private static let listsStartStop = false

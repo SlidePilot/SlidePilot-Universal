@@ -8,9 +8,10 @@ import SwiftUI
 ///   (DRAW-05).
 /// - Time: start or stop with a click, more in its menu.
 /// - Live tools: Pointer, Curtain and Draw, with the drawing tools in draw mode.
-/// - Output: Start Presentation (Mac) or the external display status (iPhone, iPad), always
-///   last so it stays at the trailing end.
-/// - Overflow: Import and Export and, from `settingsSheet()`, Settings (iPhone, iPad).
+/// - Output: Start Presentation (Mac, always last) or the external display status (iPhone,
+///   iPad).
+/// - Files and settings (iPhone, iPad): Import and Export, then Settings, at the trailing end
+///   or, in compact sizes, as the last items of the overflow menu.
 ///
 /// Fixed spacers separate the groups (the system draws the glass capsules). In compact sizes
 /// the less important items (Go Back, Layout, Pointer, the external display status) go to the
@@ -42,7 +43,7 @@ struct PresenterToolbar: ToolbarContent {
         }
 
         ToolbarItem(placement: focus.placement()) {
-            TimeToolbarMenu(session: session, isSettingTimer: $isSettingTimer, isInOverflow: !focus.isInBar())
+            TimeToolbarMenu(session: session, isSettingTimer: $isSettingTimer, isCompact: focus != .none)
         }
         if focus.isInBar() {
             ToolbarSpacer(.fixed)
@@ -94,9 +95,19 @@ struct PresenterToolbar: ToolbarContent {
             // How to present on a second screen (#82); the Mac needs no hint.
             ExternalDisplayStatusButton()
         }
+        // At the trailing edge, and the last two items of the overflow menu (product-owner
+        // decision 2026-11-25, #189). `.secondaryAction` would put them in the middle of
+        // the iPad's bar.
+        if focus.isInBar(isLessImportant: true) {
+            ToolbarSpacer(.fixed)
+        }
         // Notes, drawings and .slidepilot import and export (NOTES-06, DRAW-10, NOTES-11).
-        ToolbarItem(placement: .secondaryAction) {
+        ToolbarItem(placement: focus.placement(isLessImportant: true)) {
             FileTransferMenu()
+        }
+        // The Mac has the Settings window instead (SET-01).
+        ToolbarItem(placement: focus.placement(isLessImportant: true)) {
+            SettingsToolbarButton()
         }
         #endif
     }
