@@ -4,14 +4,15 @@ import SwiftUI
 /// (product-owner decision 2026-11-25, #189). From leading to trailing:
 ///
 /// - Navigation: the sidebar button and Go Back.
-/// - View: the Layout menu (arrangement, slot contents, notes mode), hidden in draw mode
-///   (DRAW-05).
 /// - Time: start or stop with a click, more in its menu (`TimeToolbarMenu`).
 /// - Live tools: Pointer, Curtain and Draw, with the drawing tools in draw mode.
-/// - Output: Start Presentation (Mac, always last) or the external display status (iPhone,
-///   iPad).
-/// - Files and settings (iPhone, iPad): Import and Export, then Settings, at the trailing end
-///   or, in compact sizes, as the last items of the overflow menu.
+/// - Mac: the Layout menu (arrangement, slot contents, notes mode), then Start Presentation,
+///   always last.
+/// - iPhone, iPad: the external display status, then Layout, Import and Export, and Settings
+///   in one group at the trailing end or, in compact sizes, as the last section of the
+///   overflow menu.
+///
+/// Layout is hidden in draw mode (DRAW-05).
 ///
 /// Fixed spacers separate the groups (the system draws the glass capsules). In compact sizes
 /// the less important items (Go Back, Layout, Pointer, the external display status) go to the
@@ -30,16 +31,6 @@ struct PresenterToolbar: ToolbarContent {
             }
             // A status first: no glass capsule around it.
             .sharedBackgroundVisibility(.hidden)
-        }
-
-        // Layout changes are locked in draw mode (DRAW-05).
-        if !session.drawing.isActive {
-            ToolbarItem(placement: focus.placement(isLessImportant: true)) {
-                PresenterLayoutMenu(session: session)
-            }
-            if focus.isInBar(isLessImportant: true) {
-                ToolbarSpacer(.fixed)
-            }
         }
 
         timeItems
@@ -103,6 +94,14 @@ struct PresenterToolbar: ToolbarContent {
 
     @ToolbarContentBuilder private var outputItems: some ToolbarContent {
         #if os(macOS)
+        // Layout next to Start Presentation, which stays last (product-owner decision
+        // 2026-11-25, #189). Layout changes are locked in draw mode (DRAW-05).
+        if !session.drawing.isActive {
+            ToolbarSpacer(.fixed)
+            ToolbarItem {
+                PresenterLayoutMenu(session: session)
+            }
+        }
         ToolbarSpacer(.fixed)
         ToolbarItem {
             StartPresentationButton()
@@ -115,22 +114,41 @@ struct PresenterToolbar: ToolbarContent {
             // How to present on a second screen (#82); the Mac needs no hint.
             ExternalDisplayStatusButton()
         }
-        // At the trailing edge, and the last two items of the overflow menu (product-owner
-        // decision 2026-11-25, #189). `.secondaryAction` would put them in the middle of
-        // the iPad's bar.
-        if focus.isInBar(isLessImportant: true) {
-            ToolbarSpacer(.fixed)
-        }
-        // Notes, drawings and .slidepilot import and export (NOTES-06, DRAW-10, NOTES-11).
-        ToolbarItem(placement: focus.placement(isLessImportant: true)) {
-            FileTransferMenu()
-        }
-        // The Mac has the Settings window instead (SET-01).
-        ToolbarItem(placement: focus.placement(isLessImportant: true)) {
-            SettingsToolbarButton()
-        }
+        documentItems
         #endif
     }
+
+    #if os(iOS)
+    /// Layout, Import and Export, then Settings (product-owner decision 2026-11-25, #189): one
+    /// group at the trailing edge, or the last section of the overflow menu. `.secondaryAction`
+    /// would put them in the middle of the iPad's bar.
+    @ToolbarContentBuilder private var documentItems: some ToolbarContent {
+        if focus.isInBar(isLessImportant: true) {
+            ToolbarSpacer(.fixed)
+            ToolbarItemGroup {
+                documentControls
+            }
+        } else {
+            ToolbarItemGroup(placement: .secondaryAction) {
+                // A section draws a separator above these items in the overflow menu.
+                Section {
+                    documentControls
+                }
+            }
+        }
+    }
+
+    @ViewBuilder private var documentControls: some View {
+        // Layout changes are locked in draw mode (DRAW-05).
+        if !session.drawing.isActive {
+            PresenterLayoutMenu(session: session)
+        }
+        // Notes, drawings and .slidepilot import and export (NOTES-06, DRAW-10, NOTES-11).
+        FileTransferMenu()
+        // The Mac has the Settings window instead (SET-01).
+        SettingsToolbarButton()
+    }
+    #endif
 
     #if os(macOS)
     private static let goBackPlacement = ToolbarItemPlacement.navigation
