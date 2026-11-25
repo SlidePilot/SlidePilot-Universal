@@ -54,7 +54,7 @@ final class ProStore {
     /// Debug builds only: a status fixed without StoreKit, for the simulator (which never
     /// answers StoreKit outside Xcode) and the Mac snapshots, so the hint, the offer and
     /// Settings can be checked there. Set at launch with `-SlidePilotProStatus locked` (or
-    /// `unlocked`).
+    /// `unlocked`), or at build time with `SLIDEPILOT_DEBUG_FLAGS=SLIDEPILOT_PRO_UNLOCKED`.
     @ObservationIgnored private let fixedStatus: ProStatus?
 
     init(bundle: Bundle = .main, fixedStatus: ProStatus? = ProStore.launchArgumentStatus) {
@@ -67,8 +67,18 @@ final class ProStore {
         switch UserDefaults.standard.string(forKey: "SlidePilotProStatus") {
         case "locked": .locked
         case "unlocked": .unlocked
-        default: nil
+        default: buildSettingStatus
         }
+    }
+
+    /// The Mac test host starts the app without custom arguments, so a test build can fix the
+    /// status at compile time instead.
+    private static var buildSettingStatus: ProStatus? {
+        #if SLIDEPILOT_PRO_UNLOCKED
+        .unlocked
+        #else
+        nil
+        #endif
     }
     #else
     init(bundle: Bundle = .main) {
