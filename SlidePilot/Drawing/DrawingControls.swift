@@ -91,8 +91,6 @@ extension View {
 struct DrawingToolbar: ToolbarContent {
     let session: PresentationSession
     let placement: ToolbarItemPlacement
-    /// Where Draw goes in a compact bar on iOS; the other tools use `placement`.
-    var togglePlacement: ToolbarItemPlacement = .automatic
     /// A compact bar (iPhone, a narrow iPad window) moves the tools that do not fit into its
     /// overflow menu, so Color is a menu there (#207).
     var isCompact = false
@@ -117,28 +115,13 @@ struct DrawingToolbar: ToolbarContent {
         #else
         // An item group: iOS drops a custom item from a full bar instead of moving it into
         // the overflow menu, so the tools stay separate items there.
-        if isCompact {
-            // Draw keeps its own place (`togglePlacement`), the tools take what is left.
-            ToolbarItem(placement: togglePlacement) {
-                drawToggle
-            }
-            ToolbarItemGroup(placement: placement) {
-                activeTools
-            }
-        } else {
-            ToolbarItemGroup(placement: placement) {
-                tools
-            }
+        ToolbarItemGroup(placement: placement) {
+            tools
         }
         #endif
     }
 
     @ViewBuilder private var tools: some View {
-        drawToggle
-        activeTools
-    }
-
-    private var drawToggle: some View {
         Toggle("Draw", systemImage: "pencil.tip.crop.circle", isOn: isDrawing)
             .help(model.isActive ? Text("Stop drawing") : Text("Draw on the current slide"))
             #if os(iOS)
@@ -147,9 +130,6 @@ struct DrawingToolbar: ToolbarContent {
             // code.
             .modifier(ColorPalettePopover(model: model, isEnabled: isCompact && model.isActive))
             #endif
-    }
-
-    @ViewBuilder private var activeTools: some View {
         if model.isActive {
             #if os(iOS)
             if isCompact {

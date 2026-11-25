@@ -17,9 +17,7 @@ import SwiftUI
 ///
 /// Fixed spacers separate the groups (the system draws the glass capsules). In compact sizes
 /// the less important items (Go Back, Layout, Pointer, the external display status) go to the
-/// overflow menu first, and Time, Curtain and Draw stay in the bar, in one capsule at the
-/// leading edge. On iPad in portrait only Go Back leaves the leading edge for the secondary
-/// actions, so the title has room (`PresenterToolbarFocus`, #207).
+/// overflow menu first, so Time, Curtain and Draw stay in the bar (`PresenterToolbarFocus`).
 struct PresenterToolbar: ToolbarContent {
     let session: PresentationSession
     let focus: PresenterToolbarFocus
@@ -40,15 +38,14 @@ struct PresenterToolbar: ToolbarContent {
         }
 
         timeItems
-        // A compact bar keeps Time, Curtain and Draw in one capsule at the leading edge (#207).
-        if !focus.isCompact {
+        if focus.isInBar() {
             ToolbarSpacer(.fixed)
         }
 
-        ToolbarItem(placement: focus.placement(priority: .low)) {
+        ToolbarItem(placement: focus.placement(isLessImportant: true)) {
             PointerToolbarMenu(pointer: session.pointer)
         }
-        ToolbarItem(placement: focus.placement(Self.compactLeading(focus))) {
+        ToolbarItem(placement: focus.placement()) {
             CurtainToolbarMenu(session: session)
         }
         // The drawing tools are the focused task's own items while drawing; while the notes
@@ -56,8 +53,7 @@ struct PresenterToolbar: ToolbarContent {
         DrawingToolbar(
             session: session,
             placement: focus == .notes ? focus.placement() : .automatic,
-            togglePlacement: focus == .notes ? focus.placement() : Self.compactLeading(focus),
-            isCompact: focus.isCompact
+            isCompact: focus != .none
         )
 
         outputItems
@@ -77,7 +73,7 @@ struct PresenterToolbar: ToolbarContent {
             }
         }
         #endif
-        ToolbarItem(placement: focus.placement(Self.goBackPlacement, priority: .lowest)) {
+        ToolbarItem(placement: focus.placement(Self.goBackPlacement, isLessImportant: true)) {
             GoBackButton(session: session)
         }
     }
@@ -88,7 +84,7 @@ struct PresenterToolbar: ToolbarContent {
             TimeToolbarMenu(session: session, isSettingTimer: $isSettingTimer, style: .split)
         }
         #else
-        if !focus.isCompact {
+        if focus == .none {
             // Two items in one glass capsule, like the Mac's split button (#189).
             ToolbarItem {
                 TimeStartStopButton(session: session)
@@ -97,7 +93,7 @@ struct PresenterToolbar: ToolbarContent {
                 TimeToolbarMenu(session: session, isSettingTimer: $isSettingTimer, style: .options)
             }
         } else {
-            ToolbarItem(placement: focus.placement(Self.compactLeading(focus))) {
+            ToolbarItem(placement: focus.placement()) {
                 TimeToolbarMenu(session: session, isSettingTimer: $isSettingTimer, style: .compact)
             }
         }
@@ -122,10 +118,10 @@ struct PresenterToolbar: ToolbarContent {
         // How to present on a second screen (#82); the Mac needs no hint, and neither does a
         // device that already presents on one.
         if !externalDisplay.isConnected {
-            if focus.isInBar(priority: .low) {
+            if focus.isInBar(isLessImportant: true) {
                 ToolbarSpacer(.fixed)
             }
-            ToolbarItem(placement: focus.placement(priority: .low)) {
+            ToolbarItem(placement: focus.placement(isLessImportant: true)) {
                 ExternalDisplayStatusButton()
             }
         }
@@ -138,7 +134,7 @@ struct PresenterToolbar: ToolbarContent {
     /// group at the trailing edge, or the last section of the overflow menu. `.secondaryAction`
     /// would put them in the middle of the iPad's bar.
     @ToolbarContentBuilder private var documentItems: some ToolbarContent {
-        if focus.isInBar(priority: .low) {
+        if focus.isInBar(isLessImportant: true) {
             ToolbarSpacer(.fixed)
             ToolbarItemGroup {
                 documentControls
@@ -167,19 +163,7 @@ struct PresenterToolbar: ToolbarContent {
 
     #if os(macOS)
     private static let goBackPlacement = ToolbarItemPlacement.navigation
-
-    private static func compactLeading(_ focus: PresenterToolbarFocus) -> ToolbarItemPlacement {
-        .automatic
-    }
     #else
-    /// iOS keeps the document title at its full width and moves trailing items into the
-    /// overflow menu instead, so a phone in portrait kept Time and Curtain but not Draw. In a
-    /// compact bar Time, Curtain and Draw go to the leading edge, where the title makes room
-    /// (#207). Draw stays there in draw mode, so the toggle does not jump.
-    private static func compactLeading(_ focus: PresenterToolbarFocus) -> ToolbarItemPlacement {
-        focus.isCompact ? .topBarLeading : .automatic
-    }
-
     // `.navigation` puts it at the trailing end of the iPad's document bar, next to the
     // display status; leading keeps it with the sidebar button and the title.
     private static let goBackPlacement = ToolbarItemPlacement.topBarLeading
