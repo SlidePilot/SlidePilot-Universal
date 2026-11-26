@@ -4,7 +4,7 @@ This file is the binding scope for the rewrite. Every feature of SlidePilot for 
 
 **Sources**
 - Old code: `SlidePilot-macOS` at commit `8d38bc1`. Paths are relative to `SlidePilot-macOS/SlidePilot/`. Line numbers refer to that commit.
-- Old docs: the frozen copy of the GitBook pages in [`legacy-user-docs/`](legacy-user-docs/) (ADR 0021). The *Docs* column names the page below `basic-features/` (e.g. `notes` = `basic-features/notes.md`).
+- Old docs: the frozen copy of the GitBook pages, removed from the repository but kept in git history at commit `34d7287` (`docs/legacy-user-docs/`, ADR 0021). The *Docs* column names the page below `basic-features/` (e.g. `notes` = `basic-features/notes.md`).
 
 **When old code and docs disagree, the code is the reference for behavior.** Disagreements are listed in [Inconsistencies found](#inconsistencies-found).
 
