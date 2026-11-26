@@ -24,6 +24,10 @@ SlidePilot ships as one universal App Store app for macOS, iPadOS and iPhone (AD
 - `MARKETING_VERSION` in `Config/Shared.xcconfig` is the user-visible version.
 - `CURRENT_PROJECT_VERSION` stays `1` in the repository. On upload, Xcode raises the build number to the next free one for that version and platform (`manageAppVersionAndBuildNumber` in `Config/ExportOptions-AppStore.plist`), so no commit is needed per upload.
 
+## Before each release
+- Run the workflow **iOS tests** on `main` (GitHub ▸ Actions ▸ iOS tests ▸ Run workflow) and wait until it is green. Pull requests only build iOS, so this is the run of the tests in the iPad simulator (ADR 0008). A failed run opens an issue "iOS tests fail in the iPad simulator"; fix it before archiving.
+- The latest CI run on `main` is green (it also builds the free download, the Mac snapshots and the test host).
+
 ## Archive and upload with Xcode Cloud (default)
 The Xcode Cloud workflow "Default" archives the `SlidePilot` scheme for macOS and iOS and uploads both builds to App Store Connect (distribution preparation "App Store Connect", no post-actions).
 

@@ -90,7 +90,7 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 - Releases: Xcode Cloud archives and uploads both platforms when started manually; see [`docs/release.md`](docs/release.md).
 - The app target uses `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (Xcode 26 default for apps). Packages use the default (nonisolated); mark UI-facing package types `@MainActor` explicitly.
 
-- CI: `.github/workflows/ci.yml` on `macos-26` with Xcode pinned via `DEVELOPER_DIR` (currently Xcode 26.6). The required status check is **`ci-success`**; it only passes if all jobs pass. PRs that only change docs (`docs/`, `site/`, root `*.md`, `LICENSE`), Claude configuration (`.claude/`) or issue/PR templates skip the macOS and iOS jobs (job `changes`); any other path runs everything. The iOS job only builds the app; package tests run on the Mac only (ADR 0008). When the runner image changes, update the pinned Xcode in one PR.
+- CI: `.github/workflows/ci.yml` on `macos-26` with Xcode pinned via `DEVELOPER_DIR` (currently Xcode 26.6). The required status check is **`ci-success`**; it only passes if all jobs pass. PRs that only change docs (`docs/`, `site/`, root `*.md`, `LICENSE`), Claude configuration (`.claude/`) or issue/PR templates skip the macOS and iOS jobs (job `changes`); any other path runs everything. On PRs the macOS and iOS jobs only build the app; package tests run in the packages job. Free download, Mac snapshots and test host run on `main` and on PRs that touch them. The workflow `ios-tests.yml` runs the tests in an iPad simulator weekly and before releases, and opens an issue when it fails (ADR 0008). When the runner image changes, update the pinned Xcode in one PR.
 - Cloud sessions have **no Swift toolchain**. There, GitHub Actions is the only build/test feedback (ADR 0008): push the branch, open a draft PR, and read the results with `gh pr checks` / `gh run view --log-failed`.
 - In local sessions the Xcode MCP tools may be used instead of `xcodebuild` if available.
 
@@ -159,7 +159,7 @@ python3 -I scripts/mac-test-host.py quit
 - Changing anything in `Tools/TestHost/` invalidates the grants. Only do it in a PR of its own that the product owner asked for.
 
 ## Mac snapshots
-Fallback when the test host is not available, and still run in CI. Mac screenshots then come from the macOS-only test target `SlidePilotMacSnapshots`. It runs inside the (App-Sandboxed) app, hosts SlidePilot views in their own windows and draws them into PNGs with `NSView.cacheDisplay`. This uses no screen capture API, so it needs no Screen Recording permission and cannot see other apps, the desktop, the Dock or the menu bar.
+Fallback when the test host is not available, and still run in CI (on `main` and on PRs that touch them). Mac screenshots then come from the macOS-only test target `SlidePilotMacSnapshots`. It runs inside the (App-Sandboxed) app, hosts SlidePilot views in their own windows and draws them into PNGs with `NSView.cacheDisplay`. This uses no screen capture API, so it needs no Screen Recording permission and cannot see other apps, the desktop, the Dock or the menu bar.
 
 ```sh
 # 1. Remove the previous result (xcodebuild refuses to overwrite it)
@@ -188,7 +188,7 @@ scripts/sim-copy-fixtures.sh <UDID>
 
 - Then install and launch the app, open a fixture from the document browser (Browse > On My iPad or On My iPhone > SlidePilot Fixtures) and drive it with the iOS Simulator tools (tap, swipe, keys, rotate); screenshots with `xcrun simctl io <UDID> screenshot ./.pr-screenshots/<file>.png`.
 - On the iPhone check compact width (portrait) and compact height (landscape). The iPhone has no menu bar: every command must also be reachable from the toolbar, its overflow menu or a sheet.
-- iOS tests run locally only; CI builds the iOS app once, which covers iPad and iPhone (same SDK and binary, see `docs/architecture.md`, "Testing").
+- iOS tests run locally and in the weekly `ios-tests.yml` workflow; PR CI builds the iOS app once, which covers iPad and iPhone (same SDK and binary, see `docs/architecture.md`, "Testing").
 - The script writes only into the simulator's local Files storage; nothing else of the simulator or the Mac.
 
 ## PR workflow

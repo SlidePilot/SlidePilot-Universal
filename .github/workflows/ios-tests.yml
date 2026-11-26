@@ -1,0 +1,132 @@
+name: iOS tests
+
+# Runs the test plan (package tests) in an iPad simulator. Pull requests only
+# build iOS, because booting a simulator took most of the CI time (ADR 0008).
+# This workflow catches platform-specific failures weekly and before each
+# release (docs/release.md). A failed scheduled or manual run opens an issue
+# (or comments on the open one), so the failure is not missed.
+on:
+  schedule:
+    - cron: "23 4 * * 1" # Mondays, 04:23 UTC
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/ios-tests.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Keep in line with ci.yml; update together with the runner image.
+  DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+  IPAD_NAME: iPad Pro 13-inch (M5)
+  IPAD_OS: "26.5"
+
+jobs:
+  ipad:
+    name: iPad simulator (test)
+    runs-on: macos-26
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Build before booting the simulator: a freshly booted simulator keeps
+      # the runner's few cores busy for minutes, which made the build about
+      # four times slower. Index store and code coverage are off because the
+      # run uses neither.
+      - name: Build for testing
+        run: |
+          set -euo pipefail
+          xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/DerivedData \
+            -enableCodeCoverage NO \
+            ARCHS=arm64 \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build-for-testing
+      # On some runners the simulator runtimes are not loaded yet when the job
+      # starts, and xcodebuild then finds no iPad at all. Wait for the runtime,
+      # create the device if the image lacks it, and boot it before testing.
+      - name: Prepare iPad simulator
+        id: simulator
+        run: |
+          set -euo pipefail
+          # Several runtimes can share a version (e.g. iPhone-only ones), so pick
+          # the one that supports the iPad. Prints "<runtime> <device type>".
+          query='[.runtimes[]
+            | select(.platform == "iOS" and (.version == $os or (.version | startswith($os + "."))))
+            | {rt: .identifier, dt: ([.supportedDeviceTypes[]? | select(.name == $name)][0].identifier)}
+            | select(.dt != null)][0] // empty | "\(.rt) \(.dt)"'
+          match=""
+          for attempt in $(seq 1 30); do
+            match=$(xcrun simctl list runtimes available -j \
+              | jq -r --arg os "${IPAD_OS}" --arg name "${IPAD_NAME}" "${query}")
+            [ -n "${match}" ] && break
+            echo "iOS ${IPAD_OS} runtime for ${IPAD_NAME} not available yet (attempt ${attempt}/30)"
+            sleep 10
+          done
+          if [ -z "${match}" ]; then
+            echo "::error::No iOS ${IPAD_OS} simulator runtime with ${IPAD_NAME} on this runner."
+            xcrun simctl list runtimes
+            exit 1
+          fi
+          read -r runtime device_type <<< "${match}"
+
+          udid=$(xcrun simctl list devices available -j \
+            | jq -r --arg rt "${runtime}" --arg name "${IPAD_NAME}" \
+              '[.devices[$rt][]? | select(.name == $name)][0].udid // empty')
+          if [ -z "${udid}" ]; then
+            echo "Creating '${IPAD_NAME}' on ${runtime}"
+            udid=$(xcrun simctl create "${IPAD_NAME}" "${device_type}" "${runtime}")
+          fi
+
+          echo "Using ${IPAD_NAME} (${udid}) on ${runtime}"
+          xcrun simctl bootstatus "${udid}" -b
+          echo "udid=${udid}" >> "${GITHUB_OUTPUT}"
+      - name: Test
+        env:
+          IPAD_UDID: ${{ steps.simulator.outputs.udid }}
+        run: |
+          set -euo pipefail
+          xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
+            -destination "platform=iOS Simulator,id=${IPAD_UDID}" \
+            -derivedDataPath build/DerivedData \
+            -enableCodeCoverage NO \
+            test-without-building
+
+  # GitHub's own e-mail for a failed scheduled run goes to whoever last edited
+  # the schedule, so it is easy to miss. An issue reaches everyone watching
+  # the repository and stays open until someone fixes the failure.
+  report-failure:
+    name: Report failure
+    needs: ipad
+    if: failure() && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TITLE: iOS tests fail in the iPad simulator
+        run: |
+          set -euo pipefail
+          body="The iOS tests workflow failed: ${RUN_URL}"
+          number=$(gh issue list --state open --search "\"${TITLE}\" in:title" \
+            --json number,title --jq "[.[] | select(.title == env.TITLE)][0].number // empty")
+          if [ -n "${number}" ]; then
+            gh issue comment "${number}" --body "Failed again: ${RUN_URL}"
+          else
+            gh issue create --title "${TITLE}" --body "${body}
+
+          Pull requests only build iOS (ADR 0008), so this is the only run of the package tests on iOS. Fix the failure before the next release; close this issue once a run of the iOS tests workflow is green."
+          fi
