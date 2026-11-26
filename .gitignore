@@ -33,3 +33,8 @@ Config/Local.xcconfig
 
 # PR screenshots (attached with gh, never committed)
 .pr-screenshots/
+
+# User documentation (Starlight)
+site/node_modules/
+site/dist/
+site/.astro/

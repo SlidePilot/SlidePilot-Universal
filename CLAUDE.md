@@ -14,7 +14,7 @@ The app must look and feel as native as possible on macOS 26 and iPadOS 26.
 
 ## Privacy (public repository)
 Never commit personal data of the product owner or anyone else: e-mail addresses, device names, local paths containing user names, phone numbers, addresses, signing material (certificates, keys, profiles, API keys). The owner's name in LICENSE/CONTRIBUTING is accepted.
-- Exception: the app's public support address `info@slidepilotapp.com` may appear in the user docs (`site/`, `docs/legacy-user-docs/`). It belongs to the product, not to a person.
+- Exception: the app's public support address `info@slidepilotapp.com` may appear in the user docs (`site/`). It belongs to the product, not to a person.
 - Exception (ADR 0014): the app's own bundle ID prefix and development team are committed in `Config/Shared.xcconfig`. They are public anyway (code signature, App Store). Never add other App IDs or team IDs.
 - Commits use the GitHub noreply address (`git config user.email` is set per repo; check it before committing in a new clone or cloud session).
 - Screenshots in PRs must not show personal data (file paths, user names, device names). Don't launch other apps.
@@ -31,8 +31,8 @@ Never commit personal data of the product owner or anyone else: e-mail addresses
 A from-scratch rewrite of SlidePilot (AppKit macOS PDF presenter for LaTeX Beamer) as **one universal SwiftUI app for macOS 26 and iPadOS 26**, Swift 6.
 
 - Old app (read-only reference, never copy code from it): next to the repository folder, i.e. `../../../../SlidePilot-macOS` from a session worktree (`../SlidePilot-macOS` from the main checkout), or `/opt/reference/SlidePilot-macOS` (cloud sessions). Paths in the parity doc are relative to its `SlidePilot/` folder.
-- Old user docs: frozen copy in `docs/legacy-user-docs/` (from GitBook, never updated).
-- Current user docs: `site/` (Markdown, Jekyll), published with GitHub Pages at docs.slidepilotapp.com (ADR 0021). Update the affected page in the same PR as a user-visible change.
+- Old user docs: removed from the repository; the frozen GitBook copy is still in git history (`git show 34d7287:docs/legacy-user-docs/<path>`). The old code is the reference for behavior.
+- Current user docs: `site/` (Markdown in `site/src/content/docs/`, Starlight), published with GitHub Pages at docs.slidepilotapp.com (ADR 0021). Update the affected page in the same PR as a user-visible change.
 - GitHub: `SlidePilot/SlidePilot-Universal`. Milestones: Phase 0 – Foundation … Phase 5 – Polish & Release.
 
 ## Feature-parity rule
@@ -224,8 +224,8 @@ Tools/TestHost/         SlidePilot Test Host: the only process allowed to captur
 Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
 Fixtures/               sample Beamer PDFs + .tex sources, legacy notes file, test video (see its README)
-docs/                   feature-parity.md, architecture.md, decisions/, legacy-user-docs/ (frozen old docs); internal only
-site/                   user documentation (Jekyll, GitHub Pages, docs.slidepilotapp.com; ADR 0021)
+docs/                   feature-parity.md, architecture.md, decisions/; internal only
+site/                   user documentation (Starlight, GitHub Pages, docs.slidepilotapp.com; ADR 0021)
 .github/                CI workflow, issue templates, PR template
 .claude/                settings.json (permissions, sandbox), agents/ (parity-, design-, concurrency-reviewer),
                         skills/implement-issue (the standard workflow for every issue)
