@@ -16,8 +16,6 @@ concurrency:
 env:
   # Pin Xcode explicitly; update together with the runner image (see CLAUDE.md).
   DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
-  IPAD_NAME: iPad Pro 13-inch (M5)
-  IPAD_OS: "26.5"
 
 jobs:
   # Decides whether the macOS runner jobs are needed. PRs that only touch docs
@@ -79,7 +77,7 @@ jobs:
           if [ "${code}" = "true" ]; then
             echo "Code changes found: running the full pipeline." | tee -a "${GITHUB_STEP_SUMMARY}"
           else
-            echo "Docs or Claude configuration only: skipping macOS and iPad jobs." | tee -a "${GITHUB_STEP_SUMMARY}"
+            echo "Docs or Claude configuration only: skipping macOS and iOS jobs." | tee -a "${GITHUB_STEP_SUMMARY}"
           fi
 
   packages:
@@ -142,80 +140,30 @@ jobs:
       - name: Mac test host
         run: sh Tools/TestHost/build.sh
 
+  # Compiles the iOS app (iPad and iPhone share the SDK and binary), so
+  # iOS-only code breaks the PR. It does not run tests: the test plan holds only
+  # package tests, which the packages and macOS jobs already run, and booting a
+  # simulator took most of this job's time (ADR 0008, amendment 2026-11-26).
   ipados:
-    name: iPadOS simulator (build + test)
+    name: iOS (build)
     needs: changes
     if: needs.changes.outputs.code == 'true'
     runs-on: macos-26
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      # Build before booting the simulator: a freshly booted simulator keeps
-      # the runner's few cores busy for minutes, which made the build about
-      # four times slower. The build needs no device, only the SDK. Index
-      # store and code coverage are off because CI uses neither.
-      - name: Build for testing
+      # Index store is off because CI does not use it.
+      - name: Build
         run: |
           set -euo pipefail
           xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
             -destination 'generic/platform=iOS Simulator' \
-            -derivedDataPath build/DerivedData \
-            -enableCodeCoverage NO \
             ARCHS=arm64 \
             COMPILER_INDEX_STORE_ENABLE=NO \
             CODE_SIGNING_ALLOWED=NO \
-            build-for-testing
-      # On some runners the simulator runtimes are not loaded yet when the job
-      # starts, and xcodebuild then finds no iPad at all. Wait for the runtime,
-      # create the device if the image lacks it, and boot it before testing.
-      - name: Prepare iPad simulator
-        id: simulator
-        run: |
-          set -euo pipefail
-          # Several runtimes can share a version (e.g. iPhone-only ones), so pick
-          # the one that supports the iPad. Prints "<runtime> <device type>".
-          query='[.runtimes[]
-            | select(.platform == "iOS" and (.version == $os or (.version | startswith($os + "."))))
-            | {rt: .identifier, dt: ([.supportedDeviceTypes[]? | select(.name == $name)][0].identifier)}
-            | select(.dt != null)][0] // empty | "\(.rt) \(.dt)"'
-          match=""
-          for attempt in $(seq 1 30); do
-            match=$(xcrun simctl list runtimes available -j \
-              | jq -r --arg os "${IPAD_OS}" --arg name "${IPAD_NAME}" "${query}")
-            [ -n "${match}" ] && break
-            echo "iOS ${IPAD_OS} runtime for ${IPAD_NAME} not available yet (attempt ${attempt}/30)"
-            sleep 10
-          done
-          if [ -z "${match}" ]; then
-            echo "::error::No iOS ${IPAD_OS} simulator runtime with ${IPAD_NAME} on this runner."
-            xcrun simctl list runtimes
-            exit 1
-          fi
-          read -r runtime device_type <<< "${match}"
-
-          udid=$(xcrun simctl list devices available -j \
-            | jq -r --arg rt "${runtime}" --arg name "${IPAD_NAME}" \
-              '[.devices[$rt][]? | select(.name == $name)][0].udid // empty')
-          if [ -z "${udid}" ]; then
-            echo "Creating '${IPAD_NAME}' on ${runtime}"
-            udid=$(xcrun simctl create "${IPAD_NAME}" "${device_type}" "${runtime}")
-          fi
-
-          echo "Using ${IPAD_NAME} (${udid}) on ${runtime}"
-          xcrun simctl bootstatus "${udid}" -b
-          echo "udid=${udid}" >> "${GITHUB_OUTPUT}"
-      - name: Test
-        env:
-          IPAD_UDID: ${{ steps.simulator.outputs.udid }}
-        run: |
-          set -euo pipefail
-          xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot \
-            -destination "platform=iOS Simulator,id=${IPAD_UDID}" \
-            -derivedDataPath build/DerivedData \
-            -enableCodeCoverage NO \
-            test-without-building
+            build
 
   no-screen-capture:
     name: No screen capture APIs

@@ -90,7 +90,7 @@ xcodebuild -project SlidePilot.xcodeproj -scheme SlidePilot -destination 'platfo
 - Releases: Xcode Cloud archives and uploads both platforms when started manually; see [`docs/release.md`](docs/release.md).
 - The app target uses `SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor` (Xcode 26 default for apps). Packages use the default (nonisolated); mark UI-facing package types `@MainActor` explicitly.
 
-- CI: `.github/workflows/ci.yml` on `macos-26` with Xcode pinned via `DEVELOPER_DIR` (currently Xcode 26.6, iPad simulator iOS 26.5). The required status check is **`ci-success`**; it only passes if all jobs pass. PRs that only change docs (`docs/`, `site/`, root `*.md`, `LICENSE`), Claude configuration (`.claude/`) or issue/PR templates skip the macOS and iPad jobs (job `changes`); any other path runs everything. When the runner image changes, update the pinned Xcode and simulator OS in one PR.
+- CI: `.github/workflows/ci.yml` on `macos-26` with Xcode pinned via `DEVELOPER_DIR` (currently Xcode 26.6). The required status check is **`ci-success`**; it only passes if all jobs pass. PRs that only change docs (`docs/`, `site/`, root `*.md`, `LICENSE`), Claude configuration (`.claude/`) or issue/PR templates skip the macOS and iOS jobs (job `changes`); any other path runs everything. The iOS job only builds the app; package tests run on the Mac only (ADR 0008). When the runner image changes, update the pinned Xcode in one PR.
 - Cloud sessions have **no Swift toolchain**. There, GitHub Actions is the only build/test feedback (ADR 0008): push the branch, open a draft PR, and read the results with `gh pr checks` / `gh run view --log-failed`.
 - In local sessions the Xcode MCP tools may be used instead of `xcodebuild` if available.
 
@@ -188,7 +188,7 @@ scripts/sim-copy-fixtures.sh <UDID>
 
 - Then install and launch the app, open a fixture from the document browser (Browse > On My iPad or On My iPhone > SlidePilot Fixtures) and drive it with the iOS Simulator tools (tap, swipe, keys, rotate); screenshots with `xcrun simctl io <UDID> screenshot ./.pr-screenshots/<file>.png`.
 - On the iPhone check compact width (portrait) and compact height (landscape). The iPhone has no menu bar: every command must also be reachable from the toolbar, its overflow menu or a sheet.
-- iPhone builds and tests run locally only; CI covers iOS through the iPad job (same SDK and binary, see `docs/architecture.md`, "Testing").
+- iOS tests run locally only; CI builds the iOS app once, which covers iPad and iPhone (same SDK and binary, see `docs/architecture.md`, "Testing").
 - The script writes only into the simulator's local Files storage; nothing else of the simulator or the Mac.
 
 ## PR workflow
