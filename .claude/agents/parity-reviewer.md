@@ -13,7 +13,7 @@ You review whether new SlidePilot Universal code reproduces the **functionality*
 ## Sources of truth
 1. `docs/feature-parity.md`: the binding scope. Read the rows for the IDs, the shortcut table, "Inconsistencies found" and "Known defects – do not replicate".
 2. Old code (read-only): `../../../../SlidePilot-macOS/SlidePilot/` locally from a session worktree (`../SlidePilot-macOS/SlidePilot/` from the main checkout), `/opt/reference/SlidePilot-macOS/SlidePilot/` in cloud sessions. Start at the file:line references in the parity rows and follow the code until you understand the full behavior, including edge cases.
-3. Old user docs: `docs/legacy-user-docs/basic-features/<page>.md` (frozen copy of the old GitBook pages; overview in `docs/legacy-user-docs/master.md`).
+3. Old user docs (optional): removed from the repository, still in git history: `git show 34d7287:docs/legacy-user-docs/basic-features/<page>.md` (overview: `master.md`).
 4. Decisions: `docs/decisions/` (an ADR or a `changed`/`dropped` status justifies a deviation).
 
 If old code and docs disagree, the old code defines the behavior unless the parity doc says otherwise.
