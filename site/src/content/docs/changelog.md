@@ -1,9 +1,6 @@
 ---
 title: Changelog
-nav_order: 7
 ---
-
-# Changelog
 
 ## SlidePilot 2.0
 
@@ -17,7 +14,7 @@ A new SlidePilot, written from scratch for macOS 26, iPadOS 26 and iOS 26.
 - **Videos** from Beamer with autostart, loop, start and duration, also across overlay steps and stored inside the PDF.
 - **Layout per PDF**, chosen right in the toolbar.
 - Light and dark mode, VoiceOver and Dynamic Type; English, German and French.
-- Free on the App Store, with [SlidePilot Pro](pro.md) for presenting to an audience and remote control without time limit.
+- Free on the App Store, with [SlidePilot Pro](/pro/) for presenting to an audience and remote control without time limit.
 
 ## SlidePilot 1
 

@@ -1,10 +1,6 @@
 ---
 title: Beamer and LaTeX
-nav_order: 9
-parent: Features
 ---
-
-# Beamer and LaTeX
 
 SlidePilot understands a few things that LaTeX Beamer puts into a PDF. Recompile while the PDF is open: SlidePilot reloads it and stays on the current slide.
 
@@ -25,7 +21,7 @@ Beamer can put notes next to each slide:
 \end{document}
 ```
 
-Open the PDF and choose **Split Position ▸ Right** (see [Notes](notes.md#split-notes-from-beamer)), or let the PDF choose it: add one of the keywords `SP-Right`, `SP-Left`, `SP-Top` or `SP-Bottom` (exactly like this) to the PDF, and SlidePilot opens it in Split mode at that position:
+Open the PDF and choose **Split Position ▸ Right** (see [Notes](/features/notes/#split-notes-from-beamer)), or let the PDF choose it: add one of the keywords `SP-Right`, `SP-Left`, `SP-Top` or `SP-Bottom` (exactly like this) to the PDF, and SlidePilot opens it in Split mode at that position:
 
 ```latex
 \hypersetup{pdfkeywords={SP-Right}}
@@ -73,4 +69,4 @@ On the Mac the file opens in its app; on iPad and iPhone it opens in Quick Look.
 
 ## Other links
 
-`\hyperlink`, `\href{https://…}` and the Beamer navigation symbols that point to a slide work as described in [Presenting](presenting.md#links).
+`\hyperlink`, `\href{https://…}` and the Beamer navigation symbols that point to a slide work as described in [Presenting](/features/presenting/#links).

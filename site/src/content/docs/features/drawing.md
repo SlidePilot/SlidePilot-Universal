@@ -1,14 +1,10 @@
 ---
 title: Drawing
-nav_order: 5
-parent: Features
 ---
-
-# Drawing
 
 Draw on the current slide while the audience watches. Start with **D** or the **Draw** button in the toolbar; end with the same button or Esc.
 
-![Drawing on a slide on iPad, with the drawing tools in the toolbar](../assets/ipad-drawing.png)
+![Drawing on a slide on iPad, with the drawing tools in the toolbar](../../../assets/ipad-drawing.png)
 
 While you draw, the presenter view shows only the current slide, and the toolbar shows the drawing tools:
 
@@ -35,4 +31,4 @@ Turning the setting off again deletes the saved drawings of all PDFs, after aski
 
 **Export Drawings…** (⌥⌘E) creates a copy of the PDF with your drawings on the slides, for example to share them after a lecture. On the Mac it is in the **File** menu; on iPad and iPhone in the **Import and Export** menu.
 
-A [curtain](curtain.md) hides the drawing from the audience; the drawing is still there when the curtain goes away.
+A [curtain](/features/curtain/) hides the drawing from the audience; the drawing is still there when the curtain goes away.

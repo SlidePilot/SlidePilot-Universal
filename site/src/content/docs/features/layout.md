@@ -1,10 +1,6 @@
 ---
 title: Layout
-nav_order: 2
-parent: Features
 ---
-
-# Layout
 
 The presenter view shows up to three slots: the **current slide**, the **next slide** and your **notes**.
 

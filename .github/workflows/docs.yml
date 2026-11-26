@@ -1,7 +1,7 @@
 name: Docs
 
-# Builds the user documentation in site/ with GitHub Pages' Jekyll and
-# deploys it from main (ADR 0021). Pull requests only build it as a check.
+# Builds the user documentation in site/ with Starlight (Astro) and deploys
+# it to GitHub Pages from main (ADR 0021). Pull requests only build it as a check.
 on:
   pull_request:
     paths:
@@ -26,20 +26,27 @@ jobs:
     name: Build site
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: site
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1.0.13
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          source: ./site
-          destination: ./_site
+          node-version: 24
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Build with Astro
+        run: npx astro build
       - name: Upload site
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: ./_site
+          path: ./site/dist
 
   deploy:
     name: Deploy site

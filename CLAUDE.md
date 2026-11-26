@@ -32,7 +32,7 @@ A from-scratch rewrite of SlidePilot (AppKit macOS PDF presenter for LaTeX Beame
 
 - Old app (read-only reference, never copy code from it): next to the repository folder, i.e. `../../../../SlidePilot-macOS` from a session worktree (`../SlidePilot-macOS` from the main checkout), or `/opt/reference/SlidePilot-macOS` (cloud sessions). Paths in the parity doc are relative to its `SlidePilot/` folder.
 - Old user docs: removed from the repository; the frozen GitBook copy is still in git history (`git show 34d7287:docs/legacy-user-docs/<path>`). The old code is the reference for behavior.
-- Current user docs: `site/` (Markdown, Jekyll), published with GitHub Pages at docs.slidepilotapp.com (ADR 0021). Update the affected page in the same PR as a user-visible change.
+- Current user docs: `site/` (Markdown in `site/src/content/docs/`, Starlight), published with GitHub Pages at docs.slidepilotapp.com (ADR 0021). Update the affected page in the same PR as a user-visible change.
 - GitHub: `SlidePilot/SlidePilot-Universal`. Milestones: Phase 0 – Foundation … Phase 5 – Polish & Release.
 
 ## Feature-parity rule
@@ -225,7 +225,7 @@ Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol
 Fixtures/               sample Beamer PDFs + .tex sources, legacy notes file, test video (see its README)
 docs/                   feature-parity.md, architecture.md, decisions/; internal only
-site/                   user documentation (Jekyll, GitHub Pages, docs.slidepilotapp.com; ADR 0021)
+site/                   user documentation (Starlight, GitHub Pages, docs.slidepilotapp.com; ADR 0021)
 .github/                CI workflow, issue templates, PR template
 .claude/                settings.json (permissions, sandbox), agents/ (parity-, design-, concurrency-reviewer),
                         skills/implement-issue (the standard workflow for every issue)

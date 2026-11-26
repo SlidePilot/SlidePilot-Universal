@@ -1,13 +1,10 @@
 ---
 title: FAQ
-nav_order: 5
 ---
-
-# FAQ
 
 ## Why does the presentation stop after 3 minutes?
 
-Without [SlidePilot Pro](pro.md), the presentation for the audience and remote control are trials of 3 minutes. Everything on your own screen keeps working without a limit.
+Without [SlidePilot Pro](/pro/), the presentation for the audience and remote control are trials of 3 minutes. Everything on your own screen keeps working without a limit.
 
 ## How do I restore my purchase?
 
@@ -15,7 +12,7 @@ Go to the **SlidePilot Pro** section in Settings and choose **Restore Purchases*
 
 ## Where are my notes and drawings?
 
-Inside SlidePilot, linked to the PDF. See [Your Data](your-data.md).
+Inside SlidePilot, linked to the PDF. See [Your Data](/your-data/).
 
 ## I renamed or moved my PDF. Are my notes gone?
 
@@ -23,11 +20,11 @@ No. SlidePilot finds the PDF again. For a copy, SlidePilot asks when you open it
 
 ## Can I use my notes from SlidePilot 1?
 
-Yes. On the Mac, SlidePilot imports a notes file like `<pdf name>-notes.rtf` next to the PDF by itself. Everywhere else, use **Import Notes…**. See [Notes](features/notes.md#importing-and-exporting-notes).
+Yes. On the Mac, SlidePilot imports a notes file like `<pdf name>-notes.rtf` next to the PDF by itself. Everywhere else, use **Import Notes…**. See [Notes](/features/notes/#importing-and-exporting-notes).
 
 ## Does SlidePilot work with the old SlidePilot Remote app?
 
-No. Instead, SlidePilot itself can control another device; install it on the iPhone, iPad or Mac you want to use as a remote. See [Remote Control](features/remote.md).
+No. Instead, SlidePilot itself can control another device; install it on the iPhone, iPad or Mac you want to use as a remote. See [Remote Control](/features/remote/).
 
 ## Where did the pre-rendering settings go?
 

@@ -1,9 +1,6 @@
 ---
 title: Your Data
-nav_order: 3
 ---
-
-# Your Data
 
 SlidePilot stores your **notes**, **drawings** (with Save drawings on) and the **settings of each PDF** (layout, notes mode, pointer) by itself. It saves every change right away. Nothing is written into the PDF or next to it.
 
