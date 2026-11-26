@@ -219,7 +219,8 @@ scripts/sim-copy-fixtures.sh <UDID>
 SlidePilot.xcodeproj    app project; SlidePilot.xctestplan = test plan, MacSnapshots.xctestplan = Mac screenshots
 SlidePilot/             app target sources
 SlidePilotMacSnapshots/ macOS-only test target that renders Mac screenshots (see "Mac snapshots")
-scripts/                snapshot export, screen capture guard, simulator fixture copy, Mac test host client
+scripts/                snapshot export, screen capture guard, simulator fixture copy, Mac test host client,
+                        free download release
 Tools/TestHost/         SlidePilot Test Host: the only process allowed to capture and drive the Mac test build (ADR 0018)
 Config/                 xcconfig files
 Packages/               SlidePilotCore, SlidePilotRendering, SlidePilotRemoteProtocol

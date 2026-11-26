@@ -52,6 +52,23 @@ After the upload, App Store Connect processes the build (usually 10–30 minutes
 ## Free Mac download (outside the App Store)
 The free download (ADR 0011) is the build configuration `FreeDownload` of the same target, built with the scheme `SlidePilot Free Download`. `Config/FreeDownload.xcconfig` gives it its own bundle ID (`$(BUNDLE_ID_PREFIX).SlidePilot.FreeDownload`), limits it to macOS and sets the flag `SLIDEPILOT_FREE_DOWNLOAD`, which turns on the donation hint (DROP-03) and compiles out StoreKit and the SlidePilot Pro trial (ADR 0020), so everything is unlimited. It has no update mechanism.
 
+### Release with the script (default)
+Run this in a terminal from the repository root, on `main` after the release's version bump is merged:
+
+```sh
+git pull origin main --ff-only
+scripts/release-free-download.sh
+```
+
+The script reads `MARKETING_VERSION`, archives the scheme, exports it with Developer ID, waits for Apple's notarization (usually a few minutes, at most about 30), checks signature, stapled ticket and Gatekeeper, and zips the app as `SlidePilot-X.Y.Z-macOS.zip` in `./build/release-free-download/`. It then creates a **draft** GitHub release `vX.Y.Z` at the current commit, with notes generated from the merged pull requests and the zip's SHA-256. Review the notes on GitHub and publish the release there.
+
+- `--publish` publishes the release right away instead of as a draft.
+- `--no-release` only builds and checks the zip (for example to test it before tagging).
+- It stops before building if the working tree is not clean, `main` differs from `origin/main`, `gh` is not signed in, or the tag or release already exists.
+- It needs the Developer ID signing of the Xcode account, the network and `gh`, so it cannot run inside the Claude Code sandbox.
+
+### Manual steps (fallback)
+
 ```sh
 xcodebuild -project SlidePilot.xcodeproj -scheme "SlidePilot Free Download" -destination 'generic/platform=macOS' -archivePath ./build/SlidePilot-FreeDownload.xcarchive -allowProvisioningUpdates archive
 xcodebuild -exportArchive -archivePath ./build/SlidePilot-FreeDownload.xcarchive -exportOptionsPlist Config/ExportOptions-DeveloperID.plist -exportPath ./build/export-FreeDownload -allowProvisioningUpdates
