@@ -64,7 +64,7 @@ git pull origin main --ff-only
 scripts/release-free-download.sh
 ```
 
-The script reads `MARKETING_VERSION`, archives the scheme, exports it with Developer ID, waits for Apple's notarization (usually a few minutes, at most about 30), checks signature, stapled ticket and Gatekeeper, and zips the app as `SlidePilot-X.Y.Z-macOS.zip` in `./build/release-free-download/`. It then creates a **draft** GitHub release `vX.Y.Z` at the current commit, with notes generated from the merged pull requests and the zip's SHA-256. Review the notes on GitHub and publish the release there.
+The script reads `MARKETING_VERSION`, archives the scheme, exports it with Developer ID, waits for Apple's notarization (usually a few minutes, at most about 30), checks signature, stapled ticket and Gatekeeper, and zips the app as `SlidePilot-<version>-macOS.zip` (for example `SlidePilot-2.0-macOS.zip`) in `./build/release-free-download/`. It then creates a **draft** GitHub release `v<version>` (for example `v2.0`) at the current commit, with notes generated from the merged pull requests and the zip's SHA-256. Review the notes on GitHub and publish the release there.
 
 - `--publish` publishes the release right away instead of as a draft.
 - `--no-release` only builds and checks the zip (for example to test it before tagging).

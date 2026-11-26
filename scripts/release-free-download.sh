@@ -8,7 +8,7 @@
 #
 # Steps: archive the scheme "SlidePilot Free Download", export it with Developer ID and
 # send it to Apple's notary service, wait until the notarized app can be exported,
-# verify signature and stapling, zip it and create the release "vX.Y.Z" at the current
+# verify signature and stapling, zip it and create the release "v<version>" at the current
 # commit with notes generated from the merged pull requests.
 #
 # Needs the signing identity of the Xcode account, the network and a signed-in gh, so run
@@ -116,8 +116,9 @@ step "Reading the version"
 version=$(xcodebuild -project "$project" -scheme "$scheme" -configuration "$configuration" \
     -destination 'generic/platform=macOS' -showBuildSettings 2>/dev/null \
     | awk -F' = ' '$1 ~ /^ *MARKETING_VERSION$/ { print $2; exit }')
-printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' \
-    || fail "MARKETING_VERSION '$version' is not of the form X.Y.Z."
+# Apple allows one to three period-separated integers (2.0, 2.0.1); the tag uses it as is.
+printf '%s' "$version" | grep -Eq '^[0-9]+(\.[0-9]+){0,2}$' \
+    || fail "MARKETING_VERSION '$version' is not a version like 2.0 or 2.0.1."
 tag="v$version"
 zip="$out/SlidePilot-$version-macOS.zip"
 ok "Version ${bold}$version${reset}${green}, tag $tag, commit $(git rev-parse --short HEAD)"
