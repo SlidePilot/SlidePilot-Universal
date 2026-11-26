@@ -38,26 +38,77 @@ for arg in "$@"; do
     esac
 done
 
-fail() {
-    echo "error: $*" >&2
-    exit 1
+# Colors only on a terminal, and never when NO_COLOR is set (https://no-color.org).
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+    bold=$(printf '\033[1m'); dim=$(printf '\033[2m'); red=$(printf '\033[31m')
+    green=$(printf '\033[32m'); yellow=$(printf '\033[33m'); blue=$(printf '\033[34m')
+    reset=$(printf '\033[0m')
+else
+    bold=""; dim=""; red=""; green=""; yellow=""; blue=""; reset=""
+fi
+
+started=$(date +%s)
+step_number=0
+step_title=""
+if $create_release; then step_count=8; else step_count=7; fi
+
+elapsed() {
+    seconds=$(($(date +%s) - started))
+    printf '%d:%02d' $((seconds / 60)) $((seconds % 60))
 }
 
 step() {
-    printf '\n==> %s\n' "$*"
+    step_number=$((step_number + 1))
+    step_title="$*"
+    printf '\n%s%s[%d/%d] %s%s %s(%s)%s\n' \
+        "$bold" "$blue" "$step_number" "$step_count" "$*" "$reset" "$dim" "$(elapsed)" "$reset"
 }
+
+info() {
+    printf '    %s%s%s\n' "$dim" "$*" "$reset"
+}
+
+ok() {
+    printf '    %s✓ %s%s\n' "$green" "$*" "$reset"
+}
+
+warn() {
+    printf '    %s! %s%s\n' "$yellow" "$*" "$reset"
+}
+
+fail() {
+    printf '\n%s%s✗ %s%s\n' "$bold" "$red" "$*" "$reset" >&2
+    trap - EXIT
+    exit 1
+}
+
+# Any other failing command (set -e) ends up here, so the last step is always named.
+on_exit() {
+    status=$?
+    if [ "$status" -ne 0 ]; then
+        printf '\n%s%s✗ Failed during [%d/%d] %s (exit %d, after %s)%s\n' \
+            "$bold" "$red" "$step_number" "$step_count" "$step_title" "$status" "$(elapsed)" "$reset" >&2
+    fi
+}
+trap on_exit EXIT
 
 [ -d "$project" ] || fail "Run this from the repository root."
 
 step "Checking the working tree"
 [ -z "$(git status --porcelain)" ] || fail "The working tree has uncommitted changes."
+ok "Working tree is clean"
 if $create_release; then
     branch=$(git rev-parse --abbrev-ref HEAD)
     [ "$branch" = "main" ] || fail "Releases are made from main (current branch: $branch)."
-    git fetch origin main --tags
+    info "Fetching origin/main and tags"
+    git fetch -q origin main --tags
     [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ] \
         || fail "main is not equal to origin/main. Run: git pull origin main --ff-only"
+    ok "main is up to date with origin/main"
     gh auth status >/dev/null 2>&1 || fail "gh is not signed in. Run: gh auth login"
+    ok "gh is signed in"
+else
+    warn "--no-release: building the zip only, no tag or GitHub release"
 fi
 commit=$(git rev-parse HEAD)
 
@@ -69,7 +120,7 @@ printf '%s' "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' \
     || fail "MARKETING_VERSION '$version' is not of the form X.Y.Z."
 tag="v$version"
 zip="$out/SlidePilot-$version-macOS.zip"
-echo "Version $version, tag $tag, commit $commit"
+ok "Version ${bold}$version${reset}${green}, tag $tag, commit $(git rev-parse --short HEAD)"
 
 if $create_release; then
     if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
@@ -78,21 +129,26 @@ if $create_release; then
     if gh release view "$tag" >/dev/null 2>&1; then
         fail "A GitHub release $tag already exists."
     fi
+    ok "Tag and release $tag are still free"
 fi
 
 step "Archiving $scheme"
+info "This takes a few minutes; only warnings and errors are shown."
 rm -rf "$out"
 mkdir -p "$out"
 xcodebuild -project "$project" -scheme "$scheme" -configuration "$configuration" \
     -destination 'generic/platform=macOS' -archivePath "$archive" \
     -allowProvisioningUpdates -quiet archive
+ok "Archived to $archive"
 
 step "Exporting with Developer ID and submitting for notarization"
 xcodebuild -exportArchive -archivePath "$archive" \
     -exportOptionsPlist Config/ExportOptions-DeveloperID.plist \
-    -exportPath "$export_dir" -allowProvisioningUpdates
+    -exportPath "$export_dir" -allowProvisioningUpdates -quiet
+ok "Signed with Developer ID and uploaded to Apple's notary service"
 
-step "Waiting for notarization (up to $((poll_interval * poll_attempts / 60)) minutes)"
+step "Waiting for notarization"
+info "Checking every $poll_interval s, at most $((poll_interval * poll_attempts / 60)) minutes"
 attempt=1
 log="$out/export-notarized.log"
 until xcodebuild -exportNotarizedApp -archivePath "$archive" -exportPath "$notarized_dir" >"$log" 2>&1; do
@@ -100,26 +156,31 @@ until xcodebuild -exportNotarizedApp -archivePath "$archive" -exportPath "$notar
         cat "$log" >&2
         fail "The notarized app is not available yet. Check the status in Xcode (Window > Organizer), then run: xcodebuild -exportNotarizedApp -archivePath $archive -exportPath $notarized_dir"
     fi
-    echo "Not notarized yet (attempt $attempt of $poll_attempts), checking again in $poll_interval s"
+    info "Not notarized yet (check $attempt of $poll_attempts, $(elapsed) elapsed)"
     attempt=$((attempt + 1))
     sleep "$poll_interval"
 done
 app="$notarized_dir/$app_name"
 [ -d "$app" ] || fail "$app was not exported (see $log)."
+ok "Notarized app exported to $app"
 
 step "Verifying signature, notarization ticket and Gatekeeper"
 codesign --verify --deep --strict "$app"
-xcrun stapler validate "$app"
-spctl --assess --type execute --verbose "$app"
+ok "Code signature is valid"
+xcrun stapler validate -q "$app"
+ok "Notarization ticket is stapled"
+assessment=$(spctl --assess --type execute --verbose "$app" 2>&1)
+info "$assessment"
+ok "Gatekeeper accepts the app"
 
 step "Zipping"
 ditto -c -k --keepParent "$app" "$zip"
 checksum=$(shasum -a 256 "$zip" | awk '{ print $1 }')
-echo "$zip"
-echo "SHA-256: $checksum"
+ok "$zip"
+info "SHA-256: $checksum"
 
 if ! $create_release; then
-    echo "Done. No release created (--no-release)."
+    printf '\n%s%s✓ Done in %s.%s No release created (--no-release).\n' "$bold" "$green" "$(elapsed)" "$reset"
     exit 0
 fi
 
@@ -127,11 +188,13 @@ step "Creating the GitHub release $tag"
 draft_flag="--draft"
 $publish && draft_flag=""
 # shellcheck disable=SC2086 # draft_flag is empty or one word on purpose.
-gh release create "$tag" "$zip" $draft_flag --target "$commit" --title "SlidePilot $version" \
-    --generate-notes --notes "Free download for macOS 26. SHA-256 of the zip: $checksum"
+release_url=$(gh release create "$tag" "$zip" $draft_flag --target "$commit" --title "SlidePilot $version" \
+    --generate-notes --notes "Free download for macOS 26. SHA-256 of the zip: $checksum")
+ok "$release_url"
 
 if $publish; then
-    echo "Published $tag."
+    printf '\n%s%s✓ Published %s in %s.%s\n' "$bold" "$green" "$tag" "$(elapsed)" "$reset"
 else
-    echo "Created the draft release $tag. Review the notes on GitHub and publish it there."
+    printf '\n%s%s✓ Created the draft release %s in %s.%s\n' "$bold" "$green" "$tag" "$(elapsed)" "$reset"
+    info "Review the notes on GitHub and publish the release there."
 fi
