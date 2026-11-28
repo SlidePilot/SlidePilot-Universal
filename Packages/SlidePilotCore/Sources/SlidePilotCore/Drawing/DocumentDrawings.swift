@@ -137,8 +137,7 @@ public final class DocumentDrawings {
         liveStroke = nil
     }
 
-    /// Adds the stroke in progress to its page. Returns the page when something changed, so
-    /// the caller can register an undo action.
+    /// Adds the stroke in progress to its page. Returns the page when something changed.
     @discardableResult
     public func commitLiveStroke() -> Int? {
         guard let liveStroke else { return nil }
