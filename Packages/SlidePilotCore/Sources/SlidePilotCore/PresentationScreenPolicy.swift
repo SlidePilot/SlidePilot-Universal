@@ -27,6 +27,18 @@ public enum PresentationScreenPolicy {
         return screens.first { $0 != presenterScreen }
     }
 
+    /// Whether the presentation hides the presenter window: it runs in full screen in its
+    /// own Space on the presenter's screen (a single screen, or the user's choice). The
+    /// presentation then keeps the keyboard, and the presenter shows nothing that needs
+    /// to be seen until it is back; on separate screens the presenter gets the keyboard.
+    public static func presentationHidesPresenter<ScreenID: Hashable>(
+        presentationScreen: ScreenID?,
+        presenterScreen: ScreenID?
+    ) -> Bool {
+        guard let presentationScreen, let presenterScreen else { return false }
+        return presentationScreen == presenterScreen
+    }
+
     /// Reaction to a screen change while presenting.
     ///
     /// - A screen added while the presentation shares the presenter's screen takes over
