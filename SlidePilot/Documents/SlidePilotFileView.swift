@@ -80,7 +80,7 @@ struct SlidePilotFileView: View {
             pendingImport?.check.replacesData == false
                 ? Text("Import the SlidePilot File?")
                 : Text("Replace the Data of “\(pendingImport?.entry.pdf.fileName ?? "")”?"),
-            isPresented: Binding(get: { pendingImport != nil }, set: { if !$0 { pendingImport = nil } }),
+            isPresented: $pendingImport.isPresented,
             presenting: pendingImport
         ) { pending in
             Button("Import", role: pending.check.replacesData ? .destructive : nil) {
@@ -92,7 +92,7 @@ struct SlidePilotFileView: View {
         }
         .alert(
             Text("Data Imported"),
-            isPresented: Binding(get: { importedPDFName != nil }, set: { if !$0 { importedPDFName = nil } }),
+            isPresented: $importedPDFName.isPresented,
             presenting: importedPDFName
         ) { _ in
             Button("OK") { close() }
@@ -101,7 +101,7 @@ struct SlidePilotFileView: View {
         }
         .alert(
             Text("The SlidePilot File Couldn’t Be Imported"),
-            isPresented: Binding(get: { failureMessage != nil }, set: { if !$0 { failureMessage = nil } }),
+            isPresented: $failureMessage.isPresented,
             presenting: failureMessage
         ) { _ in
             Button("OK") {}
@@ -309,15 +309,7 @@ struct SlidePilotFileView: View {
     /// a single import the user started.
     @concurrent
     private static func pageCount(ofPDFAt url: URL) async throws -> Int {
-        var coordinationError: NSError?
-        var result: Result<Data, any Error> = .failure(CocoaError(.fileReadUnknown))
-        NSFileCoordinator().coordinate(readingItemAt: url, options: .withoutChanges, error: &coordinationError) { url in
-            result = Result { try Data(contentsOf: url) }
-        }
-        if let coordinationError {
-            throw coordinationError
-        }
-        return try PDFInspector.inspect(result.get()).pageCount
+        return try PDFInspector.inspect(CoordinatedFileRead.data(at: url)).pageCount
     }
 
     static func message(for error: SlidePilotFileFormat.DecodingError, fileName: String) -> String {

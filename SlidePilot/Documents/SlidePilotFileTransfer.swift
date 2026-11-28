@@ -149,7 +149,7 @@ private struct SlidePilotFileTransferModifier: ViewModifier {
                     .fileDialogConfirmationLabel(Text("Import"))
             }
             .fileExporter(
-                isPresented: Binding(get: { exportDocument != nil }, set: { if !$0 { exportDocument = nil } }),
+                isPresented: $exportDocument.isPresented,
                 document: exportDocument,
                 contentType: .slidePilotFile,
                 defaultFilename: exportName
@@ -166,7 +166,7 @@ private struct SlidePilotFileTransferModifier: ViewModifier {
             }
             .alert(
                 Text(pendingImport?.replacesData == true ? "Replace the Data of This PDF?" : "Import the SlidePilot File?"),
-                isPresented: Binding(get: { pendingImport != nil }, set: { if !$0 { pendingImport = nil } }),
+                isPresented: $pendingImport.isPresented,
                 presenting: pendingImport
             ) { pending in
                 Button("Import", role: pending.replacesData ? .destructive : nil) {
@@ -178,7 +178,7 @@ private struct SlidePilotFileTransferModifier: ViewModifier {
             }
             .alert(
                 failure.map { Text($0.title) } ?? Text(verbatim: ""),
-                isPresented: Binding(get: { failure != nil }, set: { if !$0 { failure = nil } }),
+                isPresented: $failure.isPresented,
                 presenting: failure
             ) { _ in
                 Button("OK") {}
@@ -241,15 +241,7 @@ private struct SlidePilotFileTransferModifier: ViewModifier {
         defer {
             if isAccessing { url.stopAccessingSecurityScopedResource() }
         }
-        var coordinationError: NSError?
-        var result: Result<Data, any Error> = .failure(CocoaError(.fileReadUnknown))
-        NSFileCoordinator().coordinate(readingItemAt: url, options: .withoutChanges, error: &coordinationError) { url in
-            result = Result { try Data(contentsOf: url) }
-        }
-        if let coordinationError {
-            throw coordinationError
-        }
-        return try SlidePilotFileFormat.decode(result.get())
+        return try SlidePilotFileFormat.decode(CoordinatedFileRead.data(at: url))
     }
 
     /// Imports at once when nothing would be replaced and nothing differs; asks otherwise.

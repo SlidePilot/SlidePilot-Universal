@@ -101,10 +101,7 @@ struct TrustedDevicesList: View {
         #endif
         .alert(
             Text("Remove “\(deviceToRemove?.deviceName ?? "")”?"),
-            isPresented: Binding(
-                get: { deviceToRemove != nil },
-                set: { if !$0 { deviceToRemove = nil } }
-            ),
+            isPresented: $deviceToRemove.isPresented,
             presenting: deviceToRemove
         ) { device in
             Button("Remove", role: .destructive) { remote.removeTrust(for: device.instanceID) }
