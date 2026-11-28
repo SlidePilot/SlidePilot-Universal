@@ -119,6 +119,36 @@ import Testing
         #expect(PixelProbe.color(of: image, atUnit: CGPoint(x: 0.75, y: 0.5)) == .white)
     }
 
+    /// Split notes (#236): the white canvas covers the audience half only, the notes half
+    /// keeps the page. Probes are (inside the region, in the other half).
+    @Test(arguments: [
+        (PageRegion.leftHalf, CGPoint(x: 0.25, y: 0.5), CGPoint(x: 0.75, y: 0.5)),
+        (PageRegion.rightHalf, CGPoint(x: 0.75, y: 0.5), CGPoint(x: 0.25, y: 0.5)),
+        (PageRegion.topHalf, CGPoint(x: 0.25, y: 0.25), CGPoint(x: 0.25, y: 0.75)),
+        (PageRegion.bottomHalf, CGPoint(x: 0.25, y: 0.75), CGPoint(x: 0.25, y: 0.25)),
+    ])
+    func whiteCanvasCoversOnlyTheAudienceRegion(region: PageRegion, inside: CGPoint, outside: CGPoint) async throws {
+        let pdf = TestPDF.make(pages: 1)
+        let data = try DrawingsPDFExporter.export(
+            pdf: pdf,
+            drawings: [0: PageDrawing(background: .white)],
+            region: region
+        )
+        let image = try await render(data)
+        #expect(PixelProbe.color(of: image, atUnit: inside) == .white)
+        #expect(PixelProbe.color(of: image, atUnit: outside) != .white)
+    }
+
+    @Test func fullRegionCoversThePage() async throws {
+        let pdf = TestPDF.make(pages: 1)
+        let data = try DrawingsPDFExporter.export(
+            pdf: pdf, drawings: [0: PageDrawing(background: .white)], region: .full
+        )
+        let image = try await render(data)
+        #expect(PixelProbe.color(of: image, atUnit: CGPoint(x: 0.25, y: 0.2)) == .white)
+        #expect(PixelProbe.color(of: image, atUnit: CGPoint(x: 0.75, y: 0.8)) == .white)
+    }
+
     /// The top-left quarter of the displayed page turns white, whatever the page's rotation.
     @Test(arguments: [0, 90, 180, 270])
     func rotatedPagesUseTheDisplayedOrientation(rotation: Int) async throws {

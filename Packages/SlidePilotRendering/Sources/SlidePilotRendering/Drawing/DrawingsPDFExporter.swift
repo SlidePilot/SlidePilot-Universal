@@ -57,6 +57,16 @@ public enum DrawingsPDFExporter {
         return data
     }
 
+    /// The copy for a canvas shown over `region` of each page: the audience half with split
+    /// notes, where a white canvas must leave the notes half visible.
+    public static func export(
+        pdf: Data,
+        drawings: [Int: PageDrawing],
+        region: PageRegion
+    ) throws(DrawingsPDFExportError) -> Data {
+        try export(pdf: pdf, drawings: drawings, section: region.drawingSection)
+    }
+
     /// The file name the export suggests: `<pdf>-<localized "Drawings">.pdf`, or
     /// `<localized "Drawings">.pdf` without a PDF name, like the old app.
     public static func exportName(forPDFBaseName baseName: String?, localizedDrawings: String) -> String {

@@ -56,10 +56,13 @@ extension View {
 nonisolated struct DrawingsPDF: Sendable, Transferable {
     let pdf: Data
     let drawings: [Int: PageDrawing]
+    /// The part of each page the canvas covers: the audience half with split notes, so a
+    /// white canvas does not hide the notes half in the copy.
+    let region: PageRegion
     let fileName: String
 
     func pdfData() throws -> Data {
-        try DrawingsPDFExporter.export(pdf: pdf, drawings: drawings)
+        try DrawingsPDFExporter.export(pdf: pdf, drawings: drawings, region: region)
     }
 
     static var transferRepresentation: some TransferRepresentation {
@@ -139,6 +142,7 @@ private struct DrawingsExportModifier: ViewModifier {
         return DrawingsPDF(
             pdf: session.data,
             drawings: session.drawing.drawings.pages,
+            region: session.audienceRegion,
             fileName: DrawingsPDFExporter.exportName(
                 forPDFBaseName: fileURL?.deletingPathExtension().lastPathComponent,
                 localizedDrawings: String(
