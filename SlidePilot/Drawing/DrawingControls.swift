@@ -144,14 +144,14 @@ struct DrawingToolbar: ToolbarContent {
             // A keyboard is not always attached to an iPad or iPhone (product-owner
             // decision 2026-11-25, #189); the Mac has Edit ▸ Undo and ⌘Z.
             Button("Undo", systemImage: "arrow.uturn.backward") {
-                model.undo()
+                model.undo(onPage: session.currentPage)
             }
-            .disabled(!model.canUndo)
+            .disabled(!model.canUndo(onPage: session.currentPage))
             .help(Text("Undo"))
             Button("Redo", systemImage: "arrow.uturn.forward") {
-                model.redo()
+                model.redo(onPage: session.currentPage)
             }
-            .disabled(!model.canRedo)
+            .disabled(!model.canRedo(onPage: session.currentPage))
             .help(Text("Redo"))
             #endif
             Button("Clear Drawings", systemImage: "eraser") {

@@ -70,13 +70,14 @@ private struct PencilCanvas: UIViewRepresentable {
         // Apple Pencil double-tap and squeeze (DRAW-11).
         let pencil = UIPencilInteraction(delegate: context.coordinator)
         canvas.addInteraction(pencil)
-        return DrawingInputContainer(canvas: canvas, undoManager: model.undoManager)
+        return DrawingInputContainer(canvas: canvas, undoManager: DrawingUndoManager(model: model))
     }
 
     func updateUIView(_ container: DrawingInputContainer, context: Context) {
         let canvas = container.canvas
         let coordinator = context.coordinator
         container.onEscape = onEscape
+        container.drawingUndoManager.page = page
         // Follows the system's "Only Draw with Apple Pencil" setting. `.default` would follow
         // a tool picker, which this canvas does not have (ADR 0016).
         canvas.drawingPolicy = UIPencilInteraction.prefersPencilOnlyDrawing ? .pencilOnly : .anyInput
@@ -230,9 +231,10 @@ private struct PencilCanvas: UIViewRepresentable {
 final class DrawingInputContainer: UIView {
     let canvas: PKCanvasView
     var onEscape: () -> Void = {}
-    private let drawingUndoManager: UndoManager
+    /// Undo and redo for the slide the canvas shows (DRAW-08).
+    let drawingUndoManager: DrawingUndoManager
 
-    init(canvas: PKCanvasView, undoManager: UndoManager) {
+    init(canvas: PKCanvasView, undoManager: DrawingUndoManager) {
         self.canvas = canvas
         drawingUndoManager = undoManager
         super.init(frame: .zero)

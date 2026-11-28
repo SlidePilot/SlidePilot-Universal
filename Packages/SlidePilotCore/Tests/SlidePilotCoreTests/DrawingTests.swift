@@ -195,6 +195,62 @@ struct DocumentDrawingsTests {
         #expect(!drawings.canRedo(onPage: 0))
     }
 
+    // DRAW-08 (#238): with "Save drawings" slides change in draw mode. Undo on the visible
+    // slide never reaches back into another slide's history, and that history is still
+    // there when the presenter comes back.
+    @Test func undoStopsAtTheVisiblePagesOwnHistory() {
+        let drawings = DocumentDrawings()
+        drawings.keepsDrawings = true
+        drawings.startDrawing(onPage: 0)
+        draw(drawings, onPage: 0)
+        draw(drawings, onPage: 1)
+
+        #expect(drawings.undo(onPage: 1))
+        #expect(!drawings.canUndo(onPage: 1))
+        #expect(!drawings.undo(onPage: 1))
+        #expect(drawings.drawing(onPage: 0).strokes.count == 1)
+        // A slide without changes in this draw session has nothing to undo or redo.
+        #expect(!drawings.canUndo(onPage: 2))
+        #expect(!drawings.canRedo(onPage: 2))
+
+        // Back on the first slide: its own undo, and the second slide keeps its redo.
+        #expect(drawings.canUndo(onPage: 0))
+        #expect(!drawings.canRedo(onPage: 0))
+        #expect(drawings.undo(onPage: 0))
+        #expect(drawings.drawing(onPage: 0).isEmpty)
+        #expect(drawings.canRedo(onPage: 1))
+        #expect(drawings.redo(onPage: 1))
+        #expect(drawings.drawing(onPage: 1).strokes.count == 1)
+        #expect(drawings.drawing(onPage: 0).isEmpty)
+    }
+
+    // DRAW-08: the Edit menu names the step of the visible slide ("Undo Clear Drawings").
+    @Test func undoAndRedoNameTheChangeOfTheirPage() {
+        let drawings = DocumentDrawings()
+        drawings.keepsDrawings = true
+        drawings.startDrawing(onPage: 0)
+        #expect(drawings.undoChange(onPage: 0) == nil)
+        #expect(drawings.redoChange(onPage: 0) == nil)
+
+        draw(drawings, onPage: 0)
+        drawings.clear(page: 0)
+        drawings.setBackground(.white, onPage: 1)
+        #expect(drawings.undoChange(onPage: 0) == .clear)
+        #expect(drawings.undoChange(onPage: 1) == .background)
+
+        drawings.undo(onPage: 0)
+        #expect(drawings.undoChange(onPage: 0) == .stroke)
+        #expect(drawings.redoChange(onPage: 0) == .clear)
+        #expect(drawings.redoChange(onPage: 1) == nil)
+
+        drawings.redo(onPage: 0)
+        #expect(drawings.undoChange(onPage: 0) == .clear)
+        #expect(drawings.redoChange(onPage: 0) == nil)
+
+        drawings.replaceStrokes([DrawingStroke(color: .black, points: [a, b])], onPage: 1)
+        #expect(drawings.undoChange(onPage: 1) == .stroke)
+    }
+
     @Test func newChangeDropsRedo() {
         let drawings = DocumentDrawings()
         drawings.startDrawing(onPage: 0)

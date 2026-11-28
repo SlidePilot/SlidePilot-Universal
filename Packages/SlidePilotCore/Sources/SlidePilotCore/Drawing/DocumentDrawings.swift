@@ -12,6 +12,17 @@ public struct LiveStroke: Sendable, Hashable {
     }
 }
 
+/// What one step of a page's undo history did, so the app can name it in the Edit menu
+/// ("Undo Drawing", DRAW-08).
+public enum DrawingChange: Sendable, Hashable {
+    /// A stroke was added.
+    case stroke
+    /// All strokes were removed (DRAW-04).
+    case clear
+    /// The canvas background changed, which also removes the strokes (DRAW-04).
+    case background
+}
+
 /// The drawings of one document and the draw mode (DRAW-01 to DRAW-08).
 ///
 /// The single source of truth for every surface (ADR 0016): the editable canvas (Mac layer,
@@ -126,15 +137,14 @@ public final class DocumentDrawings {
         liveStroke = nil
     }
 
-    /// Adds the stroke in progress to its page. Returns the page when something changed, so
-    /// the caller can register an undo action.
+    /// Adds the stroke in progress to its page. Returns the page when something changed.
     @discardableResult
     public func commitLiveStroke() -> Int? {
         guard let liveStroke else { return nil }
         self.liveStroke = nil
         guard !liveStroke.stroke.points.isEmpty else { return nil }
         let page = liveStroke.page
-        change(page) { $0.strokes.append(liveStroke.stroke) }
+        change(page, .stroke) { $0.strokes.append(liveStroke.stroke) }
         return page
     }
 
@@ -146,48 +156,61 @@ public final class DocumentDrawings {
         if liveStroke?.page == page {
             liveStroke = nil
         }
-        return change(page) { $0.strokes = strokes }
+        return change(page, .stroke) { $0.strokes = strokes }
     }
 
     /// Removes all strokes of `page`; the background stays (DRAW-04).
     @discardableResult
     public func clear(page: Int) -> Bool {
-        change(page) { $0.clear() }
+        change(page, .clear) { $0.clear() }
     }
 
     /// Sets the canvas background of `page`; this also removes its strokes (DRAW-04).
     @discardableResult
     public func setBackground(_ background: CanvasBackground, onPage page: Int) -> Bool {
-        change(page) { $0.setBackground(background) }
+        change(page, .background) { $0.setBackground(background) }
     }
 
     // MARK: - Undo (DRAW-08)
 
+    // Every query and step names its page: the caller passes the visible slide, so undo can
+    // never change another one. The histories of the other pages stay until draw mode ends.
+
     public func canUndo(onPage page: Int) -> Bool {
-        histories[page]?.undoStack.isEmpty == false
+        undoChange(onPage: page) != nil
     }
 
     public func canRedo(onPage page: Int) -> Bool {
-        histories[page]?.redoStack.isEmpty == false
+        redoChange(onPage: page) != nil
+    }
+
+    /// The change that `undo(onPage:)` would take back, `nil` when there is none.
+    public func undoChange(onPage page: Int) -> DrawingChange? {
+        histories[page]?.undoStack.last?.change
+    }
+
+    /// The change that `redo(onPage:)` would repeat, `nil` when there is none.
+    public func redoChange(onPage page: Int) -> DrawingChange? {
+        histories[page]?.redoStack.last?.change
     }
 
     /// Restores the drawing of `page` before its last change. Returns whether it did.
     @discardableResult
     public func undo(onPage page: Int) -> Bool {
-        guard var history = histories[page], let previous = history.undoStack.popLast() else { return false }
-        history.redoStack.append(drawing(onPage: page))
+        guard var history = histories[page], let step = history.undoStack.popLast() else { return false }
+        history.redoStack.append(PageHistory.Step(drawing: drawing(onPage: page), change: step.change))
         histories[page] = history
-        store(previous, onPage: page)
+        store(step.drawing, onPage: page)
         return true
     }
 
     /// Repeats the last undone change of `page`. Returns whether it did.
     @discardableResult
     public func redo(onPage page: Int) -> Bool {
-        guard var history = histories[page], let next = history.redoStack.popLast() else { return false }
-        history.undoStack.append(drawing(onPage: page))
+        guard var history = histories[page], let step = history.redoStack.popLast() else { return false }
+        history.undoStack.append(PageHistory.Step(drawing: drawing(onPage: page), change: step.change))
         histories[page] = history
-        store(next, onPage: page)
+        store(step.drawing, onPage: page)
         return true
     }
 
@@ -233,12 +256,12 @@ public final class DocumentDrawings {
     /// Applies `edit` to the drawing of `page` and records the old drawing for undo, unless
     /// nothing changed (the old app recorded no-op clears too; undoing them did nothing).
     @discardableResult
-    private func change(_ page: Int, _ edit: (inout PageDrawing) -> Void) -> Bool {
+    private func change(_ page: Int, _ kind: DrawingChange, _ edit: (inout PageDrawing) -> Void) -> Bool {
         let old = drawing(onPage: page)
         var new = old
         edit(&new)
         guard new != old else { return false }
-        histories[page, default: PageHistory()].record(old)
+        histories[page, default: PageHistory()].record(old, kind)
         store(new, onPage: page)
         return true
     }
@@ -250,11 +273,17 @@ public final class DocumentDrawings {
 
 /// Undo and redo snapshots of one page.
 private struct PageHistory {
-    var undoStack: [PageDrawing] = []
-    var redoStack: [PageDrawing] = []
+    /// The drawing a step brings back and the change it takes back or repeats.
+    struct Step {
+        var drawing: PageDrawing
+        var change: DrawingChange
+    }
 
-    mutating func record(_ old: PageDrawing) {
-        undoStack.append(old)
+    var undoStack: [Step] = []
+    var redoStack: [Step] = []
+
+    mutating func record(_ old: PageDrawing, _ change: DrawingChange) {
+        undoStack.append(Step(drawing: old, change: change))
         redoStack.removeAll()
     }
 }

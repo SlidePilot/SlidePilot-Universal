@@ -111,6 +111,7 @@ private struct MacDrawingInput: NSViewRepresentable {
 
     func updateNSView(_ view: DrawingInputView, context: Context) {
         view.page = page
+        view.drawingUndoManager.page = page
         view.section = section
         view.onEscape = onEscape
     }
@@ -118,12 +119,15 @@ private struct MacDrawingInput: NSViewRepresentable {
 
 private final class DrawingInputView: NSView {
     let model: DrawingModel
+    /// Undo and redo for the slide this view shows (DRAW-08).
+    let drawingUndoManager: DrawingUndoManager
     var page = 0
     var section = RelativeRect.fullPage
     var onEscape: () -> Void = {}
 
     init(model: DrawingModel) {
         self.model = model
+        drawingUndoManager = DrawingUndoManager(model: model)
         super.init(frame: .zero)
     }
 
@@ -134,7 +138,7 @@ private final class DrawingInputView: NSView {
 
     override var isFlipped: Bool { true }
     override var acceptsFirstResponder: Bool { true }
-    override var undoManager: UndoManager? { model.undoManager }
+    override var undoManager: UndoManager? { drawingUndoManager }
 
     // A click into an inactive window draws right away, like the old canvas.
     override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
@@ -147,11 +151,11 @@ private final class DrawingInputView: NSView {
     // Edit ▸ Undo and Redo reach the first responder; the window itself would use the
     // document's undo manager.
     @objc func undo(_ sender: Any?) {
-        model.undoManager.undo()
+        drawingUndoManager.undo()
     }
 
     @objc func redo(_ sender: Any?) {
-        model.undoManager.redo()
+        drawingUndoManager.redo()
     }
 
     override func cancelOperation(_ sender: Any?) {
@@ -192,7 +196,7 @@ private final class DrawingInputView: NSView {
 
 extension DrawingInputView: NSMenuItemValidation {
     func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
-        let undoManager = model.undoManager
+        let undoManager = drawingUndoManager
         switch menuItem.action {
         case #selector(undo(_:)):
             menuItem.title = undoManager.undoMenuItemTitle
