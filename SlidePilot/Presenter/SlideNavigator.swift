@@ -8,8 +8,9 @@ extension FocusedValues {
 }
 
 /// The presenter with the slide navigator as the sidebar of a split view (LAY-06), or as a
-/// sheet on compact width (iPhone, narrow iPad window). The system provides resizing. **O**,
-/// Esc, the menu and the sidebar or navigator button all drive `session.isNavigatorDisplayed`.
+/// sheet on compact width or height (iPhone, narrow iPad window). The system provides
+/// resizing. **O**, Esc, the menu and the sidebar or navigator button all drive
+/// `session.isNavigatorDisplayed`.
 ///
 /// `slidesChrome` (the clock) and `chrome` (the toolbar items) go on the slides column, so
 /// the sidebar keeps the full window height on the Mac. On iPad the document browser's launch
@@ -24,6 +25,16 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
     #if os(iOS)
     // Read outside the split view: its columns report their own, narrower size class.
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    /// Compact height counts too: a large iPhone in landscape has regular width, but a
+    /// sidebar there leaves the slides column compact and too small to read the slides.
+    /// It also keeps a phone on the sheet in both orientations, so rotating it neither
+    /// swaps the presentation nor changes the stored navigator setting. (The iPhone Duo's
+    /// inner display is regular both ways and keeps the sidebar.)
+    private var usesSheet: Bool {
+        sizeClass == .compact || verticalSizeClass == .compact
+    }
     #endif
 
     var body: some View {
@@ -31,16 +42,16 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
         splitView(detail: detail.modifier(slidesChrome).modifier(chrome))
         #else
         Group {
-            if sizeClass == .compact {
+            if usesSheet {
                 compactView
             } else {
                 splitView(detail: detail.modifier(slidesChrome).modifier(chrome))
             }
         }
-        // An open sidebar must not turn into a sheet that appears unasked when the window
-        // gets narrow.
-        .onChange(of: sizeClass) { _, newClass in
-            if newClass == .compact {
+        // An open sidebar must not turn into a sheet that appears unasked when an iPad
+        // window gets narrow. A rotating iPhone stays on the sheet and never gets here.
+        .onChange(of: usesSheet) { _, usesSheet in
+            if usesSheet {
                 session.isNavigatorDisplayed = false
             }
         }
@@ -51,7 +62,8 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
     /// On compact width (iPhone, narrow iPad window) a split view collapses into a stack with
     /// the navigator below the slides. iOS 26 pops a stack with a swipe anywhere on the
     /// content, which took over the swipe to the previous slide (NAV-01). So the slides are
-    /// the only level here and the navigator is a sheet over them.
+    /// the only level here and the navigator is a sheet over them. Also used on compact
+    /// height (see `usesSheet`).
     private var compactView: some View {
         NavigationStack {
             detail
@@ -89,9 +101,9 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
         Binding {
             session.isNavigatorDisplayed && !session.drawing.isActive
         } set: {
-            // The sheet also goes away when the window gets wide and the sidebar takes over;
-            // that must not close (and save closed) the navigator.
-            guard sizeClass == .compact else { return }
+            // The sheet also goes away when an iPad window gets wide and the sidebar takes
+            // over; that must not close (and save closed) the navigator.
+            guard usesSheet else { return }
             session.isNavigatorDisplayed = $0
         }
     }
