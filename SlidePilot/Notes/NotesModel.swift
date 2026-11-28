@@ -44,10 +44,7 @@ final class NotesModel {
     var isAvailable: Bool { textNotes != nil && !companion.isTakingOver }
 
     /// Stored notes that this version cannot show, e.g. written by a later version.
-    var isUnreadable: Bool {
-        guard companion.entry != nil else { return false }
-        return (try? TextNotes(companion.notes)) == nil
-    }
+    var isUnreadable: Bool { companion.entry != nil && textNotes == nil }
 
     /// Whether `page` has no notes, so the editor shows its placeholder.
     func isEmpty(page: Int) -> Bool {

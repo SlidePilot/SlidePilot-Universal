@@ -53,12 +53,15 @@ extension View {
 
 /// Next: → ↓ PageDown. Previous: ← ↑ PageUp. Presentation clickers send these keys.
 /// Space and Return are deliberately not handled, like in the old app (NAV-01).
+enum SlideChangeKeys {
+    static let previous: Set<KeyEquivalent> = [.leftArrow, .upArrow, .pageUp]
+    static let next: Set<KeyEquivalent> = [.rightArrow, .downArrow, .pageDown]
+}
+
+/// Takes the keyboard for the presenter and changes slides with `SlideChangeKeys`.
 private struct SlideNavigationKeys: ViewModifier {
     let session: PresentationSession
     @FocusState private var hasKeyboardFocus: Bool
-
-    static let previousKeys: Set<KeyEquivalent> = [.leftArrow, .upArrow, .pageUp]
-    static let nextKeys: Set<KeyEquivalent> = [.rightArrow, .downArrow, .pageDown]
 
     func body(content: Content) -> some View {
         content
@@ -96,12 +99,12 @@ private struct SlideNavigationKeys: ViewModifier {
             }
             // SwiftUI offers key presses to this view before an AppKit/UIKit text view
             // inside it, so they are passed on while the notes are edited (NOTES-04).
-            .onKeyPress(keys: Self.previousKeys) { _ in
+            .onKeyPress(keys: SlideChangeKeys.previous) { _ in
                 guard !session.notes.isEditing else { return .ignored }
                 session.showPreviousPage()
                 return .handled
             }
-            .onKeyPress(keys: Self.nextKeys) { _ in
+            .onKeyPress(keys: SlideChangeKeys.next) { _ in
                 guard !session.notes.isEditing else { return .ignored }
                 session.nextSlideCommand()
                 return .handled
@@ -113,11 +116,11 @@ extension View {
     /// Only the slide-change keys, without taking the keyboard: for a view presented over the
     /// presenter (the compact navigator sheet), where the presenter's own keys don't arrive.
     func slideChangeKeys(_ session: PresentationSession) -> some View {
-        onKeyPress(keys: SlideNavigationKeys.previousKeys) { _ in
+        onKeyPress(keys: SlideChangeKeys.previous) { _ in
             session.showPreviousPage()
             return .handled
         }
-        .onKeyPress(keys: SlideNavigationKeys.nextKeys) { _ in
+        .onKeyPress(keys: SlideChangeKeys.next) { _ in
             session.nextSlideCommand()
             return .handled
         }

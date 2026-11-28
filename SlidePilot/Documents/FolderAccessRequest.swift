@@ -58,7 +58,7 @@ private struct LinkedFilesModifier: ViewModifier {
             }
             .alert(
                 problemTitle,
-                isPresented: Binding(get: { linkedFiles.problem != nil }, set: { if !$0 { linkedFiles.problem = nil } }),
+                isPresented: $linkedFiles.problem.isPresented,
                 presenting: linkedFiles.problem
             ) { _ in
                 Button("OK", role: .cancel) {}

@@ -104,7 +104,7 @@ private struct RemoteControlStack: View {
         .proOffer(reason: $control.offer)
         .alert(
             endingTitle,
-            isPresented: Binding(get: { control.ending != nil }, set: { if !$0 { control.ending = nil } }),
+            isPresented: $control.ending.isPresented,
             presenting: control.ending
         ) { _ in
             Button("OK") {}

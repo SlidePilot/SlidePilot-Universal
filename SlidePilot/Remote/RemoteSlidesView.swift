@@ -14,9 +14,6 @@ struct RemoteSlidesView: View {
     /// The host's curtain and the color the Curtain button shows next (CUR-01).
     @State private var curtainState = CurtainState()
 
-    private static let previousKeys: Set<KeyEquivalent> = [.leftArrow, .upArrow, .pageUp]
-    private static let nextKeys: Set<KeyEquivalent> = [.rightArrow, .downArrow, .pageDown]
-
     var body: some View {
         @Bindable var settings = settings
         VStack(spacing: 0) {
@@ -95,11 +92,11 @@ struct RemoteSlidesView: View {
             control.navigate(to: [.presentations])
             return .handled
         }
-        .onKeyPress(keys: Self.previousKeys) { _ in
+        .onKeyPress(keys: SlideChangeKeys.previous) { _ in
             control.perform(.previousSlide)
             return .handled
         }
-        .onKeyPress(keys: Self.nextKeys) { _ in
+        .onKeyPress(keys: SlideChangeKeys.next) { _ in
             control.perform(.nextSlide)
             return .handled
         }

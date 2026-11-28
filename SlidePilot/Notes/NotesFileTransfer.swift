@@ -142,7 +142,7 @@ private struct NotesFileTransferModifier: ViewModifier {
             #endif
             .fileDialogConfirmationLabel(dialogConfirmationLabel)
             .fileExporter(
-                isPresented: Binding(get: { exportFile != nil }, set: { if !$0 { exportFile = nil } }),
+                isPresented: $exportFile.isPresented,
                 document: exportFile,
                 contentType: .rtf,
                 defaultFilename: exportName
@@ -160,7 +160,7 @@ private struct NotesFileTransferModifier: ViewModifier {
             }
             .alert(
                 Text("Import Notes for This PDF?"),
-                isPresented: Binding(get: { legacyNotesFile != nil }, set: { if !$0 { legacyNotesFile = nil } }),
+                isPresented: $legacyNotesFile.isPresented,
                 presenting: legacyNotesFile
             ) { notesFile in
                 Button("Allow Access…") {
@@ -174,7 +174,7 @@ private struct NotesFileTransferModifier: ViewModifier {
             }
             .alert(
                 Text("Replace the Notes of This PDF?"),
-                isPresented: Binding(get: { pendingImport != nil }, set: { if !$0 { pendingImport = nil } }),
+                isPresented: $pendingImport.isPresented,
                 presenting: pendingImport
             ) { pending in
                 Button("Replace Notes", role: .destructive) {
@@ -186,7 +186,7 @@ private struct NotesFileTransferModifier: ViewModifier {
             }
             .alert(
                 failure.map { Text($0.title) } ?? Text(verbatim: ""),
-                isPresented: Binding(get: { failure != nil }, set: { if !$0 { failure = nil } }),
+                isPresented: $failure.isPresented,
                 presenting: failure
             ) { _ in
                 Button("OK") {}
@@ -315,21 +315,8 @@ private struct NotesFileTransferModifier: ViewModifier {
         defer {
             if isAccessing { scope.stopAccessingSecurityScopedResource() }
         }
-        let data = try readCoordinated(file)
+        let data = try CoordinatedFileRead.data(at: file)
         return try LegacyNotesTransfer.notes(fromLegacyRTF: data, pageCount: pageCount)
-    }
-
-    /// Coordinated, so a file in iCloud Drive is downloaded first.
-    nonisolated private static func readCoordinated(_ file: URL) throws -> Data {
-        var coordinationError: NSError?
-        var result: Result<Data, any Error> = .failure(CocoaError(.fileReadUnknown))
-        NSFileCoordinator().coordinate(readingItemAt: file, options: .withoutChanges, error: &coordinationError) { url in
-            result = Result { try Data(contentsOf: url) }
-        }
-        if let coordinationError {
-            throw coordinationError
-        }
-        return try result.get()
     }
 
     // MARK: - Export

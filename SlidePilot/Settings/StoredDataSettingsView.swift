@@ -157,7 +157,7 @@ struct StoredDataList: View {
         }
         .confirmationDialog(
             dialogTitle,
-            isPresented: Binding(get: { deletion != nil }, set: { if !$0 { deletion = nil } }),
+            isPresented: $deletion.isPresented,
             titleVisibility: .visible,
             presenting: deletion
         ) { deletion in
@@ -175,7 +175,7 @@ struct StoredDataList: View {
         }
         #if os(macOS)
         .fileExporter(
-            isPresented: Binding(get: { export != nil }, set: { if !$0 { export = nil } }),
+            isPresented: $export.isPresented,
             document: export?.document,
             contentType: .slidePilotFile,
             defaultFilename: export?.name
@@ -186,7 +186,7 @@ struct StoredDataList: View {
         }
         .alert(
             Text("The SlidePilot File Couldn’t Be Exported"),
-            isPresented: Binding(get: { exportFailure != nil }, set: { if !$0 { exportFailure = nil } }),
+            isPresented: $exportFailure.isPresented,
             presenting: exportFailure
         ) { _ in
             Button("OK") {}
