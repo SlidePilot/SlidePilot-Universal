@@ -29,8 +29,9 @@ struct SlideNavigatorSplitView<Detail: View, SlidesChrome: ViewModifier, Chrome:
 
     /// Compact height counts too: a large iPhone in landscape has regular width, but a
     /// sidebar there leaves the slides column compact and too small to read the slides.
-    /// It also keeps the phone on the sheet in both orientations, so rotating it neither
-    /// swaps the presentation nor changes the stored navigator setting.
+    /// It also keeps a phone on the sheet in both orientations, so rotating it neither
+    /// swaps the presentation nor changes the stored navigator setting. (The iPhone Duo's
+    /// inner display is regular both ways and keeps the sidebar.)
     private var usesSheet: Bool {
         sizeClass == .compact || verticalSizeClass == .compact
     }
