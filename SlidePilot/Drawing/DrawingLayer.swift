@@ -116,7 +116,7 @@ private struct MacDrawingInput: NSViewRepresentable {
     }
 }
 
-private final class DrawingInputView: NSView {
+private final class DrawingInputView: NSView, PassesSlideKeysToWindow {
     let model: DrawingModel
     var page = 0
     var section = RelativeRect.fullPage
@@ -159,7 +159,7 @@ private final class DrawingInputView: NSView {
     }
 
     override func keyDown(with event: NSEvent) {
-        // Esc only; other keys go on to the window, e.g. "." for the black screen.
+        // Esc only; `WindowKeyboardAnchor` takes the slide keys and "." before they get here.
         if event.keyCode == 53 {
             onEscape()
         } else {

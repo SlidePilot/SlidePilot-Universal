@@ -9,7 +9,8 @@ import SwiftUI
 /// responder. Right after a window opens (also a restored or second one), or once a
 /// focused control goes away, the window itself is first responder and the keys would be
 /// lost until a click. A focused text field, list or the notes keep their keys: this
-/// only sees presses while the window is the first responder.
+/// only sees presses while the window is the first responder, or a view that has no use
+/// for these keys (`PassesSlideKeysToWindow`).
 struct WindowKeyboardAnchor: NSViewRepresentable {
     /// Handles a press; returns `true` if it was used.
     let handle: (WindowKey) -> Bool
@@ -61,7 +62,8 @@ struct WindowKeyboardAnchor: NSViewRepresentable {
         }
 
         private func handled(_ event: NSEvent) -> Bool {
-            guard let window, event.window === window, window.firstResponder === window,
+            guard let window, event.window === window,
+                  window.firstResponder === window || window.firstResponder is PassesSlideKeysToWindow,
                   // ⌘ and ⌃ combinations stay with the menus (e.g. ⌃⌘→).
                   event.modifierFlags.isDisjoint(with: [.command, .control]),
                   let key = Self.key(for: event) else { return false }
@@ -81,4 +83,8 @@ struct WindowKeyboardAnchor: NSViewRepresentable {
         }
     }
 }
+
+/// An AppKit view that takes the keyboard but leaves the slide keys and "." to its
+/// window, like the drawing canvas (#246).
+protocol PassesSlideKeysToWindow: NSView {}
 #endif
