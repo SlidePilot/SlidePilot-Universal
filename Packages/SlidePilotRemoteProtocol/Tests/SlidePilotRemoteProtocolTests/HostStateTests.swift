@@ -130,6 +130,15 @@ struct HostStateTests {
         ])
     }
 
+    /// A renamed PDF keeps its presentation and only gets a new name in the list (#237).
+    @Test func renamedPresentationSendsOnlyTheList() {
+        var state = selectedState()
+        #expect(state.update([presentation(deckA, title: "Renamed")]) == [
+            .send(.presentations([PresentationSummary(id: deckA, title: "Renamed", slideCount: 5)]), to: 1),
+        ])
+        #expect(state.selection(of: 1) == deckA)
+    }
+
     @Test func unchangedPresentationsSendNothing() {
         var state = selectedState()
         #expect(state.update([presentation(deckA)]).isEmpty)
