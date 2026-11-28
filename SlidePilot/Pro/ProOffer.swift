@@ -55,9 +55,11 @@ extension View {
         )
     }
 
-    /// The trial hint at the top of the presenter while Pro is missing; it opens the offer.
-    func trialHint() -> some View {
-        modifier(TrialHintModifier())
+    /// The trial hint at the top of the presenter while Pro is missing; it opens the offer by
+    /// setting `showsOffer`. The caller owns that state and shows the offer with `proOffer`
+    /// on a view that stays when the presenter's bars are rebuilt (#241).
+    func trialHint(showsOffer: Binding<Bool>) -> some View {
+        modifier(TrialHintModifier(showsOffer: showsOffer))
     }
 }
 
@@ -316,7 +318,7 @@ private struct TrialHintButton: View {
 private struct TrialHintModifier: ViewModifier {
     @Environment(ProStore.self) private var pro
     @Environment(\.presenterMakesRoomForDrawing) private var makesRoomForDrawing
-    @State private var showsOffer = false
+    @Binding var showsOffer: Bool
 
     func body(content: Content) -> some View {
         content
@@ -329,7 +331,6 @@ private struct TrialHintModifier: ViewModifier {
                         .padding(.vertical, 4)
                 }
             }
-            .proOffer(isPresented: $showsOffer)
     }
 }
 
@@ -450,6 +451,8 @@ private struct ProOfferModifier: ViewModifier {
 }
 
 private struct TrialHintModifier: ViewModifier {
+    @Binding var showsOffer: Bool
+
     func body(content: Content) -> some View { content }
 }
 
