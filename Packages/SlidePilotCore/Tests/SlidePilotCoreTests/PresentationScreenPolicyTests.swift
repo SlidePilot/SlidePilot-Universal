@@ -17,6 +17,14 @@ struct PresentationScreenPolicyTests {
         #expect(Policy.screen(in: [Int](), presenterScreen: nil) == nil)
     }
 
+    // A full-screen presentation on the presenter's screen hides the presenter.
+    @Test func presentationHidesPresenterOnlyOnTheSameScreen() {
+        #expect(Policy.presentationHidesPresenter(presentationScreen: 1, presenterScreen: 1))
+        #expect(!Policy.presentationHidesPresenter(presentationScreen: 2, presenterScreen: 1))
+        #expect(!Policy.presentationHidesPresenter(presentationScreen: 1, presenterScreen: Int?.none))
+        #expect(!Policy.presentationHidesPresenter(presentationScreen: Int?.none, presenterScreen: 1))
+    }
+
     // Old app: NSScreen.screens[1].
     @Test func secondScreenLikeOldApp() {
         #expect(Policy.screen(in: [1, 2], presenterScreen: 1) == 2)

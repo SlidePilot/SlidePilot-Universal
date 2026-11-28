@@ -236,6 +236,54 @@ struct AudienceOutputTrialTests {
         #expect(trial.pendingOffer == nil)
     }
 
+    // Mac, single screen: the presenter is hidden while presenting, so the offer it could
+    // not show survives the end of the session.
+    @Test(arguments: [(0.0, AudienceTrialOffer.started), (200.0, AudienceTrialOffer.ended)])
+    func stopCanKeepTheOfferNotShownYet(seconds: Double, offer: AudienceTrialOffer) {
+        let trial = trial()
+        trial.start(status: .locked)
+        advance(trial, to: seconds)
+        trial.stop(keepingPendingOffer: true)
+        #expect(trial.coordinator == nil)
+        #expect(trial.pendingOffer == offer)
+        trial.offerShown(offer)
+        #expect(trial.pendingOffer == nil)
+    }
+
+    @Test func stopKeepsNoOfferThatWasShown() {
+        let trial = trial()
+        trial.start(status: .locked)
+        trial.offerShown(.started)
+        trial.stop(keepingPendingOffer: true)
+        #expect(trial.pendingOffer == nil)
+    }
+
+    @Test func stopDropsTheOfferByDefault() {
+        let trial = trial()
+        trial.start(status: .locked)
+        trial.stop()
+        #expect(trial.pendingOffer == nil)
+    }
+
+    @Test func keptOfferEndsWithANewSessionOrPro() {
+        let trial = trial()
+        trial.start(status: .locked)
+        advance(trial, to: 200)
+        trial.stop(keepingPendingOffer: true)
+        trial.start(status: .locked)
+        #expect(trial.pendingOffer == .started)
+        trial.stop(keepingPendingOffer: true)
+        trial.statusChanged(.unlocked)
+        #expect(trial.pendingOffer == nil)
+    }
+
+    @Test func proUserKeepsNoOffer() {
+        let trial = trial()
+        trial.start(status: .unlocked)
+        trial.stop(keepingPendingOffer: true)
+        #expect(trial.pendingOffer == nil)
+    }
+
     @Test func reconnectGraceIsTenSeconds() {
         #expect(AudienceOutputTrial.reconnectGrace == .seconds(10))
     }

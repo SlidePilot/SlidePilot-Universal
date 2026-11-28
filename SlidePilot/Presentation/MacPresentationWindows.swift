@@ -28,12 +28,15 @@ final class MacPresentationWindows {
         /// The connected screens at that time: moves after a screen change are macOS's, not the user's.
         var screensAtPresenterPlace: [CGDirectDisplayID] = []
         var presenterMoves: Task<Void, Never>?
+        var keyChanges: Task<Void, Never>?
         /// The window is closed to open a new one on another screen; the trial goes on.
         var isReopening = false
     }
 
     /// The trial of each document's presentation window while Pro is missing (PRO-03).
     private var trials: [PresentationSession.ID: AudienceOutputTrial] = [:]
+    /// The documents whose presenter is hidden behind its full-screen presentation.
+    private var hiddenPresenters: Set<PresentationSession.ID> = []
 
     @ObservationIgnored private var entries: [PresentationSession.ID: Entry] = [:]
     /// Screens for the presentation windows about to open, consumed in order by their
@@ -52,6 +55,34 @@ final class MacPresentationWindows {
         trial.start(status: status)
     }
 
+    /// Whether the presenter window cannot be seen because its presentation runs in full
+    /// screen on the same screen. Sheets that must be seen wait until this is `false`.
+    func isPresenterHidden(_ id: PresentationSession.ID) -> Bool {
+        hiddenPresenters.contains(id)
+    }
+
+    /// Whether the presentation is (or will be) on the presenter's screen, where full screen
+    /// puts it in a Space of its own.
+    private func presentationHidesPresenter(_ id: PresentationSession.ID) -> Bool {
+        guard let entry = entries[id] else { return false }
+        return PresentationScreenPolicy.presentationHidesPresenter(
+            // Where the window is now: the user may have moved its Space to another screen.
+            presentationScreen: entry.presentation?.screen?.displayID ?? entry.screen,
+            presenterScreen: entry.presenter?.screen?.displayID
+        )
+    }
+
+    /// Follows which of the two windows has the keyboard: switching to the presenter's
+    /// Space shows it again, going back to the presentation hides it.
+    private func keyWindowDidChange(_ id: PresentationSession.ID) {
+        guard let entry = entries[id] else { return }
+        if entry.presenter?.isKeyWindow == true {
+            hiddenPresenters.remove(id)
+        } else if entry.presentation?.isKeyWindow == true, entry.isPresenting, presentationHidesPresenter(id) {
+            hiddenPresenters.insert(id)
+        }
+    }
+
     func isPresenting(_ id: PresentationSession.ID) -> Bool {
         entries[id]?.isPresenting == true
     }
@@ -61,11 +92,21 @@ final class MacPresentationWindows {
         let isNew = entries[id]?.presenter == nil
         entries[id, default: Entry()].presenter = window
         if isNew {
-            // Ends with the entry in presenterDidClose.
+            // Both tasks end with the entry in presenterDidClose, or here when the
+            // window was replaced without it.
+            entries[id]?.presenterMoves?.cancel()
+            entries[id]?.keyChanges?.cancel()
             let moves = NotificationCenter.default.notifications(named: NSWindow.didMoveNotification, object: window)
             entries[id]?.presenterMoves = Task { [weak self] in
                 for await _ in moves {
                     self?.presenterDidMove(id)
+                }
+            }
+            // Of any window: the presentation window is replaced on screen changes.
+            let keys = NotificationCenter.default.notifications(named: NSWindow.didBecomeKeyNotification)
+            entries[id]?.keyChanges = Task { [weak self] in
+                for await _ in keys {
+                    self?.keyWindowDidChange(id)
                 }
             }
         }
@@ -76,21 +117,28 @@ final class MacPresentationWindows {
     func presenterDidClose(_ id: PresentationSession.ID) {
         let presentation = entries[id]?.presentation
         entries[id]?.presenterMoves?.cancel()
+        entries[id]?.keyChanges?.cancel()
         entries[id] = nil
+        hiddenPresenters.remove(id)
         trials[id]?.stop()
         trials[id] = nil
         presentation?.close()
     }
 
-    /// Brings a running presentation to the front and keeps the presenter key.
-    /// Returns `false` when no presentation window is open.
+    /// Brings a running presentation to the front and keeps the presenter key. A
+    /// presentation on the presenter's screen gets the keyboard itself: its Space hides
+    /// the presenter. Returns `false` when no presentation window is open.
     func showRunningPresentation(_ id: PresentationSession.ID) -> Bool {
         guard let entry = entries[id], entry.isPresenting, let window = entry.presentation else { return false }
         if window.isMiniaturized {
             window.deminiaturize(nil)
         }
-        window.orderFront(nil)
-        entry.presenter?.makeKeyAndOrderFront(nil)
+        if presentationHidesPresenter(id) {
+            window.makeKeyAndOrderFront(nil)
+        } else {
+            window.orderFront(nil)
+            entry.presenter?.makeKeyAndOrderFront(nil)
+        }
         return true
     }
 
@@ -139,6 +187,12 @@ final class MacPresentationWindows {
         let target = screen ?? PresentationScreenPolicy.screen(in: screens, presenterScreen: presenterScreen)
         pendingScreens.append(target)
         entries[id, default: Entry()].screen = target
+        // Already now, so nothing shows on the presenter just before it is covered.
+        if presentationHidesPresenter(id) {
+            hiddenPresenters.insert(id)
+        } else {
+            hiddenPresenters.remove(id)
+        }
     }
 
     /// Opens the presentation window directly on the chosen screen, so it never shows up
@@ -156,6 +210,8 @@ final class MacPresentationWindows {
     }
 
     /// Enters full screen and gives the keyboard back to the presenter (DOC-05, DOC-06).
+    /// On the presenter's screen the presentation keeps it: there the presenter is in
+    /// another Space, where its keys and File > Close would act on a window nobody sees.
     func attachPresentation(_ window: NSWindow, for id: PresentationSession.ID) {
         guard entries[id]?.presentation !== window else { return }
         entries[id, default: Entry()].presentation = window
@@ -179,7 +235,11 @@ final class MacPresentationWindows {
             if !window.styleMask.contains(.fullScreen) {
                 window.toggleFullScreen(nil)
             }
-            self.entries[id]?.presenter?.makeKeyAndOrderFront(nil)
+            if self.presentationHidesPresenter(id) {
+                window.makeKeyAndOrderFront(nil)
+            } else {
+                self.entries[id]?.presenter?.makeKeyAndOrderFront(nil)
+            }
         }
     }
 
@@ -188,9 +248,11 @@ final class MacPresentationWindows {
         guard let entry = entries[id], window == nil || entry.presentation === window else { return }
         entries[id]?.presentation = nil
         entries[id]?.isPresenting = false
-        // Closed by the user: the session ends; a new start is a new trial.
+        // Closed by the user: the session ends; a new start is a new trial. An offer the
+        // hidden presenter could not show yet is shown now that it is back.
         if !entry.isReopening {
-            trials[id]?.stop()
+            hiddenPresenters.remove(id)
+            trials[id]?.stop(keepingPendingOffer: true)
         }
     }
 
@@ -274,7 +336,8 @@ struct PresentationWindowContent: View {
                     windows.presentationDidClose(id, window: window)
                 }
                 // After a click into the presentation, ⌥⌘P still works and hands the
-                // keyboard back to the presenter.
+                // keyboard back to the presenter (on its own screen; a presentation on the
+                // presenter's screen keeps it).
                 .focusedSceneValue(\.startPresentation, StartPresentationAction {
                     _ = windows.showRunningPresentation(id)
                 })
@@ -319,8 +382,10 @@ private struct PresenterWindowModifier: ViewModifier {
             // trailing end whatever else the bar shows.
             .environment(\.startPresentation, StartPresentationAction(perform: startPresentation))
             .task(id: session.id) { await followScreenChanges() }
-            // The offer when the presentation starts and when its trial ends (PRO-03).
-            .audienceTrialOffer(windows.trial(for: session.id))
+            // The offer when the presentation starts and when its trial ends (PRO-03). A
+            // sheet on a presenter hidden behind its presentation would never be seen, and
+            // would take the keys from it: it waits until the presenter is back.
+            .audienceTrialOffer(windows.trial(for: session.id), isShownHere: !windows.isPresenterHidden(session.id))
     }
 
     private func startPresentation() {

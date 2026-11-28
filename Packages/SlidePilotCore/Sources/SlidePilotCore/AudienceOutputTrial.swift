@@ -35,6 +35,8 @@ public final class AudienceOutputTrial {
     public private(set) var coordinator: TrialCoordinator?
     private var startOffered = false
     private var endOffered = false
+    /// The offer of a session that ended before the presenter could show it.
+    private var keptOffer: AudienceTrialOffer?
 
     @ObservationIgnored private var connectedOutputs: Set<String> = []
     @ObservationIgnored private var disconnectedAt: Instant?
@@ -71,9 +73,10 @@ public final class AudienceOutputTrial {
 
     /// The offer the presenter should show now, if any. The end wins over the start; each is
     /// shown once per session (`offerShown(_:)`). The start offer waits until the status is
-    /// known to be locked, so a Pro user never sees it.
+    /// known to be locked, so a Pro user never sees it. After `stop(keepingPendingOffer:)`
+    /// this is the offer that session still owed.
     public var pendingOffer: AudienceTrialOffer? {
-        guard let session = coordinator?.session else { return nil }
+        guard let session = coordinator?.session else { return keptOffer }
         switch session.phase {
         case .ended: return endOffered ? nil : .ended
         case .running: return !startOffered && session.status.showsTrialHint ? .started : nil
@@ -83,6 +86,7 @@ public final class AudienceOutputTrial {
 
     /// Records that the presenter showed `offer`. Showing the end also covers the start.
     public func offerShown(_ offer: AudienceTrialOffer) {
+        keptOffer = nil
         switch offer {
         case .started:
             startOffered = true
@@ -99,12 +103,19 @@ public final class AudienceOutputTrial {
         self.coordinator = coordinator
         startOffered = false
         endOffered = false
+        keptOffer = nil
         disconnectedAt = nil
         runTask = Task { await coordinator.run() }
     }
 
     /// Ends the session (Mac: the user closed the presentation window).
-    public func stop() {
+    ///
+    /// - Parameter keepingPendingOffer: keeps an offer the presenter could not show yet,
+    ///   until it is shown or a new session starts. The Mac passes `true`: on a single
+    ///   screen the presenter is hidden behind the full-screen presentation and only comes
+    ///   back when that closes.
+    public func stop(keepingPendingOffer: Bool = false) {
+        keptOffer = keepingPendingOffer ? pendingOffer : nil
         runTask?.cancel()
         runTask = nil
         graceTask?.cancel()
@@ -147,6 +158,9 @@ public final class AudienceOutputTrial {
 
     /// Call whenever the app's Pro status changes; buying Pro lifts the limit at once.
     public func statusChanged(_ status: ProStatus) {
+        if status.unlocksEverything {
+            keptOffer = nil
+        }
         coordinator?.statusChanged(status)
     }
 }
