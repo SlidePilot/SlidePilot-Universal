@@ -9,6 +9,10 @@ struct DocumentView: View {
     let fileURL: URL?
     @State private var session: PresentationSession
     @Environment(SessionRegistry.self) private var registry
+    /// Shared by the toolbar's Time menu and the Moderator menu's Set Timer….
+    @State private var isSettingTimer = false
+    /// The purchase offer opened from the trial hint (PRO-05).
+    @State private var showsTrialOffer = false
 
     init(
         document: PDFFileDocument,
@@ -33,10 +37,21 @@ struct DocumentView: View {
         SlideNavigatorSplitView(
             session: session,
             slidesChrome: PresenterClock(session: session),
-            chrome: PresenterChrome(session: session)
+            chrome: PresenterChrome(
+                session: session, isSettingTimer: $isSettingTimer, showsTrialOffer: $showsTrialOffer
+            )
         ) {
             PresenterLayoutView(session: session)
         }
+            // The presenter's sheets and their state, here and not in `PresenterChrome`: on
+            // iPhone and iPad the navigator swaps the view the chrome is on when the window
+            // changes between compact and regular width, which closed an open sheet (#241).
+            .presenterTimerControls(session, isSettingTimer: $isSettingTimer)
+            .proOffer(isPresented: $showsTrialOffer)
+            #if os(iOS)
+            // The Mac has the Settings window instead (SET-01).
+            .settingsSheet()
+            #endif
             // Done and the drawing tools stay in a compact bar (#152).
             .presenterToolbarFocus(session)
             .shrinksOnMemoryWarning(session)
@@ -95,12 +110,13 @@ private struct PresenterClock: ViewModifier {
 }
 
 /// The presenter's toolbar items, menu commands and swipes. `SlideNavigatorSplitView` puts
-/// them on the slides column (Mac) or on the document's bar (iPad).
+/// them on the slides column (Mac) or on the document's bar (iPad). It holds no state of its
+/// own: on iPhone and iPad its view is replaced when the width class changes (#241).
 private struct PresenterChrome: ViewModifier {
     let session: PresentationSession
+    @Binding var isSettingTimer: Bool
+    @Binding var showsTrialOffer: Bool
     @Environment(\.presenterToolbarFocus) private var focus
-    /// Shared by the toolbar's Time menu and the Moderator menu's Set Timer….
-    @State private var isSettingTimer = false
 
     func body(content: Content) -> some View {
         content
@@ -111,7 +127,6 @@ private struct PresenterChrome: ViewModifier {
             // Layout changes are locked in draw mode (DRAW-05).
             .presenterLayoutControls(session.layout, isLocked: session.drawing.isActive)
             .notesModeControls(session)
-            .presenterTimerControls(session, isSettingTimer: $isSettingTimer)
             .presenterNavigation(session)
             .notesEditingControls(session.notes)
             // The "." key for the black curtain (CUR-01).
@@ -121,10 +136,8 @@ private struct PresenterChrome: ViewModifier {
             #if os(iOS)
             // The tips above the slides (#82, PTR-01).
             .externalDisplayHint()
-            // The Mac has the Settings window instead (SET-01).
-            .settingsSheet()
             #endif
             // Above the tips: "Trial Version – … Unlock Pro" while Pro is missing (PRO-05).
-            .trialHint()
+            .trialHint(showsOffer: $showsTrialOffer)
     }
 }

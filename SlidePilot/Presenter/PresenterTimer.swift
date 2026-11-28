@@ -19,7 +19,8 @@ extension View {
     }
 
     /// The Set Timer sheet and the menu commands. The toolbar's Time button opens the same
-    /// sheet through `isSettingTimer` (`PresenterToolbar`).
+    /// sheet through `isSettingTimer` (`PresenterToolbar`). Apply it, and keep that state, on
+    /// a view that stays when the presenter's bars are rebuilt (#241).
     func presenterTimerControls(_ session: PresentationSession, isSettingTimer: Binding<Bool>) -> some View {
         modifier(PresenterTimerModifier(session: session, isSettingTimer: isSettingTimer))
     }
