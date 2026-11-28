@@ -10,7 +10,12 @@ final class PresentationSession: Identifiable {
     /// Identifies the session's presentation window (macOS) and its registry entry.
     let id = UUID()
     /// The document's display name, e.g. for the remote's list of presentations (REM-04).
-    let title: String
+    /// Follows the file, so a rename or move of the open PDF shows up without reopening it.
+    var title: String {
+        fileURL?.deletingPathExtension().lastPathComponent ?? initialTitle
+    }
+    /// The title while the document system gives no URL.
+    private let initialTitle: String
     /// Where the PDF is, if the document system says; a `.slidepilot` file lists the open
     /// PDFs by it (NOTES-11).
     var fileURL: URL?
@@ -77,7 +82,7 @@ final class PresentationSession: Identifiable {
         folderAccessStore: FolderAccessStore? = nil
     ) {
         self.data = data
-        self.title = title
+        initialTitle = title
         linkedFiles = LinkedFiles(folderStore: folderAccessStore)
         layout = PresenterLayoutModel(store: layoutStore)
         companion = DocumentCompanion(store: companionStore)
